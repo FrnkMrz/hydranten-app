@@ -39,6 +39,9 @@ export function renderIntroView() {
              <div class="flex items-center gap-4">
                 <span class="text-xl bg-white/10 p-2 rounded-lg">✏️</span> <p><span class="text-white font-bold">Daten</span> ergänzen</p>
              </div>
+             <div class="flex items-center gap-4">
+                <span class="text-xl bg-white/10 p-2 rounded-lg">☁️</span> <p><span class="text-white font-bold">Hochladen</span> zu OSM</p>
+             </div>
          </div>
       </div>
 

@@ -99,6 +99,34 @@ function showConfirm() {
       const creds = JSON.parse(localStorage.getItem('osm_creds') || '{}');
       console.log("Submitting Hydrant:", data, "Creds:", creds);
 
+      // 1. Validate Credentials
+      if (!creds.user || !creds.password) {
+        // Error Overlay
+        const overlay = document.createElement('div');
+        overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-gray-900/95 animate-fade-in px-4 text-center";
+        overlay.innerHTML = `
+           <div class="flex flex-col items-center max-w-xs">
+              <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-red-900/40">
+                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </div>
+              <h2 class="text-2xl font-bold text-white mb-2">Fehler!</h2>
+              <p class="text-gray-400 mb-6 text-sm">Keine OSM-Zugangsdaten gefunden. Bitte melde dich zuerst an.</p>
+              
+              <button id="error-settings-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white font-bold transition">
+                 Zu den Einstellungen
+              </button>
+              <button id="error-close-btn" class="mt-4 text-sm text-gray-500 hover:text-gray-300">
+                 Abbrechen
+              </button>
+           </div>
+        `;
+        app.appendChild(overlay);
+
+        document.getElementById('error-settings-btn').onclick = () => showSettings();
+        document.getElementById('error-close-btn').onclick = () => overlay.remove();
+        return;
+      }
+
       const btn = document.getElementById('submit-img-btn');
       btn.innerHTML = `<span>Speichere...</span>`;
       btn.disabled = true;
