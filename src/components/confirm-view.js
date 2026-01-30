@@ -16,14 +16,14 @@ L.Icon.Default.mergeOptions({
 export function renderConfirmView() {
   return `
     <div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in pb-safe">
-      <!-- Top: Map (Compact Hero 30%) -->
-      <div class="relative w-full h-[30vh] bg-gray-800 shrink-0">
+      <!-- Top: Map (Compact Hero 25%) -->
+      <div class="relative w-full h-[25vh] bg-gray-800 shrink-0">
         
         <!-- MAIN: Map -->
         <div id="map" class="w-full h-full z-0"></div>
 
-        <!-- OVERLAY: Photo (Thumbnail) -->
-        <div class="absolute bottom-4 right-4 w-28 h-36 rounded-xl border-2 border-white/30 shadow-2xl overflow-hidden bg-black z-10 transition transform origin-bottom-right hover:scale-150 active:scale-125 cursor-pointer group">
+        <!-- OVERLAY: Photo (Thumbnail - Smaller) -->
+        <div class="absolute bottom-4 right-4 w-20 h-28 rounded-xl border-2 border-white/30 shadow-2xl overflow-hidden bg-black z-10 transition transform origin-bottom-right hover:scale-[2.5] active:scale-[2.5] cursor-pointer group">
             <img id="preview-img" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
             <span class="absolute bottom-1 right-2 text-[10px] font-bold text-white/80">FOTO</span>
