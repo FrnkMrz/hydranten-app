@@ -15,13 +15,20 @@ L.Icon.Default.mergeOptions({
 
 export function renderIntroView() {
    return `
-    <div class="h-full w-full bg-black text-white flex flex-col relative overflow-hidden">
+    <div class="h-full w-full bg-white text-gray-900 flex flex-col relative overflow-hidden">
       
       <!-- Top 30% Map -->
       <div class="w-full h-[30%] shrink-0 relative z-0">
           <div id="intro-map" class="w-full h-full"></div>
           <!-- Gradient Overlay -->
-          <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black to-transparent pointer-events-none"></div>
+          <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+      </div>
+
+      <!-- Top Bar (Settings) -->
+      <div class="absolute top-0 right-0 p-4 z-20">
+         <button id="intro-settings-btn" class="p-3 h-12 w-12 flex items-center justify-center bg-white/50 hover:bg-white/80 backdrop-blur-md rounded-full text-gray-900 transition border border-gray-200 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+         </button>
       </div>
 
       <!-- Content (Bottom 70%) -->
@@ -29,25 +36,25 @@ export function renderIntroView() {
          
          <!-- Hero Title (Immediately below map with some spacing) -->
          <div class="text-center mt-6 mb-8">
-             <h1 class="text-4xl font-extrabold text-white mb-2 tracking-tight drop-shadow-xl">
+             <h1 class="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight drop-shadow-sm">
                 Hydranten <span class="text-red-500">Jäger</span>
              </h1>
-             <p class="text-gray-400 text-xs font-bold uppercase tracking-widest opacity-80">OpenStreetMap Tool</p>
+             <p class="text-gray-500 text-xs font-bold uppercase tracking-widest opacity-80">OpenStreetMap Tool</p>
          </div>
 
          <!-- Instructions Card -->
-         <div class="w-full bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 space-y-3 text-sm text-gray-300 shadow-xl">
+         <div class="w-full bg-gray-50 rounded-2xl p-5 border border-gray-100 space-y-3 text-sm text-gray-600 shadow-lg">
              <div class="flex items-center gap-4">
-                <span class="text-xl bg-white/10 p-2 rounded-lg">📏</span> <p><span class="text-white font-bold">3 Meter</span> Abstand</p>
+                <span class="text-xl bg-gray-200 p-2 rounded-lg">📏</span> <p><span class="text-gray-900 font-bold">3 Meter</span> Abstand</p>
              </div>
              <div class="flex items-center gap-4">
-                <span class="text-xl bg-white/10 p-2 rounded-lg">📸</span> <p><span class="text-white font-bold">Foto</span> machen</p>
+                <span class="text-xl bg-gray-200 p-2 rounded-lg">📸</span> <p><span class="text-gray-900 font-bold">Foto</span> machen</p>
              </div>
              <div class="flex items-center gap-4">
-                <span class="text-xl bg-white/10 p-2 rounded-lg">✏️</span> <p><span class="text-white font-bold">Daten</span> ergänzen</p>
+                <span class="text-xl bg-gray-200 p-2 rounded-lg">✏️</span> <p><span class="text-gray-900 font-bold">Daten</span> ergänzen</p>
              </div>
              <div class="flex items-center gap-4">
-                <span class="text-xl bg-white/10 p-2 rounded-lg">☁️</span> <p><span class="text-white font-bold">Hochladen</span> zu OSM</p>
+                <span class="text-xl bg-gray-200 p-2 rounded-lg">☁️</span> <p><span class="text-gray-900 font-bold">Hochladen</span> zu OSM</p>
              </div>
          </div>
       </div>
@@ -58,7 +65,7 @@ export function renderIntroView() {
             STARTEN 🚀
          </button>
          
-         <button id="intro-settings-btn" class="w-full py-3 flex items-center justify-center gap-2 text-gray-400 hover:text-white transition-colors text-sm font-medium hover:bg-white/5 rounded-xl">
+         <button id="intro-settings-btn" class="w-full py-3 flex items-center justify-center gap-2 text-gray-400 hover:text-gray-800 transition-colors text-sm font-medium hover:bg-gray-100 rounded-xl">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             OSM Login & Einstellungen
          </button>

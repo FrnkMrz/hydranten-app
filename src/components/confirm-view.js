@@ -1,224 +1,211 @@
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-
-// Fix for Leaflet default icon issues in Vite/Webpack
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
-
 export function renderConfirmView() {
   return `
-    <div class="flex flex-col h-full w-full bg-slate-900 text-white overflow-y-auto pb-10">
-      
-      <!-- Image Preview -->
-      <div class="relative w-full h-64 shrink-0 bg-black">
-        <img id="preview-img" class="w-full h-full object-cover opacity-80" />
-        <button id="retake-btn" class="absolute top-4 left-4 bg-black/50 p-2 rounded-full text-white backdrop-blur-sm shadow-md">
-           ⬅ Zurück
-        </button>
+    <div class="h-full w-full bg-white text-gray-900 flex flex-col animate-fade-in pb-safe">
+      <!-- Image Preview Header -->
+      <div class="relative w-full h-[40vh] bg-gray-100 shrink-0">
+        <img id="preview-img" class="w-full h-full object-cover shadow-lg" />
+        
+        <div class="absolute top-4 left-4">
+           <button id="retake-btn" class="bg-white/30 backdrop-blur-md p-2 rounded-full text-white hover:bg-white/50 transition">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+           </button>
+        </div>
+        
+        <!-- Map Overlay (Mini Map) -->
+        <div class="absolute -bottom-10 right-4 w-24 h-24 rounded-2xl border-4 border-white shadow-xl overflow-hidden bg-gray-200 z-20">
+           <div id="mini-map" class="w-full h-full"></div>
+        </div>
       </div>
 
-      <!-- Map Section -->
-      <div class="p-4 space-y-2">
-         <h2 class="text-lg font-bold flex items-center gap-2">
-            📍 Standort bestätigen
-         </h2>
-         <div id="map" class="w-full h-48 rounded-xl bg-gray-800 border border-gray-700 relative z-10 shadow-inner overflow-hidden"></div>
-         <p id="geo-status" class="text-xs text-gray-400 text-right">Suche Standort...</p>
-      </div>
-
-      <!-- Form Section -->
-      <div class="px-4 pb-4 space-y-4">
-         <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 space-y-6">
-           <h2 class="text-lg font-bold flex items-center gap-2">ℹ️ Hydranten Details</h2>
-           
-           <!-- TYPE GRID -->
-           <div>
-             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider block mb-2">Typ *</span>
-             <div class="grid grid-cols-3 gap-2" id="type-grid">
-                ${renderOptionBtn('type', 'pillar', '📮', 'Überflur')}
-                ${renderOptionBtn('type', 'underground', '🕳️', 'Unterflur')}
-                ${renderOptionBtn('type', 'wall', '🧱', 'Wand')}
-                ${renderOptionBtn('type', 'pond', '🌊', 'Teich')}
-                ${renderOptionBtn('type', 'cistern', '💧', 'Zisterne')}
-             </div>
-             <input type="hidden" id="hydrant-type" value="" />
-           </div>
-
-           <!-- POSITION GRID -->
-           <div>
-             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider block mb-2">Position *</span>
-             <div class="grid grid-cols-3 gap-2" id="position-grid">
-                ${renderOptionBtn('pos', 'sidewalk', '🚶', 'Gehweg')}
-                ${renderOptionBtn('pos', 'lane', '🚗', 'Straße')}
-                ${renderOptionBtn('pos', 'parking_lot', '🅿️', 'Parkplatz')}
-                ${renderOptionBtn('pos', 'green', '🌳', 'Grün')}
-                ${renderOptionBtn('pos', 'surface', '⏹️', 'Platz')}
-             </div>
-             <input type="hidden" id="hydrant-position" value="" />
-           </div>
-
-            <!-- VOLUME (Conditional for Cistern) -->
-           <div id="volume-container" class="hidden animate-fade-in">
-             <label class="block">
-               <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Volumen (m³) *</span>
-               <input type="number" id="hydrant-volume" placeholder="z.B. 50" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-blue-500 outline-none transition" />
-             </label>
-           </div>
-
-            <!-- DIAMETER (Optional) -->
-           <label class="block">
-             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Durchmesser (mm)</span>
-             <input type="number" id="hydrant-diameter" placeholder="z.B. 80, 100" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 outline-none transition" />
-           </label>
-
-           <!-- REF (Optional) -->
-           <label class="block">
-             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Ref-ID (Schild)</span>
-             <input type="text" id="hydrant-ref" placeholder="Kennzeichnung" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 outline-none transition" />
-           </label>
-
-           <!-- EXTRA FIELDS -->
-           <label class="block">
-             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Betreiber (Operator)</span>
-             <input type="text" id="hydrant-operator" placeholder="z.B. Stadtwerke" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 outline-none transition" />
-           </label>
-           
-           <label class="block">
-             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Farbe (Colour)</span>
-             <input type="text" id="hydrant-colour" placeholder="z.B. red, yellow" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 outline-none transition" />
-           </label>
-           
-           <label class="block">
-             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Notiz</span>
-             <textarea id="hydrant-note" rows="2" placeholder="Besonderheiten..." class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 outline-none transition"></textarea>
-           </label>
+      <!-- Scrollable Form Content -->
+      <div class="flex-grow overflow-y-auto pt-12 px-6 pb-24 space-y-6">
+         
+         <!-- Type Selection (Grid) -->
+         <div class="space-y-4">
+            <h3 class="text-sm font-bold uppercase tracking-widest text-gray-500">Typ</h3>
+            <div id="type-grid" class="grid grid-cols-4 gap-3">
+               <!-- JS Populated -->
+            </div>
+            <input type="hidden" id="hydrant-type" value="pillar">
          </div>
+
+         <!-- Position Selection -->
+         <div class="space-y-4">
+             <h3 class="text-sm font-bold uppercase tracking-widest text-gray-500">Lage</h3>
+             <div class="flex gap-4">
+                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-100 text-gray-600 font-bold transition text-sm" data-value="sidewalk">
+                   Gehweg
+                </button>
+                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-100 text-gray-600 font-bold transition text-sm" data-value="street">
+                   Straße
+                </button>
+                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-100 text-gray-600 font-bold transition text-sm" data-value="green">
+                   Grünfläche
+                </button>
+             </div>
+             <input type="hidden" id="hydrant-position" value="sidewalk">
+         </div>
+
+         <!-- Details (Diameter / Volume) -->
+         <div class="space-y-4">
+             <h3 class="text-sm font-bold uppercase tracking-widest text-gray-500">Details</h3>
+             
+             <!-- Diameter (hidden for cistern) -->
+             <div id="diameter-container">
+                 <label class="block text-xs text-gray-500 mb-1">Durchmesser (mm)</label>
+                 <select id="hydrant-diameter" class="w-full bg-gray-100 border-none rounded-xl p-3 text-gray-900 font-bold focus:ring-2 focus:ring-red-500">
+                    <option value="80">80 mm (Standard)</option>
+                    <option value="100">100 mm</option>
+                    <option value="150">150 mm</option>
+                    <option value="50">50 mm (Klein)</option>
+                 </select>
+             </div>
+
+             <!-- NEW: Volume (hidden by default, shown for Cistern) -->
+             <div id="volume-container" class="hidden">
+                 <label class="block text-xs text-gray-500 mb-1">Fassungsvermögen (m³ / Liter)</label>
+                 <input type="text" id="hydrant-volume" placeholder="z.B. 100m3" class="w-full bg-gray-100 border-none rounded-xl p-3 text-gray-900 font-bold focus:ring-2 focus:ring-red-500">
+             </div>
+         </div>
+
+         <!-- Extra Fields (Collapsible) -->
+         <details class="group bg-gray-50 rounded-xl p-4">
+            <summary class="list-none flex justify-between items-center font-bold cursor-pointer text-gray-600">
+               <span>Zusätzliche Infos</span>
+               <span class="transition group-open:rotate-180">▼</span>
+            </summary>
+            <div class="mt-4 space-y-4 text-sm">
+               <div>
+                  <label class="block text-xs text-gray-500 mb-1">Ref / Nummer</label>
+                  <input type="text" id="hydrant-ref" placeholder="H 123" class="w-full bg-white border border-gray-200 rounded-lg p-2 text-gray-900">
+               </div>
+               <div>
+                  <label class="block text-xs text-gray-500 mb-1">Betreiber</label>
+                  <input type="text" id="hydrant-operator" placeholder="Gemeinde..." class="w-full bg-white border border-gray-200 rounded-lg p-2 text-gray-900">
+               </div>
+               <div>
+                  <label class="block text-xs text-gray-500 mb-1">Farbe</label>
+                  <input type="text" id="hydrant-colour" placeholder="Rot" class="w-full bg-white border border-gray-200 rounded-lg p-2 text-gray-900">
+               </div>
+               <div>
+                  <label class="block text-xs text-gray-500 mb-1">Notiz</label>
+                  <textarea id="hydrant-note" placeholder="..." class="w-full bg-white border border-gray-200 rounded-lg p-2 text-gray-900 h-20"></textarea>
+               </div>
+            </div>
+         </details>
       </div>
 
-      <!-- Actions -->
-      <div class="p-4 mt-auto">
-        <button id="submit-img-btn" class="w-full py-4 bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:grayscale rounded-xl font-bold text-lg shadow-lg shadow-red-900/20 active:scale-95 transition-all flex justify-center items-center gap-2">
-           <span>Hochladen</span>
-           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-        </button>
+      <!-- Submit Footer -->
+      <div class="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-lg border-t border-gray-200 z-50 max-w-sm mx-auto">
+         <button id="submit-img-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-bold text-lg shadow-xl shadow-green-900/20 active:scale-95 transition-all flex items-center justify-center gap-2">
+            <span>SPEICHERN</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+         </button>
       </div>
     </div>
   `;
 }
 
-function renderOptionBtn(group, value, icon, label) {
-  return `
-    <button type="button" data-group="${group}" data-value="${value}" class="option-btn flex flex-col items-center justify-center p-3 rounded-xl bg-gray-800 border border-gray-700 hover:bg-gray-700 active:scale-95 transition-all">
-       <span class="text-2xl mb-1">${icon}</span>
-       <span class="text-[10px] font-bold uppercase tracking-wide text-gray-400">${label}</span>
-    </button>
-    `;
-}
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
-export function initConfirmView(element, imageBlob, locationData, onRetake, onSubmit) {
-  // Setup Image
+export function initConfirmView(element, imageBlob, location, onRetake, onSubmit) {
   const img = element.querySelector('#preview-img');
   img.src = URL.createObjectURL(imageBlob);
 
-  // Setup Map
-  const mapContainer = element.querySelector('#map');
-  const map = L.map(mapContainer).setView([locationData.lat, locationData.lng], 19);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OSM Contributors'
-  }).addTo(map);
-
-  const marker = L.marker([locationData.lat, locationData.lng], { draggable: true }).addTo(map);
-
-  // Update loc on drag
-  marker.on('dragend', function (event) {
-    const position = marker.getLatLng();
-    marker.setLatLng(position, { draggable: true }).bindPopup(position).update();
-    locationData.lat = position.lat;
-    locationData.lng = position.lng;
-    document.querySelector('#geo-status').innerText = `Manuell verschoben`;
-  });
-
-  document.querySelector('#geo-status').innerText = `Genauigkeit: ${Math.round(locationData.accuracy)}m`;
-
-  // UI References
+  const retakeBtn = element.querySelector('#retake-btn');
   const submitBtn = element.querySelector('#submit-img-btn');
   const typeInput = element.querySelector('#hydrant-type');
   const posInput = element.querySelector('#hydrant-position');
+
   const volumeContainer = element.querySelector('#volume-container');
   const volumeInput = element.querySelector('#hydrant-volume');
+  const diameterContainer = element.querySelector('#diameter-container');
   const diameterInput = element.querySelector('#hydrant-diameter');
+
   const refInput = element.querySelector('#hydrant-ref');
   const operatorInput = element.querySelector('#hydrant-operator');
   const colourInput = element.querySelector('#hydrant-colour');
   const noteInput = element.querySelector('#hydrant-note');
 
 
-  // Logic: Handle Grid Selection
+  // GRID OPTIONS (Updated with Light Mode Colors if needed, but SVGs are generic)
+  const options = [
+    { id: 'pillar', label: 'Überflur', icon: '<svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v20m-4-6h8m-8-8h8m-4-4h.01"></path></svg>' },
+    { id: 'underground', label: 'Unterflur', icon: '<svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m-4-4h8"></path></svg>' },
+    { id: 'wall', label: 'Wand', icon: '<svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4zM12 12h.01"></path></svg>' },
+    { id: 'cistern', label: 'Zisterne', icon: '<svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12a8 8 0 11-16 0 8 8 0 0116 0z M12 16v-4m0-4h.01"></path></svg>' },
+    { id: 'dry_hydrant', label: 'Trocken', icon: '<svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>' }
+  ];
+
+  const grid = element.querySelector('#type-grid');
+  grid.innerHTML = options.map(opt => `
+     <button type="button" class="option-btn p-3 rounded-xl border-2 border-transparent bg-gray-100 text-gray-500 hover:bg-gray-200 transition flex flex-col items-center gap-2" data-value="${opt.id}">
+        ${opt.icon}
+        <span class="text-xs font-bold">${opt.label}</span>
+     </button>
+  `).join('');
+
+  // Grid Selection Logic
   const optionBtns = element.querySelectorAll('.option-btn');
-  optionBtns.forEach(btn => {
-    btn.onclick = () => {
-      const group = btn.dataset.group;
-      const value = btn.dataset.value;
+  const updateGrid = (val) => {
+    typeInput.value = val;
+    optionBtns.forEach(btn => {
+      if (btn.dataset.value === val) {
+        btn.classList.add('border-red-500', 'bg-red-50', 'text-red-600');
+        btn.classList.remove('border-transparent', 'bg-gray-100', 'text-gray-500');
+      } else {
+        btn.classList.remove('border-red-500', 'bg-red-50', 'text-red-600');
+        btn.classList.add('border-transparent', 'bg-gray-100', 'text-gray-500');
+      }
+    });
 
-      // Update hidden input
-      if (group === 'type') typeInput.value = value;
-      if (group === 'pos') posInput.value = value;
-
-      // Update Visuals (Radio behavior)
-      element.querySelectorAll(`.option-btn[data-group="${group}"]`).forEach(b => {
-        b.classList.remove('bg-red-600', 'border-red-500', 'ring-2', 'ring-red-500/50');
-        b.classList.add('bg-gray-800', 'border-gray-700');
-        b.querySelector('span:last-child').classList.add('text-gray-400');
-        b.querySelector('span:last-child').classList.remove('text-white');
-      });
-
-      btn.classList.remove('bg-gray-800', 'border-gray-700');
-      btn.classList.add('bg-red-600', 'border-red-500', 'ring-2', 'ring-red-500/50');
-      btn.querySelector('span:last-child').classList.remove('text-gray-400');
-      btn.querySelector('span:last-child').classList.add('text-white');
-
-      validate();
-    };
-  });
-
-  const validate = () => {
-    const type = typeInput.value;
-    const pos = posInput.value;
-    let valid = type && pos;
-
-    // Logic: Toggle Volume Field
-    if (type === 'cistern') {
+    // Toggle Fields based on Type
+    if (val === 'cistern') {
       volumeContainer.classList.remove('hidden');
-      if (!volumeInput.value) valid = false; // Require volume for cisterns? User said "dort wird es Volumen mit anzugeben sein" (There volume WILL have to be specified). Try to enforce it.
+      diameterContainer.classList.add('hidden');
     } else {
       volumeContainer.classList.add('hidden');
-    }
-
-    if (valid) {
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Hochladen";
-    } else {
-      submitBtn.disabled = true;
-      submitBtn.innerText = "Bitte Felder ausfüllen";
+      diameterContainer.classList.remove('hidden');
     }
   };
 
-  volumeInput.oninput = validate;
+  element.querySelectorAll('.option-btn').forEach(btn => {
+    btn.onclick = () => updateGrid(btn.dataset.value);
+  });
+  // Init default
+  updateGrid('pillar');
 
-  // Initial validate
-  validate();
+  // Position Buttons
+  const posBtns = element.querySelectorAll('.pos-option-btn');
+  const updatePos = (val) => {
+    posInput.value = val;
+    posBtns.forEach(btn => {
+      if (btn.dataset.value === val) {
+        btn.classList.add('border-blue-500', 'bg-blue-50', 'text-blue-600');
+        btn.classList.remove('border-transparent', 'bg-gray-100', 'text-gray-600');
+      } else {
+        btn.classList.remove('border-blue-500', 'bg-blue-50', 'text-blue-600');
+        btn.classList.add('border-transparent', 'bg-gray-100', 'text-gray-600');
+      }
+    });
+  };
+  posBtns.forEach(btn => {
+    btn.onclick = () => updatePos(btn.dataset.value);
+  });
+  updatePos('sidewalk');
 
-  // Retake
-  element.querySelector('#retake-btn').onclick = onRetake;
+
+  // Mini Map
+  const mapContainer = element.querySelector('#mini-map');
+  const center = [location.lat, location.lng];
+  const map = L.map(mapContainer, {
+    zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false
+  }).setView(center, 18);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  L.marker(center).addTo(map);
+
+  retakeBtn.onclick = onRetake;
 
   // Submit
   submitBtn.onclick = () => {
@@ -231,28 +218,39 @@ export function initConfirmView(element, imageBlob, locationData, onRetake, onSu
     if (selectedType === 'cistern') {
       tags['emergency'] = 'water_tank';
       if (volumeInput.value) tags['water_tank:volume'] = volumeInput.value;
-      // Usually cisterns don't have fire_hydrant:type, but we can keep position as generic or fire_hydrant:position
       tags['fire_hydrant:position'] = selectedPos;
     } else if (selectedType === 'dry_hydrant') {
       tags['emergency'] = 'fire_hydrant'; // Or emergency=suction_point
       tags['fire_hydrant:type'] = 'dry_hydrant';
-      tags['fire_hydrant:position'] = selectedPos; // Dry hydrants can also have a position
+      tags['fire_hydrant:position'] = selectedPos;
     }
     else {
       tags['emergency'] = 'fire_hydrant';
-      if (operator) tags['operator'] = operator;
-      if (colour) tags['colour'] = colour;
-      if (note) tags['note'] = note;
+      tags['fire_hydrant:type'] = selectedType;
+      tags['fire_hydrant:position'] = selectedPos;
+    }
 
-      onSubmit({
-        lat: locationData.lat,
-        lng: locationData.lng,
-        tags: tags
-      });
+    const diameter = diameterInput.value;
+    if (diameter) tags['fire_hydrant:diameter'] = diameter;
+
+    const ref = refInput.value;
+    if (ref) tags['ref'] = ref;
+
+    const operator = operatorInput.value;
+    if (operator) tags['operator'] = operator;
+
+    const colour = colourInput.value;
+    if (colour) tags['colour'] = colour;
+
+    const note = noteInput.value;
+    if (note) tags['note'] = note;
+
+    // Submit payload
+    const data = {
+      ...location,
+      tags: tags
     };
 
-    // Force Map Resize after render
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 200);
-  }
+    onSubmit(data);
+  };
+}
