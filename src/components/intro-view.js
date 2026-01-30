@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import { getLastKnownPosition } from '../services/geo.js';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -12,29 +13,25 @@ L.Icon.Default.mergeOptions({
    shadowUrl: markerShadow,
 });
 
-import { getLastKnownPosition } from '../services/geo.js';
-
 export function renderIntroView() {
    return `
-export function renderIntroView() {
-   return `
-      < div class="h-full w-full bg-black text-white flex flex-col relative overflow-hidden" >
+    <div class="h-full w-full bg-black text-white flex flex-col relative overflow-hidden">
       
-      < !--Top 30 % Map-- >
+      <!-- Top 30% Map -->
       <div class="w-full h-[30%] shrink-0 relative z-0">
           <div id="intro-map" class="w-full h-full"></div>
           <!-- Gradient Overlay -->
           <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black to-transparent pointer-events-none"></div>
       </div>
 
-      <!--Top Bar(Settings)-- >
+      <!-- Top Bar (Settings) -->
       <div class="absolute top-0 right-0 p-4 z-20">
          <button id="intro-settings-btn" class="p-3 h-12 w-12 flex items-center justify-center bg-black/30 hover:bg-black/50 backdrop-blur-md rounded-full text-white transition border border-white/10">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
          </button>
       </div>
 
-      <!--Content(Bottom 70 %) -->
+      <!-- Content (Bottom 70%) -->
       <div class="flex-grow flex flex-col items-center z-10 w-full max-w-sm mx-auto px-6 overflow-y-auto pb-4">
          
          <!-- Hero Title (Immediately below map with some spacing) -->
@@ -62,14 +59,14 @@ export function renderIntroView() {
          </div>
       </div>
 
-      <!--Footer Action-- >
-      <div class="h-20 shrink-0 z-10 w-full max-w-sm mx-auto flex flex-col justify-end">
+      <!-- Footer Action -->
+      <div class="h-20 shrink-0 z-10 w-full max-w-sm mx-auto flex flex-col justify-end px-6 pb-6">
          <button id="start-btn" class="w-full py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold text-lg shadow-xl shadow-red-900/30 active:scale-95 transition-all flex items-center justify-center gap-2">
             STARTEN 🚀
          </button>
       </div>
-    </div >
-      `;
+    </div>
+   `;
 }
 
 export function initIntroView(element, onStart, onSettings) {
@@ -109,15 +106,15 @@ export function initIntroView(element, onStart, onSettings) {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
          opacity: 0.8
       }).addTo(map);
-       
+
       if (lastPos) {
          marker = L.marker(initialCenter).addTo(map);
       }
-       
+
       // Force a resize invalidation shortly after render to ensure map fills container
       setTimeout(() => {
          map.invalidateSize();
-         if(lastPos) map.setView([lastPos.lat, lastPos.lng], 18);
+         if (lastPos) map.setView([lastPos.lat, lastPos.lng], 18);
       }, 100);
    }
 
