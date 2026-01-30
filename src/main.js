@@ -49,9 +49,9 @@ async function showCamera() {
 
       // Loading State UI
       app.innerHTML += `<div class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 text-white animate-fade-in">
-         <div class="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-         <span class="font-bold">Ermittle Position...</span>
-      </div>`;
+       <div class="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+       <span class="font-bold">Ermittle Position...</span>
+    </div>`;
 
       let loc = null;
       try {
@@ -71,35 +71,33 @@ async function showCamera() {
         }
       }
 
-      // Calculate Offset (3m in direction of compass)
-      // If heading is missing in Geolocation (often happens), try our visual compass fallback
-      const heading = loc.heading || getCurrentHeading();
+      // Now we have a loc (either fresh or fallback)
+      try {
+        // Calculate Offset (3m in direction of compass)
+        const heading = loc.coords.heading || getCurrentHeading();
+        const finalLoc = calculateOffsetPosition(loc.coords.latitude, loc.coords.longitude, 3, heading);
 
-      const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
-      console.log("Offset Calculation:", finalLoc);
+        state.location = {
+          coords: loc.coords,
+          lat: finalLoc.lat,
+          lng: finalLoc.lng,
+          heading: heading,
+          accuracy: loc.coords.accuracy
+        };
 
-      state.location = {
-        ...loc,
-        lat: finalLoc.lat,
-        lng: finalLoc.lng,
-        heading: heading, // Pass heading for potential review
-        _debug: finalLoc
-      };
+        showConfirm();
+      } catch (err) {
+        console.error("Calculation Error", err);
+        state.location = { lat: 48.137, lng: 11.576, accuracy: 999 };
+        showConfirm();
+      }
+    });
 
-      showConfirm();
-    } catch (e) {
-      console.warn("Geo fail:", e);
-      // Fallback/Mock
-      state.location = { lat: 48.137, lng: 11.576, accuracy: 50 };
-      showConfirm();
-    }
-});
-
-// Settings Button
-const settingsBtn = document.getElementById('settings-btn');
-if (settingsBtn) {
-  settingsBtn.onclick = () => showSettings();
-}
+  // Settings Button
+  const settingsBtn = document.getElementById('settings-btn');
+  if (settingsBtn) {
+    settingsBtn.onclick = () => showSettings();
+  }
 }
 
 function showSettings() {
