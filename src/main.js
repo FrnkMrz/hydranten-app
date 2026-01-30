@@ -31,50 +31,52 @@ async function showCamera() {
   app.innerHTML = renderCameraView();
 
   // Initialize Camera Logic
-  await initCamera(app, async (blob) => {
-    // Mock capture if blob is null (from fallback button)
-    if (!blob) {
-      const canvas = document.createElement('canvas');
-      canvas.width = 640; canvas.height = 480;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ef4444'; // Red for hydrant
-      ctx.fillRect(0, 0, 640, 480);
-      blob = await new Promise(r => canvas.toBlob(r));
-    }
+  await initCamera(app,
+    () => showIntro(), // onBack
+    async (blob) => {  // onCapture
+      // Mock capture if blob is null (from fallback button)
+      if (!blob) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 640; canvas.height = 480;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ef4444'; // Red for hydrant
+        ctx.fillRect(0, 0, 640, 480);
+        blob = await new Promise(r => canvas.toBlob(r));
+      }
 
-    state.capturedBlob = blob;
+      state.capturedBlob = blob;
 
-    // Loading State UI
-    app.innerHTML += `<div class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 text-white animate-fade-in">
+      // Loading State UI
+      app.innerHTML += `<div class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 text-white animate-fade-in">
          <div class="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mb-4"></div>
          <span class="font-bold">Ermittle Position...</span>
       </div>`;
 
-    try {
-      const loc = await getPosition();
+      try {
+        const loc = await getPosition();
 
-      // Calculate Offset (3m in direction of compass)
-      // If heading is missing in Geolocation (often happens), try our visual compass fallback
-      const heading = loc.heading || getCurrentHeading();
+        // Calculate Offset (3m in direction of compass)
+        // If heading is missing in Geolocation (often happens), try our visual compass fallback
+        const heading = loc.heading || getCurrentHeading();
 
-      const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
-      console.log("Offset Calculation:", finalLoc);
+        const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
+        console.log("Offset Calculation:", finalLoc);
 
-      state.location = {
-        ...loc,
-        lat: finalLoc.lat,
-        lng: finalLoc.lng,
-        _debug: finalLoc // valid JSON
-      };
+        state.location = {
+          ...loc,
+          lat: finalLoc.lat,
+          lng: finalLoc.lng,
+          _debug: finalLoc // valid JSON
+        };
 
-      showConfirm();
-    } catch (e) {
-      console.warn("Geo fail:", e);
-      // Fallback/Mock
-      state.location = { lat: 48.137, lng: 11.576, accuracy: 50 };
-      showConfirm();
-    }
-  });
+        showConfirm();
+      } catch (e) {
+        console.warn("Geo fail:", e);
+        // Fallback/Mock
+        state.location = { lat: 48.137, lng: 11.576, accuracy: 50 };
+        showConfirm();
+      }
+    });
 
   // Settings Button
   const settingsBtn = document.getElementById('settings-btn');

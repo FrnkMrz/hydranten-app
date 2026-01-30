@@ -4,13 +4,17 @@ export function renderCameraView() {
       <!-- Video Feed -->
       <video id="camera-feed" autoplay playsinline muted class="w-full h-full object-cover transform scale-100"></video>
       
-      <!-- Top Bar -->
-      <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-start bg-gradient-to-b from-black/60 to-transparent z-10">
-         <h1 class="text-white font-bold text-lg drop-shadow-md cursor-pointer select-none" title="Doppelklick zum Testen">Hydranten Jäger</h1>
-         <button id="settings-btn" class="p-2 bg-white/10 backdrop-blur-md rounded-full text-white active:bg-white/20 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      <!-- Top Bar: Back & GPS Status -->
+      <div class="absolute top-0 w-full p-4 z-50 flex justify-between items-start pointer-events-none">
+         <button id="back-to-intro-btn" class="pointer-events-auto bg-black/40 backdrop-blur-md p-3 rounded-full text-white border border-white/10 active:scale-95 transition-transform">
+             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
          </button>
+         <div class="bg-black/40 backdrop-blur text-xs px-3 py-1 rounded-full text-white border border-white/10 flex flex-col items-end">
+            <span id="gps-status" class="font-mono text-green-400">GPS: --</span>
+            <span id="compass-status" class="font-mono text-yellow-400">KOMPASS: --</span>
+         </div>
       </div>
+
       <!-- Debug Helper -->
       <button id="debug-btn" type="button" class="absolute top-24 right-4 bg-red-600 hover:bg-red-700 shadow-lg text-xs px-3 py-2 rounded-full font-bold text-white z-50 cursor-pointer border border-white/20 transition-transform active:scale-95">🕵️ Simuliere Foto</button>
 
@@ -42,100 +46,77 @@ export function renderCameraView() {
   `;
 }
 
-export async function initCamera(element, onCapture) {
-  const video = element.querySelector('#camera-feed');
-  const btn = element.querySelector('#capture-btn');
-  const canvas = element.querySelector('#capture-canvas');
-
-  // Debug Helper: Double click title to simulate
-  element.querySelector('h1').ondblclick = () => onCapture(null);
-
-  // Debug Helper (Desktop)
-  const debugBtn = element.querySelector('#debug-btn');
-  if (debugBtn) debugBtn.onclick = (e) => { e.stopPropagation(); onCapture(null); };
-
-  // Compass UI Update Loop
-  const compassEl = element.querySelector('#compass-heading');
-  const updateCompassUI = () => {
-    if (!compassEl) return;
-    // Need to import getCurrentHeading dynamically or pass it? 
-    // For simplicity, we listen to event here too or assume main.js initializes it.
-    // Better: We add internal listener here for UI feedback.
+let h = 0;
+if (e.webkitCompassHeading) h = e.webkitCompassHeading;
+else if (e.alpha) h = 360 - e.alpha;
+if (compassEl) compassEl.innerText = Math.round(h);
   };
 
-  // Independent listener for UI feedback
-  const boundListener = (e) => {
-    let h = 0;
-    if (e.webkitCompassHeading) h = e.webkitCompassHeading;
-    else if (e.alpha) h = 360 - e.alpha;
-    if (compassEl) compassEl.innerText = Math.round(h);
-  };
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', boundListener);
+}
 
-  if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation', boundListener);
-  }
-
-  // KEYBOARD TRIGGER (Spacebar)
-  const keyHandler = (e) => {
-    if (e.code === 'Space') {
-      e.preventDefault();
-      // Check if we are still in camera mode
-      if (!element.querySelector('#camera-feed')) {
-        document.removeEventListener('keydown', keyHandler);
-        return;
-      }
-      onCapture(null); // Force capture
+// KEYBOARD TRIGGER (Spacebar)
+const keyHandler = (e) => {
+  if (e.code === 'Space') {
+    e.preventDefault();
+    // Check if we are still in camera mode
+    if (!element.querySelector('#camera-feed')) {
+      document.removeEventListener('keydown', keyHandler);
+      return;
     }
-  };
-  document.addEventListener('keydown', keyHandler);
-
-  // Clean up listener when element removed (simplified for prototype: relying on SPA replacement garbage collection usually ok, but robust is better)
-  // TODO: Add proper cleanup in future refactor
-
-  let stream = null;
-
-  const setupCapture = () => {
-    btn.onclick = () => {
-      if (!stream || !stream.active) {
-        // Fallback if button clicked but no stream
-        console.log("No stream, triggering mock capture");
-        onCapture(null);
-        return;
-      }
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-
-      canvas.toBlob((blob) => {
-        onCapture(blob);
-      }, 'image/jpeg', 0.85);
-    };
-  };
-
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment' },
-      audio: false
-    });
-    video.srcObject = stream;
-    video.play();
-    setupCapture();
-  } catch (err) {
-    console.warn("Camera init failed:", err);
-    // User fallback UI
-    const errorEl = element.querySelector('#camera-error');
-    if (errorEl) {
-      errorEl.classList.remove('hidden');
-      element.querySelector('#camera-error-msg').innerText = err.message || 'Kein Zugriff';
-    }
-    // Ensure capture handler still works for simulation
-    btn.onclick = () => onCapture(null);
-    // Ensure capture button triggers mock in error state too
-    btn.onclick = () => onCapture(null);
+    onCapture(null); // Force capture
   }
+};
+document.addEventListener('keydown', keyHandler);
+
+// Clean up listener when element removed (simplified for prototype: relying on SPA replacement garbage collection usually ok, but robust is better)
+// TODO: Add proper cleanup in future refactor
+
+let stream = null;
+
+const setupCapture = () => {
+  btn.onclick = () => {
+    if (!stream || !stream.active) {
+      // Fallback if button clicked but no stream
+      console.log("No stream, triggering mock capture");
+      onCapture(null);
+      return;
+    }
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+
+    canvas.toBlob((blob) => {
+      onCapture(blob);
+    }, 'image/jpeg', 0.85);
+  };
+};
+
+try {
+  stream = await navigator.mediaDevices.getUserMedia({
+    video: { facingMode: 'environment' },
+    audio: false
+  });
+  video.srcObject = stream;
+  video.play();
+  setupCapture();
+} catch (err) {
+  console.warn("Camera init failed:", err);
+  // User fallback UI
+  const errorEl = element.querySelector('#camera-error');
+  if (errorEl) {
+    errorEl.classList.remove('hidden');
+    element.querySelector('#camera-error-msg').innerText = err.message || 'Kein Zugriff';
+  }
+  // Ensure capture handler still works for simulation
+  btn.onclick = () => onCapture(null);
+  // Ensure capture button triggers mock in error state too
+  btn.onclick = () => onCapture(null);
+}
 }

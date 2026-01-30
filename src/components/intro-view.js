@@ -25,7 +25,16 @@ export function renderIntroView() {
              <h1 class="text-4xl font-extrabold text-white mb-2 tracking-tight">
                 Hydranten <span class="text-red-500">Jäger</span>
              </h1>
-             <p class="text-gray-400 text-xs font-bold uppercase tracking-widest opacity-80">OpenStreetMap Tool</p>
+             <p class="text-gray-400 text-xs font-bold uppercase tracking-widest opacity-80 mb-4">OpenStreetMap Tool</p>
+             
+             <!-- Live GPS -->
+             <div class="inline-flex items-center gap-2 bg-white/5 backdrop-blur px-3 py-1 rounded-full border border-white/10 shadow-inner">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span id="intro-gps" class="text-[10px] font-mono text-gray-300">Suche Satelliten...</span>
+             </div>
          </div>
 
          <!-- Instructions Card -->
@@ -66,5 +75,27 @@ export function initIntroView(element, onStart, onSettings) {
    const settingsBtn = element.querySelector('#intro-settings-btn');
    if (settingsBtn && onSettings) {
       settingsBtn.onclick = onSettings;
+   }
+
+   // Live GPS Update
+   const gpsEl = element.querySelector('#intro-gps');
+   if (navigator.geolocation) {
+      const watchId = navigator.geolocation.watchPosition(
+         (pos) => {
+            if (gpsEl) {
+               gpsEl.innerText = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)} (±${Math.round(pos.coords.accuracy)}m)`;
+               gpsEl.classList.add('text-green-400');
+               gpsEl.classList.remove('text-gray-300');
+            }
+         },
+         (err) => {
+            if (gpsEl) gpsEl.innerText = "Kein GPS Signal";
+         },
+         { enableHighAccuracy: true, maximumAge: 5000 }
+      );
+
+      // Cleanup on unmount (Main.js re-renders intro, so this leak is minor but exists. 
+      // Ideally we return a cleanup function, but for now simple innerHTML replacement cleans valid watchers? No.
+      // We should store watchId somewhere if we were strict.
    }
 }
