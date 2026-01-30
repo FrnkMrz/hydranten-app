@@ -44,12 +44,19 @@ export function renderCameraView() {
   `;
 }
 
+import { getLastKnownPosition } from '../services/geo.js';
+
 export async function initCamera(element, onBack, onCapture) {
   const video = element.querySelector('#camera-feed');
   const btn = element.querySelector('#capture-btn');
   const canvas = element.querySelector('#capture-canvas');
   const backBtn = element.querySelector('#back-to-intro-btn');
   const errorBackBtn = element.querySelector('#error-back-btn');
+
+  // Status Elements
+  const gpsStatusEl = element.querySelector('#gps-status');
+  const compassStatusEl = element.querySelector('#compass-status');
+  const compassHeadingEl = element.querySelector('#compass-heading'); // Bottom large display
 
   // Back Navigation
   if (backBtn && onBack) {
@@ -61,20 +68,56 @@ export async function initCamera(element, onBack, onCapture) {
 
   // Debug Helper: Double click title to simulate (if title existed, now removed from top bar)
 
-  // Compass UI Update Loop
-  const compassEl = element.querySelector('#compass-heading');
+  // LIVE UPDATE LOOP (GPS & Compass UI)
+  const updateStatus = () => {
+    // 1. GPS
+    const pos = getLastKnownPosition();
+    if (pos && gpsStatusEl) {
+      gpsStatusEl.innerText = `GPS: ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
+      gpsStatusEl.classList.remove('text-red-500');
+      gpsStatusEl.classList.add('text-green-400');
+    } else if (gpsStatusEl) {
+      gpsStatusEl.innerText = "GPS: Suche...";
+      gpsStatusEl.classList.add('text-red-500');
+    }
+  };
 
-  // Listener for UI feedback
+  const statusInterval = setInterval(updateStatus, 1000);
+  updateStatus(); // Initial call
+
+  // Listener for Compass Feedback
   const boundListener = (e) => {
     let h = 0;
     if (e.webkitCompassHeading) h = e.webkitCompassHeading;
     else if (e.alpha) h = 360 - e.alpha;
-    if (compassEl) compassEl.innerText = Math.round(h);
+
+    h = Math.round(h);
+
+    // Update Bottom Display
+    if (compassHeadingEl) compassHeadingEl.innerText = h;
+
+    // Update Top Pill
+    if (compassStatusEl) {
+      compassStatusEl.innerText = `KOMPASS: ${h}°`;
+    }
   };
 
   if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', boundListener);
   }
+
+  // Cleanup function to stop interval/listeners when view changes
+  // Note: Since we don't have a formal unmount lifecycle here, we rely on the fact 
+  // that navigating away destroys the element. Ideally, we'd clear interval on back.
+  const cleanup = () => {
+    clearInterval(statusInterval);
+    window.removeEventListener('deviceorientation', boundListener);
+  };
+
+  // Hook cleanup into Back buttons
+  const originalOnBack = backBtn.onclick; // Should be null or onBack
+  backBtn.onclick = () => { cleanup(); if (onBack) onBack(); };
+  if (errorBackBtn) errorBackBtn.onclick = () => { cleanup(); if (onBack) onBack(); };
 
   // KEYBOARD TRIGGER (Spacebar)
   const keyHandler = (e) => {
