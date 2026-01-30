@@ -1,5 +1,4 @@
 import * as Geolib from 'geolib';
-import { Log } from './log.js';
 
 // State for Compass
 let currentHeading = null;
