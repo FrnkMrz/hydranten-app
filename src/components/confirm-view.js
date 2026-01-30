@@ -1,110 +1,115 @@
-export function renderConfirmView() {
-  return `
-    <div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in pb-safe">
-      <!-- Image Preview -->
-      <div class="relative w-full h-64 shrink-0 bg-black">
-        <img id="preview-img" class="w-full h-full object-cover opacity-90" />
-        <button id="retake-btn" class="absolute top-4 left-4 bg-black/50 p-2 rounded-full text-white backdrop-blur-sm shadow-md hover:bg-black/70 transition">
-           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+<div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in pb-safe">
+  <!-- Image Preview Header -->
+  <div class="relative w-full h-[40vh] bg-gray-800 shrink-0">
+
+    <!-- MAIN: Map -->
+    <div id="map" class="w-full h-full z-0"></div>
+
+    <!-- OVERLAY: Photo (Thumbnail) -->
+    <div class="absolute bottom-4 right-4 w-24 h-32 rounded-xl border-2 border-white/20 shadow-xl overflow-hidden bg-black z-10 transition hover:scale-105 active:scale-110">
+      <img id="preview-img" class="w-full h-full object-cover" />
+    </div>
+
+    <!-- Back Button -->
+    <div class="absolute top-4 left-4 z-20">
+      <button id="retake-btn" class="bg-black/50 backdrop-blur-md p-2 rounded-full text-white hover:bg-black/70 transition">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+      </button>
+    </div>
+
+    <!-- Status Text (Overlay on Map) -->
+    <div class="absolute top-4 right-4 z-20 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white/90" id="geo-status-pill">
+      Genauigkeit: ...
+    </div>
+  </div>
+
+  <!-- Scrollable Form Content -->
+  <div class="flex-grow overflow-y-auto px-4 pt-6 pb-24 space-y-6">
+
+    <!-- Type Selection (Grid) -->
+    <div class="space-y-4">
+      <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Typ</h3>
+      <div id="type-grid" class="grid grid-cols-4 gap-3">
+        <!-- JS Populated -->
+      </div>
+      <input type="hidden" id="hydrant-type" value="pillar">
+    </div>
+
+    <!-- Position Selection -->
+    <div class="space-y-4">
+      <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Lage</h3>
+      <div class="flex gap-4">
+        <button type="button" class="pos-option-btn flex-1 py-3 px-2 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-xs" data-value="sidewalk">
+          Gehweg
+        </button>
+        <button type="button" class="pos-option-btn flex-1 py-3 px-2 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-xs" data-value="street">
+          Straße
+        </button>
+        <button type="button" class="pos-option-btn flex-1 py-3 px-2 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-xs" data-value="green">
+          Grün
         </button>
       </div>
+      <input type="hidden" id="hydrant-position" value="sidewalk">
+    </div>
 
-      <!-- Map Section -->
-      <div class="p-4 space-y-2">
-         <h2 class="text-sm font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
-            📍 Standort
-         </h2>
-         <div id="map" class="w-full h-48 rounded-xl bg-gray-800 border border-gray-700 relative z-10 shadow-inner overflow-hidden"></div>
-         <p id="geo-status" class="text-xs text-gray-400 text-right">Genauigkeit: ...</p>
+    <!-- Details (Diameter / Volume) -->
+    <div class="space-y-4">
+      <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Details</h3>
+
+      <!-- Diameter (hidden for cistern) -->
+      <div id="diameter-container">
+        <label class="block text-xs text-gray-500 mb-1">Durchmesser (mm)</label>
+        <select id="hydrant-diameter" class="w-full bg-gray-800 border-none rounded-xl p-3 text-white font-bold focus:ring-2 focus:ring-red-500">
+          <option value="80">80 mm (Standard)</option>
+          <option value="100">100 mm</option>
+          <option value="150">150 mm</option>
+          <option value="50">50 mm (Klein)</option>
+        </select>
       </div>
 
-      <!-- Scrollable Form Content -->
-      <div class="flex-grow overflow-y-auto px-4 pb-24 space-y-6">
-         
-         <!-- Type Selection (Grid) -->
-         <div class="space-y-4">
-            <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Typ</h3>
-            <div id="type-grid" class="grid grid-cols-4 gap-3">
-               <!-- JS Populated -->
-            </div>
-            <input type="hidden" id="hydrant-type" value="pillar">
-         </div>
-
-         <!-- Position Selection -->
-         <div class="space-y-4">
-             <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Lage</h3>
-             <div class="flex gap-4">
-                <button type="button" class="pos-option-btn flex-1 py-3 px-2 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-xs" data-value="sidewalk">
-                   Gehweg
-                </button>
-                <button type="button" class="pos-option-btn flex-1 py-3 px-2 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-xs" data-value="street">
-                   Straße
-                </button>
-                <button type="button" class="pos-option-btn flex-1 py-3 px-2 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-xs" data-value="green">
-                   Grün
-                </button>
-             </div>
-             <input type="hidden" id="hydrant-position" value="sidewalk">
-         </div>
-
-         <!-- Details (Diameter / Volume) -->
-         <div class="space-y-4">
-             <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Details</h3>
-             
-             <!-- Diameter (hidden for cistern) -->
-             <div id="diameter-container">
-                 <label class="block text-xs text-gray-500 mb-1">Durchmesser (mm)</label>
-                 <select id="hydrant-diameter" class="w-full bg-gray-800 border-none rounded-xl p-3 text-white font-bold focus:ring-2 focus:ring-red-500">
-                    <option value="80">80 mm (Standard)</option>
-                    <option value="100">100 mm</option>
-                    <option value="150">150 mm</option>
-                    <option value="50">50 mm (Klein)</option>
-                 </select>
-             </div>
-
-             <!-- NEW: Volume (hidden by default, shown for Cistern) -->
-             <div id="volume-container" class="hidden">
-                 <label class="block text-xs text-gray-500 mb-1">Fassungsvermögen (m³ / Liter)</label>
-                 <input type="text" id="hydrant-volume" placeholder="z.B. 100m3" class="w-full bg-gray-800 border-none rounded-xl p-3 text-white font-bold focus:ring-2 focus:ring-red-500">
-             </div>
-         </div>
-
-         <!-- Extra Fields (Collapsible) -->
-         <details class="group bg-gray-800/50 rounded-xl p-4">
-            <summary class="list-none flex justify-between items-center font-bold cursor-pointer text-gray-400">
-               <span>Zusätzliche Infos</span>
-               <span class="transition group-open:rotate-180">▼</span>
-            </summary>
-            <div class="mt-4 space-y-4 text-sm">
-               <div>
-                  <label class="block text-xs text-gray-500 mb-1">Ref / Nummer</label>
-                  <input type="text" id="hydrant-ref" placeholder="H 123" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white">
-               </div>
-               <div>
-                  <label class="block text-xs text-gray-500 mb-1">Betreiber</label>
-                  <input type="text" id="hydrant-operator" placeholder="Gemeinde..." class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white">
-               </div>
-               <div>
-                  <label class="block text-xs text-gray-500 mb-1">Farbe</label>
-                  <input type="text" id="hydrant-colour" placeholder="Rot" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white">
-               </div>
-               <div>
-                  <label class="block text-xs text-gray-500 mb-1">Notiz</label>
-                  <textarea id="hydrant-note" placeholder="..." class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white h-20"></textarea>
-               </div>
-            </div>
-         </details>
-      </div>
-
-      <!-- Submit Footer -->
-      <div class="fixed bottom-0 left-0 right-0 p-4 bg-slate-900/80 backdrop-blur-lg border-t border-gray-800 z-50 max-w-sm mx-auto">
-         <button id="submit-img-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-bold text-lg shadow-xl shadow-green-900/20 active:scale-95 transition-all flex items-center justify-center gap-2">
-            <span>SPEICHERN</span>
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-         </button>
+      <!-- NEW: Volume (hidden by default, shown for Cistern) -->
+      <div id="volume-container" class="hidden">
+        <label class="block text-xs text-gray-500 mb-1">Fassungsvermögen (m³ / Liter)</label>
+        <input type="text" id="hydrant-volume" placeholder="z.B. 100m3" class="w-full bg-gray-800 border-none rounded-xl p-3 text-white font-bold focus:ring-2 focus:ring-red-500">
       </div>
     </div>
-  `;
+
+    <!-- Extra Fields (Collapsible) -->
+    <details class="group bg-gray-800/50 rounded-xl p-4">
+      <summary class="list-none flex justify-between items-center font-bold cursor-pointer text-gray-400">
+        <span>Zusätzliche Infos</span>
+        <span class="transition group-open:rotate-180">▼</span>
+      </summary>
+      <div class="mt-4 space-y-4 text-sm">
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Ref / Nummer</label>
+          <input type="text" id="hydrant-ref" placeholder="H 123" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Betreiber</label>
+          <input type="text" id="hydrant-operator" placeholder="Gemeinde..." class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Farbe</label>
+          <input type="text" id="hydrant-colour" placeholder="Rot" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Notiz</label>
+          <textarea id="hydrant-note" placeholder="..." class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white h-20"></textarea>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Submit Footer -->
+  <div class="fixed bottom-0 left-0 right-0 p-4 bg-slate-900/80 backdrop-blur-lg border-t border-gray-800 z-50 max-w-sm mx-auto">
+    <button id="submit-img-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-bold text-lg shadow-xl shadow-green-900/20 active:scale-95 transition-all flex items-center justify-center gap-2">
+      <span>SPEICHERN</span>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+    </button>
+  </div>
+</div>
+`;
 }
 
 import L from 'leaflet';
@@ -147,10 +152,10 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
   const grid = element.querySelector('#type-grid');
   grid.innerHTML = options.map(opt => `
-     <button type="button" class="option-btn p-3 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 transition flex flex-col items-center gap-2" data-value="${opt.id}">
-        ${opt.icon}
-        <span class="text-xs font-bold">${opt.label}</span>
-     </button>
+  < button type = "button" class="option-btn p-3 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 transition flex flex-col items-center gap-2" data - value="${opt.id}" >
+    ${ opt.icon }
+<span class="text-xs font-bold">${opt.label}</span>
+     </button >
   `).join('');
 
   // Grid Selection Logic
@@ -202,26 +207,28 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
   updatePos('sidewalk');
 
 
-  // Map Setup (Block Element, not Mini)
+  // Map Setup (Hero)
   const mapContainer = element.querySelector('#map');
   const center = [location.lat, location.lng];
-  const map = L.map(mapContainer).setView(center, 18);
+  const map = L.map(mapContainer, { zoomControl: false }).setView(center, 19); // Higher zoom for precision
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OSM Contributors'
+      attribution: ''
   }).addTo(map);
 
-  const marker = L.marker(center, { draggable: true }).addTo(map);
+  const marker = L.marker(center, {draggable: true}).addTo(map);
+
+  const statusPill = document.querySelector('#geo-status-pill');
 
   // Update loc on drag
   marker.on('dragend', function (event) {
-    const position = marker.getLatLng();
-    location.lat = position.lat;
-    location.lng = position.lng;
-    document.querySelector('#geo-status').innerText = `Manuell verschoben`;
+     const position = marker.getLatLng();
+     location.lat = position.lat;
+     location.lng = position.lng;
+     if(statusPill) statusPill.innerText = `📍 Verschoben`;
   });
 
   const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
-  document.querySelector('#geo-status').innerText = `Genauigkeit: ${accuracy}m`;
+  if(statusPill) statusPill.innerText = `Genauigkeit: ${ accuracy } m`;
 
   retakeBtn.onclick = onRetake;
 
