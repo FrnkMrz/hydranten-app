@@ -38,19 +38,7 @@ export function getCurrentHeading() {
 let lastPosition = null;
 let watcherId = null;
 
-lng: pos.coords.longitude,
-    accuracy: pos.coords.accuracy,
-        heading: pos.coords.heading,
-            timestamp: Date.now()
-        };
-    },
-(err) => {
-    console.warn("GPS Tracking Warning:", err);
-},
-{
-    enableHighAccuracy: true,
-    maximumAge: 10000,
-    timeout: 20000
+timeout: 20000
 }
 );
 }
