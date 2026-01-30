@@ -60,29 +60,28 @@ async function showCamera() {
           getPosition(),
           new Promise((_, r) => setTimeout(() => r(new Error('Timeout')), 3000))
         ]);
+        // loc is { lat, lng, accuracy, heading } from geo.js
       } catch (e) {
         console.warn('GPS Fresh failed, using cached:', e);
         const last = getLastKnownPosition();
         if (last) {
-          loc = { coords: { latitude: last.lat, longitude: last.lng, accuracy: 20, heading: null } };
+          loc = { ...last }; // lat, lng, accuracy, heading
         } else {
           // Absolute Fallback (Munich)
-          loc = { coords: { latitude: 48.137, longitude: 11.576, accuracy: 999 } };
+          loc = { lat: 48.137, lng: 11.576, accuracy: 999, heading: 0 };
         }
       }
 
-      // Now we have a loc (either fresh or fallback)
+      // Now we have a loc (flat object)
       try {
-        // Calculate Offset (3m in direction of compass)
-        const heading = loc.coords.heading || getCurrentHeading() || 0;
-        const finalLoc = calculateOffsetPosition(loc.coords.latitude, loc.coords.longitude, 3, heading);
+        const heading = loc.heading || getCurrentHeading() || 0;
+        const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
 
         state.location = {
-          coords: loc.coords,
           lat: finalLoc.lat,
           lng: finalLoc.lng,
-          heading: heading,
-          accuracy: loc.coords.accuracy
+          accuracy: loc.accuracy,
+          heading: heading
         };
 
         showConfirm();
