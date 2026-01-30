@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-import { getLastKnownPosition } from '../services/geo.js';
+import { getLastKnownPosition, updatePosition } from '../services/geo.js';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -123,7 +123,7 @@ export function initIntroView(element, onStart, onSettings) {
       const watchId = navigator.geolocation.watchPosition(
          (pos) => {
             // Feed global cache!
-            import('../services/geo.js').then(geo => geo.updatePosition(pos));
+            updatePosition(pos);
 
             // Update Map stuff
             const lat = pos.coords.latitude;
