@@ -13,7 +13,12 @@ export function renderCameraView() {
       </div>
 
       <!-- Controls -->
-      <div class="absolute bottom-0 left-0 right-0 p-8 pb-12 flex justify-center items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10">
+      <div class="absolute bottom-0 left-0 right-0 p-8 pb-12 flex flex-col justify-center items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10">
+        <!-- Compass Heading Display -->
+        <div class="mb-6 px-4 py-2 bg-black/40 backdrop-blur rounded-full text-white text-sm font-mono border border-white/20">
+           🧭 <span id="compass-heading">0</span>°
+        </div>
+
         <button id="capture-btn" class="w-20 h-20 rounded-full border-4 border-white shadow-2xl flex items-center justify-center active:scale-90 transition-transform duration-100 group">
              <div class="w-16 h-16 bg-red-600 rounded-full group-active:bg-red-700 transition-colors"></div>
         </button>
@@ -39,6 +44,30 @@ export async function initCamera(element, onCapture) {
   debugBtn.className = "absolute top-20 right-4 bg-white/20 backdrop-blur text-xs px-2 py-1 rounded text-white z-50 cursor-pointer";
   debugBtn.onclick = (e) => { e.stopPropagation(); onCapture(null); };
   element.appendChild(debugBtn);
+
+  // Compass UI Update Loop
+  const compassEl = element.querySelector('#compass-heading');
+  const updateCompassUI = () => {
+    if (!compassEl) return;
+    // Need to import getCurrentHeading dynamically or pass it? 
+    // For simplicity, we listen to event here too or assume main.js initializes it.
+    // Better: We add internal listener here for UI feedback.
+  };
+
+  // Independent listener for UI feedback
+  const boundListener = (e) => {
+    let h = 0;
+    if (e.webkitCompassHeading) h = e.webkitCompassHeading;
+    else if (e.alpha) h = 360 - e.alpha;
+    if (compassEl) compassEl.innerText = Math.round(h);
+  };
+
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', boundListener);
+  }
+
+  // Clean up listener when element removed (simplified for prototype: relying on SPA replacement garbage collection usually ok, but robust is better)
+  // TODO: Add proper cleanup in future refactor
 
   let stream = null;
 

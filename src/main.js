@@ -3,7 +3,10 @@ import { renderCameraView, initCamera } from './components/camera-view.js';
 import { renderConfirmView, initConfirmView } from './components/confirm-view.js';
 import { renderSettingsView, initSettingsView } from './components/settings-view.js';
 import { renderIntroView, initIntroView } from './components/intro-view.js';
-import { getPosition } from './services/geo.js';
+import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition } from './services/geo.js';
+
+// Init Compass early
+initCompass();
 
 const app = document.querySelector('#app');
 
@@ -46,7 +49,21 @@ async function showCamera() {
 
     try {
       const loc = await getPosition();
-      state.location = loc;
+
+      // Calculate Offset (3m in direction of compass)
+      // If heading is missing in Geolocation (often happens), try our visual compass fallback
+      const heading = loc.heading || getCurrentHeading();
+
+      const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
+      console.log("Offset Calculation:", finalLoc);
+
+      state.location = {
+        ...loc,
+        lat: finalLoc.lat,
+        lng: finalLoc.lng,
+        _debug: finalLoc // valid JSON
+      };
+
       showConfirm();
     } catch (e) {
       console.warn("Geo fail:", e);

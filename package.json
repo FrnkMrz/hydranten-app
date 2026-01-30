@@ -16,6 +16,7 @@
     "vite": "^7.2.4"
   },
   "dependencies": {
+    "geolib": "^3.3.4",
     "leaflet": "^1.9.4"
   }
 }
