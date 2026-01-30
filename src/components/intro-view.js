@@ -25,6 +25,13 @@ export function renderIntroView() {
          <p class="text-gray-400 text-sm font-medium tracking-wide uppercase opacity-80 text-center">OpenStreetMap Erfassung</p>
       </div>
 
+      <!-- Instructions (Restored) -->
+      <div class="mb-8 space-y-2 text-center text-sm text-gray-300 bg-white/5 p-4 rounded-xl border border-white/10 backdrop-blur-sm mx-6">
+         <p>📏 <span class="text-white font-bold">3 Meter</span> Abstand halten</p>
+         <p>📸 <span class="text-white font-bold">Foto</span> machen</p>
+         <p>✏️ <span class="text-white font-bold">Daten</span> ergänzen & hochladen</p>
+      </div>
+
       <!-- Action Area -->
       <div class="w-full max-w-xs z-10 mb-8 space-y-6">
          <button id="start-btn" class="w-full py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold text-lg shadow-lg shadow-red-900/40 active:scale-95 transition-all flex items-center justify-center gap-2 group">

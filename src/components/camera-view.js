@@ -31,8 +31,8 @@ export function renderCameraView() {
          </p>
       </div>
 
-      <button id="capture-btn" class="w-20 h-20 rounded-full border-4 border-white shadow-2xl flex items-center justify-center active:scale-90 transition-transform duration-100 group z-50">
-           <div class="w-16 h-16 bg-red-600 rounded-full group-active:bg-red-700 transition-colors"></div>
+      <button id="capture-btn" class="w-20 h-20 rounded-full border-4 border-white shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center active:scale-90 transition-transform duration-100 group z-[100] relative bg-black/20 backdrop-blur-sm">
+           <div class="w-16 h-16 bg-red-600 rounded-full group-active:bg-red-700 transition-colors border-2 border-white/20"></div>
       </button>
       </div>
       
