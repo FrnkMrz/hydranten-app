@@ -44,7 +44,7 @@ export function renderCameraView() {
   `;
 }
 
-import { getLastKnownPosition } from '../services/geo.js';
+import { getLastKnownPosition, getPosition } from '../services/geo.js';
 
 export async function initCamera(element, onBack, onCapture) {
   const video = element.querySelector('#camera-feed');
@@ -69,6 +69,7 @@ export async function initCamera(element, onBack, onCapture) {
   // Debug Helper: Double click title to simulate (if title existed, now removed from top bar)
 
   // LIVE UPDATE LOOP (GPS & Compass UI)
+  let retryCount = 0;
   const updateStatus = () => {
     // 1. GPS
     const pos = getLastKnownPosition();
@@ -76,9 +77,17 @@ export async function initCamera(element, onBack, onCapture) {
       gpsStatusEl.innerText = `GPS: ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
       gpsStatusEl.classList.remove('text-red-500');
       gpsStatusEl.classList.add('text-green-400');
+      retryCount = 0;
     } else if (gpsStatusEl) {
       gpsStatusEl.innerText = "GPS: Suche...";
       gpsStatusEl.classList.add('text-red-500');
+
+      // Fallback: If no position for 3s, force a check
+      retryCount++;
+      if (retryCount % 3 === 0) {
+        console.log("Forcing GPS check...");
+        getPosition().catch(e => console.warn("Force check failed", e));
+      }
     }
   };
 
