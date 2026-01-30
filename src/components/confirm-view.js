@@ -16,8 +16,8 @@ L.Icon.Default.mergeOptions({
 export function renderConfirmView() {
   return `
     <div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in pb-safe">
-      <!-- Top: Massive Map (Hero) -->
-      <div class="relative w-full h-[45vh] bg-gray-800 shrink-0">
+      <!-- Top: Map (Compact Hero 30%) -->
+      <div class="relative w-full h-[30vh] bg-gray-800 shrink-0">
         
         <!-- MAIN: Map -->
         <div id="map" class="w-full h-full z-0"></div>
