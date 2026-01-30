@@ -151,3 +151,4 @@ export function initIntroView(element, onStart, onSettings) {
          }
       };
    }
+}
