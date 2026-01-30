@@ -45,34 +45,46 @@ async function showCamera() {
         blob = await new Promise(r => canvas.toBlob(r));
       }
 
-      // Calculate Offset (3m in direction of compass)
-      // If heading is missing in Geolocation (often happens), try our visual compass fallback
-      const heading = loc.heading || getCurrentHeading();
+      state.capturedBlob = blob;
 
-      const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
-      console.log("Offset Calculation:", finalLoc);
+      // Loading State UI
+      app.innerHTML += `<div class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 text-white animate-fade-in">
+         <div class="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+         <span class="font-bold">Ermittle Position...</span>
+      </div>`;
 
-      state.location = {
-        ...loc,
-        lat: finalLoc.lat,
-        lng: finalLoc.lng,
-        _debug: finalLoc // valid JSON
-      };
+      try {
+        const loc = await getPosition();
 
-      showConfirm();
-    } catch (e) {
-      console.warn("Geo fail:", e);
-      // Fallback/Mock
-      state.location = { lat: 48.137, lng: 11.576, accuracy: 50 };
-      showConfirm();
-    }
-});
+        // Calculate Offset (3m in direction of compass)
+        // If heading is missing in Geolocation (often happens), try our visual compass fallback
+        const heading = loc.heading || getCurrentHeading();
 
-// Settings Button
-const settingsBtn = document.getElementById('settings-btn');
-if (settingsBtn) {
-  settingsBtn.onclick = () => showSettings();
-}
+        const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
+        console.log("Offset Calculation:", finalLoc);
+
+        state.location = {
+          ...loc,
+          lat: finalLoc.lat,
+          lng: finalLoc.lng,
+          heading: heading, // Pass heading for potential review
+          _debug: finalLoc
+        };
+
+        showConfirm();
+      } catch (e) {
+        console.warn("Geo fail:", e);
+        // Fallback/Mock
+        state.location = { lat: 48.137, lng: 11.576, accuracy: 50 };
+        showConfirm();
+      }
+    });
+
+  // Settings Button
+  const settingsBtn = document.getElementById('settings-btn');
+  if (settingsBtn) {
+    settingsBtn.onclick = () => showSettings();
+  }
 }
 
 function showSettings() {
@@ -123,7 +135,6 @@ function showConfirm() {
       btn.innerHTML = `<span>Speichere...</span>`;
       btn.disabled = true;
 
-      // Simulate network request duration
       // Simulate network request duration
       setTimeout(() => {
         // Overlay for Success
