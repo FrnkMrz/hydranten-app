@@ -2,16 +2,23 @@ import './style.css'
 import { renderCameraView, initCamera } from './components/camera-view.js';
 import { renderConfirmView, initConfirmView } from './components/confirm-view.js';
 import { renderSettingsView, initSettingsView } from './components/settings-view.js';
+import { renderIntroView, initIntroView } from './components/intro-view.js';
 import { getPosition } from './services/geo.js';
 
 const app = document.querySelector('#app');
 
 // Simple State Management
 const state = {
-  view: 'camera',
+  view: 'intro', // Start with intro
   capturedBlob: null,
   location: null
 };
+
+function showIntro() {
+  state.view = 'intro';
+  app.innerHTML = renderIntroView();
+  initIntroView(app, () => showCamera());
+}
 
 async function showCamera() {
   state.view = 'camera';
@@ -88,4 +95,4 @@ function showConfirm() {
 }
 
 // Init App
-showCamera();
+showIntro();

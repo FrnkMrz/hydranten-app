@@ -1,5 +1,5 @@
 export function renderSettingsView() {
-    return `
+  return `
       <div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in">
         <div class="p-4 flex items-center border-b border-gray-800 bg-black/20 backdrop-blur-md sticky top-0 z-50">
            <button id="back-btn" class="p-2 mr-4 bg-gray-800 rounded-lg active:scale-95 transition">
@@ -21,7 +21,7 @@ export function renderSettingsView() {
              <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700">
                <p class="text-sm text-gray-400 mb-4">
                  Verbinde deinen Account, um Hydranten direkt hochzuladen.
-                 <br><a href="#" class="text-blue-400 underline text-xs">Wie bekomme ich Zugangsdaten?</a>
+                 <br><button id="help-btn" class="text-blue-400 underline text-xs bg-transparent border-none p-0 cursor-pointer">Wie bekomme ich Zugangsdaten?</button>
                </p>
                
                <label class="block mb-3">
@@ -51,44 +51,51 @@ export function renderSettingsView() {
 }
 
 export function initSettingsView(element, onBack) {
-    element.querySelector('#back-btn').onclick = onBack;
+  element.querySelector('#back-btn').onclick = onBack;
 
-    const userInput = element.querySelector('#osm-user');
-    const passInput = element.querySelector('#osm-pass');
-    const status = element.querySelector('#save-status');
-    const btn = element.querySelector('#save-osm');
-
-    // Load existing
-    const stored = JSON.parse(localStorage.getItem('osm_creds') || '{}');
-    if (stored.user) {
-        userInput.value = stored.user;
-        passInput.value = stored.pass || '';
-        btn.innerText = "Aktualisieren";
-        btn.classList.add('bg-gray-700', 'text-gray-300'); // Show as 'connected' state style optionally
-    }
-
-    btn.onclick = () => {
-        const user = userInput.value;
-        const pass = passInput.value;
-
-        if (user && pass) {
-            // Save to local storage
-            localStorage.setItem('osm_creds', JSON.stringify({ user, pass }));
-
-            // Visual Feedback
-            status.innerText = "Gespeichert!";
-            btn.innerText = "Aktualisieren";
-            btn.classList.remove('bg-blue-600');
-            btn.classList.add('bg-green-600');
-
-            setTimeout(() => {
-                status.innerText = "";
-                btn.classList.remove('bg-green-600');
-                btn.classList.add('bg-blue-600');
-            }, 2000);
-        } else {
-            status.innerText = "";
-            alert("Bitte Benutzername und Passwort eingeben.");
-        }
+  const helpBtn = element.querySelector('#help-btn');
+  if (helpBtn) {
+    helpBtn.onclick = () => {
+      alert("1. Gehe auf openstreetmap.org\n2. Erstelle einen Account\n3. Nutze deinen Benutzernamen und Passwort hier in der App.\n(OAuth folgt in Version 2.0)");
     };
+  }
+
+  const userInput = element.querySelector('#osm-user');
+  const passInput = element.querySelector('#osm-pass');
+  const status = element.querySelector('#save-status');
+  const btn = element.querySelector('#save-osm');
+
+  // Load existing
+  const stored = JSON.parse(localStorage.getItem('osm_creds') || '{}');
+  if (stored.user) {
+    userInput.value = stored.user;
+    passInput.value = stored.pass || '';
+    btn.innerText = "Aktualisieren";
+    btn.classList.add('bg-gray-700', 'text-gray-300'); // Show as 'connected' state style optionally
+  }
+
+  btn.onclick = () => {
+    const user = userInput.value;
+    const pass = passInput.value;
+
+    if (user && pass) {
+      // Save to local storage
+      localStorage.setItem('osm_creds', JSON.stringify({ user, pass }));
+
+      // Visual Feedback
+      status.innerText = "Gespeichert!";
+      btn.innerText = "Aktualisieren";
+      btn.classList.remove('bg-blue-600');
+      btn.classList.add('bg-green-600');
+
+      setTimeout(() => {
+        status.innerText = "";
+        btn.classList.remove('bg-green-600');
+        btn.classList.add('bg-blue-600');
+      }, 2000);
+    } else {
+      status.innerText = "";
+      alert("Bitte Benutzername und Passwort eingeben.");
+    }
+  };
 }
