@@ -74,7 +74,7 @@ async function showCamera() {
       // Now we have a loc (either fresh or fallback)
       try {
         // Calculate Offset (3m in direction of compass)
-        const heading = loc.coords.heading || getCurrentHeading();
+        const heading = loc.coords.heading || getCurrentHeading() || 0;
         const finalLoc = calculateOffsetPosition(loc.coords.latitude, loc.coords.longitude, 3, heading);
 
         state.location = {
