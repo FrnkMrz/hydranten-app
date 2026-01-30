@@ -11,9 +11,9 @@ Entwickelt mit ❤️ für die Feuerwehr und die Open-Source-Community.
 Dieses Projekt wurde ins Leben gerufen, um die Erfassung von Löschwasserentnahmestellen (Hydranten, Zisternen) zu vereinfachen – direkt vor Ort, mobil und intuitiv.
 
 **Hintergrund:**
-Ich bin aktives Mitglied der **Freiwilligen Feuerwehr Rollhofen**. Die Verfügbarkeit exakter Daten über Hydranten ist im Einsatzfall entscheidend. Dieses Projekt dient mir persönlich als Lernprojekt, um den Umgang mit modernem Code, GitHub und KI-gestützter Entwicklung zu erlernen.
+Ich bin langjähriges aktives Mitglied der **Freiwilligen Feuerwehr Rollhofen**. Die Verfügbarkeit exakter Daten über Hydranten ist im Einsatzfall entscheidend. Dieses Projekt dient mir persönlich als Lernprojekt, um den Umgang mit modernem Code, GitHub und KI-gestützter Entwicklung zu erlernen.
 
-Es ist inspiriert vom Gedanken der **OpenFireMap 2.0** – offene Daten für die Sicherheit aller.
+Es ist inspiriert vom Gedanken der **OpenFireMap** welche ich 2010 in getriggert habe und akutell auf eine V2 entwickle – offene Daten für die Sicherheit aller.
 
 ## 🤖 AI-Driven Development (Agentic AI)
 
