@@ -1,24 +1,25 @@
 export function renderConfirmView() {
   return `
     <div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in pb-safe">
-      <!-- Image Preview Header -->
-      <div class="relative w-full h-[40vh] bg-black shrink-0">
-        <img id="preview-img" class="w-full h-full object-cover shadow-lg opacity-90" />
-        
-        <div class="absolute top-4 left-4">
-           <button id="retake-btn" class="bg-black/50 backdrop-blur-md p-2 rounded-full text-white hover:bg-black/70 transition">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-           </button>
-        </div>
-        
-        <!-- Map Overlay (Mini Map) -->
-        <div class="absolute -bottom-10 right-4 w-24 h-24 rounded-2xl border-4 border-slate-700 shadow-xl overflow-hidden bg-gray-800 z-20">
-           <div id="mini-map" class="w-full h-full"></div>
-        </div>
+      <!-- Image Preview -->
+      <div class="relative w-full h-64 shrink-0 bg-black">
+        <img id="preview-img" class="w-full h-full object-cover opacity-90" />
+        <button id="retake-btn" class="absolute top-4 left-4 bg-black/50 p-2 rounded-full text-white backdrop-blur-sm shadow-md hover:bg-black/70 transition">
+           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        </button>
+      </div>
+
+      <!-- Map Section -->
+      <div class="p-4 space-y-2">
+         <h2 class="text-sm font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
+            📍 Standort
+         </h2>
+         <div id="map" class="w-full h-48 rounded-xl bg-gray-800 border border-gray-700 relative z-10 shadow-inner overflow-hidden"></div>
+         <p id="geo-status" class="text-xs text-gray-400 text-right">Genauigkeit: ...</p>
       </div>
 
       <!-- Scrollable Form Content -->
-      <div class="flex-grow overflow-y-auto pt-12 px-6 pb-24 space-y-6">
+      <div class="flex-grow overflow-y-auto px-4 pb-24 space-y-6">
          
          <!-- Type Selection (Grid) -->
          <div class="space-y-4">
@@ -33,14 +34,14 @@ export function renderConfirmView() {
          <div class="space-y-4">
              <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Lage</h3>
              <div class="flex gap-4">
-                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-sm" data-value="sidewalk">
+                <button type="button" class="pos-option-btn flex-1 py-3 px-2 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-xs" data-value="sidewalk">
                    Gehweg
                 </button>
-                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-sm" data-value="street">
+                <button type="button" class="pos-option-btn flex-1 py-3 px-2 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-xs" data-value="street">
                    Straße
                 </button>
-                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-sm" data-value="green">
-                   Grünfläche
+                <button type="button" class="pos-option-btn flex-1 py-3 px-2 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-xs" data-value="green">
+                   Grün
                 </button>
              </div>
              <input type="hidden" id="hydrant-position" value="sidewalk">
@@ -109,6 +110,18 @@ export function renderConfirmView() {
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+// Fix Leaflet Icons
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
 export function initConfirmView(element, imageBlob, location, onRetake, onSubmit) {
   const img = element.querySelector('#preview-img');
   img.src = URL.createObjectURL(imageBlob);
@@ -123,13 +136,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
   const diameterContainer = element.querySelector('#diameter-container');
   const diameterInput = element.querySelector('#hydrant-diameter');
 
-  const refInput = element.querySelector('#hydrant-ref');
-  const operatorInput = element.querySelector('#hydrant-operator');
-  const colourInput = element.querySelector('#hydrant-colour');
-  const noteInput = element.querySelector('#hydrant-note');
-
-
-  // GRID OPTIONS (Updated with Light Mode Colors if needed, but SVGs are generic)
+  // GRID OPTIONS (Dry Hydrant Included)
   const options = [
     { id: 'pillar', label: 'Überflur', icon: '<svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v20m-4-6h8m-8-8h8m-4-4h.01"></path></svg>' },
     { id: 'underground', label: 'Unterflur', icon: '<svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m-4-4h8"></path></svg>' },
@@ -173,7 +180,6 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
   element.querySelectorAll('.option-btn').forEach(btn => {
     btn.onclick = () => updateGrid(btn.dataset.value);
   });
-  // Init default
   updateGrid('pillar');
 
   // Position Buttons
@@ -196,14 +202,26 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
   updatePos('sidewalk');
 
 
-  // Mini Map
-  const mapContainer = element.querySelector('#mini-map');
+  // Map Setup (Block Element, not Mini)
+  const mapContainer = element.querySelector('#map');
   const center = [location.lat, location.lng];
-  const map = L.map(mapContainer, {
-    zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false
-  }).setView(center, 18);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-  L.marker(center).addTo(map);
+  const map = L.map(mapContainer).setView(center, 18);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OSM Contributors'
+  }).addTo(map);
+
+  const marker = L.marker(center, { draggable: true }).addTo(map);
+
+  // Update loc on drag
+  marker.on('dragend', function (event) {
+    const position = marker.getLatLng();
+    location.lat = position.lat;
+    location.lng = position.lng;
+    document.querySelector('#geo-status').innerText = `Manuell verschoben`;
+  });
+
+  const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
+  document.querySelector('#geo-status').innerText = `Genauigkeit: ${accuracy}m`;
 
   retakeBtn.onclick = onRetake;
 
@@ -212,9 +230,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     const selectedType = typeInput.value;
     const selectedPos = posInput.value;
 
-    // Construct OSM Tags
     const tags = {};
-
     if (selectedType === 'cistern') {
       tags['emergency'] = 'water_tank';
       if (volumeInput.value) tags['water_tank:volume'] = volumeInput.value;
@@ -230,27 +246,24 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       tags['fire_hydrant:position'] = selectedPos;
     }
 
-    const diameter = diameterInput.value;
-    if (diameter) tags['fire_hydrant:diameter'] = diameter;
-
-    const ref = refInput.value;
+    if (diameterInput.value) tags['fire_hydrant:diameter'] = diameterInput.value;
+    const ref = element.querySelector('#hydrant-ref').value;
     if (ref) tags['ref'] = ref;
 
-    const operator = operatorInput.value;
-    if (operator) tags['operator'] = operator;
-
-    const colour = colourInput.value;
-    if (colour) tags['colour'] = colour;
-
-    const note = noteInput.value;
+    // ... other fields ...
+    const op = element.querySelector('#hydrant-operator').value;
+    if (op) tags['operator'] = op;
+    const col = element.querySelector('#hydrant-colour').value;
+    if (col) tags['colour'] = col;
+    const note = element.querySelector('#hydrant-note').value;
     if (note) tags['note'] = note;
 
-    // Submit payload
-    const data = {
+    onSubmit({
       ...location,
       tags: tags
-    };
-
-    onSubmit(data);
+    });
   };
+
+  // Force resize needed if container size changed
+  setTimeout(() => map.invalidateSize(), 200);
 }
