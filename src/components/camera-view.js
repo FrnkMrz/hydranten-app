@@ -15,8 +15,8 @@ export function renderCameraView() {
          </div>
       </div>
 
-      <!-- Debug Helper -->
-      <button id="debug-btn" type="button" class="absolute top-24 right-4 bg-red-600 hover:bg-red-700 shadow-lg text-xs px-3 py-2 rounded-full font-bold text-white z-50 cursor-pointer border border-white/20 transition-transform active:scale-95">🕵️ Simuliere Foto</button>
+      <!-- Debug Helper (Hidden or removed in prod, but keeping structure clean if needed later) -->
+      <!-- <button id="debug-btn" ... hidden ...></button> -->
 
       <!-- Controls -->
       <div class="absolute bottom-0 left-0 right-0 p-8 pb-12 flex flex-col justify-center items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10">
@@ -30,9 +30,7 @@ export function renderCameraView() {
          <p class="text-4xl mb-4">📷🚫</p>
          <p class="text-xl font-bold mb-2">Kamera nicht verfügbar</p>
          <p id="camera-error-msg" class="text-sm opacity-70 mb-6">Kein Zugriff</p>
-         <p class="text-xs text-red-400 font-bold border border-red-500/30 bg-red-500/10 p-2 rounded">
-            Bitte 'Simuliere Foto' (oben rechts) nutzen!
-         </p>
+         <button id="error-back-btn" class="px-6 py-3 bg-red-600 rounded-xl font-bold">Zurück</button>
       </div>
 
       <button id="capture-btn" class="w-20 h-20 rounded-full border-4 border-white shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center active:scale-90 transition-transform duration-100 group z-[100] relative bg-black/20 backdrop-blur-sm">
@@ -46,77 +44,95 @@ export function renderCameraView() {
   `;
 }
 
-let h = 0;
-if (e.webkitCompassHeading) h = e.webkitCompassHeading;
-else if (e.alpha) h = 360 - e.alpha;
-if (compassEl) compassEl.innerText = Math.round(h);
+export async function initCamera(element, onBack, onCapture) {
+  const video = element.querySelector('#camera-feed');
+  const btn = element.querySelector('#capture-btn');
+  const canvas = element.querySelector('#capture-canvas');
+  const backBtn = element.querySelector('#back-to-intro-btn');
+  const errorBackBtn = element.querySelector('#error-back-btn');
+
+  // Back Navigation
+  if (backBtn && onBack) {
+    backBtn.onclick = onBack;
+  }
+  if (errorBackBtn && onBack) {
+    errorBackBtn.onclick = onBack;
+  }
+
+  // Debug Helper: Double click title to simulate (if title existed, now removed from top bar)
+
+  // Compass UI Update Loop
+  const compassEl = element.querySelector('#compass-heading');
+
+  // Listener for UI feedback
+  const boundListener = (e) => {
+    let h = 0;
+    if (e.webkitCompassHeading) h = e.webkitCompassHeading;
+    else if (e.alpha) h = 360 - e.alpha;
+    if (compassEl) compassEl.innerText = Math.round(h);
   };
 
-if (window.DeviceOrientationEvent) {
-  window.addEventListener('deviceorientation', boundListener);
-}
-
-// KEYBOARD TRIGGER (Spacebar)
-const keyHandler = (e) => {
-  if (e.code === 'Space') {
-    e.preventDefault();
-    // Check if we are still in camera mode
-    if (!element.querySelector('#camera-feed')) {
-      document.removeEventListener('keydown', keyHandler);
-      return;
-    }
-    onCapture(null); // Force capture
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', boundListener);
   }
-};
-document.addEventListener('keydown', keyHandler);
 
-// Clean up listener when element removed (simplified for prototype: relying on SPA replacement garbage collection usually ok, but robust is better)
-// TODO: Add proper cleanup in future refactor
-
-let stream = null;
-
-const setupCapture = () => {
-  btn.onclick = () => {
-    if (!stream || !stream.active) {
-      // Fallback if button clicked but no stream
-      console.log("No stream, triggering mock capture");
-      onCapture(null);
-      return;
+  // KEYBOARD TRIGGER (Spacebar)
+  const keyHandler = (e) => {
+    if (e.code === 'Space') {
+      e.preventDefault();
+      // Check if we are still in camera mode
+      if (!element.querySelector('#camera-feed')) {
+        document.removeEventListener('keydown', keyHandler);
+        return;
+      }
+      btn.click(); // Trigger click logic
     }
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  };
+  document.addEventListener('keydown', keyHandler);
 
-    if (stream) {
+  let stream = null;
+
+  const performCapture = () => {
+    // If no stream (error mode), allow mock capture if needed, 
+    // BUT user wanted "Simulate Photo" removed. 
+    // However, for debugging without camera availability on Desktop, we might still want it logic-wise?
+    // If stream is null, simple red fallback.
+
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+
+    if (stream && stream.active) {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       stream.getTracks().forEach(track => track.stop());
+    } else {
+      // Fallback Red
+      ctx.fillStyle = '#cc0000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
     canvas.toBlob((blob) => {
       onCapture(blob);
     }, 'image/jpeg', 0.85);
   };
-};
 
-try {
-  stream = await navigator.mediaDevices.getUserMedia({
-    video: { facingMode: 'environment' },
-    audio: false
-  });
-  video.srcObject = stream;
-  video.play();
-  setupCapture();
-} catch (err) {
-  console.warn("Camera init failed:", err);
-  // User fallback UI
-  const errorEl = element.querySelector('#camera-error');
-  if (errorEl) {
-    errorEl.classList.remove('hidden');
-    element.querySelector('#camera-error-msg').innerText = err.message || 'Kein Zugriff';
+  btn.onclick = performCapture;
+
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment' },
+      audio: false
+    });
+    video.srcObject = stream;
+    video.play();
+  } catch (err) {
+    console.warn("Camera init failed:", err);
+    // User fallback UI
+    const errorEl = element.querySelector('#camera-error');
+    if (errorEl) {
+      errorEl.classList.remove('hidden');
+      element.querySelector('#camera-error-msg').innerText = err.message || 'Kein Zugriff';
+    }
+    // Note: We leave btn.onclick active so desktop users without cam can still click "Shutter" to get a red image
   }
-  // Ensure capture handler still works for simulation
-  btn.onclick = () => onCapture(null);
-  // Ensure capture button triggers mock in error state too
-  btn.onclick = () => onCapture(null);
-}
 }
