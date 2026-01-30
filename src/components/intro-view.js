@@ -4,6 +4,11 @@ export function renderIntroView() {
       
       <!-- Background / Decoration -->
       <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-red-900/20 to-transparent pointer-events-none"></div>
+
+      <!-- Top Right Settings -->
+      <button id="intro-settings-btn" class="absolute top-4 right-4 p-2 bg-white/10 backdrop-blur-md rounded-full text-white active:bg-white/20 transition z-50">
+         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      </button>
       
       <!-- Content -->
       <div class="flex flex-col items-center z-10 mt-10">
@@ -52,10 +57,14 @@ export function renderIntroView() {
   `;
 }
 
-export function initIntroView(element, onStart) {
+export function initIntroView(element, onStart, onSettings) {
    const btn = element.querySelector('#start-btn');
    btn.onclick = () => {
-      // Add minimal exit animation logic here if desired
       onStart();
    };
+
+   const settingsBtn = element.querySelector('#intro-settings-btn');
+   if (settingsBtn && onSettings) {
+      settingsBtn.onclick = onSettings;
+   }
 }

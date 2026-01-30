@@ -75,6 +75,22 @@ export function renderConfirmView() {
              <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Ref-ID (Schild)</span>
              <input type="text" id="hydrant-ref" placeholder="Kennzeichnung" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 outline-none transition" />
            </label>
+
+           <!-- EXTRA FIELDS -->
+           <label class="block">
+             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Betreiber (Operator)</span>
+             <input type="text" id="hydrant-operator" placeholder="z.B. Stadtwerke" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 outline-none transition" />
+           </label>
+           
+           <label class="block">
+             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Farbe (Colour)</span>
+             <input type="text" id="hydrant-colour" placeholder="z.B. red, yellow" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 outline-none transition" />
+           </label>
+           
+           <label class="block">
+             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Notiz</span>
+             <textarea id="hydrant-note" rows="2" placeholder="Besonderheiten..." class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 outline-none transition"></textarea>
+           </label>
          </div>
 
          <!-- AI Mock Hint -->
@@ -153,6 +169,9 @@ export function initConfirmView(element, imageBlob, locationData, onRetake, onSu
     const position = posSelect.value;
     const diameter = element.querySelector('#hydrant-diameter').value;
     const ref = element.querySelector('#hydrant-ref').value;
+    const operator = element.querySelector('#hydrant-operator').value;
+    const colour = element.querySelector('#hydrant-colour').value;
+    const note = element.querySelector('#hydrant-note').value;
 
     // Construct OSM Tags
     const tags = {
@@ -163,6 +182,9 @@ export function initConfirmView(element, imageBlob, locationData, onRetake, onSu
 
     if (diameter) tags['fire_hydrant:diameter'] = diameter;
     if (ref) tags['ref'] = ref;
+    if (operator) tags['operator'] = operator;
+    if (colour) tags['colour'] = colour;
+    if (note) tags['note'] = note;
 
     onSubmit({
       lat: locationData.lat,

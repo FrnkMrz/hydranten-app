@@ -20,7 +20,10 @@ const state = {
 function showIntro() {
   state.view = 'intro';
   app.innerHTML = renderIntroView();
-  initIntroView(app, () => showCamera());
+  initIntroView(app,
+    () => showCamera(),
+    () => showSettings()
+  );
 }
 
 async function showCamera() {
