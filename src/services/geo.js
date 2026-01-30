@@ -38,9 +38,29 @@ export function getCurrentHeading() {
 let lastPosition = null;
 let watcherId = null;
 
-timeout: 20000
-}
-);
+export function startTracking() {
+    if (watcherId) return; // Already tracking
+    if (!navigator.geolocation) return;
+
+    watcherId = navigator.geolocation.watchPosition(
+        (pos) => {
+            lastPosition = {
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+                accuracy: pos.coords.accuracy,
+                heading: pos.coords.heading,
+                timestamp: Date.now()
+            };
+        },
+        (err) => {
+            console.warn("GPS Tracking Warning:", err);
+        },
+        {
+            enableHighAccuracy: true,
+            maximumAge: 10000,
+            timeout: 20000
+        }
+    );
 }
 
 export function getLastKnownPosition() {
