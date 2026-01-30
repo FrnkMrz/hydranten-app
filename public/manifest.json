@@ -1,13 +1,13 @@
 {
     "name": "Hydranten Jäger",
     "short_name": "Hydrant",
-    "start_url": "/",
+    "start_url": "./",
     "display": "standalone",
     "background_color": "#1a1a1a",
     "theme_color": "#1a1a1a",
     "icons": [
         {
-            "src": "/hydrant.svg",
+            "src": "hydrant.svg",
             "type": "image/svg+xml",
             "sizes": "512x512"
         }
