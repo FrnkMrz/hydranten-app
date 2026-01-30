@@ -16,7 +16,7 @@ export function renderIntroView() {
       <div class="z-10 flex flex-col items-center flex-grow justify-center mt-[-10%]">
          <div class="relative mb-8">
             <div class="absolute inset-0 bg-red-500 blur-2xl opacity-20 animate-pulse"></div>
-            <img src="/hydrant.svg" alt="Hydrant Icon" class="w-32 h-32 relative drop-shadow-2xl opacity-90 transform hover:scale-105 transition duration-500" />
+            <img src="hydrant.svg" alt="Hydrant Icon" class="w-32 h-32 relative drop-shadow-2xl opacity-90 transform hover:scale-105 transition duration-500" />
          </div>
          
          <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-2 tracking-tight text-center">
