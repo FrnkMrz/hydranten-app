@@ -1,18 +1,18 @@
 export function renderConfirmView() {
   return `
-    <div class="h-full w-full bg-white text-gray-900 flex flex-col animate-fade-in pb-safe">
+    <div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in pb-safe">
       <!-- Image Preview Header -->
-      <div class="relative w-full h-[40vh] bg-gray-100 shrink-0">
-        <img id="preview-img" class="w-full h-full object-cover shadow-lg" />
+      <div class="relative w-full h-[40vh] bg-black shrink-0">
+        <img id="preview-img" class="w-full h-full object-cover shadow-lg opacity-90" />
         
         <div class="absolute top-4 left-4">
-           <button id="retake-btn" class="bg-white/30 backdrop-blur-md p-2 rounded-full text-white hover:bg-white/50 transition">
+           <button id="retake-btn" class="bg-black/50 backdrop-blur-md p-2 rounded-full text-white hover:bg-black/70 transition">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
            </button>
         </div>
         
         <!-- Map Overlay (Mini Map) -->
-        <div class="absolute -bottom-10 right-4 w-24 h-24 rounded-2xl border-4 border-white shadow-xl overflow-hidden bg-gray-200 z-20">
+        <div class="absolute -bottom-10 right-4 w-24 h-24 rounded-2xl border-4 border-slate-700 shadow-xl overflow-hidden bg-gray-800 z-20">
            <div id="mini-map" class="w-full h-full"></div>
         </div>
       </div>
@@ -22,7 +22,7 @@ export function renderConfirmView() {
          
          <!-- Type Selection (Grid) -->
          <div class="space-y-4">
-            <h3 class="text-sm font-bold uppercase tracking-widest text-gray-500">Typ</h3>
+            <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Typ</h3>
             <div id="type-grid" class="grid grid-cols-4 gap-3">
                <!-- JS Populated -->
             </div>
@@ -31,15 +31,15 @@ export function renderConfirmView() {
 
          <!-- Position Selection -->
          <div class="space-y-4">
-             <h3 class="text-sm font-bold uppercase tracking-widest text-gray-500">Lage</h3>
+             <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Lage</h3>
              <div class="flex gap-4">
-                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-100 text-gray-600 font-bold transition text-sm" data-value="sidewalk">
+                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-sm" data-value="sidewalk">
                    Gehweg
                 </button>
-                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-100 text-gray-600 font-bold transition text-sm" data-value="street">
+                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-sm" data-value="street">
                    Straße
                 </button>
-                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-100 text-gray-600 font-bold transition text-sm" data-value="green">
+                <button type="button" class="pos-option-btn flex-1 py-3 px-4 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 font-bold transition text-sm" data-value="green">
                    Grünfläche
                 </button>
              </div>
@@ -48,12 +48,12 @@ export function renderConfirmView() {
 
          <!-- Details (Diameter / Volume) -->
          <div class="space-y-4">
-             <h3 class="text-sm font-bold uppercase tracking-widest text-gray-500">Details</h3>
+             <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Details</h3>
              
              <!-- Diameter (hidden for cistern) -->
              <div id="diameter-container">
                  <label class="block text-xs text-gray-500 mb-1">Durchmesser (mm)</label>
-                 <select id="hydrant-diameter" class="w-full bg-gray-100 border-none rounded-xl p-3 text-gray-900 font-bold focus:ring-2 focus:ring-red-500">
+                 <select id="hydrant-diameter" class="w-full bg-gray-800 border-none rounded-xl p-3 text-white font-bold focus:ring-2 focus:ring-red-500">
                     <option value="80">80 mm (Standard)</option>
                     <option value="100">100 mm</option>
                     <option value="150">150 mm</option>
@@ -64,39 +64,39 @@ export function renderConfirmView() {
              <!-- NEW: Volume (hidden by default, shown for Cistern) -->
              <div id="volume-container" class="hidden">
                  <label class="block text-xs text-gray-500 mb-1">Fassungsvermögen (m³ / Liter)</label>
-                 <input type="text" id="hydrant-volume" placeholder="z.B. 100m3" class="w-full bg-gray-100 border-none rounded-xl p-3 text-gray-900 font-bold focus:ring-2 focus:ring-red-500">
+                 <input type="text" id="hydrant-volume" placeholder="z.B. 100m3" class="w-full bg-gray-800 border-none rounded-xl p-3 text-white font-bold focus:ring-2 focus:ring-red-500">
              </div>
          </div>
 
          <!-- Extra Fields (Collapsible) -->
-         <details class="group bg-gray-50 rounded-xl p-4">
-            <summary class="list-none flex justify-between items-center font-bold cursor-pointer text-gray-600">
+         <details class="group bg-gray-800/50 rounded-xl p-4">
+            <summary class="list-none flex justify-between items-center font-bold cursor-pointer text-gray-400">
                <span>Zusätzliche Infos</span>
                <span class="transition group-open:rotate-180">▼</span>
             </summary>
             <div class="mt-4 space-y-4 text-sm">
                <div>
                   <label class="block text-xs text-gray-500 mb-1">Ref / Nummer</label>
-                  <input type="text" id="hydrant-ref" placeholder="H 123" class="w-full bg-white border border-gray-200 rounded-lg p-2 text-gray-900">
+                  <input type="text" id="hydrant-ref" placeholder="H 123" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white">
                </div>
                <div>
                   <label class="block text-xs text-gray-500 mb-1">Betreiber</label>
-                  <input type="text" id="hydrant-operator" placeholder="Gemeinde..." class="w-full bg-white border border-gray-200 rounded-lg p-2 text-gray-900">
+                  <input type="text" id="hydrant-operator" placeholder="Gemeinde..." class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white">
                </div>
                <div>
                   <label class="block text-xs text-gray-500 mb-1">Farbe</label>
-                  <input type="text" id="hydrant-colour" placeholder="Rot" class="w-full bg-white border border-gray-200 rounded-lg p-2 text-gray-900">
+                  <input type="text" id="hydrant-colour" placeholder="Rot" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white">
                </div>
                <div>
                   <label class="block text-xs text-gray-500 mb-1">Notiz</label>
-                  <textarea id="hydrant-note" placeholder="..." class="w-full bg-white border border-gray-200 rounded-lg p-2 text-gray-900 h-20"></textarea>
+                  <textarea id="hydrant-note" placeholder="..." class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white h-20"></textarea>
                </div>
             </div>
          </details>
       </div>
 
       <!-- Submit Footer -->
-      <div class="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-lg border-t border-gray-200 z-50 max-w-sm mx-auto">
+      <div class="fixed bottom-0 left-0 right-0 p-4 bg-slate-900/80 backdrop-blur-lg border-t border-gray-800 z-50 max-w-sm mx-auto">
          <button id="submit-img-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-bold text-lg shadow-xl shadow-green-900/20 active:scale-95 transition-all flex items-center justify-center gap-2">
             <span>SPEICHERN</span>
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -140,7 +140,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
   const grid = element.querySelector('#type-grid');
   grid.innerHTML = options.map(opt => `
-     <button type="button" class="option-btn p-3 rounded-xl border-2 border-transparent bg-gray-100 text-gray-500 hover:bg-gray-200 transition flex flex-col items-center gap-2" data-value="${opt.id}">
+     <button type="button" class="option-btn p-3 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 transition flex flex-col items-center gap-2" data-value="${opt.id}">
         ${opt.icon}
         <span class="text-xs font-bold">${opt.label}</span>
      </button>
@@ -152,11 +152,11 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     typeInput.value = val;
     optionBtns.forEach(btn => {
       if (btn.dataset.value === val) {
-        btn.classList.add('border-red-500', 'bg-red-50', 'text-red-600');
-        btn.classList.remove('border-transparent', 'bg-gray-100', 'text-gray-500');
+        btn.classList.add('border-red-500', 'bg-red-900/40', 'text-white');
+        btn.classList.remove('border-transparent', 'bg-gray-800', 'text-gray-400');
       } else {
-        btn.classList.remove('border-red-500', 'bg-red-50', 'text-red-600');
-        btn.classList.add('border-transparent', 'bg-gray-100', 'text-gray-500');
+        btn.classList.remove('border-red-500', 'bg-red-900/40', 'text-white');
+        btn.classList.add('border-transparent', 'bg-gray-800', 'text-gray-400');
       }
     });
 
@@ -182,11 +182,11 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     posInput.value = val;
     posBtns.forEach(btn => {
       if (btn.dataset.value === val) {
-        btn.classList.add('border-blue-500', 'bg-blue-50', 'text-blue-600');
-        btn.classList.remove('border-transparent', 'bg-gray-100', 'text-gray-600');
+        btn.classList.add('border-blue-500', 'bg-blue-900/40', 'text-white');
+        btn.classList.remove('border-transparent', 'bg-gray-800', 'text-gray-400');
       } else {
-        btn.classList.remove('border-blue-500', 'bg-blue-50', 'text-blue-600');
-        btn.classList.add('border-transparent', 'bg-gray-100', 'text-gray-600');
+        btn.classList.remove('border-blue-500', 'bg-blue-900/40', 'text-white');
+        btn.classList.add('border-transparent', 'bg-gray-800', 'text-gray-400');
       }
     });
   };
