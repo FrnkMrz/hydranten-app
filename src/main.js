@@ -18,20 +18,41 @@ const state = {
   location: null
 };
 
+// Cleanup function for current view
+let currentCleanup = null;
+
+function switchView(viewName, renderFn, initFn) {
+  // Cleanup previous view
+  if (currentCleanup) {
+    currentCleanup();
+    currentCleanup = null;
+  }
+
+  state.view = viewName;
+  app.innerHTML = renderFn();
+
+  // Init new view and store cleanup (if any)
+  const cleanup = initFn();
+  if (typeof cleanup === 'function') {
+    currentCleanup = cleanup;
+  }
+}
+
 function showIntro() {
-  state.view = 'intro';
-  app.innerHTML = renderIntroView();
-  initIntroView(app,
-    () => showCamera(),
-    () => showSettings()
+  switchView('intro', renderIntroView, () =>
+    initIntroView(app,
+      () => showCamera(),
+      () => showSettings()
+    )
   );
 }
 
 async function showCamera() {
+  // Manual switch because async init is special
+  if (currentCleanup) { currentCleanup(); currentCleanup = null; }
   state.view = 'camera';
   app.innerHTML = renderCameraView();
 
-  // Initialize Camera Logic
   await initCamera(app,
     () => showIntro(), // onBack
     async (blob) => {  // onCapture

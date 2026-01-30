@@ -143,5 +143,11 @@ export function initIntroView(element, onStart, onSettings) {
          },
          { enableHighAccuracy: true, maximumAge: 5000 }
       );
+      // Return Cleanup Function
+      return () => {
+         if (navigator.geolocation && typeof watchId !== 'undefined') {
+            navigator.geolocation.clearWatch(watchId);
+            console.log("Intro View: Watcher Cleared");
+         }
+      };
    }
-}
