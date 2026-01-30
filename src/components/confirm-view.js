@@ -155,6 +155,12 @@ export function initConfirmView(element, imageBlob, locationData, onRetake, onSu
   const posInput = element.querySelector('#hydrant-position');
   const volumeContainer = element.querySelector('#volume-container');
   const volumeInput = element.querySelector('#hydrant-volume');
+  const diameterInput = element.querySelector('#hydrant-diameter');
+  const refInput = element.querySelector('#hydrant-ref');
+  const operatorInput = element.querySelector('#hydrant-operator');
+  const colourInput = element.querySelector('#hydrant-colour');
+  const noteInput = element.querySelector('#hydrant-note');
+
 
   // Logic: Handle Grid Selection
   const optionBtns = element.querySelectorAll('.option-btn');
@@ -216,44 +222,37 @@ export function initConfirmView(element, imageBlob, locationData, onRetake, onSu
 
   // Submit
   submitBtn.onclick = () => {
-    const type = typeInput.value;
-    const position = posInput.value;
-    const diameter = element.querySelector('#hydrant-diameter').value;
-    const ref = element.querySelector('#hydrant-ref').value;
-    const operator = element.querySelector('#hydrant-operator').value;
-    const colour = element.querySelector('#hydrant-colour').value;
-    const note = element.querySelector('#hydrant-note').value;
-    const volume = volumeInput.value;
+    const selectedType = typeInput.value;
+    const selectedPos = posInput.value;
 
     // Construct OSM Tags
     const tags = {};
 
-    if (type === 'cistern') {
+    if (selectedType === 'cistern') {
       tags['emergency'] = 'water_tank';
-      tags['water_tank:volume'] = volume;
+      if (volumeInput.value) tags['water_tank:volume'] = volumeInput.value;
       // Usually cisterns don't have fire_hydrant:type, but we can keep position as generic or fire_hydrant:position
-      tags['fire_hydrant:position'] = position;
-    } else {
-      tags['emergency'] = 'fire_hydrant';
-      tags['fire_hydrant:type'] = type;
-      tags['fire_hydrant:position'] = position;
+      tags['fire_hydrant:position'] = selectedPos;
+    } else if (selectedType === 'dry_hydrant') {
+      tags['emergency'] = 'fire_hydrant'; // Or emergency=suction_point
+      tags['fire_hydrant:type'] = 'dry_hydrant';
+      tags['fire_hydrant:position'] = selectedPos; // Dry hydrants can also have a position
     }
+    else {
+      tags['emergency'] = 'fire_hydrant';
+      if (operator) tags['operator'] = operator;
+      if (colour) tags['colour'] = colour;
+      if (note) tags['note'] = note;
 
-    if (diameter) tags['fire_hydrant:diameter'] = diameter;
-    if (ref) tags['ref'] = ref;
-    if (operator) tags['operator'] = operator;
-    if (colour) tags['colour'] = colour;
-    if (note) tags['note'] = note;
+      onSubmit({
+        lat: locationData.lat,
+        lng: locationData.lng,
+        tags: tags
+      });
+    };
 
-    onSubmit({
-      lat: locationData.lat,
-      lng: locationData.lng,
-      tags: tags
-    });
-  };
-
-  // Force Map Resize after render
-  setTimeout(() => {
-    map.invalidateSize();
-  }, 200);
-}
+    // Force Map Resize after render
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 200);
+  }
