@@ -13,7 +13,7 @@ Dieses Projekt wurde ins Leben gerufen, um die Erfassung von Löschwasserentnahm
 **Hintergrund:**
 Ich bin langjähriges aktives Mitglied der **Freiwilligen Feuerwehr Rollhofen**. Die Verfügbarkeit exakter Daten über Hydranten ist im Einsatzfall entscheidend. Dieses Projekt dient mir persönlich als Lernprojekt, um den Umgang mit modernem Code, GitHub und KI-gestützter Entwicklung zu erlernen.
 
-Es ist inspiriert vom Gedanken der **OpenFireMap** welche ich 2010 in getriggert habe und akutell auf eine V2 entwickle – offene Daten für die Sicherheit aller.
+Es ist inspiriert vom Gedanken der **OpenFireMap** welche ich 2010 ins Leben gerufen habe und akutell auf eine V2 entwickle – offene Daten für die Sicherheit aller.
 
 ## 🤖 AI-Driven Development (Agentic AI)
 
