@@ -3,10 +3,11 @@ import { renderCameraView, initCamera } from './components/camera-view.js';
 import { renderConfirmView, initConfirmView } from './components/confirm-view.js';
 import { renderSettingsView, initSettingsView } from './components/settings-view.js';
 import { renderIntroView, initIntroView } from './components/intro-view.js';
-import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition } from './services/geo.js';
+import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition, startTracking } from './services/geo.js';
 
-// Init Compass early
+// Init Compass & GPS Tracking early
 initCompass();
+startTracking();
 
 const app = document.querySelector('#app');
 

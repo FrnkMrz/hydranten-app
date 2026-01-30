@@ -34,7 +34,48 @@ export function getCurrentHeading() {
     return currentHeading;
 }
 
+// State for GPS
+let lastPosition = null;
+let watcherId = null;
+
+export function startTracking() {
+    if (watcherId) return; // Already tracking
+    if (!navigator.geolocation) return;
+
+    watcherId = navigator.geolocation.watchPosition(
+        (pos) => {
+            lastPosition = {
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+                accuracy: pos.coords.accuracy,
+                heading: pos.coords.heading,
+                timestamp: Date.now()
+            };
+        },
+        (err) => {
+            console.warn("GPS Tracking Warning:", err);
+        },
+        {
+            enableHighAccuracy: true,
+            maximumAge: 10000,
+            timeout: 20000
+        }
+    );
+}
+
+export function getLastKnownPosition() {
+    return lastPosition;
+}
+
 export async function getPosition() {
+    // Return cached position if fresh (< 20s old)
+    if (lastPosition && (Date.now() - lastPosition.timestamp < 20000)) {
+        return lastPosition;
+    }
+
+    // Otherwise force a generic check (fallback if watcher hasn't fired yet)
+    // But better: wait for watcher? 
+    // For now, keep standard check but use lastPosition as backup in catch block
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
             reject(new Error("Geolocation not supported"));
@@ -43,19 +84,27 @@ export async function getPosition() {
 
         navigator.geolocation.getCurrentPosition(
             (pos) => {
-                resolve({
+                const p = {
                     lat: pos.coords.latitude,
                     lng: pos.coords.longitude,
                     accuracy: pos.coords.accuracy,
-                    heading: pos.coords.heading // GPS movement heading (often null when standing still)
-                });
+                    heading: pos.coords.heading
+                };
+                lastPosition = { ...p, timestamp: Date.now() }; // Update cache
+                resolve(p);
             },
             (err) => {
-                reject(err);
+                // If current check fails but we have an old cached one, use it!
+                if (lastPosition) {
+                    console.warn("Fresh GPS failed, using cached:", err);
+                    resolve(lastPosition);
+                } else {
+                    reject(err);
+                }
             },
             {
                 enableHighAccuracy: true,
-                timeout: 10000,
+                timeout: 5000, // Short timeout because we prefer cache over waiting too long
                 maximumAge: 0
             }
         );
