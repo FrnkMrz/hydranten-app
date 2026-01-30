@@ -104,11 +104,31 @@ function showConfirm() {
       btn.disabled = true;
 
       // Simulate network request duration
+      // Simulate network request duration
       setTimeout(() => {
-        const userMsg = creds.user ? `Angemeldet als: ${creds.user}` : "(Keine OSM Anbindung)";
-        const tagList = Object.entries(data.tags).map(([k, v]) => `${k}: ${v}`).join('\n');
-        alert(`Hydrant erfasst!\n${userMsg}\n\nDaten:\n${tagList}\n\nPosition: ${data.lat.toFixed(5)}, ${data.lng.toFixed(5)}`);
-        showCamera();
+        // Overlay for Success
+        const overlay = document.createElement('div');
+        overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-gray-900/95 animate-fade-in px-4 text-center";
+
+        const userMsg = creds.user ? `Angemeldet als: ${creds.user}` : "(Lokal gespeichert)";
+
+        overlay.innerHTML = `
+           <div class="flex flex-col items-center">
+              <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-green-900/40">
+                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+              </div>
+              <h2 class="text-2xl font-bold text-white mb-2">Gespeichert!</h2>
+              <p class="text-gray-400 mb-8 text-sm">${userMsg}</p>
+              <p class="text-xs text-gray-500 animate-pulse">Kehre zurück zum Start...</p>
+           </div>
+        `;
+        app.appendChild(overlay);
+
+        // Auto-Redirect to Intro after 2s
+        setTimeout(() => {
+          showIntro();
+        }, 2200);
+
       }, 1000);
     }
   );
