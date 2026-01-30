@@ -53,38 +53,53 @@ async function showCamera() {
          <span class="font-bold">Ermittle Position...</span>
       </div>`;
 
+      let loc = null;
       try {
-        const loc = await getPosition();
-
-        // Calculate Offset (3m in direction of compass)
-        // If heading is missing in Geolocation (often happens), try our visual compass fallback
-        const heading = loc.heading || getCurrentHeading();
-
-        const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
-        console.log("Offset Calculation:", finalLoc);
-
-        state.location = {
-          ...loc,
-          lat: finalLoc.lat,
-          lng: finalLoc.lng,
-          heading: heading, // Pass heading for potential review
-          _debug: finalLoc
-        };
-
-        showConfirm();
+        // Try fresh position (3s timeout)
+        loc = await Promise.race([
+          getPosition(),
+          new Promise((_, r) => setTimeout(() => r(new Error('Timeout')), 3000))
+        ]);
       } catch (e) {
-        console.warn("Geo fail:", e);
-        // Fallback/Mock
-        state.location = { lat: 48.137, lng: 11.576, accuracy: 50 };
-        showConfirm();
+        console.warn('GPS Fresh failed, using cached:', e);
+        const last = getLastKnownPosition();
+        if (last) {
+          loc = { coords: { latitude: last.lat, longitude: last.lng, accuracy: 20, heading: null } };
+        } else {
+          // Absolute Fallback (Munich)
+          loc = { coords: { latitude: 48.137, longitude: 11.576, accuracy: 999 } };
+        }
       }
-    });
 
-  // Settings Button
-  const settingsBtn = document.getElementById('settings-btn');
-  if (settingsBtn) {
-    settingsBtn.onclick = () => showSettings();
-  }
+      // Calculate Offset (3m in direction of compass)
+      // If heading is missing in Geolocation (often happens), try our visual compass fallback
+      const heading = loc.heading || getCurrentHeading();
+
+      const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
+      console.log("Offset Calculation:", finalLoc);
+
+      state.location = {
+        ...loc,
+        lat: finalLoc.lat,
+        lng: finalLoc.lng,
+        heading: heading, // Pass heading for potential review
+        _debug: finalLoc
+      };
+
+      showConfirm();
+    } catch (e) {
+      console.warn("Geo fail:", e);
+      // Fallback/Mock
+      state.location = { lat: 48.137, lng: 11.576, accuracy: 50 };
+      showConfirm();
+    }
+});
+
+// Settings Button
+const settingsBtn = document.getElementById('settings-btn');
+if (settingsBtn) {
+  settingsBtn.onclick = () => showSettings();
+}
 }
 
 function showSettings() {

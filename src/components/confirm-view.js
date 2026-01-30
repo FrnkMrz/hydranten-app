@@ -74,49 +74,46 @@ export function renderConfirmView() {
              <input type="hidden" id="hydrant-position" value="sidewalk">
          </div>
 
-         <!-- Details (Collapsible) -->
-         <details class="group bg-gray-800/30 rounded-xl border border-gray-700/30 overflow-hidden">
-            <summary class="list-none flex justify-between items-center p-4 font-bold cursor-pointer text-gray-400 hover:bg-gray-800/50 transition">
-               <span>Technische Daten (Optional)</span>
-               <span class="transition group-open:rotate-180 opacity-50">▼</span>
-            </summary>
-            <div class="px-4 pb-4 space-y-4 text-sm pt-2 border-t border-gray-700/30">
-               
-               <!-- Diameter / Volume moved here -->
-                <div id="diameter-container">
-                    <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Durchmesser</label>
-                    <select id="hydrant-diameter" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white outline-none">
-                        <option value="">Nicht angegeben</option>
-                        <option value="80">DN 80</option>
-                        <option value="100">DN 100</option>
-                        <option value="150">DN 150</option>
-                        <option value="50">DN 50</option>
-                    </select>
-                </div>
+         <!-- Details (Visible) -->
+         <div class="space-y-4 pt-4 border-t border-gray-800">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Technische Daten (Optional)</h3>
+            
+            <!-- Diameter / Volume -->
+            <div id="diameter-container">
+                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Durchmesser</label>
+                <select id="hydrant-diameter" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                    <option value="">Nicht angegeben</option>
+                    <option value="80">DN 80</option>
+                    <option value="100">DN 100</option>
+                    <option value="150">DN 150</option>
+                    <option value="50">DN 50</option>
+                </select>
+            </div>
 
-                <div id="volume-container" class="hidden">
-                    <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen</label>
-                    <input type="text" id="hydrant-volume" placeholder="z.B. 100m3" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white outline-none">
-                </div>
+            <div id="volume-container" class="hidden">
+                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen</label>
+                <input type="text" id="hydrant-volume" placeholder="z.B. 100m3" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+            </div>
 
+            <div class="space-y-4">
                <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Nummer / Ref</label>
-                  <input type="text" id="hydrant-ref" placeholder="z.B. 1234" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white outline-none">
+                  <input type="text" id="hydrant-ref" placeholder="z.B. 1234" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                </div>
                <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Betreiber</label>
-                  <input type="text" id="hydrant-operator" placeholder="Gemeinde" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white focus:border-red-500 outline-none">
+                  <input type="text" id="hydrant-operator" placeholder="Gemeinde" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                </div>
                <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Farbe</label>
-                  <input type="text" id="hydrant-colour" placeholder="Rot" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white focus:border-red-500 outline-none">
+                  <input type="text" id="hydrant-colour" placeholder="Rot" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                </div>
                <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Notiz</label>
-                  <textarea id="hydrant-note" placeholder="..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white h-20 focus:border-red-500 outline-none"></textarea>
+                  <textarea id="hydrant-note" placeholder="..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white h-20 outline-none"></textarea>
                </div>
             </div>
-         </details>
+         </div>
       </div>
 
       <!-- Submit Footer -->
