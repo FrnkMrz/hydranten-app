@@ -36,33 +36,42 @@ export function renderConfirmView() {
 
       <!-- Form Section -->
       <div class="px-4 pb-4 space-y-4">
-         <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 space-y-4">
+         <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 space-y-6">
            <h2 class="text-lg font-bold flex items-center gap-2">ℹ️ Hydranten Details</h2>
            
-           <!-- TYPE -->
-           <label class="block">
-             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Typ *</span>
-             <select id="hydrant-type" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition">
-               <option value="" disabled selected>Bitte wählen...</option>
-               <option value="pillar">Überflurhydrant (Pillar)</option>
-               <option value="underground">Unterflurhydrant (Underground)</option>
-               <option value="wall">Wandhydrant (Wall)</option>
-               <option value="pond">Löschteich (Pond)</option>
-             </select>
-           </label>
+           <!-- TYPE GRID -->
+           <div>
+             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider block mb-2">Typ *</span>
+             <div class="grid grid-cols-3 gap-2" id="type-grid">
+                ${renderOptionBtn('type', 'pillar', '📮', 'Überflur')}
+                ${renderOptionBtn('type', 'underground', '🕳️', 'Unterflur')}
+                ${renderOptionBtn('type', 'wall', '🧱', 'Wand')}
+                ${renderOptionBtn('type', 'pond', '🌊', 'Teich')}
+                ${renderOptionBtn('type', 'cistern', '💧', 'Zisterne')}
+             </div>
+             <input type="hidden" id="hydrant-type" value="" />
+           </div>
 
-           <!-- POSITION -->
-           <label class="block">
-             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Position *</span>
-             <select id="hydrant-position" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition">
-               <option value="" disabled selected>Bitte wählen...</option>
-               <option value="sidewalk">Gehweg</option>
-               <option value="lane">Straße / Fahrbahn</option>
-               <option value="parking_lot">Parkplatz</option>
-               <option value="green">Grünstreifen / Wiese</option>
-               <option value="surface">Platz / Fläche</option>
-             </select>
-           </label>
+           <!-- POSITION GRID -->
+           <div>
+             <span class="text-xs text-gray-400 uppercase font-bold tracking-wider block mb-2">Position *</span>
+             <div class="grid grid-cols-3 gap-2" id="position-grid">
+                ${renderOptionBtn('pos', 'sidewalk', '🚶', 'Gehweg')}
+                ${renderOptionBtn('pos', 'lane', '🚗', 'Straße')}
+                ${renderOptionBtn('pos', 'parking_lot', '🅿️', 'Parkplatz')}
+                ${renderOptionBtn('pos', 'green', '🌳', 'Grün')}
+                ${renderOptionBtn('pos', 'surface', '⏹️', 'Platz')}
+             </div>
+             <input type="hidden" id="hydrant-position" value="" />
+           </div>
+
+            <!-- VOLUME (Conditional for Cistern) -->
+           <div id="volume-container" class="hidden animate-fade-in">
+             <label class="block">
+               <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Volumen (m³) *</span>
+               <input type="number" id="hydrant-volume" placeholder="z.B. 50" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-blue-500 outline-none transition" />
+             </label>
+           </div>
 
             <!-- DIAMETER (Optional) -->
            <label class="block">
@@ -92,12 +101,6 @@ export function renderConfirmView() {
              <textarea id="hydrant-note" rows="2" placeholder="Besonderheiten..." class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-red-500 outline-none transition"></textarea>
            </label>
          </div>
-
-         <!-- AI Mock Hint -->
-         <div id="ai-suggestion" class="hidden p-3 bg-blue-900/20 border border-blue-500/20 rounded-lg text-xs text-blue-300 flex items-start gap-2">
-           <span>🤖</span>
-           <span>AI Vorschlag: <span id="ai-type" class="font-bold">...</span></span>
-         </div>
       </div>
 
       <!-- Actions -->
@@ -109,6 +112,15 @@ export function renderConfirmView() {
       </div>
     </div>
   `;
+}
+
+function renderOptionBtn(group, value, icon, label) {
+  return `
+    <button type="button" data-group="${group}" data-value="${value}" class="option-btn flex flex-col items-center justify-center p-3 rounded-xl bg-gray-800 border border-gray-700 hover:bg-gray-700 active:scale-95 transition-all">
+       <span class="text-2xl mb-1">${icon}</span>
+       <span class="text-[10px] font-bold uppercase tracking-wide text-gray-400">${label}</span>
+    </button>
+    `;
 }
 
 export function initConfirmView(element, imageBlob, locationData, onRetake, onSubmit) {
@@ -137,16 +149,55 @@ export function initConfirmView(element, imageBlob, locationData, onRetake, onSu
 
   document.querySelector('#geo-status').innerText = `Genauigkeit: ${Math.round(locationData.accuracy)}m`;
 
-  // Validation Logic
+  // UI References
   const submitBtn = element.querySelector('#submit-img-btn');
-  const typeSelect = element.querySelector('#hydrant-type');
-  const posSelect = element.querySelector('#hydrant-position');
+  const typeInput = element.querySelector('#hydrant-type');
+  const posInput = element.querySelector('#hydrant-position');
+  const volumeContainer = element.querySelector('#volume-container');
+  const volumeInput = element.querySelector('#hydrant-volume');
+
+  // Logic: Handle Grid Selection
+  const optionBtns = element.querySelectorAll('.option-btn');
+  optionBtns.forEach(btn => {
+    btn.onclick = () => {
+      const group = btn.dataset.group;
+      const value = btn.dataset.value;
+
+      // Update hidden input
+      if (group === 'type') typeInput.value = value;
+      if (group === 'pos') posInput.value = value;
+
+      // Update Visuals (Radio behavior)
+      element.querySelectorAll(`.option-btn[data-group="${group}"]`).forEach(b => {
+        b.classList.remove('bg-red-600', 'border-red-500', 'ring-2', 'ring-red-500/50');
+        b.classList.add('bg-gray-800', 'border-gray-700');
+        b.querySelector('span:last-child').classList.add('text-gray-400');
+        b.querySelector('span:last-child').classList.remove('text-white');
+      });
+
+      btn.classList.remove('bg-gray-800', 'border-gray-700');
+      btn.classList.add('bg-red-600', 'border-red-500', 'ring-2', 'ring-red-500/50');
+      btn.querySelector('span:last-child').classList.remove('text-gray-400');
+      btn.querySelector('span:last-child').classList.add('text-white');
+
+      validate();
+    };
+  });
 
   const validate = () => {
-    const typeValid = typeSelect.value !== "";
-    const posValid = posSelect.value !== "";
+    const type = typeInput.value;
+    const pos = posInput.value;
+    let valid = type && pos;
 
-    if (typeValid && posValid) {
+    // Logic: Toggle Volume Field
+    if (type === 'cistern') {
+      volumeContainer.classList.remove('hidden');
+      if (!volumeInput.value) valid = false; // Require volume for cisterns? User said "dort wird es Volumen mit anzugeben sein" (There volume WILL have to be specified). Try to enforce it.
+    } else {
+      volumeContainer.classList.add('hidden');
+    }
+
+    if (valid) {
       submitBtn.disabled = false;
       submitBtn.innerText = "Hochladen";
     } else {
@@ -155,30 +206,38 @@ export function initConfirmView(element, imageBlob, locationData, onRetake, onSu
     }
   };
 
+  volumeInput.oninput = validate;
+
   // Initial validate
   validate();
-  typeSelect.onchange = validate;
-  posSelect.onchange = validate;
 
   // Retake
   element.querySelector('#retake-btn').onclick = onRetake;
 
   // Submit
   submitBtn.onclick = () => {
-    const type = typeSelect.value;
-    const position = posSelect.value;
+    const type = typeInput.value;
+    const position = posInput.value;
     const diameter = element.querySelector('#hydrant-diameter').value;
     const ref = element.querySelector('#hydrant-ref').value;
     const operator = element.querySelector('#hydrant-operator').value;
     const colour = element.querySelector('#hydrant-colour').value;
     const note = element.querySelector('#hydrant-note').value;
+    const volume = volumeInput.value;
 
     // Construct OSM Tags
-    const tags = {
-      'emergency': 'fire_hydrant',
-      'fire_hydrant:type': type,
-      'fire_hydrant:position': position
-    };
+    const tags = {};
+
+    if (type === 'cistern') {
+      tags['emergency'] = 'water_tank';
+      tags['water_tank:volume'] = volume;
+      // Usually cisterns don't have fire_hydrant:type, but we can keep position as generic or fire_hydrant:position
+      tags['fire_hydrant:position'] = position;
+    } else {
+      tags['emergency'] = 'fire_hydrant';
+      tags['fire_hydrant:type'] = type;
+      tags['fire_hydrant:position'] = position;
+    }
 
     if (diameter) tags['fire_hydrant:diameter'] = diameter;
     if (ref) tags['ref'] = ref;
