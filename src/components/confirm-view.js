@@ -57,50 +57,51 @@ export function renderConfirmView() {
          <!-- Position Selection -->
          <div class="space-y-3">
              <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Lage</h3>
-             <div class="flex gap-2 bg-gray-800/50 p-1 rounded-xl">
-                <button type="button" class="pos-option-btn flex-1 py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="sidewalk">
+             <div class="grid grid-cols-2 gap-2 bg-gray-800/50 p-1 rounded-xl">
+                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="sidewalk">
                    🚶 Gehweg
                 </button>
-                <button type="button" class="pos-option-btn flex-1 py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="street">
+                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="street">
                    🚗 Straße
                 </button>
-                <button type="button" class="pos-option-btn flex-1 py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="green">
+                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="parking_lane">
+                   🅿️ Parkbucht
+                </button>
+                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="green">
                    🌳 Grün
                 </button>
              </div>
              <input type="hidden" id="hydrant-position" value="sidewalk">
          </div>
 
-         <!-- Details (Diameter / Volume) -->
-         <div class="space-y-3">
-             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Technische Daten</h3>
-             
-             <!-- Diameter -->
-             <div id="diameter-container">
-                 <select id="hydrant-diameter" class="w-full bg-gray-800/80 border border-gray-700/50 rounded-xl p-3 text-white font-bold focus:ring-2 focus:ring-red-500 outline-none appearance-none">
-                    <option value="80">DN 80 (Standard)</option>
-                    <option value="100">DN 100</option>
-                    <option value="150">DN 150</option>
-                    <option value="50">DN 50</option>
-                 </select>
-             </div>
-
-             <!-- Volume -->
-             <div id="volume-container" class="hidden">
-                 <input type="text" id="hydrant-volume" placeholder="Volumen z.B. 100m3" class="w-full bg-gray-800/80 border border-gray-700/50 rounded-xl p-3 text-white font-bold focus:ring-2 focus:ring-red-500 outline-none">
-             </div>
-         </div>
-
-         <!-- Extra Fields (Collapsible) -->
+         <!-- Details (Collapsible) -->
          <details class="group bg-gray-800/30 rounded-xl border border-gray-700/30 overflow-hidden">
             <summary class="list-none flex justify-between items-center p-4 font-bold cursor-pointer text-gray-400 hover:bg-gray-800/50 transition">
-               <span>Zusätzliche Infos</span>
+               <span>Technische Daten (Optional)</span>
                <span class="transition group-open:rotate-180 opacity-50">▼</span>
             </summary>
             <div class="px-4 pb-4 space-y-4 text-sm pt-2 border-t border-gray-700/30">
+               
+               <!-- Diameter / Volume moved here -->
+                <div id="diameter-container">
+                    <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Durchmesser</label>
+                    <select id="hydrant-diameter" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white outline-none">
+                        <option value="">Nicht angegeben</option>
+                        <option value="80">DN 80</option>
+                        <option value="100">DN 100</option>
+                        <option value="150">DN 150</option>
+                        <option value="50">DN 50</option>
+                    </select>
+                </div>
+
+                <div id="volume-container" class="hidden">
+                    <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen</label>
+                    <input type="text" id="hydrant-volume" placeholder="z.B. 100m3" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white outline-none">
+                </div>
+
                <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Nummer / Ref</label>
-                  <input type="text" id="hydrant-ref" placeholder="z.B. 1234" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white focus:border-red-500 outline-none">
+                  <input type="text" id="hydrant-ref" placeholder="z.B. 1234" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white outline-none">
                </div>
                <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Betreiber</label>
@@ -143,13 +144,13 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
   const diameterContainer = element.querySelector('#diameter-container');
   const diameterInput = element.querySelector('#hydrant-diameter');
 
-  // GRID OPTIONS (Compact)
+  // GRID OPTIONS (Emojis preferred by user)
   const options = [
-    { id: 'pillar', label: 'Überflur', icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v20m-4-6h8m-8-8h8m-4-4h.01"></path></svg>' },
-    { id: 'underground', label: 'Unterflur', icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m-4-4h8"></path></svg>' },
-    { id: 'wall', label: 'Wand', icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4zM12 12h.01"></path></svg>' },
-    { id: 'cistern', label: 'Zisterne', icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12a8 8 0 11-16 0 8 8 0 0116 0z M12 16v-4m0-4h.01"></path></svg>' },
-    { id: 'dry_hydrant', label: 'Trocken', icon: '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>' }
+    { id: 'pillar', label: 'Überflur', icon: '<span class="text-2xl">📮</span>' },
+    { id: 'underground', label: 'Unterflur', icon: '<span class="text-2xl">🕳️</span>' },
+    { id: 'wall', label: 'Wand', icon: '<span class="text-2xl">🧱</span>' },
+    { id: 'cistern', label: 'Zisterne', icon: '<span class="text-2xl">💧</span>' },
+    { id: 'dry_hydrant', label: 'Trocken', icon: '<span class="text-2xl">🌵</span>' }
   ];
 
   const grid = element.querySelector('#type-grid');
