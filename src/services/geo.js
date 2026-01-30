@@ -63,6 +63,16 @@ export function startTracking() {
     );
 }
 
+export function updatePosition(pos) {
+    lastPosition = {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        accuracy: pos.coords.accuracy,
+        heading: pos.coords.heading,
+        timestamp: Date.now()
+    };
+}
+
 export function getLastKnownPosition() {
     return lastPosition;
 }

@@ -122,6 +122,10 @@ export function initIntroView(element, onStart, onSettings) {
    if (navigator.geolocation) {
       const watchId = navigator.geolocation.watchPosition(
          (pos) => {
+            // Feed global cache!
+            import('../services/geo.js').then(geo => geo.updatePosition(pos));
+
+            // Update Map stuff
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
 
