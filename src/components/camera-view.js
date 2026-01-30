@@ -75,6 +75,20 @@ export async function initCamera(element, onCapture) {
     window.addEventListener('deviceorientation', boundListener);
   }
 
+  // KEYBOARD TRIGGER (Spacebar)
+  const keyHandler = (e) => {
+    if (e.code === 'Space') {
+      e.preventDefault();
+      // Check if we are still in camera mode
+      if (!element.querySelector('#camera-feed')) {
+        document.removeEventListener('keydown', keyHandler);
+        return;
+      }
+      onCapture(null); // Force capture
+    }
+  };
+  document.addEventListener('keydown', keyHandler);
+
   // Clean up listener when element removed (simplified for prototype: relying on SPA replacement garbage collection usually ok, but robust is better)
   // TODO: Add proper cleanup in future refactor
 
