@@ -30,7 +30,7 @@ export function renderConfirmView() {
          <h2 class="text-lg font-bold flex items-center gap-2">
             📍 Standort bestätigen
          </h2>
-         <div id="map" class="w-full h-48 rounded-xl bg-gray-800 border border-gray-700 z-0 shadow-inner"></div>
+         <div id="map" class="w-full h-48 rounded-xl bg-gray-800 border border-gray-700 relative z-10 shadow-inner overflow-hidden"></div>
          <p id="geo-status" class="text-xs text-gray-400 text-right">Suche Standort...</p>
       </div>
 
