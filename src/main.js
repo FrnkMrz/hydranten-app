@@ -45,45 +45,34 @@ async function showCamera() {
         blob = await new Promise(r => canvas.toBlob(r));
       }
 
-      state.capturedBlob = blob;
+      // Calculate Offset (3m in direction of compass)
+      // If heading is missing in Geolocation (often happens), try our visual compass fallback
+      const heading = loc.heading || getCurrentHeading();
 
-      // Loading State UI
-      app.innerHTML += `<div class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 text-white animate-fade-in">
-         <div class="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-         <span class="font-bold">Ermittle Position...</span>
-      </div>`;
+      const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
+      console.log("Offset Calculation:", finalLoc);
 
-      try {
-        const loc = await getPosition();
+      state.location = {
+        ...loc,
+        lat: finalLoc.lat,
+        lng: finalLoc.lng,
+        _debug: finalLoc // valid JSON
+      };
 
-        // Calculate Offset (3m in direction of compass)
-        // If heading is missing in Geolocation (often happens), try our visual compass fallback
-        const heading = loc.heading || getCurrentHeading();
+      showConfirm();
+    } catch (e) {
+      console.warn("Geo fail:", e);
+      // Fallback/Mock
+      state.location = { lat: 48.137, lng: 11.576, accuracy: 50 };
+      showConfirm();
+    }
+});
 
-        const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
-        console.log("Offset Calculation:", finalLoc);
-
-        state.location = {
-          ...loc,
-          lat: finalLoc.lat,
-          lng: finalLoc.lng,
-          _debug: finalLoc // valid JSON
-        };
-
-        showConfirm();
-      } catch (e) {
-        console.warn("Geo fail:", e);
-        // Fallback/Mock
-        state.location = { lat: 48.137, lng: 11.576, accuracy: 50 };
-        showConfirm();
-      }
-    });
-
-  // Settings Button
-  const settingsBtn = document.getElementById('settings-btn');
-  if (settingsBtn) {
-    settingsBtn.onclick = () => showSettings();
-  }
+// Settings Button
+const settingsBtn = document.getElementById('settings-btn');
+if (settingsBtn) {
+  settingsBtn.onclick = () => showSettings();
+}
 }
 
 function showSettings() {
