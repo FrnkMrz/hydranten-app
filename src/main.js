@@ -4,8 +4,11 @@ import { renderConfirmView, initConfirmView } from './components/confirm-view.js
 import { renderSettingsView, initSettingsView } from './components/settings-view.js';
 import { renderIntroView, initIntroView } from './components/intro-view.js';
 import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition, startTracking } from './services/geo.js';
+import { Log } from './services/log.js';
 
-// Init Compass & GPS Tracking early
+// Init
+Log.init();
+Log.add("App: Started");
 initCompass();
 startTracking();
 
@@ -54,6 +57,7 @@ async function showCamera() {
     </div>`;
 
       let loc = null;
+      Log.add("Main: Fetching Fresh GPS...");
       try {
         // Try fresh position (3s timeout)
         loc = await Promise.race([

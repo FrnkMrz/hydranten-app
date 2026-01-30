@@ -1,4 +1,5 @@
 import * as Geolib from 'geolib';
+import { Log } from './log.js';
 
 // State for Compass
 let currentHeading = null;
@@ -38,29 +39,30 @@ export function getCurrentHeading() {
 let lastPosition = null;
 let watcherId = null;
 
-export function startTracking() {
-    if (watcherId) return; // Already tracking
-    if (!navigator.geolocation) return;
+Log.add("Geo: startTracking called");
+if (watcherId) { Log.add("Geo: already watching"); return; }
+if (!navigator.geolocation) { Log.add("Geo: Top API missing"); return; }
 
-    watcherId = navigator.geolocation.watchPosition(
-        (pos) => {
-            lastPosition = {
-                lat: pos.coords.latitude,
-                lng: pos.coords.longitude,
-                accuracy: pos.coords.accuracy,
-                heading: pos.coords.heading,
-                timestamp: Date.now()
-            };
-        },
-        (err) => {
-            console.warn("GPS Tracking Warning:", err);
-        },
-        {
-            enableHighAccuracy: true,
-            maximumAge: 10000,
-            timeout: 20000
-        }
-    );
+watcherId = navigator.geolocation.watchPosition(
+    (pos) => {
+        Log.add(`Geo: Watcher Update ${pos.coords.latitude.toFixed(4)}`);
+        lastPosition = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            accuracy: pos.coords.accuracy,
+            heading: pos.coords.heading,
+            timestamp: Date.now()
+        };
+    },
+    (err) => {
+        console.warn("GPS Tracking Warning:", err);
+    },
+    {
+        enableHighAccuracy: true,
+        maximumAge: 10000,
+        timeout: 20000
+    }
+);
 }
 
 export function getLastKnownPosition() {
