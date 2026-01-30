@@ -79,7 +79,8 @@ function showConfirm() {
       // Simulate network request duration
       setTimeout(() => {
         const userMsg = creds.user ? `Angemeldet als: ${creds.user}` : "(Keine OSM Anbindung)";
-        alert(`Hydrant erfasst!\n${userMsg}\n\nTyp: ${data.type}\nPosition: ${data.lat.toFixed(5)}, ${data.lng.toFixed(5)}`);
+        const tagList = Object.entries(data.tags).map(([k, v]) => `${k}: ${v}`).join('\n');
+        alert(`Hydrant erfasst!\n${userMsg}\n\nDaten:\n${tagList}\n\nPosition: ${data.lat.toFixed(5)}, ${data.lng.toFixed(5)}`);
         showCamera();
       }, 1000);
     }
