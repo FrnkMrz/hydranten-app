@@ -90,7 +90,7 @@ async function showCamera() {
 function showSettings() {
   state.view = 'settings';
   app.innerHTML = renderSettingsView();
-  initSettingsView(app, () => showCamera());
+  initSettingsView(app, () => showIntro());
 }
 
 function showConfirm() {
