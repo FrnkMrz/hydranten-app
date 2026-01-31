@@ -50,7 +50,7 @@ export function renderSettingsView() {
          <button id="back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
             Zurück
          </button>
-         <p class="text-center text-[10px] text-gray-600 mt-4">Version 0.2 • Hydranten Jäger</p>
+         <p class="text-center text-[10px] text-gray-600 mt-4">Version 0.3 • Hydranten Jäger</p>
       </div>
     </div>
   `;

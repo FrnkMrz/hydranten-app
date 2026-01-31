@@ -7,7 +7,7 @@ const redirectPath = window.location.origin + window.location.pathname;
 export const auth = osmAuth({
     client_id: 'eJij_gzo2QRG-oRCZYU2FObBOgX2Z8lbIINezbHmJRI', // User Id
     redirect_uri: redirectPath,
-    scope: 'write_api', // Permissions (Matches what we asked user to check)
+    scope: 'read_prefs write_api', // Permissions
     auto: true, // Auto login if token exists
     singlepage: true // For SPA
 });
