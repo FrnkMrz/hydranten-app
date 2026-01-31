@@ -144,7 +144,6 @@ function showConfirm() {
         }
       }
     },
-
     (data) => {
       // Submit Logic
       console.log("Submitting Hydrant:", data);
@@ -239,7 +238,7 @@ function showConfirm() {
       };
 
       import('./services/osm.js').then(({ createHydrant }) => {
-        createHydrant(data, creds, addLog)
+        createHydrant(data, {}, addLog)
           .then((result) => {
             renderOverlay(logs, result);
           })
