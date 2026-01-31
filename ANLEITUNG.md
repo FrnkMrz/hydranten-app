@@ -8,8 +8,6 @@ Diese App hilft dir dabei, schnell und einfach Hydranten für **OpenStreetMap (O
 Du benötigst ein kostenloses Konto bei **OpenStreetMap**.
 Falls du noch keines hast, kannst du dich hier registrieren: [www.openstreetmap.org/user/new](https://www.openstreetmap.org/user/new)
 
----
-
 ## 2. Anmelden (Login)
 
 Bevor du Daten hochladen kannst, musst du die App mit deinem OSM-Konto verknüpfen. Das passiert sicher über **OAuth 2.0** (du gibst dein Passwort niemals direkt in der App ein).
@@ -22,8 +20,6 @@ Bevor du Daten hochladen kannst, musst du die App mit deinem OSM-Konto verknüpf
 6.  Die App springt automatisch zurück und zeigt jetzt deinen Benutzernamen grün an. ✅
 
 > **Hinweis:** Dein Login bleibt auf diesem Gerät gespeichert, bis du dich wieder abmeldest.
-
----
 
 ## 3. Hydranten eintragen
 
