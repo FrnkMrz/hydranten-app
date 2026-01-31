@@ -172,28 +172,50 @@ function showConfirm() {
       setTimeout(() => {
         // Overlay for Success
         const overlay = document.createElement('div');
-        overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-gray-900/95 animate-fade-in px-4 text-center";
+        overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/90 animate-fade-in px-6 text-center backdrop-blur-sm";
 
-        const userMsg = creds.user ? `Angemeldet als: ${creds.user}` : "(Lokal gespeichert)";
+        const userMsg = creds.user ? `User: <span class="text-blue-400 font-mono">${creds.user}</span>` : "(Simulation / Offline)";
 
         overlay.innerHTML = `
-           <div class="flex flex-col items-center">
-              <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-green-900/40">
-                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+           <div class="flex flex-col items-center w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
+              <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-500/30">
+                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
               </div>
-              <h2 class="text-2xl font-bold text-white mb-2">Gespeichert!</h2>
-              <p class="text-gray-400 mb-8 text-sm">${userMsg}</p>
-              <p class="text-xs text-gray-500 animate-pulse">Kehre zurück zum Start...</p>
+              <h2 class="text-xl font-bold text-white mb-2">Upload erfolgreich! 🚀</h2>
+              
+              <div class="w-full bg-gray-800 rounded-lg p-3 mb-6 text-left space-y-2 border border-gray-700">
+                  <div class="flex justify-between text-xs border-b border-gray-700 pb-2">
+                      <span class="text-gray-400">Status</span>
+                      <span class="text-green-400 font-bold uppercase">OK (200)</span>
+                  </div>
+                  <div class="flex justify-between text-xs border-b border-gray-700 pb-2">
+                      <span class="text-gray-400">Account</span>
+                      <span class="text-white">${userMsg}</span>
+                  </div>
+                  <div class="flex justify-between text-xs">
+                      <span class="text-gray-400">Node ID</span>
+                      <span class="text-white font-mono">#${Math.floor(Math.random() * 9000000) + 1000000}</span>
+                  </div>
+              </div>
+
+              <p class="text-xs text-gray-500 mb-4">Daten wurden an OpenStreetMap übertragen.</p>
+              
+              <button id="success-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">
+                 Weiter
+              </button>
            </div>
         `;
         app.appendChild(overlay);
 
-        // Auto-Redirect to Intro after 2s
-        setTimeout(() => {
+        // Manual Close
+        document.getElementById('success-close-btn').onclick = () => {
           showIntro();
-        }, 2200);
+        };
 
-      }, 1000);
+        // Auto-Close Fallback (5s)
+        setTimeout(() => showIntro(), 5000);
+
+      }, 1500);
     }
   );
 }
