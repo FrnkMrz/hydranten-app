@@ -85,7 +85,21 @@ export function initIntroView(element, onStart, onSettings) {
    const btn = element.querySelector('#start-btn');
    if (btn) {
       btn.onclick = () => {
-         onStart();
+         // iOS 13+ Compass Permission
+         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission()
+               .then(response => {
+                  if (response === 'granted') {
+                     console.log("Compass Permission Granted");
+                  } else {
+                     console.warn("Compass Permission Denied");
+                  }
+               })
+               .catch(console.error)
+               .finally(() => onStart());
+         } else {
+            onStart();
+         }
       };
    }
 

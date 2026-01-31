@@ -18,8 +18,8 @@ export function renderCameraView() {
       <!-- Debug Helper (Hidden or removed in prod, but keeping structure clean if needed later) -->
       <!-- <button id="debug-btn" ... hidden ...></button> -->
 
-      <!-- Controls -->
-      <div class="absolute bottom-0 left-0 right-0 p-8 pb-12 flex flex-col justify-center items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10">
+      <!-- Controls (Padded for Safari Bottom Bar) -->
+      <div class="absolute bottom-0 left-0 right-0 p-8 pb-32 flex flex-col justify-center items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10">
         <!-- Compass Heading Display -->
         <div class="mb-6 px-4 py-2 bg-black/40 backdrop-blur rounded-full text-white text-sm font-mono border border-white/20">
            🧭 <span id="compass-heading">0</span>°
