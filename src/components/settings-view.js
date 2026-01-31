@@ -91,20 +91,28 @@ export function initSettingsView(element, onBack) {
                 <div class="space-y-4 text-sm text-gray-300">
                     <p><strong>Hydranten Jäger</strong> ist ein Open Source Tool zur Erfassung von Hydranten in OpenStreetMap.</p>
                     
+                    <div class="border-l-2 border-gray-600 pl-3 py-1">
+                        <h4 class="font-bold text-white mb-1">Impressum</h4>
+                        <p class="text-xs text-gray-400 mb-1">Angaben gemäß § 5 TMG:</p>
+                        <p>Frank März</p>
+                        <p>Kersbacher Weg 3</p>
+                        <p>91220 Schnaittach</p>
+                        <p>Deutschland</p>
+                        <br>
+                        <p><strong>Kontakt:</strong></p>
+                        <p>Tel: +499153/9229501</p>
+                        <p>E-Mail: info@openfiremap.org</p>
+                    </div>
+
                     <div>
                         <h4 class="font-bold text-white">Daten & Datenschutz</h4>
                         <p>Diese App speichert keine personenbezogenen Daten auf eigenen Servern. Alle Eingaben werden direkt an OpenStreetMap (OSM) übermittelt.</p>
-                        <p class="mt-2">Mit dem Upload werden Ihre OSM-Benutzerdaten (ID, Name) öffentlich mit dem Changeset verknüpft.</p>
                     </div>
 
                     <div>
                         <h4 class="font-bold text-white">Lizenz</h4>
                         <p>Kartendaten © OpenStreetMap Mitwirkende.</p>
                         <p>Code: MIT License</p>
-                    </div>
-
-                    <div class="pt-2 border-t border-gray-700">
-                        <p class="text-xs text-gray-500">Diese App wird "wie besehen" bereitgestellt. Nutzung auf eigene Gefahr.</p>
                     </div>
                 </div>
 
