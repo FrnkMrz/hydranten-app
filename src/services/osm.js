@@ -35,8 +35,8 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
         </changeset>
     </osm>`;
 
-    onProgress("📝 Erstelle Changeset...");
-    console.log(`Creating Changeset (Comment: Adding Hydrant in ${locationName} via Hydranten Jäger)...`);
+    onProgress(`➡ PUT /changeset/create\nPayload: ${changesetXml.replace(/</g, '&lt;')}`);
+    console.log(`Creating Changeset...`);
     const csRes = await fetch(`${BASE_URL}/changeset/create`, {
         method: 'PUT',
         headers: {
@@ -45,6 +45,8 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
         },
         body: changesetXml
     });
+
+    onProgress(`⬅ Response: ${csRes.status} ${csRes.statusText}`);
 
     if (!csRes.ok) {
         if (csRes.status === 401) {
@@ -70,7 +72,8 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
         </node>
     </osm>`;
 
-    console.log("Uploading Node...");
+    onProgress(`➡ PUT /node/create\nPayload: ${nodeXml.replace(/</g, '&lt;')}`);
+
     const nodeRes = await fetch(`${BASE_URL}/node/create`, {
         method: 'PUT',
         headers: {
@@ -79,6 +82,8 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
         },
         body: nodeXml
     });
+
+    onProgress(`⬅ Response: ${nodeRes.status} ${nodeRes.statusText}`);
 
     if (!nodeRes.ok) {
         // Try to close changeset even if node failed? 
@@ -90,13 +95,14 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
     console.log("Node ID:", nodeId);
 
     // 3. Close Changeset
-    console.log("Closing Changeset...");
+    onProgress(`➡ PUT /changeset/${changesetId}/close`);
     await fetch(`${BASE_URL}/changeset/${changesetId}/close`, {
         method: 'PUT',
         headers: {
             'Authorization': authHeader
         }
     });
+    onProgress(`⬅ Response: OK`);
 
     return {
         id: nodeId,
