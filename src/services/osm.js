@@ -4,10 +4,8 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
     const BASE_URL = 'https://api.openstreetmap.org/api/0.6';
 
     const authHeaders = getAuthHeader();
-    if (!authHeaders) throw new Error("Nicht eingeloggt (OAuth Token fehlt).");
+    if (!authHeaders) throw new Error("Nicht eingeloggt (OAuth Token fehlt/ungültig).");
     const headers = { ...authHeaders, 'Content-Type': 'text/xml' };
-
-    // 0. Reverse Geocode (Get City Name)
 
     // 0. Reverse Geocode (Get City Name)
     onProgress("🔍 Ermittle Standort-Namen (Nominatim)...");
@@ -46,10 +44,9 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
     onProgress(`⬅ Response: ${csRes.status} ${csRes.statusText}`);
 
     if (!csRes.ok) {
-        if (csRes.status === 401) {
-            throw new Error(`Anmeldung fehlgeschlagen (401). Bitte prüfe Benutzername/Passwort. (Hinweis: Benutze deinen Nuternamen, NICHT die E-Mail!)`);
-        }
-        throw new Error(`Changeset Error: ${csRes.status} ${await csRes.text()}`);
+        const text = await csRes.text();
+        // Return raw error for debugging
+        throw new Error(`Changeset abgelehnt (${csRes.status}).\nInfo: ${text}`);
     }
 
     const changesetId = await csRes.text();
@@ -80,8 +77,6 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
     onProgress(`⬅ Response: ${nodeRes.status} ${nodeRes.statusText}`);
 
     if (!nodeRes.ok) {
-        // Try to close changeset even if node failed? 
-        // No, if node failed, changeset is empty, auto-closes eventually.
         throw new Error(`Node Error: ${nodeRes.status} ${await nodeRes.text()}`);
     }
 
