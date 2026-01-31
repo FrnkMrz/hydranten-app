@@ -27,9 +27,8 @@ export async function createHydrant(data, authHeader, log = console.log) {
                 const nomData = await nomRes.json();
                 address = nomData.display_name || "Unbekannt";
                 city = nomData.address.city || nomData.address.town || nomData.address.village || "Ort";
-                // Shorten Address for Log
-                const shortAddr = address.split(',').slice(0, 2).join(',');
-                log(c.success(`Standort: ${shortAddr}`));
+                // Full Address
+                log(c.success(`Standort: ${address}`));
             } else {
                 log(c.err("Nominatim Fehler: " + nomRes.status));
             }
@@ -50,7 +49,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
   </changeset>
 </osm>`;
 
-        log(c.req(`PUT /changeset/create`));
+        log(c.req(`PUT /changeset/create Payload: <br><span class="text-xs font-mono text-gray-500">${changesetXml.replace(/</g, '&lt;')}</span>`));
 
         const csRes = await fetch('https://api.openstreetmap.org/api/0.6/changeset/create', {
             method: 'PUT',
@@ -81,7 +80,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
   </node>
 </osm>`;
 
-        log(c.req(`PUT /node/create`));
+        log(c.req(`PUT /node/create Payload: <br><span class="text-xs font-mono text-gray-500">${nodeXml.replace(/</g, '&lt;')}</span>`));
         // log(c.info(`XML: ${nodeXml.replace(/</g, '&lt;')}`)); // Too verbose? User liked looking at it implicitly.
 
         const nodeRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/create`, {
