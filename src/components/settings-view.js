@@ -65,7 +65,6 @@ export function initSettingsView(element, onBack) {
   const statusDiv = element.querySelector('#auth-status');
   const userDisplay = element.querySelector('#user-display');
   const helpText = element.querySelector('#auth-help');
-  const helpText = element.querySelector('#auth-help');
   // const debugDiv = element.querySelector('#debug-log-settings'); // REMOVED
 
   const log = (msg) => {
