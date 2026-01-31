@@ -50,7 +50,7 @@ export function renderSettingsView() {
          <button id="back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
             Zurück
          </button>
-         <p class="text-center text-[10px] text-gray-600 mt-4">Version 0.3.2 (Debug) • Hydranten Jäger</p>
+         <p class="text-center text-[10px] text-gray-600 mt-4">Version 0.3.3 (Debug) • Hydranten Jäger</p>
       </div>
     </div>
   `;
@@ -73,71 +73,72 @@ export function initSettingsView(element, onBack) {
       if (username.startsWith("Error")) {
         // Check Token
         let token = null;
-        const local = JSON.parse(localStorage.getItem('osm-auth') || '{}');
-        const session = JSON.parse(sessionStorage.getItem('osm-auth') || '{}');
-        token = local.access_token || session.access_token || "MISSING";
+        try {
+          const local = JSON.parse(localStorage.getItem('osm-auth') || '{}');
+          const session = JSON.parse(sessionStorage.getItem('osm-auth') || '{}');
+          token = local.access_token || session.access_token || "MISSING";
 
-        if (!localStorage.getItem('osm-auth') && !sessionStorage.getItem('osm-auth')) token = "NO_KEY (Loc/Ses)";
-      } catch (e) { token = "JSON_PARSE_ERR"; }
+          if (!localStorage.getItem('osm-auth') && !sessionStorage.getItem('osm-auth')) token = "NO_KEY (Loc/Ses)";
+        } catch (e) { token = "JSON_PARSE_ERR"; }
 
-      const tokenDebug = token && token.length > 5 ? `Token: ${token.substring(0, 5)}...` : `Token: ${token}`;
+        const tokenDebug = token && token.length > 5 ? `Token: ${token.substring(0, 5)}...` : `Token: ${token}`;
 
-      userDisplay.innerText = "Debug: " + username + "\n" + tokenDebug;
-      userDisplay.className = "text-xs font-mono text-red-400 break-words";
+        userDisplay.innerText = "Debug: " + username + "\n" + tokenDebug;
+        userDisplay.className = "text-xs font-mono text-red-400 break-words";
+      } else {
+        userDisplay.innerText = username;
+        userDisplay.className = "text-xl font-bold text-green-400";
+      }
+      loginBtn.classList.add('hidden');
+      helpText.classList.add('hidden');
+      logoutBtn.classList.remove('hidden');
     } else {
-      userDisplay.innerText = username;
-      userDisplay.className = "text-xl font-bold text-green-400";
+      statusDiv.classList.add('hidden');
+      loginBtn.classList.remove('hidden');
+      helpText.classList.remove('hidden');
+      logoutBtn.classList.add('hidden');
     }
-    loginBtn.classList.add('hidden');
-    helpText.classList.add('hidden');
-    logoutBtn.classList.remove('hidden');
-  } else {
-    statusDiv.classList.add('hidden');
-  loginBtn.classList.remove('hidden');
-  helpText.classList.remove('hidden');
-  logoutBtn.classList.add('hidden');
-}
   };
 
-// Check Login on Init
-if (auth.authenticated()) {
-  checkLogin().then(name => {
-    updateUI(name || "Eingeloggt");
-  });
-} else {
-  updateUI(null);
-}
+  // Check Login on Init
+  if (auth.authenticated()) {
+    checkLogin().then(name => {
+      updateUI(name || "Eingeloggt");
+    });
+  } else {
+    updateUI(null);
+  }
 
-loginBtn.onclick = () => {
-  auth.authenticate((err, res) => {
-    if (err) {
-      console.error(err);
-      let msg = "Login Fehler:\n";
-      if (err instanceof XMLHttpRequest) {
-        msg += `Status: ${err.status}\nAvg: ${err.responseText}`;
+  loginBtn.onclick = () => {
+    auth.authenticate((err, res) => {
+      if (err) {
+        console.error(err);
+        let msg = "Login Fehler:\n";
+        if (err instanceof XMLHttpRequest) {
+          msg += `Status: ${err.status}\nAvg: ${err.responseText}`;
+        } else {
+          msg += String(err);
+        }
+        alert(msg);
       } else {
-        msg += String(err);
+        checkLogin().then(name => updateUI(name || "Eingeloggt"));
       }
-      alert(msg);
-    } else {
-      checkLogin().then(name => updateUI(name || "Eingeloggt"));
-    }
-  });
-};
+    });
+  };
 
-logoutBtn.onclick = () => {
-  auth.logout();
-  updateUI(null);
-  alert("Erfolgreich ausgeloggt.");
-};
+  logoutBtn.onclick = () => {
+    auth.logout();
+    updateUI(null);
+    alert("Erfolgreich ausgeloggt.");
+  };
 
-resetBtn.onclick = () => {
-  // DEBUG: Show what is in storage before clearing
-  const raw = localStorage.getItem('osm-auth');
-  alert("Storage Content:\n" + (raw ? raw.substring(0, 200) : "NULL"));
+  resetBtn.onclick = () => {
+    // DEBUG: Show what is in storage before clearing
+    const raw = localStorage.getItem('osm-auth');
+    alert("Storage Content:\n" + (raw ? raw.substring(0, 200) : "NULL"));
 
-  auth.logout();
-  localStorage.clear();
-  window.location.reload();
-};
+    auth.logout();
+    localStorage.clear();
+    window.location.reload();
+  };
 }
