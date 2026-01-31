@@ -18,22 +18,37 @@ export async function createHydrant(data, authHeader, log = console.log) {
         // Doing it before allows us to put address in changeset comment.
         log(c.info("Ermittle Standort-Namen (Nominatim)..."));
 
-        let address = "Unbekannt";
-        let city = "Unbekannt";
+        let locationStr = "Unbekannt";
 
         try {
             const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
             if (nomRes.ok) {
                 const nomData = await nomRes.json();
-                address = nomData.display_name || "Unbekannt";
-                city = nomData.address.city || nomData.address.town || nomData.address.village || "Ort";
-                // Full Address
-                log(c.success(`Standort: ${address}`));
+                const a = nomData.address || {};
+
+                // Try to build: "91234 Schnaittach, Hauptstraße"
+                const zip = a.postcode || "";
+                const city = a.city || a.town || a.village || a.municipality || "Ort";
+                const street = a.road || a.pedestrian || a.footway || a.path || "";
+
+                if (street && zip) {
+                    locationStr = `${zip} ${city}, ${street}`;
+                } else if (zip) {
+                    locationStr = `${zip} ${city}`;
+                } else if (street) {
+                    locationStr = `${city}, ${street}`;
+                } else {
+                    locationStr = city;
+                }
+
+                log(c.success(`Standort: ${locationStr} (${nomData.display_name})`));
             } else {
                 log(c.err("Nominatim Fehler: " + nomRes.status));
+                locationStr = "Unbekannt";
             }
         } catch (e) {
             log(c.err("Nominatim Exception: " + e.message));
+            locationStr = "Unbekannt";
         }
 
 
@@ -44,7 +59,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
 <osm>
   <changeset>
     <tag k="created_by" v="Hydranten Jäger v0.3.5"/>
-    <tag k="comment" v="Adding Hydrant in ${city} via Hydranten Jäger"/>
+    <tag k="comment" v="Adding Hydrant in ${locationStr} via Hydranten Jäger"/>
     <tag k="locale" v="de"/>
   </changeset>
 </osm>`;
