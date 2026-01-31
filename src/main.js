@@ -152,7 +152,7 @@ function showConfirm() {
               <button id="error-settings-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white font-bold transition">
                  Zu den Einstellungen
               </button>
-              <button id="error-close-btn" class="mt-4 text-sm text-gray-500 hover:text-gray-300">
+              <button id="error-close-btn" class="mt-4 text-sm text-gray-400 hover:text-white transition">
                  Abbrechen
               </button>
            </div>
