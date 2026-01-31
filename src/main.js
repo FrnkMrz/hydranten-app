@@ -14,10 +14,7 @@ const app = document.querySelector('#app');
 
 // DEBUG: Check URL parameters immediately
 if (location.search.includes('code=')) {
-  alert("URL Code Detected: " + location.search);
-} else {
-  // Optional: Log that no code was found
-  // console.log("No code in URL");
+  // alert("URL Code Detected: " + location.search);
 }
 
 // Simple State Management
@@ -340,17 +337,39 @@ if (location.search.includes('code=')) {
     } else {
       console.log("Login Successful!", res);
 
-      // PERSISTENT DEBUG OVERLAY
+      // PERSISTENT DEBUG OVERLAY V2
+      let debugText = "TYPE: " + (res && res.constructor ? res.constructor.name : typeof res) + "\n";
+      debugText += "ResponseText: " + (res && res.responseText ? res.responseText : "N/A") + "\n";
+      debugText += "Response: " + (res && JSON.stringify(res.response) || "N/A") + "\n";
+      try { debugText += "Auth Options Token: " + (auth.options().access_token || "UNDEFINED") + "\n"; } catch (e) { }
+      debugText += "Full Res: " + JSON.stringify(res, null, 2);
+
       const debugDiv = document.createElement('div');
       debugDiv.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);color:#0f0;font-family:monospace;white-space:pre-wrap;z-index:9999;padding:20px;overflow:auto;";
-      debugDiv.innerHTML = "<h1>LOGIN SUCCESS DEBUG</h1>" + JSON.stringify(res, null, 2) + "<br><br><button onclick='this.parentElement.remove()'>CLOSE</button>";
+      debugDiv.innerHTML = "<h1>LOGIN DEBUG V2</h1><pre>" + debugText + "</pre><br><button onclick='this.parentElement.remove()'>CLOSE</button>";
       document.body.appendChild(debugDiv);
 
-      // FORCE SAVE TOKEN (Fix for missing token issue)
+      // FORCE SAVE TOKEN (Attempt parsing XHR)
+      let accessToken = null;
       if (res && res.access_token) {
-        auth.options().access_token = res.access_token;
-        localStorage.setItem('osm-auth', JSON.stringify(res));
-        console.log("Token manually saved to localStorage.");
+        accessToken = res.access_token;
+      } else if (res && res.responseText) {
+        try {
+          const parsed = JSON.parse(res.responseText);
+          accessToken = parsed.access_token;
+        } catch (e) { console.error("Parse Error", e); }
+      }
+
+      if (accessToken) {
+        auth.options().access_token = accessToken;
+        // Construct a clean object to save
+        localStorage.setItem('osm-auth', JSON.stringify({ access_token: accessToken }));
+        console.log("Token manually saved to localStorage (from XHR).");
+
+        // Update debug text to show success IN THE OVERLAY
+        debugDiv.innerHTML += "<h2 style='color:white;background:green;padding:10px;'>TOKEN FOUND & SAVED!</h2>";
+      } else {
+        debugDiv.innerHTML += "<h2 style='color:white;background:red;padding:10px;'>NO TOKEN FOUND IN RESP!</h2>";
       }
 
       window.history.replaceState({}, document.title, window.location.pathname);
