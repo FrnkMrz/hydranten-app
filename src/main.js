@@ -243,10 +243,8 @@ function showConfirm() {
             renderOverlay(logs, result);
           })
           .catch(err => {
-            // Determine if it was a handled error or bug
             console.error("Upload Failed", err);
 
-            // Don't remove overlay! Show Error inside it.
             let content = `
                    <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-red-500/50 rounded-2xl p-6 shadow-2xl">
                       <h2 class="text-xl font-bold text-red-500 mb-4 flex items-center justify-center gap-2">
@@ -280,23 +278,60 @@ function showConfirm() {
 // Init App
 if (location.search.includes('code=')) {
   console.log("OAuth Callback detected. Finishing login...");
-  // Update UI to show loading
   const app = document.querySelector('#app');
   app.innerHTML = `<div class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white">
        <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
        <h2 class="text-xl font-bold">Verbinde mit OpenStreetMap...</h2>
+       <p class="text-gray-400 text-sm mt-4 text-center max-w-xs" id="login-status-text">Token wird ausgetauscht...</p>
+       <button id="cancel-login-btn" class="mt-8 text-red-400 border border-red-400/30 px-4 py-2 rounded-lg text-sm hidden">Abbrechen</button>
     </div>`;
+
+  // Show cancel button after 5 seconds if stuck
+  setTimeout(() => {
+    document.getElementById('cancel-login-btn')?.classList.remove('hidden');
+  }, 5000);
+
+  document.getElementById('cancel-login-btn').onclick = () => {
+    window.history.replaceState({}, document.title, window.location.pathname);
+    showIntro();
+  };
 
   auth.authenticate((err, res) => {
     if (err) {
-      alert("Login fehlgeschlagen: " + err);
-      showIntro();
+      console.error("Auth Error:", err);
+      const container = document.querySelector('#app');
+
+      let status = "Unbekannt";
+      let response = "";
+      if (err instanceof XMLHttpRequest) {
+        status = err.status;
+        response = err.responseText || "(Keine Antwort)";
+      } else {
+        response = String(err);
+      }
+
+      container.innerHTML = `
+                <div class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white p-6">
+                   <div class="bg-red-900/20 border border-red-500/50 p-6 rounded-2xl max-w-sm w-full">
+                       <h2 class="text-xl font-bold text-red-500 mb-4">Login Fehlgeschlagen</h2>
+                       <div class="mb-4 text-sm font-mono bg-black/40 p-3 rounded text-red-200 overflow-auto max-h-40">
+                           <p><strong>Status:</strong> ${status}</p>
+                           <p><strong>Info:</strong> ${response}</p>
+                       </div>
+                       <button id="err-ok-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 rounded-xl font-bold">
+                           Zurück zum Start
+                       </button>
+                   </div>
+                </div>
+            `;
+
+      document.getElementById('err-ok-btn').onclick = () => {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        showIntro();
+      };
     } else {
       console.log("Login Successful!");
-      // Remove code from URL without reload
       window.history.replaceState({}, document.title, window.location.pathname);
-      // Go to Settings explicitly or just start?
-      // Go to Settings to confirm user sees "Logged In"
       showSettings();
     }
   });

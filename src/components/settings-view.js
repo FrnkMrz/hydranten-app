@@ -39,6 +39,11 @@ export function renderSettingsView() {
                Abmelden
             </button>
          </div>
+         
+         <!-- Force Reset Button -->
+         <button id="reset-btn" class="w-full max-w-sm py-3 bg-red-900/10 text-red-600 rounded-xl font-bold mt-8 border border-red-500/10 hover:bg-red-900/20 transition text-sm">
+             ⚠️ App Zurücksetzen (Logout)
+         </button>
       </div>
 
       <div class="z-10 mt-auto">
@@ -56,6 +61,7 @@ export function initSettingsView(element, onBack) {
 
   const loginBtn = element.querySelector('#login-btn');
   const logoutBtn = element.querySelector('#logout-btn');
+  const resetBtn = element.querySelector('#reset-btn');
   const statusDiv = element.querySelector('#auth-status');
   const userDisplay = element.querySelector('#user-display');
   const helpText = element.querySelector('#auth-help');
@@ -85,9 +91,18 @@ export function initSettingsView(element, onBack) {
   }
 
   loginBtn.onclick = () => {
+    // Clear URL params to allow fresh login flow if needed? 
+    // Nah, auth.authenticate handles new code request.
     auth.authenticate((err, res) => {
       if (err) {
-        alert("Login Error: " + err);
+        console.error(err);
+        let msg = "Login Fehler:\n";
+        if (err instanceof XMLHttpRequest) {
+          msg += `Status: ${err.status}\nAvg: ${err.responseText}`;
+        } else {
+          msg += String(err);
+        }
+        alert(msg);
       } else {
         checkLogin().then(name => updateUI(name || "Eingeloggt"));
       }
@@ -97,5 +112,14 @@ export function initSettingsView(element, onBack) {
   logoutBtn.onclick = () => {
     auth.logout();
     updateUI(null);
+    alert("Erfolgreich ausgeloggt.");
+  };
+
+  resetBtn.onclick = () => {
+    if (confirm("Wirklich alles zurücksetzen?")) {
+      auth.logout();
+      localStorage.clear();
+      window.location.href = window.location.pathname; // Hard Reload without query params
+    }
   };
 }
