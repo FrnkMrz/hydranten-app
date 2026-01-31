@@ -144,21 +144,17 @@ function showConfirm() {
         }
       }
     },
-// Add import at top
-import { auth } from './services/auth.js';
 
-  // ...
+    (data) => {
+      // Submit Logic
+      console.log("Submitting Hydrant:", data);
 
-  (data) => {
-    // Submit Logic
-    console.log("Submitting Hydrant:", data);
-
-    // 1. Validate Credentials
-    if (!auth.authenticated()) {
-      // Error Overlay
-      const overlay = document.createElement('div');
-      overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-gray-900/95 animate-fade-in px-4 text-center";
-      overlay.innerHTML = `
+      // 1. Validate Credentials
+      if (!auth.authenticated()) {
+        // Error Overlay
+        const overlay = document.createElement('div');
+        overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-gray-900/95 animate-fade-in px-4 text-center";
+        overlay.innerHTML = `
            <div class="flex flex-col items-center max-w-xs">
               <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-red-900/40">
                  <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -174,29 +170,29 @@ import { auth } from './services/auth.js';
               </button>
            </div>
         `;
+        app.appendChild(overlay);
+
+        document.getElementById('error-settings-btn').onclick = () => showSettings();
+        document.getElementById('error-close-btn').onclick = () => overlay.remove();
+        return;
+      }
+
+      const btn = document.getElementById('submit-img-btn');
+      btn.innerHTML = `<span>Lade hoch...</span>`;
+      btn.disabled = true;
+
+      // Real Upload Logic
+      // Create Overlay Immediately
+      const overlay = document.createElement('div');
+      overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/95 animate-fade-in px-6 text-center backdrop-blur-sm";
       app.appendChild(overlay);
 
-      document.getElementById('error-settings-btn').onclick = () => showSettings();
-      document.getElementById('error-close-btn').onclick = () => overlay.remove();
-      return;
-    }
+      const renderOverlay = (statusLines, result = null) => {
+        const linesHtml = statusLines.map(line =>
+          `<div class="text-sm font-mono text-gray-400 border-l-2 border-gray-700 pl-3 py-1 text-left">${line}</div>`
+        ).join('');
 
-    const btn = document.getElementById('submit-img-btn');
-    btn.innerHTML = `<span>Lade hoch...</span>`;
-    btn.disabled = true;
-
-    // Real Upload Logic
-    // Create Overlay Immediately
-    const overlay = document.createElement('div');
-    overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/95 animate-fade-in px-6 text-center backdrop-blur-sm";
-    app.appendChild(overlay);
-
-    const renderOverlay = (statusLines, result = null) => {
-      const linesHtml = statusLines.map(line =>
-        `<div class="text-sm font-mono text-gray-400 border-l-2 border-gray-700 pl-3 py-1 text-left">${line}</div>`
-      ).join('');
-
-      let content = `
+        let content = `
            <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
               <h2 class="text-xl font-bold text-white mb-4 flex items-center justify-center gap-2">
                  ${result ? 'Upload Erfolgreich! 🚀' : 'Lade hoch... ⏳'}
@@ -206,8 +202,8 @@ import { auth } from './services/auth.js';
               </div>
          `;
 
-      if (result) {
-        content += `
+        if (result) {
+          content += `
                <div class="w-full bg-gray-800 rounded-lg p-3 mb-4 text-left space-y-2 border border-green-500/30">
                   <div class="flex justify-between text-xs">
                        <span class="text-gray-400">Node ID</span>
@@ -222,37 +218,37 @@ import { auth } from './services/auth.js';
                  Fertig
                </button>
             `;
-      } else {
-        content += `
+        } else {
+          content += `
                <div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
              `;
-      }
-      content += `</div>`;
-      overlay.innerHTML = content;
+        }
+        content += `</div>`;
+        overlay.innerHTML = content;
 
-      if (result) {
-        document.getElementById('success-close-btn').onclick = () => showIntro();
-        setTimeout(() => showIntro(), 6000);
-      }
-    };
+        if (result) {
+          document.getElementById('success-close-btn').onclick = () => showIntro();
+          setTimeout(() => showIntro(), 6000);
+        }
+      };
 
-    const logs = [];
-    const addLog = (msg) => {
-      logs.push(msg);
-      renderOverlay(logs);
-    };
+      const logs = [];
+      const addLog = (msg) => {
+        logs.push(msg);
+        renderOverlay(logs);
+      };
 
-    import('./services/osm.js').then(({ createHydrant }) => {
-      createHydrant(data, creds, addLog)
-        .then((result) => {
-          renderOverlay(logs, result);
-        })
-        .catch(err => {
-          // Determine if it was a handled error or bug
-          console.error("Upload Failed", err);
+      import('./services/osm.js').then(({ createHydrant }) => {
+        createHydrant(data, creds, addLog)
+          .then((result) => {
+            renderOverlay(logs, result);
+          })
+          .catch(err => {
+            // Determine if it was a handled error or bug
+            console.error("Upload Failed", err);
 
-          // Don't remove overlay! Show Error inside it.
-          let content = `
+            // Don't remove overlay! Show Error inside it.
+            let content = `
                    <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-red-500/50 rounded-2xl p-6 shadow-2xl">
                       <h2 class="text-xl font-bold text-red-500 mb-4 flex items-center justify-center gap-2">
                          ❌ Upload Fehlgeschlagen
@@ -270,15 +266,15 @@ import { auth } from './services/auth.js';
                       </button>
                    </div>
                 `;
-          overlay.innerHTML = content;
-          document.getElementById('error-overlay-close').onclick = () => {
-            overlay.remove();
-            btn.innerHTML = `<span>Erneut versuchen</span>`;
-            btn.disabled = false;
-          };
-        });
-    });
-  }
+            overlay.innerHTML = content;
+            document.getElementById('error-overlay-close').onclick = () => {
+              overlay.remove();
+              btn.innerHTML = `<span>Erneut versuchen</span>`;
+              btn.disabled = false;
+            };
+          });
+      });
+    }
   );
 }
 
