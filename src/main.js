@@ -330,7 +330,15 @@ if (location.search.includes('code=')) {
         showIntro();
       };
     } else {
-      console.log("Login Successful!");
+      console.log("Login Successful!", res);
+
+      // FORCE SAVE TOKEN (Fix for missing token issue)
+      if (res && res.access_token) {
+        auth.options().access_token = res.access_token;
+        localStorage.setItem('osm-auth', JSON.stringify(res));
+        console.log("Token manually saved to localStorage.");
+      }
+
       window.history.replaceState({}, document.title, window.location.pathname);
       showSettings();
     }
