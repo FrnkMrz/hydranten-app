@@ -1,309 +1,249 @@
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-
-// Fix Leaflet Icons
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
 
 export function renderConfirmView() {
   return `
-    <div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in pb-safe">
-      <!-- Top: Map (Compact Hero 25%) -->
-      <div class="relative w-full h-[25vh] bg-gray-800 shrink-0">
-        
-        <!-- MAIN: Map -->
-        <div id="map" class="w-full h-full z-0"></div>
-
-        <!-- OVERLAY: Photo (Thumbnail - Smaller) -->
-        <div class="absolute bottom-4 right-4 w-20 h-28 rounded-xl border-2 border-white/30 shadow-2xl overflow-hidden bg-black z-10 transition transform origin-bottom-right hover:scale-[2.5] active:scale-[2.5] cursor-pointer group">
-            <img id="preview-img" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
-            <span class="absolute bottom-1 right-2 text-[10px] font-bold text-white/80">FOTO</span>
-        </div>
-
-        <!-- Back Button (Floating) -->
-        <div class="absolute top-4 left-4 z-20">
-           <button id="retake-btn" class="bg-black/40 backdrop-blur-md p-3 rounded-full text-white hover:bg-black/60 transition shadow-lg border border-white/10">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-           </button>
-        </div>
-
-        <!-- Accuracy Pill & Retry -->
-        <div class="absolute top-4 right-4 z-20 flex flex-col items-end gap-2">
-           <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white/90 border border-white/10 shadow-lg" id="geo-status-pill">
-              GPS: ...
-           </div>
-           <button id="gps-retry-btn" class="bg-blue-600/80 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-white shadow-lg active:scale-95 transition hidden">
-              🔄 GPS neu laden
-           </button>
-        </div>
+    <div class="h-full w-full bg-slate-900 text-white flex flex-col p-4 animate-slide-up overflow-y-auto pb-safe">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-2 shrink-0">
+          <button id="back-to-cam" class="p-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition">
+             ❌
+          </button>
+          <h2 class="text-lg font-bold">Hydrant bestätigen</h2>
+          <div class="w-10"></div> <!-- Spacer -->
       </div>
-
-      <!-- Scrollable Form Content -->
-      <div class="flex-grow overflow-y-auto px-4 pt-6 pb-24 space-y-8 bg-slate-900">
+      
+      <!-- Image Preview -->
+      <div class="w-full h-48 bg-black rounded-xl overflow-hidden shadow-lg border border-gray-700 shrink-0 relative mb-4">
+         <img id="preview-img" class="w-full h-full object-cover opacity-0 transition-opacity duration-500" />
+      </div>
+      
+      <!-- Form Fields -->
+      <div class="space-y-4">
          
-         <!-- Type Selection (Grid) -->
-         <div class="space-y-3">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Hydranten-Typ</h3>
-            <div id="type-grid" class="grid grid-cols-5 gap-2">
-               <!-- JS Populated Small Grid -->
+         <!-- Type Selection (Capsules) -->
+         <div class="space-y-2">
+            <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Hydranten-Typ</label>
+            <div class="grid grid-cols-2 gap-3" id="type-selector">
+               <!-- Pillar -->
+               <label class="cursor-pointer relative group">
+                  <input type="radio" name="hydrant_type" value="pillar" class="peer sr-only" checked>
+                  <div class="p-3 bg-gray-800 border-2 border-gray-700 rounded-xl peer-checked:border-red-500 peer-checked:bg-red-900/20 transition flex flex-col items-center gap-2 h-full">
+                      <span class="text-2xl">🔥</span>
+                      <span class="font-bold text-sm">Überflur</span>
+                      <span class="text-[10px] text-gray-500 text-center leading-tight">Säule sichtbar</span>
+                  </div>
+               </label>
+               
+               <!-- Underground -->
+               <label class="cursor-pointer relative group">
+                  <input type="radio" name="hydrant_type" value="underground" class="peer sr-only">
+                  <div class="p-3 bg-gray-800 border-2 border-gray-700 rounded-xl peer-checked:border-blue-400 peer-checked:bg-blue-900/20 transition flex flex-col items-center gap-2 h-full">
+                      <span class="text-2xl">🕳️</span>
+                      <span class="font-bold text-sm">Unterflur</span>
+                      <span class="text-[10px] text-gray-500 text-center leading-tight">Im Boden (Oval)</span>
+                  </div>
+               </label>
             </div>
-            <input type="hidden" id="hydrant-type" value="pillar">
+         </div>
+         
+         <!-- Location / Position -->
+         <div class="space-y-2">
+            <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Position (Lage)</label>
+            <div class="grid grid-cols-2 gap-3" id="position-selector">
+               <label class="cursor-pointer">
+                  <input type="radio" name="position" value="sidewalk" class="peer sr-only">
+                  <div class="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg peer-checked:bg-gray-700 peer-checked:text-white peer-checked:border-gray-500 text-gray-400 text-center text-sm transition">
+                     Gehweg
+                  </div>
+               </label>
+               <label class="cursor-pointer">
+                  <input type="radio" name="position" value="street" class="peer sr-only">
+                  <div class="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg peer-checked:bg-gray-700 peer-checked:text-white peer-checked:border-gray-500 text-gray-400 text-center text-sm transition">
+                     Straße
+                  </div>
+               </label>
+               <label class="cursor-pointer">
+                  <input type="radio" name="position" value="green" class="peer sr-only">
+                  <div class="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg peer-checked:bg-green-900/30 peer-checked:text-green-200 peer-checked:border-green-800 text-gray-400 text-center text-sm transition">
+                     Grünstreifen
+                  </div>
+               </label>
+               <label class="cursor-pointer">
+                  <input type="radio" name="position" value="lane" class="peer sr-only">
+                  <div class="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg peer-checked:bg-gray-700 peer-checked:text-white peer-checked:border-gray-500 text-gray-400 text-center text-sm transition">
+                     Parkbucht
+                  </div>
+               </label>
+            </div>
          </div>
 
-         <!-- Position Selection -->
-         <div class="space-y-3">
-             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Lage</h3>
-             <div class="grid grid-cols-2 gap-2 bg-gray-800/50 p-1 rounded-xl">
-                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="sidewalk">
-                   🚶 Gehweg
-                </button>
-                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="street">
-                   🚗 Straße
-                </button>
-                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="parking_lane">
-                   🅿️ Parkbucht
-                </button>
-                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="green">
-                   🌳 Grün
-                </button>
+         <!-- Simplified Inputs -->
+         <div class="grid grid-cols-2 gap-4">
+             <div class="space-y-1">
+                 <label class="text-xs font-bold text-gray-400 uppercase">Größe (DN)</label>
+                 <select id="diameter" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-white focus:border-blue-500 outline-none">
+                     <option value="">Unbekannt</option>
+                     <option value="80">80 mm</option>
+                     <option value="100">100 mm</option>
+                     <option value="150">150 mm</option>
+                 </select>
              </div>
-             <input type="hidden" id="hydrant-position" value="sidewalk">
+             <div class="space-y-1">
+                 <label class="text-xs font-bold text-gray-400 uppercase">Nummer (Ref)</label>
+                 <input type="text" id="ref" placeholder="z.B. 124" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-white focus:border-blue-500 outline-none placeholder-gray-600" />
+             </div>
          </div>
 
-         <!-- Details (Visible) -->
-         <div class="space-y-4 pt-4 border-t border-gray-800">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Technische Daten (Optional)</h3>
-            
-            <!-- Diameter / Volume -->
-            <div id="diameter-container">
-                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Durchmesser</label>
-                <select id="hydrant-diameter" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-                    <option value="">Nicht angegeben</option>
-                    <option value="80">DN 80</option>
-                    <option value="100">DN 100</option>
-                    <option value="150">DN 150</option>
-                    <option value="50">DN 50</option>
-                </select>
+         <!-- Color Picker -->
+         <div class="space-y-2">
+            <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Farbe</label>
+            <div class="flex flex-wrap gap-3" id="color-picker-container">
+                <!-- Will be populated by JS -->
             </div>
-
-            <div id="volume-container" class="hidden">
-                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen</label>
-                <input type="text" id="hydrant-volume" placeholder="z.B. 100m3" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-            </div>
-
-            <div class="space-y-4">
-               <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Nummer / Ref</label>
-                  <input type="text" id="hydrant-ref" placeholder="z.B. 1234" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-               </div>
-               <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Betreiber</label>
-                  <input type="text" id="hydrant-operator" placeholder="Gemeinde" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-               </div>
-               <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Farbe</label>
-                  <input type="text" id="hydrant-colour" placeholder="Rot" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-               </div>
-               <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Notiz</label>
-                  <textarea id="hydrant-note" placeholder="..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white h-20 outline-none"></textarea>
-               </div>
-            </div>
+            <input type="hidden" id="selected_colour" value="">
          </div>
+
+         <!-- Notes -->
+         <div class="space-y-1">
+             <label class="text-xs font-bold text-gray-400 uppercase">Notiz</label>
+             <textarea id="note" rows="2" placeholder="Besonderheiten..." class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-white focus:border-blue-500 outline-none placeholder-gray-600 resize-none"></textarea>
+         </div>
+
       </div>
 
-      <!-- Submit Footer -->
-      <div class="fixed bottom-0 left-0 right-0 p-4 bg-slate-900/90 backdrop-blur-xl border-t border-gray-800/50 z-50 max-w-sm mx-auto">
-         <button id="submit-img-btn" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-green-900/30 active:scale-95 transition-all flex items-center justify-center gap-2">
-            <span>HOCHLADEN ZU OSM ☁️</span>
+      <!-- Action Footer -->
+      <div class="mt-8 mb-4">
+         <button id="submit-img-btn" class="w-full py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-2xl font-bold text-lg shadow-xl shadow-red-900/30 active:scale-95 transition flex items-center justify-center gap-2">
+            <span>In OSM eintragen</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
          </button>
+         
+         <div class="flex justify-between mt-4 px-2">
+             <button id="retry-gps-btn" class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 p-2">
+                 <svg class="w-3 h-3 animate-spin hidden" id="gps-spin" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M12 2v4m0 12v4M2 12h4m12 0h4"></path></svg>
+                 📡 GPS aktualisieren
+             </button>
+             <div class="text-right">
+                 <p class="text-xs text-gray-500 font-mono" id="gps-coords">Wait...</p>
+                 <p class="text-[10px] text-gray-600 font-mono" id="gps-acc">Acquiring...</p>
+             </div>
+         </div>
       </div>
     </div>
   `;
 }
 
-export function initConfirmView(element, imageBlob, location, onRetake, onSubmit) {
+export function initConfirmView(element, blob, location, actions, onSubmit) {
+  // Preview
   const img = element.querySelector('#preview-img');
-  img.src = URL.createObjectURL(imageBlob);
-
-  const retakeBtn = element.querySelector('#retake-btn');
-  const submitBtn = element.querySelector('#submit-img-btn');
-  const typeInput = element.querySelector('#hydrant-type');
-  const posInput = element.querySelector('#hydrant-position');
-
-  const volumeContainer = element.querySelector('#volume-container');
-  const volumeInput = element.querySelector('#hydrant-volume');
-  const diameterContainer = element.querySelector('#diameter-container');
-  const diameterInput = element.querySelector('#hydrant-diameter');
-
-  // GRID OPTIONS (Emojis preferred by user)
-  const options = [
-    { id: 'pillar', label: 'Überflur', icon: '<span class="text-2xl">📮</span>' },
-    { id: 'underground', label: 'Unterflur', icon: '<span class="text-2xl">🕳️</span>' },
-    { id: 'wall', label: 'Wand', icon: '<span class="text-2xl">🧱</span>' },
-    { id: 'cistern', label: 'Zisterne', icon: '<span class="text-2xl">💧</span>' },
-    { id: 'dry_hydrant', label: 'Trocken', icon: '<span class="text-2xl">🌵</span>' }
-  ];
-
-  const grid = element.querySelector('#type-grid');
-  grid.innerHTML = options.map(opt => `
-     <button type="button" class="option-btn aspect-square rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-1" data-value="${opt.id}">
-        ${opt.icon}
-        <span class="text-[9px] font-bold uppercase tracking-tight">${opt.label}</span>
-     </button>
-  `).join('');
-
-  // Grid Logic
-  const optionBtns = element.querySelectorAll('.option-btn');
-  const updateGrid = (val) => {
-    typeInput.value = val;
-    optionBtns.forEach(btn => {
-      if (btn.dataset.value === val) {
-        btn.classList.add('border-red-500', 'bg-red-900/30', 'text-white', 'shadow-md', 'shadow-red-900/20');
-        btn.classList.remove('border-transparent', 'bg-gray-800', 'text-gray-400');
-      } else {
-        btn.classList.remove('border-red-500', 'bg-red-900/30', 'text-white', 'shadow-md', 'shadow-red-900/20');
-        btn.classList.add('border-transparent', 'bg-gray-800', 'text-gray-400');
-      }
-    });
-
-    if (val === 'cistern') {
-      volumeContainer.classList.remove('hidden');
-      diameterContainer.classList.add('hidden');
-    } else {
-      volumeContainer.classList.add('hidden');
-      diameterContainer.classList.remove('hidden');
-    }
-  };
-
-  element.querySelectorAll('.option-btn').forEach(btn => {
-    btn.onclick = () => updateGrid(btn.dataset.value);
-  });
-  updateGrid('pillar'); // Default
-
-  // Position Logic
-  const posBtns = element.querySelectorAll('.pos-option-btn');
-  const updatePos = (val) => {
-    posInput.value = val;
-    posBtns.forEach(btn => {
-      if (btn.dataset.value === val) {
-        btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
-        btn.classList.remove('text-gray-400');
-      } else {
-        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
-        btn.classList.add('text-gray-400');
-      }
-    });
-  };
-  posBtns.forEach(btn => {
-    btn.onclick = () => updatePos(btn.dataset.value);
-  });
-  updatePos('sidewalk');
-
-
-  // Map Setup (Hero)
-  const mapContainer = element.querySelector('#map');
-  const center = [location.lat || 48.137, location.lng || 11.576]; // Safe Access
-  const map = L.map(mapContainer, { zoomControl: false }).setView(center, 19);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: ''
-  }).addTo(map);
-
-  const marker = L.marker(center, { draggable: true }).addTo(map);
-  const statusPill = document.querySelector('#geo-status-pill');
-
-  marker.on('dragend', function (event) {
-    const position = marker.getLatLng();
-    location.lat = position.lat;
-    location.lng = position.lng;
-    if (statusPill) statusPill.innerText = `📍 Verschoben`;
-  });
-
-  const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
-  if (statusPill) statusPill.innerText = `GPS: ±${accuracy}m`;
-
-  // Retry Button Logic
-  const retryBtn = element.querySelector('#gps-retry-btn');
-  if (retryBtn) {
-    if (location.accuracy > 500 || location.lat === 48.137) {
-      retryBtn.classList.remove('hidden');
-      retryBtn.classList.add('animate-pulse');
-    }
-
-    retryBtn.onclick = async () => {
-      retryBtn.disabled = true;
-      retryBtn.innerText = "Lade...";
-      retryBtn.classList.remove('animate-pulse');
-
-      if (onRetake && onRetake.retryGPS) {
-        const newLoc = await onRetake.retryGPS();
-        if (newLoc) {
-          location.lat = newLoc.lat;
-          location.lng = newLoc.lng;
-          location.accuracy = newLoc.accuracy;
-
-          // Update Map
-          map.setView([newLoc.lat, newLoc.lng], 19);
-          marker.setLatLng([newLoc.lat, newLoc.lng]);
-
-          if (statusPill) statusPill.innerText = `GPS: ±${Math.round(newLoc.accuracy)}m`;
-          retryBtn.innerText = "Geladen!";
-          setTimeout(() => retryBtn.classList.add('hidden'), 1500);
-        } else {
-          retryBtn.innerText = "Fehler";
-          retryBtn.disabled = false;
-        }
-      }
-    };
+  if (blob) {
+    img.src = URL.createObjectURL(blob);
+    img.onload = () => img.classList.remove('opacity-0');
   }
 
-  retakeBtn.onclick = () => onRetake.back();
+  // Back Button
+  element.querySelector('#back-to-cam').onclick = actions.back;
 
-  submitBtn.onclick = () => {
-    const selectedType = typeInput.value;
-    const selectedPos = posInput.value;
+  // GPS Logic
+  const gpsCoords = element.querySelector('#gps-coords');
+  const gpsAcc = element.querySelector('#gps-acc');
+  const gpsBtn = element.querySelector('#retry-gps-btn');
+  const gpsSpin = element.querySelector('#gps-spin');
 
-    const tags = {};
-    if (selectedType === 'cistern') {
-      tags['emergency'] = 'water_tank';
-      if (volumeInput.value) tags['water_tank:volume'] = volumeInput.value;
-      tags['fire_hydrant:position'] = selectedPos;
-    } else if (selectedType === 'dry_hydrant') {
-      tags['emergency'] = 'fire_hydrant';
-      tags['fire_hydrant:type'] = 'dry_hydrant';
-      tags['fire_hydrant:position'] = selectedPos;
-    }
-    else {
-      tags['emergency'] = 'fire_hydrant';
-      tags['fire_hydrant:type'] = selectedType;
-      tags['fire_hydrant:position'] = selectedPos;
-    }
-
-    if (diameterInput.value) tags['fire_hydrant:diameter'] = diameterInput.value;
-    const ref = element.querySelector('#hydrant-ref').value;
-    if (ref) tags['ref'] = ref;
-
-    const op = element.querySelector('#hydrant-operator').value;
-    if (op) tags['operator'] = op;
-    const col = element.querySelector('#hydrant-colour').value;
-    if (col) tags['colour'] = col;
-    const note = element.querySelector('#hydrant-note').value;
-    if (note) tags['note'] = note;
-
-    onSubmit({
-      ...location,
-      tags: tags
-    });
+  const updateGPSDisplay = (loc) => {
+    gpsCoords.innerText = `${loc.lat.toFixed(6)}, ${loc.lng.toFixed(6)}`;
+    gpsAcc.innerText = `Genauigkeit: ±${Math.round(loc.accuracy)}m`;
   };
 
-  setTimeout(() => map.invalidateSize(), 300);
+  if (location) updateGPSDisplay(location);
+
+  gpsBtn.onclick = async () => {
+    gpsSpin.classList.remove('hidden');
+    const newLoc = await actions.retryGPS();
+    gpsSpin.classList.add('hidden');
+    if (newLoc) {
+      location = newLoc; // Update reference
+      updateGPSDisplay(newLoc);
+      // Highlight success
+      gpsCoords.classList.add('text-green-400');
+      setTimeout(() => gpsCoords.classList.remove('text-green-400'), 1000);
+    }
+  };
+
+  // COLOR PICKER LOGIC
+  const colors = [
+    { value: "", label: "Keine", hex: "transparent", border: "gray" },
+    { value: "red", label: "Rot", hex: "#ef4444", border: "red" },
+    { value: "yellow", label: "Gelb", hex: "#fbbf24", border: "yellow" },
+    { value: "blue", label: "Blau", hex: "#3b82f6", border: "blue" },
+    { value: "green", label: "Grün", hex: "#22c55e", border: "green" },
+    { value: "orange", label: "Orange", hex: "#f97316", border: "orange" },
+    { value: "white", label: "Silber/Weiß", hex: "#e5e7eb", border: "white" },
+    { value: "violet", label: "Violett", hex: "#8b5cf6", border: "violet" }
+  ];
+
+  const colorContainer = element.querySelector('#color-picker-container');
+  const colorInput = element.querySelector('#selected_colour');
+
+  colors.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = `w-10 h-10 rounded-full border-2 flex items-center justify-center transition hover:scale-110 focus:outline-none relative`;
+
+    // Style
+    if (c.value === "") {
+      btn.style.borderColor = "#4b5563"; // gray-600
+      btn.innerHTML = `<span class="text-gray-500 text-xs">🚫</span>`;
+    } else {
+      btn.style.backgroundColor = c.hex;
+      btn.style.borderColor = c.hex;
+    }
+
+    // Click Handler
+    btn.onclick = () => {
+      // Reset all
+      Array.from(colorContainer.children).forEach(child => {
+        child.classList.remove('ring-2', 'ring-white', 'scale-110');
+        child.style.transform = 'scale(1)';
+      });
+
+      // Set Active
+      btn.classList.add('ring-2', 'ring-white', 'scale-110');
+      btn.style.transform = 'scale(1.1)';
+
+      // Set Value
+      colorInput.value = c.value;
+    };
+
+    // Set Initial (Default Empty)
+    if (c.value === "") {
+      btn.classList.add('ring-2', 'ring-white', 'scale-110');
+    }
+
+    colorContainer.appendChild(btn);
+  });
+
+
+  // Submit
+  element.querySelector('#submit-img-btn').onclick = () => {
+    // Collect Data
+    const type = element.querySelector('input[name="hydrant_type"]:checked').value;
+    const diameter = element.querySelector('#diameter').value;
+    const ref = element.querySelector('#ref').value;
+    const position = element.querySelector('input[name="position"]:checked')?.value || "unknown";
+    const colour = colorInput.value;
+    const note = element.querySelector('#note').value;
+
+    const data = {
+      lat: location.lat,
+      lng: location.lng,
+      type,
+      diameter,
+      ref,
+      position,
+      colour,
+      note,
+      blob // The image
+    };
+
+    onSubmit(data);
+  };
 }
