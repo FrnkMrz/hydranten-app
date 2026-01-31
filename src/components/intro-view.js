@@ -15,12 +15,14 @@ L.Icon.Default.mergeOptions({
 
 export function renderIntroView() {
    // Check Login Status
-   let loginText = "OSM Login & Einstellungen";
+   let loginText = "OSM Login";
    let loginClass = "text-gray-400 hover:text-white";
+
    try {
-      const creds = JSON.parse(localStorage.getItem('osm_creds') || '{}');
-      if (creds.user) {
-         loginText = `✅ ${creds.user} (Einstellungen)`;
+      const token = JSON.parse(localStorage.getItem('osm-auth') || '{}');
+      if (token.access_token) {
+         const name = localStorage.getItem('osm_user_name') || "Angemeldet";
+         loginText = `✅ ${name}`;
          loginClass = "text-green-400 hover:text-green-300 font-bold";
       }
    } catch (e) { }

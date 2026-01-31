@@ -102,6 +102,7 @@ export const auth = {
 
     logout() {
         localStorage.removeItem('osm-auth');
+        localStorage.removeItem('osm_user_name');
     }
 };
 
@@ -111,18 +112,39 @@ export function getAuthHeader() {
     return token ? { 'Authorization': `Bearer ${token}` } : null;
 }
 
-// Compat checkLogin
+// Compat checkLogin with Caching
 export async function checkLogin() {
-    if (!auth.authenticated()) return null;
+    if (!auth.authenticated()) {
+        localStorage.removeItem('osm_user_name');
+        return null; // Not logged in
+    }
+
+    // Try Cache
+    const cached = localStorage.getItem('osm_user_name');
+
     try {
         const res = await fetch('https://api.openstreetmap.org/api/0.6/user/details', {
             headers: getAuthHeader()
         });
-        if (!res.ok) return "Error: " + res.status;
+        if (!res.ok) {
+            // If token expired, maybe logout? For now just return err
+            return "Error: " + res.status;
+        }
         const text = await res.text();
         const parser = new DOMParser();
         const xml = parser.parseFromString(text, "text/xml");
         const user = xml.querySelector('user');
-        return user ? user.getAttribute('display_name') : "XML Error";
-    } catch (e) { return "Error: " + e.message; }
+
+        if (user) {
+            const name = user.getAttribute('display_name');
+            // CACHE IT
+            localStorage.setItem('osm_user_name', name);
+            return name;
+        }
+        return "XML Error";
+    } catch (e) {
+        // If offline but cached, return cached
+        if (cached) return cached;
+        return "Error: " + e.message;
+    }
 }
