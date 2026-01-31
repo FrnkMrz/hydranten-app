@@ -5,7 +5,9 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
     // but user said "VALID User", so likely Prod.
     // We will use Prod URL but log warning.
 
-    const authHeader = 'Basic ' + btoa(creds.user + ':' + creds.password);
+    // UTF-8 Safe Base64 Encoding
+    const safeB64 = (str) => btoa(unescape(encodeURIComponent(str)));
+    const authHeader = 'Basic ' + safeB64(creds.user + ':' + creds.password);
 
     // 0. Reverse Geocode (Get City Name)
     onProgress("🔍 Ermittle Standort-Namen (Nominatim)...");
