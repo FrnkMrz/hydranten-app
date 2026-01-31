@@ -331,6 +331,7 @@ if (location.search.includes('code=')) {
       };
     } else {
       console.log("Login Successful!", res);
+      alert("Login OK! Res: " + JSON.stringify(res));
 
       // FORCE SAVE TOKEN (Fix for missing token issue)
       if (res && res.access_token) {

@@ -73,70 +73,71 @@ export function initSettingsView(element, onBack) {
       if (username.startsWith("Error")) {
         // Check Token
         let token = null;
-        try {
-          const storage = JSON.parse(localStorage.getItem('osm-auth') || '{}');
-          token = storage.access_token || "MISSING_IN_JSON";
-          if (!localStorage.getItem('osm-auth')) token = "NO_KEY";
-        } catch (e) { token = "JSON_PARSE_ERR"; }
+        const local = JSON.parse(localStorage.getItem('osm-auth') || '{}');
+        const session = JSON.parse(sessionStorage.getItem('osm-auth') || '{}');
+        token = local.access_token || session.access_token || "MISSING";
 
-        const tokenDebug = token && token.length > 5 ? `Token: ${token.substring(0, 5)}...` : `Token: ${token}`;
+        if (!localStorage.getItem('osm-auth') && !sessionStorage.getItem('osm-auth')) token = "NO_KEY (Loc/Ses)";
+      } catch (e) { token = "JSON_PARSE_ERR"; }
 
-        userDisplay.innerText = "Debug: " + username + "\n" + tokenDebug;
-        userDisplay.className = "text-xs font-mono text-red-400 break-words";
-      } else {
-        userDisplay.innerText = username;
-        userDisplay.className = "text-xl font-bold text-green-400";
-      }
-      loginBtn.classList.add('hidden');
-      helpText.classList.add('hidden');
-      logoutBtn.classList.remove('hidden');
+      const tokenDebug = token && token.length > 5 ? `Token: ${token.substring(0, 5)}...` : `Token: ${token}`;
+
+      userDisplay.innerText = "Debug: " + username + "\n" + tokenDebug;
+      userDisplay.className = "text-xs font-mono text-red-400 break-words";
     } else {
-      statusDiv.classList.add('hidden');
-      loginBtn.classList.remove('hidden');
-      helpText.classList.remove('hidden');
-      logoutBtn.classList.add('hidden');
+      userDisplay.innerText = username;
+      userDisplay.className = "text-xl font-bold text-green-400";
     }
-  };
-
-  // Check Login on Init
-  if (auth.authenticated()) {
-    checkLogin().then(name => {
-      updateUI(name || "Eingeloggt");
-    });
+    loginBtn.classList.add('hidden');
+    helpText.classList.add('hidden');
+    logoutBtn.classList.remove('hidden');
   } else {
-    updateUI(null);
-  }
+    statusDiv.classList.add('hidden');
+  loginBtn.classList.remove('hidden');
+  helpText.classList.remove('hidden');
+  logoutBtn.classList.add('hidden');
+}
+  };
 
-  loginBtn.onclick = () => {
-    auth.authenticate((err, res) => {
-      if (err) {
-        console.error(err);
-        let msg = "Login Fehler:\n";
-        if (err instanceof XMLHttpRequest) {
-          msg += `Status: ${err.status}\nAvg: ${err.responseText}`;
-        } else {
-          msg += String(err);
-        }
-        alert(msg);
+// Check Login on Init
+if (auth.authenticated()) {
+  checkLogin().then(name => {
+    updateUI(name || "Eingeloggt");
+  });
+} else {
+  updateUI(null);
+}
+
+loginBtn.onclick = () => {
+  auth.authenticate((err, res) => {
+    if (err) {
+      console.error(err);
+      let msg = "Login Fehler:\n";
+      if (err instanceof XMLHttpRequest) {
+        msg += `Status: ${err.status}\nAvg: ${err.responseText}`;
       } else {
-        checkLogin().then(name => updateUI(name || "Eingeloggt"));
+        msg += String(err);
       }
-    });
-  };
+      alert(msg);
+    } else {
+      checkLogin().then(name => updateUI(name || "Eingeloggt"));
+    }
+  });
+};
 
-  logoutBtn.onclick = () => {
-    auth.logout();
-    updateUI(null);
-    alert("Erfolgreich ausgeloggt.");
-  };
+logoutBtn.onclick = () => {
+  auth.logout();
+  updateUI(null);
+  alert("Erfolgreich ausgeloggt.");
+};
 
-  resetBtn.onclick = () => {
-    // DEBUG: Show what is in storage before clearing
-    const raw = localStorage.getItem('osm-auth');
-    alert("Storage Content:\n" + (raw ? raw.substring(0, 200) : "NULL"));
+resetBtn.onclick = () => {
+  // DEBUG: Show what is in storage before clearing
+  const raw = localStorage.getItem('osm-auth');
+  alert("Storage Content:\n" + (raw ? raw.substring(0, 200) : "NULL"));
 
-    auth.logout();
-    localStorage.clear();
-    window.location.reload();
-  };
+  auth.logout();
+  localStorage.clear();
+  window.location.reload();
+};
 }
