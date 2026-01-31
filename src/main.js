@@ -278,4 +278,28 @@ function showConfirm() {
 }
 
 // Init App
-showIntro();
+if (location.search.includes('code=')) {
+  console.log("OAuth Callback detected. Finishing login...");
+  // Update UI to show loading
+  const app = document.querySelector('#app');
+  app.innerHTML = `<div class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white">
+       <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+       <h2 class="text-xl font-bold">Verbinde mit OpenStreetMap...</h2>
+    </div>`;
+
+  auth.authenticate((err, res) => {
+    if (err) {
+      alert("Login fehlgeschlagen: " + err);
+      showIntro();
+    } else {
+      console.log("Login Successful!");
+      // Remove code from URL without reload
+      window.history.replaceState({}, document.title, window.location.pathname);
+      // Go to Settings explicitly or just start?
+      // Go to Settings to confirm user sees "Logged In"
+      showSettings();
+    }
+  });
+} else {
+  showIntro();
+}
