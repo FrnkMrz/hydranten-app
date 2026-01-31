@@ -12,11 +12,6 @@ startTracking();
 
 const app = document.querySelector('#app');
 
-// DEBUG: Check URL parameters immediately
-if (location.search.includes('code=')) {
-  // alert("URL Code Detected: " + location.search);
-}
-
 // Simple State Management
 const state = {
   view: 'intro', // Start with intro
@@ -280,102 +275,95 @@ function showConfirm() {
   );
 }
 
-// Init App
+// Global helper so we can call it from DOM
+window.finishLogin = () => {
+  // Remove code param cleanly
+  window.history.replaceState({}, document.title, window.location.pathname);
+  showSettings();
+};
+
+// Init App / Auth Check
 if (location.search.includes('code=')) {
-  console.log("OAuth Callback detected. Finishing login...");
-  const app = document.querySelector('#app');
-  app.innerHTML = `<div class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white">
+  const params = new URLSearchParams(location.search);
+  const code = params.get('code');
+
+  if (code) {
+    console.log("Attempting Manual Token Exchange with code:", code);
+    const app = document.querySelector('#app');
+
+    // Loading UI
+    app.innerHTML = `<div class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white animate-fade-in">
        <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-       <h2 class="text-xl font-bold">Verbinde mit OpenStreetMap...</h2>
-       <p class="text-gray-400 text-sm mt-4 text-center max-w-xs" id="login-status-text">Token wird ausgetauscht...</p>
-       <button id="cancel-login-btn" class="mt-8 text-red-400 border border-red-400/30 px-4 py-2 rounded-lg text-sm hidden">Abbrechen</button>
-    </div>`;
+       <h2 class="text-xl font-bold">Token wird getauscht...</h2>
+       <div id="manual-debug" class="mt-4 text-xs font-mono text-gray-500 max-w-sm break-all p-4 bg-black/20 rounded">Init...</div>
+      </div>`;
 
-  // Show cancel button after 5 seconds if stuck
-  setTimeout(() => {
-    document.getElementById('cancel-login-btn')?.classList.remove('hidden');
-  }, 5000);
+    const debugDiv = document.getElementById('manual-debug');
+    const updateDebug = (msg) => { debugDiv.innerText = msg; };
 
-  document.getElementById('cancel-login-btn').onclick = () => {
-    window.history.replaceState({}, document.title, window.location.pathname);
-    showIntro();
-  };
+    const clientId = 'eJij_gzo2QRG-oRCZYU2FObBOgX2Z8lbIINezbHmJRI';
+    const redirectUri = window.location.origin + window.location.pathname; // Should verify if this needs trailing slash? 
+    // If deployed on github.io/foo/, pathname includes /foo/
 
-  auth.authenticate((err, res) => {
-    if (err) {
-      console.error("Auth Error:", err);
-      const container = document.querySelector('#app');
+    updateDebug("POST to OSM...");
 
-      let status = "Unbekannt";
-      let response = "";
-      if (err instanceof XMLHttpRequest) {
-        status = err.status;
-        response = err.responseText || "(Keine Antwort)";
-      } else {
-        response = String(err);
-      }
+    fetch('https://www.openstreetmap.org/oauth2/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code,
+        client_id: clientId,
+        redirect_uri: redirectUri
+      })
+    })
+      .then(async (response) => {
+        const text = await response.text();
+        updateDebug("Status: " + response.status + "\n" + text.substring(0, 100));
 
-      container.innerHTML = `
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status + ": " + text);
+        }
+
+        let data;
+        try { data = JSON.parse(text); } catch (e) { throw new Error("Invalid JSON: " + text); }
+
+        if (data.access_token) {
+          // SAVE IT!
+          auth.options().access_token = data.access_token;
+          localStorage.setItem('osm-auth', JSON.stringify(data));
+
+          updateDebug("SUCCESS! Token saved.");
+
+          // Slight delay to see success
+          setTimeout(() => {
+            window.finishLogin();
+          }, 1000);
+        } else {
+          throw new Error("No access_token in response");
+        }
+      })
+      .catch(err => {
+        console.error("Manual Exchange Failed", err);
+        app.innerHTML = `
                 <div class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white p-6">
                    <div class="bg-red-900/20 border border-red-500/50 p-6 rounded-2xl max-w-sm w-full">
-                       <h2 class="text-xl font-bold text-red-500 mb-4">Login Fehlgeschlagen</h2>
+                       <h2 class="text-xl font-bold text-red-500 mb-4">Login Fehlgeschlagen (Manuell)</h2>
                        <div class="mb-4 text-sm font-mono bg-black/40 p-3 rounded text-red-200 overflow-auto max-h-40">
-                           <p><strong>Status:</strong> ${status}</p>
-                           <p><strong>Info:</strong> ${response}</p>
+                           <p>${String(err)}</p>
                        </div>
-                       <button id="err-ok-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 rounded-xl font-bold">
+                       <button onclick="showIntro(); window.history.replaceState({}, document.title, window.location.pathname);" class="w-full py-3 bg-red-600 hover:bg-red-700 rounded-xl font-bold">
                            Zurück zum Start
                        </button>
                    </div>
                 </div>
             `;
-
-      document.getElementById('err-ok-btn').onclick = () => {
-        window.history.replaceState({}, document.title, window.location.pathname);
-        showIntro();
-      };
-    } else {
-      console.log("Login Successful!", res);
-
-      // PERSISTENT DEBUG OVERLAY V2
-      let debugText = "TYPE: " + (res && res.constructor ? res.constructor.name : typeof res) + "\n";
-      debugText += "ResponseText: " + (res && res.responseText ? res.responseText : "N/A") + "\n";
-      debugText += "Response: " + (res && JSON.stringify(res.response) || "N/A") + "\n";
-      try { debugText += "Auth Options Token: " + (auth.options().access_token || "UNDEFINED") + "\n"; } catch (e) { }
-      debugText += "Full Res: " + JSON.stringify(res, null, 2);
-
-      const debugDiv = document.createElement('div');
-      debugDiv.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);color:#0f0;font-family:monospace;white-space:pre-wrap;z-index:9999;padding:20px;overflow:auto;";
-      debugDiv.innerHTML = "<h1>LOGIN DEBUG V2</h1><pre>" + debugText + "</pre><br><button onclick='this.parentElement.remove()'>CLOSE</button>";
-      document.body.appendChild(debugDiv);
-
-      // FORCE SAVE TOKEN (Attempt parsing XHR)
-      let accessToken = null;
-      if (res && res.access_token) {
-        accessToken = res.access_token;
-      } else if (res && res.responseText) {
-        try {
-          const parsed = JSON.parse(res.responseText);
-          accessToken = parsed.access_token;
-        } catch (e) { console.error("Parse Error", e); }
-      }
-
-      if (accessToken) {
-        auth.options().access_token = accessToken;
-        // Construct a clean object to save
-        localStorage.setItem('osm-auth', JSON.stringify({ access_token: accessToken }));
-        console.log("Token manually saved to localStorage (from XHR).");
-
-        // Update debug text to show success IN THE OVERLAY
-        debugDiv.innerHTML += "<h2 style='color:white;background:green;padding:10px;'>TOKEN FOUND & SAVED!</h2>";
-      } else {
-        debugDiv.innerHTML += "<h2 style='color:white;background:red;padding:10px;'>NO TOKEN FOUND IN RESP!</h2>";
-      }
-
-      window.history.replaceState({}, document.title, window.location.pathname);
-      showSettings();
-    }
-  });
+      });
+  } else {
+    showIntro();
+  }
 } else {
   showIntro();
 }
