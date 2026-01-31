@@ -243,10 +243,34 @@ function showConfirm() {
             renderOverlay(logs, result);
           })
           .catch(err => {
-            overlay.remove();
-            alert(`Upload fehlgeschlagen:\n${err.message}`);
-            btn.innerHTML = `<span>Erneut versuchen</span>`;
-            btn.disabled = false;
+            // Determine if it was a handled error or bug
+            console.error("Upload Failed", err);
+
+            // Don't remove overlay! Show Error inside it.
+            let content = `
+                   <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-red-500/50 rounded-2xl p-6 shadow-2xl">
+                      <h2 class="text-xl font-bold text-red-500 mb-4 flex items-center justify-center gap-2">
+                         ❌ Upload Fehlgeschlagen
+                      </h2>
+                      <div class="space-y-1 mb-6 max-h-40 overflow-y-auto">
+                         ${logs.map(line => `<div class="text-sm font-mono text-gray-400 border-l-2 border-red-900 pl-3 py-1 text-left">${line}</div>`).join('')}
+                      </div>
+                      
+                      <div class="bg-red-900/20 text-red-200 p-3 rounded-lg text-xs font-mono mb-4 break-words custom-scrollbar overflow-auto max-h-32">
+                         ${err.message || String(err)}
+                      </div>
+
+                      <button id="error-overlay-close" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition">
+                         Schließen
+                      </button>
+                   </div>
+                `;
+            overlay.innerHTML = content;
+            document.getElementById('error-overlay-close').onclick = () => {
+              overlay.remove();
+              btn.innerHTML = `<span>Erneut versuchen</span>`;
+              btn.disabled = false;
+            };
           });
       });
     }
