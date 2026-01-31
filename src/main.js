@@ -12,6 +12,14 @@ startTracking();
 
 const app = document.querySelector('#app');
 
+// DEBUG: Check URL parameters immediately
+if (location.search.includes('code=')) {
+  alert("URL Code Detected: " + location.search);
+} else {
+  // Optional: Log that no code was found
+  // console.log("No code in URL");
+}
+
 // Simple State Management
 const state = {
   view: 'intro', // Start with intro
