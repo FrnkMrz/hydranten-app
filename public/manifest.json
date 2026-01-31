@@ -1,15 +1,21 @@
 {
-    "name": "Hydranten Jäger",
-    "short_name": "Hydrant",
-    "start_url": "./",
-    "display": "standalone",
-    "background_color": "#1a1a1a",
-    "theme_color": "#1a1a1a",
-    "icons": [
-        {
-            "src": "hydrant.svg",
-            "type": "image/svg+xml",
-            "sizes": "512x512"
-        }
-    ]
+  "name": "Hydranten Jäger",
+  "short_name": "Hydranten",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
