@@ -255,4 +255,3 @@ function showConfirm() {
 
 // Init App
 showIntro();
-```
