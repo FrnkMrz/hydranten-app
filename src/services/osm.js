@@ -45,6 +45,9 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
     });
 
     if (!csRes.ok) {
+        if (csRes.status === 401) {
+            throw new Error(`Anmeldung fehlgeschlagen (401). Bitte prüfe Benutzername/Passwort. (Hinweis: Benutze deinen Nuternamen, NICHT die E-Mail!)`);
+        }
         throw new Error(`Changeset Error: ${csRes.status} ${await csRes.text()}`);
     }
 
