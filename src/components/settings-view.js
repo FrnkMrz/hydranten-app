@@ -21,9 +21,12 @@ export function renderSettingsView() {
                OpenStreetMap Login
             </h2>
             
-            <div id="auth-status" class="mb-6 text-center py-4 bg-black/20 rounded-xl hidden">
+            <div id="auth-status" class="mb-6 text-center py-4 bg-black/20 rounded-xl hidden relative">
                 <p class="text-gray-400 text-sm mb-2">Angemeldet als:</p>
-                <p id="user-display" class="text-xl font-bold text-green-400">...</p>
+                <div class="flex items-center justify-center gap-2">
+                    <p id="user-display" class="text-xl font-bold text-green-400">...</p>
+                    <button id="info-btn" class="w-6 h-6 rounded-full bg-gray-700 text-white text-xs font-serif italic flex items-center justify-center border border-gray-500 hover:bg-gray-600 transition">i</button>
+                </div>
             </div>
 
             <p class="text-sm text-gray-400 mb-8 leading-relaxed" id="auth-help">
@@ -64,13 +67,51 @@ export function initSettingsView(element, onBack) {
   const resetBtn = element.querySelector('#reset-btn');
   const statusDiv = element.querySelector('#auth-status');
   const userDisplay = element.querySelector('#user-display');
-  const helpText = element.querySelector('#auth-help');
-  // const debugDiv = element.querySelector('#debug-log-settings'); // REMOVED
+  const helpText = element.querySelector('#auth-help'); // Fixed duplicate
+  const infoBtn = element.querySelector('#info-btn');
 
   const log = (msg) => {
-    // debugDiv.innerHTML = msg + "<br>" + debugDiv.innerHTML.substring(0, 500); // CRASH FIX
     console.log("[Settings]", msg);
   };
+
+  // Info Modal Logic
+  if (infoBtn) {
+    infoBtn.onclick = () => {
+      const modal = document.createElement('div');
+      modal.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/90 p-6 animate-fade-in backdrop-blur-md";
+      modal.innerHTML = `
+            <div class="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl overflow-y-auto max-h-[80vh]">
+                <h3 class="text-xl font-bold text-white mb-4">Rechtliche Hinweise</h3>
+                
+                <div class="space-y-4 text-sm text-gray-300">
+                    <p><strong>Hydranten Jäger</strong> ist ein Open Source Tool zur Erfassung von Hydranten in OpenStreetMap.</p>
+                    
+                    <div>
+                        <h4 class="font-bold text-white">Daten & Datenschutz</h4>
+                        <p>Diese App speichert keine personenbezogenen Daten auf eigenen Servern. Alle Eingaben werden direkt an OpenStreetMap (OSM) übermittelt.</p>
+                        <p class="mt-2">Mit dem Upload werden Ihre OSM-Benutzerdaten (ID, Name) öffentlich mit dem Changeset verknüpft.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-white">Lizenz</h4>
+                        <p>Kartendaten © OpenStreetMap Mitwirkende.</p>
+                        <p>Code: MIT License</p>
+                    </div>
+
+                    <div class="pt-2 border-t border-gray-700">
+                        <p class="text-xs text-gray-500">Diese App wird "wie besehen" bereitgestellt. Nutzung auf eigene Gefahr.</p>
+                    </div>
+                </div>
+
+                <button id="close-info-btn" class="w-full mt-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition">
+                    Verstanden
+                </button>
+            </div>
+          `;
+      element.appendChild(modal);
+      modal.querySelector('#close-info-btn').onclick = () => modal.remove();
+    };
+  }
 
   const updateUI = (username) => {
     if (username) {
