@@ -38,7 +38,7 @@ export function getAuthHeader() {
 // Helper to check login
 export async function checkLogin() {
     const headers = getAuthHeader();
-    if (!headers) return null;
+    if (!headers) return "Error: Token Missing (Auth=true)";
 
     try {
         const res = await fetch('https://api.openstreetmap.org/api/0.6/user/details', { headers });
