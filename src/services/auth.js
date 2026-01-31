@@ -1,4 +1,4 @@
-import osmAuth from 'osm-auth';
+import { osmAuth } from 'osm-auth';
 
 // Configuration
 // We use the same Origin for Redirect
