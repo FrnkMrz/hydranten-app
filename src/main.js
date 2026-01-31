@@ -275,95 +275,34 @@ function showConfirm() {
   );
 }
 
-// Global helper so we can call it from DOM
-window.finishLogin = () => {
-  // Remove code param cleanly
-  window.history.replaceState({}, document.title, window.location.pathname);
-  showSettings();
-};
+// Init App / Auth Check (Implicit Flow)
+if (location.hash.includes('access_token=')) {
+  console.log("Implicit Auth Callback detected!");
+  const app = document.querySelector('#app');
 
-// Init App / Auth Check
-if (location.search.includes('code=')) {
-  const params = new URLSearchParams(location.search);
-  const code = params.get('code');
+  // Parse Hash
+  const hash = location.hash.substring(1); // remove #
+  const params = new URLSearchParams(hash);
+  const accessToken = params.get('access_token');
 
-  if (code) {
-    console.log("Attempting Manual Token Exchange with code:", code);
-    const app = document.querySelector('#app');
+  if (accessToken) {
+    // SAVE IT!
+    auth.options().access_token = accessToken;
+    localStorage.setItem('osm-auth', JSON.stringify({ access_token: accessToken }));
+    console.log("Token captured from Hash.");
 
-    // Loading UI
-    app.innerHTML = `<div class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white animate-fade-in">
-       <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-       <h2 class="text-xl font-bold">Token wird getauscht...</h2>
-       <div id="manual-debug" class="mt-4 text-xs font-mono text-gray-500 max-w-sm break-all p-4 bg-black/20 rounded">Init...</div>
-      </div>`;
-
-    const debugDiv = document.getElementById('manual-debug');
-    const updateDebug = (msg) => { debugDiv.innerText = msg; };
-
-    const clientId = 'eJij_gzo2QRG-oRCZYU2FObBOgX2Z8lbIINezbHmJRI';
-    const redirectUri = window.location.origin + window.location.pathname; // Should verify if this needs trailing slash? 
-    // If deployed on github.io/foo/, pathname includes /foo/
-
-    updateDebug("POST to OSM...");
-
-    fetch('https://www.openstreetmap.org/oauth2/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
-        grant_type: 'authorization_code',
-        code: code,
-        client_id: clientId,
-        redirect_uri: redirectUri
-      })
-    })
-      .then(async (response) => {
-        const text = await response.text();
-        updateDebug("Status: " + response.status + "\n" + text.substring(0, 100));
-
-        if (!response.ok) {
-          throw new Error("HTTP " + response.status + ": " + text);
-        }
-
-        let data;
-        try { data = JSON.parse(text); } catch (e) { throw new Error("Invalid JSON: " + text); }
-
-        if (data.access_token) {
-          // SAVE IT!
-          auth.options().access_token = data.access_token;
-          localStorage.setItem('osm-auth', JSON.stringify(data));
-
-          updateDebug("SUCCESS! Token saved.");
-
-          // Slight delay to see success
-          setTimeout(() => {
-            window.finishLogin();
-          }, 1000);
-        } else {
-          throw new Error("No access_token in response");
-        }
-      })
-      .catch(err => {
-        console.error("Manual Exchange Failed", err);
-        app.innerHTML = `
-                <div class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white p-6">
-                   <div class="bg-red-900/20 border border-red-500/50 p-6 rounded-2xl max-w-sm w-full">
-                       <h2 class="text-xl font-bold text-red-500 mb-4">Login Fehlgeschlagen (Manuell)</h2>
-                       <div class="mb-4 text-sm font-mono bg-black/40 p-3 rounded text-red-200 overflow-auto max-h-40">
-                           <p>${String(err)}</p>
-                       </div>
-                       <button onclick="showIntro(); window.history.replaceState({}, document.title, window.location.pathname);" class="w-full py-3 bg-red-600 hover:bg-red-700 rounded-xl font-bold">
-                           Zurück zum Start
-                       </button>
-                   </div>
-                </div>
-            `;
-      });
+    // Clean URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+    showSettings();
   } else {
+    console.warn("No token in hash?");
     showIntro();
   }
 } else {
+  // Check if we have code (Old flow cleanup)
+  if (location.search.includes('code=')) {
+    // Just clean it up so we don't get confused
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
   showIntro();
 }

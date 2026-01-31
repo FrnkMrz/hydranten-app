@@ -110,20 +110,14 @@ export function initSettingsView(element, onBack) {
   }
 
   loginBtn.onclick = () => {
-    auth.authenticate((err, res) => {
-      if (err) {
-        console.error(err);
-        let msg = "Login Fehler:\n";
-        if (err instanceof XMLHttpRequest) {
-          msg += `Status: ${err.status}\nAvg: ${err.responseText}`;
-        } else {
-          msg += String(err);
-        }
-        alert(msg);
-      } else {
-        checkLogin().then(name => updateUI(name || "Eingeloggt"));
-      }
-    });
+    // Manual Implicit Flow Redirect
+    const clientId = 'eJij_gzo2QRG-oRCZYU2FObBOgX2Z8lbIINezbHmJRI';
+    const redirectUri = window.location.origin + window.location.pathname;
+    const scope = 'read_prefs write_api';
+
+    const url = `https://www.openstreetmap.org/oauth2/authorize?response_type=token&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
+
+    window.location.href = url;
   };
 
   logoutBtn.onclick = () => {
