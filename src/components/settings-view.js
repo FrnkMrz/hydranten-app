@@ -44,13 +44,17 @@ export function renderSettingsView() {
          <button id="reset-btn" class="w-full max-w-sm py-3 bg-red-900/10 text-red-600 rounded-xl font-bold mt-8 border border-red-500/10 hover:bg-red-900/20 transition text-sm">
              ⚠️ App Zurücksetzen (Logout)
          </button>
+         
+         <div id="debug-log-settings" class="mt-4 text-xs font-mono text-gray-600 max-w-sm overflow-hidden text-left h-20 bg-black/10 rounded p-2">
+            Debug Info...
+         </div>
       </div>
 
       <div class="z-10 mt-auto">
          <button id="back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
             Zurück
          </button>
-         <p class="text-center text-[10px] text-gray-600 mt-4">Version 0.3.3 (Debug) • Hydranten Jäger</p>
+         <p class="text-center text-[10px] text-gray-600 mt-4">Version 0.3.5 (PKCE) • Hydranten Jäger</p>
       </div>
     </div>
   `;
@@ -65,30 +69,18 @@ export function initSettingsView(element, onBack) {
   const statusDiv = element.querySelector('#auth-status');
   const userDisplay = element.querySelector('#user-display');
   const helpText = element.querySelector('#auth-help');
+  const debugDiv = element.querySelector('#debug-log-settings');
+
+  const log = (msg) => {
+    debugDiv.innerHTML = msg + "<br>" + debugDiv.innerHTML.substring(0, 500);
+    console.log("[Settings]", msg);
+  };
 
   const updateUI = (username) => {
     if (username) {
       statusDiv.classList.remove('hidden');
-      // If username starts with "Error", show red
-      if (username.startsWith("Error")) {
-        // Check Token
-        let token = null;
-        try {
-          const local = JSON.parse(localStorage.getItem('osm-auth') || '{}');
-          const session = JSON.parse(sessionStorage.getItem('osm-auth') || '{}');
-          token = local.access_token || session.access_token || "MISSING";
-
-          if (!localStorage.getItem('osm-auth') && !sessionStorage.getItem('osm-auth')) token = "NO_KEY (Loc/Ses)";
-        } catch (e) { token = "JSON_PARSE_ERR"; }
-
-        const tokenDebug = token && token.length > 5 ? `Token: ${token.substring(0, 5)}...` : `Token: ${token}`;
-
-        userDisplay.innerText = "Debug: " + username + "\n" + tokenDebug;
-        userDisplay.className = "text-xs font-mono text-red-400 break-words";
-      } else {
-        userDisplay.innerText = username;
-        userDisplay.className = "text-xl font-bold text-green-400";
-      }
+      userDisplay.innerText = username.startsWith("Error") ? username : username;
+      userDisplay.className = username.startsWith("Error") ? "text-xs font-mono text-red-400 break-words" : "text-xl font-bold text-green-400";
       loginBtn.classList.add('hidden');
       helpText.classList.add('hidden');
       logoutBtn.classList.remove('hidden');
@@ -98,26 +90,28 @@ export function initSettingsView(element, onBack) {
       helpText.classList.remove('hidden');
       logoutBtn.classList.add('hidden');
     }
+
+    // Update Debug Info
+    try {
+      const raw = localStorage.getItem('osm-auth');
+      log("Token in Storage: " + (raw ? "YES" : "NO"));
+    } catch (e) { }
   };
 
-  // Check Login on Init
+  // Init Check
   if (auth.authenticated()) {
-    checkLogin().then(name => {
-      updateUI(name || "Eingeloggt");
-    });
+    checkLogin().then(name => updateUI(name || "Eingeloggt"));
   } else {
     updateUI(null);
   }
 
+  // LOGIN HANDLER: Use Custom Auth
   loginBtn.onclick = () => {
-    // Manual Implicit Flow Redirect
-    const clientId = 'eJij_gzo2QRG-oRCZYU2FObBOgX2Z8lbIINezbHmJRI';
-    const redirectUri = window.location.origin + window.location.pathname;
-    const scope = 'read_prefs write_api';
-
-    const url = `https://www.openstreetmap.org/oauth2/authorize?response_type=token&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
-
-    window.location.href = url;
+    log("Starting Login...");
+    auth.login().catch(err => {
+      log("Login Start Error: " + err);
+      alert("Login Fehler: " + err);
+    });
   };
 
   logoutBtn.onclick = () => {
@@ -129,10 +123,11 @@ export function initSettingsView(element, onBack) {
   resetBtn.onclick = () => {
     // DEBUG: Show what is in storage before clearing
     const raw = localStorage.getItem('osm-auth');
-    alert("Storage Content:\n" + (raw ? raw.substring(0, 200) : "NULL"));
+    const verifier = localStorage.getItem('osm_pkce_verifier');
+    alert(`Storage Content:\nToken: ${raw ? 'YES' : 'NO'}\nVerifier: ${verifier ? 'YES' : 'NO'}`);
 
     auth.logout();
-    localStorage.clear();
+    localStorage.removeItem('osm_pkce_verifier'); // Clean legacy
     window.location.reload();
   };
 }

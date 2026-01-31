@@ -275,33 +275,58 @@ function showConfirm() {
   );
 }
 
-// Init App / Auth Check (Implicit Flow)
-if (location.hash.includes('access_token=')) {
-  console.log("Implicit Auth Callback detected!");
-  const app = document.querySelector('#app');
+// Init App / Auth Check (Custom PKCE)
+if (location.search.includes('code=')) {
+  const params = new URLSearchParams(location.search);
+  const code = params.get('code');
+  if (code) {
+    console.log("PKCE Auth Callback detected!");
+    const app = document.querySelector('#app');
 
-  // Parse Hash
-  const hash = location.hash.substring(1); // remove #
-  const params = new URLSearchParams(hash);
-  const accessToken = params.get('access_token');
+    // Loading
+    app.innerHTML = `<div class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white animate-fade-in">
+       <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+       <h2 class="text-xl font-bold">Verifiziere Login...</h2>
+       <div class="text-left max-w-sm w-full px-6 mt-4">
+          <div id="pkce-log" class="text-xs font-mono text-green-400 bg-black/40 p-3 rounded h-32 overflow-auto">INIT...</div>
+       </div>
+      </div>`;
 
-  if (accessToken) {
-    // SAVE IT!
-    auth.options().access_token = accessToken;
-    localStorage.setItem('osm-auth', JSON.stringify({ access_token: accessToken }));
-    console.log("Token captured from Hash.");
+    const logDiv = document.getElementById('pkce-log');
+    const log = (msg) => {
+      logDiv.innerHTML += "<div>> " + msg + "</div>";
+      logDiv.scrollTop = logDiv.scrollHeight;
+    };
 
-    // Clean URL
-    window.history.replaceState({}, document.title, window.location.pathname);
-    showSettings();
+    log("Got Code: " + code.substring(0, 5) + "...");
+
+    // Debug Verifier in Storage
+    const verifier = localStorage.getItem('osm_pkce_verifier');
+    log("Verifier in Storage: " + (verifier ? "YES (" + verifier.length + " chars)" : "NO (!!!)"));
+
+    auth.exchangeCode(code)
+      .then(accessToken => {
+        log("SUCCESS! Token: " + accessToken.substring(0, 10) + "...");
+        log("Redirecting...");
+        setTimeout(() => {
+          window.history.replaceState({}, document.title, window.location.pathname);
+          showSettings();
+        }, 1000);
+      })
+      .catch(err => {
+        console.error("PKCE Error:", err);
+        log("ERROR: " + err.message);
+
+        const div = document.createElement('div');
+        div.innerHTML = `<button onclick="showIntro(); window.history.replaceState({}, document.title, window.location.pathname);" class="w-full mt-4 py-3 bg-red-600 hover:bg-red-700 rounded-xl font-bold">Zurück zum Start</button>`;
+        app.querySelector('.text-left').appendChild(div);
+      });
   } else {
-    console.warn("No token in hash?");
     showIntro();
   }
 } else {
-  // Check if we have code (Old flow cleanup)
-  if (location.search.includes('code=')) {
-    // Just clean it up so we don't get confused
+  // Clear Hash if present from prev attempts
+  if (location.hash.includes('access_token=')) {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
   showIntro();
