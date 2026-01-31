@@ -29,14 +29,16 @@ export async function checkLogin() {
     try {
         const res = await fetch('https://api.openstreetmap.org/api/0.6/user/details', { headers });
         if (!res.ok) {
-            console.error("User Details Fetch Status:", res.status);
-            return null;
+            const text = await res.text();
+            console.error("User Details Fetch Status:", res.status, text);
+            // DEBUG: Return error string to show in UI
+            return `Error ${res.status}: ${text.substring(0, 100)}`;
         }
         const text = await res.text();
         const parser = new DOMParser();
         const xml = parser.parseFromString(text, "text/xml");
         const user = xml.querySelector('user');
-        return user ? user.getAttribute('display_name') : null;
+        return user ? user.getAttribute('display_name') : "XML Error";
     } catch (e) {
         console.error("Auth Check Failed", e);
         return null;
