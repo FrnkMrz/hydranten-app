@@ -130,7 +130,15 @@ export function initIntroView(element, onStart, onSettings) {
             const lng = pos.coords.longitude;
 
             if (map) {
-               map.setView([lat, lng], 18);
+               // Only re-center if we moved significantly (> 3 meters) 
+               // OR if this is the first fix (marker might be off)
+               const currentCenter = map.getCenter();
+               const dist = map.distance(currentCenter, [lat, lng]);
+
+               if (dist > 3 || !marker) {
+                  map.setView([lat, lng], 18, { animate: true });
+               }
+
                if (!marker) {
                   marker = L.marker([lat, lng]).addTo(map);
                } else {

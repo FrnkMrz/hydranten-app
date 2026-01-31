@@ -8,13 +8,29 @@ export function initCompass() {
     if (window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientationabsolute', (event) => {
             // Android/Chrome support 'deviceorientationabsolute'
+            // Low Pass Filter (Smoothing)
+            // alpha = 0.1 (Heavy smoothing), 1.0 (No smoothing)
+            const alpha = 0.15;
+            let rawHeading = 0;
+
             if (event.webkitCompassHeading) {
-                // iOS
-                currentHeading = event.webkitCompassHeading;
+                rawHeading = event.webkitCompassHeading;
             } else if (event.alpha) {
-                // Android (alpha is roughly compass on some devices, but complex)
-                // Simplification: alpha is 0 at North on 'deviceorientationabsolute'
-                currentHeading = 360 - event.alpha;
+                rawHeading = 360 - event.alpha;
+            }
+
+            if (currentHeading === null) {
+                currentHeading = rawHeading;
+            } else {
+                // Handle 359 -> 1 degree transition (Wrap around)
+                let diff = rawHeading - currentHeading;
+                if (diff > 180) diff -= 360;
+                if (diff < -180) diff += 360;
+                currentHeading += diff * alpha;
+
+                // Normalize to 0-360
+                if (currentHeading < 0) currentHeading += 360;
+                if (currentHeading >= 360) currentHeading -= 360;
             }
         });
 
