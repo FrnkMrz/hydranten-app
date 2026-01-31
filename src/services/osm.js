@@ -1,13 +1,13 @@
+import { getAuthHeader } from './auth.js';
+
 export async function createHydrant(data, creds, onProgress = () => { }) {
     const BASE_URL = 'https://api.openstreetmap.org/api/0.6';
-    // Use Dev Server if needed? User said "upload to OpenStreetMap", implying Production.
-    // Ideally we should use https://master.apis.dev.openstreetmap.org for testing, 
-    // but user said "VALID User", so likely Prod.
-    // We will use Prod URL but log warning.
 
-    // UTF-8 Safe Base64 Encoding
-    const safeB64 = (str) => btoa(unescape(encodeURIComponent(str)));
-    const authHeader = 'Basic ' + safeB64(creds.user + ':' + creds.password);
+    const authHeaders = getAuthHeader();
+    if (!authHeaders) throw new Error("Nicht eingeloggt (OAuth Token fehlt).");
+    const headers = { ...authHeaders, 'Content-Type': 'text/xml' };
+
+    // 0. Reverse Geocode (Get City Name)
 
     // 0. Reverse Geocode (Get City Name)
     onProgress("🔍 Ermittle Standort-Namen (Nominatim)...");
@@ -39,10 +39,7 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
     console.log(`Creating Changeset...`);
     const csRes = await fetch(`${BASE_URL}/changeset/create`, {
         method: 'PUT',
-        headers: {
-            'Authorization': authHeader,
-            'Content-Type': 'text/xml'
-        },
+        headers: headers,
         body: changesetXml
     });
 
@@ -76,10 +73,7 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
 
     const nodeRes = await fetch(`${BASE_URL}/node/create`, {
         method: 'PUT',
-        headers: {
-            'Authorization': authHeader,
-            'Content-Type': 'text/xml'
-        },
+        headers: headers,
         body: nodeXml
     });
 
@@ -98,9 +92,7 @@ export async function createHydrant(data, creds, onProgress = () => { }) {
     onProgress(`➡ PUT /changeset/${changesetId}/close`);
     await fetch(`${BASE_URL}/changeset/${changesetId}/close`, {
         method: 'PUT',
-        headers: {
-            'Authorization': authHeader
-        }
+        headers: authHeaders
     });
     onProgress(`⬅ Response: OK`);
 

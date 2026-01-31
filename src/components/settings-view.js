@@ -1,101 +1,101 @@
+import { auth, checkLogin } from '../services/auth.js';
+
 export function renderSettingsView() {
   return `
-      <div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in">
-        <div class="p-4 flex items-center border-b border-gray-800 bg-black/20 backdrop-blur-md sticky top-0 z-50">
-           <button id="back-btn" class="p-2 mr-4 bg-gray-800 rounded-lg active:scale-95 transition">
-             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-           </button>
-           <h1 class="text-xl font-bold">Einstellungen</h1>
-        </div>
-        
-        <div class="p-6 space-y-8 flex-1 overflow-y-auto">
-           <!-- OSM Section -->
-           <section class="space-y-4">
-             <div class="flex items-center gap-2">
-                <div class="p-2 bg-green-500/20 rounded-lg text-green-500">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                </div>
-                <h2 class="text-lg font-bold">OpenStreetMap</h2>
-             </div>
-             
-             <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700">
-               <p class="text-sm text-gray-400 mb-4">
-                 Verbinde deinen Account, um Hydranten direkt hochzuladen.
-                 <br><button id="help-btn" class="text-blue-400 underline text-xs bg-transparent border-none p-0 cursor-pointer">Wie bekomme ich Zugangsdaten?</button>
-               </p>
-               
-               <label class="block mb-3">
-                  <span class="text-xs text-gray-500 uppercase font-bold tracking-wider">Benutzername</span>
-                  <input type="text" id="osm-user" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition" placeholder="Dein OSM Name">
-               </label>
-               
-               <label class="block mb-4">
-                  <span class="text-xs text-gray-500 uppercase font-bold tracking-wider">Passwort / Token</span>
-                  <input type="password" id="osm-pass" class="w-full bg-gray-900 p-3 rounded-lg mt-1 border border-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition" placeholder="••••••••">
-               </label>
-  
-               <button id="save-osm" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-bold shadow-lg shadow-blue-900/20 active:scale-95 transition-all">
-                 Verbinden
-               </button>
-               <p id="save-status" class="text-center text-xs text-green-400 mt-2 h-4"></p>
-             </div>
-           </section>
+    <div class="h-full w-full bg-slate-900 text-white flex flex-col p-6 animate-fade-in relative overflow-hidden">
+      <!-- Background Decorative -->
+      <div class="absolute -top-20 -right-20 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
-           <section class="space-y-4 pt-4 border-t border-gray-800">
-              <h2 class="text-lg font-bold text-gray-400">Über</h2>
-              <p class="text-sm text-gray-500">Hydranten Jäger v0.1.0<br>Made with 🤖 & ❤️</p>
-           </section>
-        </div>
+      <!-- Header -->
+      <div class="flex items-center gap-4 mb-8 z-10">
+         <div class="bg-gray-800 p-3 rounded-2xl shadow-lg border border-gray-700">
+             <span class="text-3xl">⚙️</span>
+         </div>
+         <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">Einstellungen</h1>
       </div>
-    `;
+
+      <!-- Login Section -->
+      <div class="flex-grow z-10 text-center flex flex-col items-center justify-center">
+         <div class="bg-gray-800/80 backdrop-blur-md p-8 rounded-3xl border border-gray-700 shadow-xl w-full max-w-sm" id="login-container">
+            <h2 class="text-xl font-bold mb-6 flex items-center justify-center gap-2">
+               OpenStreetMap Login
+            </h2>
+            
+            <div id="auth-status" class="mb-6 text-center py-4 bg-black/20 rounded-xl hidden">
+                <p class="text-gray-400 text-sm mb-2">Angemeldet als:</p>
+                <p id="user-display" class="text-xl font-bold text-green-400">...</p>
+            </div>
+
+            <p class="text-sm text-gray-400 mb-8 leading-relaxed" id="auth-help">
+               Verbinde dich mit deinem Konto, um Hydranten hochzuladen.
+            </p>
+
+            <button id="login-btn" class="w-full py-4 bg-[#7EBC6F] hover:bg-[#6CAE5D] text-white rounded-xl font-bold shadow-lg shadow-green-900/20 active:scale-95 transition flex items-center justify-center gap-3">
+               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-1.07 3.97-2.9 5.39z"/></svg>
+               <span>Mit OSM verbinden</span>
+            </button>
+            
+            <button id="logout-btn" class="w-full py-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold mt-4 hidden transition">
+               Abmelden
+            </button>
+         </div>
+      </div>
+
+      <div class="z-10 mt-auto">
+         <button id="back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
+            Zurück
+         </button>
+         <p class="text-center text-[10px] text-gray-600 mt-4">Version 0.2 • Hydranten Jäger</p>
+      </div>
+    </div>
+  `;
 }
 
 export function initSettingsView(element, onBack) {
   element.querySelector('#back-btn').onclick = onBack;
 
-  const helpBtn = element.querySelector('#help-btn');
-  if (helpBtn) {
-    helpBtn.onclick = () => {
-      alert("1. Gehe auf openstreetmap.org\n2. Erstelle einen Account\n3. Nutze deinen Benutzernamen und Passwort hier in der App.\n(OAuth folgt in Version 2.0)");
-    };
-  }
+  const loginBtn = element.querySelector('#login-btn');
+  const logoutBtn = element.querySelector('#logout-btn');
+  const statusDiv = element.querySelector('#auth-status');
+  const userDisplay = element.querySelector('#user-display');
+  const helpText = element.querySelector('#auth-help');
 
-  const userInput = element.querySelector('#osm-user');
-  const passInput = element.querySelector('#osm-pass');
-  const status = element.querySelector('#save-status');
-  const btn = element.querySelector('#save-osm');
-
-  // Load existing
-  const stored = JSON.parse(localStorage.getItem('osm_creds') || '{}');
-  if (stored.user) {
-    userInput.value = stored.user;
-    passInput.value = stored.pass || '';
-    btn.innerText = "Aktualisieren";
-    btn.classList.add('bg-gray-700', 'text-gray-300'); // Show as 'connected' state style optionally
-  }
-
-  btn.onclick = () => {
-    const user = userInput.value;
-    const pass = passInput.value;
-
-    if (user && pass) {
-      // Save to local storage
-      localStorage.setItem('osm_creds', JSON.stringify({ user, pass }));
-
-      // Visual Feedback
-      status.innerText = "Gespeichert!";
-      btn.innerText = "Aktualisieren";
-      btn.classList.remove('bg-blue-600');
-      btn.classList.add('bg-green-600');
-
-      setTimeout(() => {
-        status.innerText = "";
-        btn.classList.remove('bg-green-600');
-        btn.classList.add('bg-blue-600');
-      }, 2000);
+  const updateUI = (username) => {
+    if (username) {
+      statusDiv.classList.remove('hidden');
+      userDisplay.innerText = username;
+      loginBtn.classList.add('hidden');
+      helpText.classList.add('hidden');
+      logoutBtn.classList.remove('hidden');
     } else {
-      status.innerText = "";
-      alert("Bitte Benutzername und Passwort eingeben.");
+      statusDiv.classList.add('hidden');
+      loginBtn.classList.remove('hidden');
+      helpText.classList.remove('hidden');
+      logoutBtn.classList.add('hidden');
     }
+  };
+
+  // Check Login on Init
+  if (auth.authenticated()) {
+    checkLogin().then(name => {
+      updateUI(name || "Eingeloggt");
+    });
+  } else {
+    updateUI(null);
+  }
+
+  loginBtn.onclick = () => {
+    auth.authenticate((err, res) => {
+      if (err) {
+        alert("Login Error: " + err);
+      } else {
+        checkLogin().then(name => updateUI(name || "Eingeloggt"));
+      }
+    });
+  };
+
+  logoutBtn.onclick = () => {
+    auth.logout();
+    updateUI(null);
   };
 }
