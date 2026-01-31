@@ -118,9 +118,8 @@ export function renderConfirmView() {
 
       <!-- Submit Footer -->
       <div class="fixed bottom-0 left-0 right-0 p-4 bg-slate-900/90 backdrop-blur-xl border-t border-gray-800/50 z-50 max-w-sm mx-auto">
-         <button id="submit-img-btn" class="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-red-900/30 active:scale-95 transition-all flex items-center justify-center gap-2">
-            <span>SPEICHERN</span>
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+         <button id="submit-img-btn" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-green-900/30 active:scale-95 transition-all flex items-center justify-center gap-2">
+            <span>HOCHLADEN ZU OSM ☁️</span>
          </button>
       </div>
     </div>
