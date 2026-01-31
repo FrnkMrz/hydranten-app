@@ -50,7 +50,7 @@ export function renderSettingsView() {
          <button id="back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
             Zurück
          </button>
-         <p class="text-center text-[10px] text-gray-600 mt-4">Version 0.3.1 (Debug) • Hydranten Jäger</p>
+         <p class="text-center text-[10px] text-gray-600 mt-4">Version 0.3.2 (Debug) • Hydranten Jäger</p>
       </div>
     </div>
   `;
@@ -73,9 +73,13 @@ export function initSettingsView(element, onBack) {
       if (username.startsWith("Error")) {
         // Check Token
         let token = null;
-        try { token = auth.options().access_token; } catch (e) { }
+        try {
+          const storage = JSON.parse(localStorage.getItem('osm-auth') || '{}');
+          token = storage.access_token || "MISSING_IN_JSON";
+          if (!localStorage.getItem('osm-auth')) token = "NO_KEY";
+        } catch (e) { token = "JSON_PARSE_ERR"; }
 
-        const tokenDebug = token ? `Token: ${token.substring(0, 5)}...` : "Token: UNDEFINED";
+        const tokenDebug = token && token.length > 5 ? `Token: ${token.substring(0, 5)}...` : `Token: ${token}`;
 
         userDisplay.innerText = "Debug: " + username + "\n" + tokenDebug;
         userDisplay.className = "text-xs font-mono text-red-400 break-words";
@@ -104,8 +108,6 @@ export function initSettingsView(element, onBack) {
   }
 
   loginBtn.onclick = () => {
-    // Clear URL params to allow fresh login flow if needed? 
-    // Nah, auth.authenticate handles new code request.
     auth.authenticate((err, res) => {
       if (err) {
         console.error(err);
@@ -129,10 +131,12 @@ export function initSettingsView(element, onBack) {
   };
 
   resetBtn.onclick = () => {
-    if (confirm("Wirklich alles zurücksetzen?")) {
-      auth.logout();
-      localStorage.clear();
-      window.location.href = window.location.pathname; // Hard Reload without query params
-    }
+    // DEBUG: Show what is in storage before clearing
+    const raw = localStorage.getItem('osm-auth');
+    alert("Storage Content:\n" + (raw ? raw.substring(0, 200) : "NULL"));
+
+    auth.logout();
+    localStorage.clear();
+    window.location.reload();
   };
 }
