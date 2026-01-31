@@ -50,7 +50,7 @@ export function renderSettingsView() {
          <button id="back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
             Zurück
          </button>
-         <p class="text-center text-[10px] text-gray-600 mt-4">Version 0.3 • Hydranten Jäger</p>
+         <p class="text-center text-[10px] text-gray-600 mt-4">Version 0.3.1 (Debug) • Hydranten Jäger</p>
       </div>
     </div>
   `;
@@ -69,7 +69,20 @@ export function initSettingsView(element, onBack) {
   const updateUI = (username) => {
     if (username) {
       statusDiv.classList.remove('hidden');
-      userDisplay.innerText = username;
+      // If username starts with "Error", show red
+      if (username.startsWith("Error")) {
+        // Check Token
+        let token = null;
+        try { token = auth.options().access_token; } catch (e) { }
+
+        const tokenDebug = token ? `Token: ${token.substring(0, 5)}...` : "Token: UNDEFINED";
+
+        userDisplay.innerText = "Debug: " + username + "\n" + tokenDebug;
+        userDisplay.className = "text-xs font-mono text-red-400 break-words";
+      } else {
+        userDisplay.innerText = username;
+        userDisplay.className = "text-xl font-bold text-green-400";
+      }
       loginBtn.classList.add('hidden');
       helpText.classList.add('hidden');
       logoutBtn.classList.remove('hidden');
