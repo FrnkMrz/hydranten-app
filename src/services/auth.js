@@ -1,60 +1,128 @@
-import { osmAuth } from 'osm-auth';
 
-// Configuration
-// We use the same Origin for Redirect
-const redirectPath = window.location.origin + window.location.pathname;
-
-export const auth = osmAuth({
-    client_id: 'eJij_gzo2QRG-oRCZYU2FObBOgX2Z8lbIINezbHmJRI', // User Id
-    redirect_uri: redirectPath,
-    scope: 'read_prefs write_api', // Permissions
-    auto: false, // Auto login off to avoid race with main.js
-    singlepage: true // For SPA
-});
-
-
-// Helper to get Header
-export function getAuthHeader() {
-    if (auth.authenticated()) {
-        let token = auth.options().access_token;
-        if (!token) {
-            // Fallback: Read from localStorage directly
-            try {
-                const storage = JSON.parse(localStorage.getItem('osm-auth'));
-                if (storage && storage.access_token) {
-                    token = storage.access_token;
-                }
-            } catch (e) {
-                console.error("Failed to parse token from storage", e);
-            }
-        }
-        if (token) {
-            return { 'Authorization': 'Bearer ' + token };
-        }
+// PKCE Helpers
+function generateRandomString(length) {
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+    let result = '';
+    const values = new Uint32Array(length);
+    crypto.getRandomValues(values);
+    for (let i = 0; i < length; i++) {
+        result += charset[values[i] % charset.length];
     }
-    return null;
+    return result;
 }
 
-// Helper to check login
-export async function checkLogin() {
-    const headers = getAuthHeader();
-    if (!headers) return "Error: Token Missing (Auth=true)";
+async function sha256(plain) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(plain);
+    return crypto.subtle.digest('SHA-256', data);
+}
 
-    try {
-        const res = await fetch('https://api.openstreetmap.org/api/0.6/user/details', { headers });
+function base64UrlEncode(a) {
+    let str = "";
+    const bytes = new Uint8Array(a);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+        str += String.fromCharCode(bytes[i]);
+    }
+    return btoa(str)
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+}
+
+async function generateChallenge(verifier) {
+    const hashed = await sha256(verifier);
+    return base64UrlEncode(hashed);
+}
+
+// Service
+export const auth = {
+    options: {
+        client_id: 'eJij_gzo2QRG-oRCZYU2FObBOgX2Z8lbIINezbHmJRI',
+        redirect_uri: window.location.origin + window.location.pathname,
+    },
+
+    // 1. Start Login (Redirects)
+    async login() {
+        const verifier = generateRandomString(128);
+        const challenge = await generateChallenge(verifier);
+
+        // Save Verifier specifically
+        localStorage.setItem('osm_pkce_verifier', verifier);
+
+        const scope = 'read_prefs write_api';
+        const url = `https://www.openstreetmap.org/oauth2/authorize?response_type=code&client_id=${this.options.client_id}&redirect_uri=${encodeURIComponent(this.options.redirect_uri)}&scope=${encodeURIComponent(scope)}&code_challenge=${challenge}&code_challenge_method=S256`;
+
+        window.location.href = url;
+    },
+
+    // 2. Exchange Code (Call this on callback)
+    async exchangeCode(code) {
+        const verifier = localStorage.getItem('osm_pkce_verifier');
+        if (!verifier) throw new Error("PKCE Verifier missing from storage. Please try again.");
+
+        const params = new URLSearchParams({
+            grant_type: 'authorization_code',
+            code: code,
+            client_id: this.options.client_id,
+            redirect_uri: this.options.redirect_uri,
+            code_verifier: verifier
+        });
+
+        const res = await fetch('https://www.openstreetmap.org/oauth2/token', {
+            method: 'POST',
+            body: params
+        });
+
         if (!res.ok) {
             const text = await res.text();
-            console.error("User Details Fetch Status:", res.status, text);
-            // DEBUG: Return error string to show in UI
-            return `Error ${res.status}: ${text.substring(0, 100)}`;
+            throw new Error(`Token Exchange Failed (${res.status}): ${text}`);
         }
+
+        const data = await res.json();
+        // Save Token
+        localStorage.setItem('osm-auth', JSON.stringify(data));
+        // Cleanup Verifier
+        localStorage.removeItem('osm_pkce_verifier');
+
+        return data.access_token;
+    },
+
+    // 3. Get Auth Header
+    authenticated() {
+        return !!this.getToken();
+    },
+
+    getToken() {
+        try {
+            const data = JSON.parse(localStorage.getItem('osm-auth'));
+            return data ? data.access_token : null;
+        } catch (e) { return null; }
+    },
+
+    logout() {
+        localStorage.removeItem('osm-auth');
+    }
+};
+
+// Compat with existing code expecting getAuthHeader
+export function getAuthHeader() {
+    const token = auth.getToken();
+    return token ? { 'Authorization': `Bearer ${token}` } : null;
+}
+
+// Compat checkLogin
+export async function checkLogin() {
+    if (!auth.authenticated()) return null;
+    try {
+        const res = await fetch('https://api.openstreetmap.org/api/0.6/user/details', {
+            headers: getAuthHeader()
+        });
+        if (!res.ok) return "Error: " + res.status;
         const text = await res.text();
         const parser = new DOMParser();
         const xml = parser.parseFromString(text, "text/xml");
         const user = xml.querySelector('user');
         return user ? user.getAttribute('display_name') : "XML Error";
-    } catch (e) {
-        console.error("Auth Check Failed", e);
-        return "Error: " + String(e);
-    }
+    } catch (e) { return "Error: " + e.message; }
 }
