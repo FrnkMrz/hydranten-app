@@ -14,6 +14,17 @@ L.Icon.Default.mergeOptions({
 });
 
 export function renderIntroView() {
+   // Check Login Status
+   let loginText = "OSM Login & Einstellungen";
+   let loginClass = "text-gray-400 hover:text-white";
+   try {
+      const creds = JSON.parse(localStorage.getItem('osm_creds') || '{}');
+      if (creds.user) {
+         loginText = `✅ ${creds.user} (Einstellungen)`;
+         loginClass = "text-green-400 hover:text-green-300 font-bold";
+      }
+   } catch (e) { }
+
    return `
     <div class="h-full w-full bg-black text-white flex flex-col relative overflow-hidden">
       
@@ -60,9 +71,9 @@ export function renderIntroView() {
              STARTEN 🚀
           </button>
           
-          <button id="intro-settings-btn" class="w-full py-3 flex items-center justify-center gap-2 text-gray-400 hover:text-white transition-colors text-sm font-medium hover:bg-white/5 rounded-xl">
+          <button id="intro-settings-btn" class="w-full py-3 flex items-center justify-center gap-2 ${loginClass} transition-colors text-sm font-medium hover:bg-white/5 rounded-xl">
              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-             OSM Login & Einstellungen
+             ${loginText}
           </button>
          
    
