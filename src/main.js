@@ -137,7 +137,7 @@ function showConfirm() {
       console.log("Submitting Hydrant:", data, "Creds:", creds);
 
       // 1. Validate Credentials
-      if (!creds.user || !creds.password) {
+      if (!creds.user || !creds.pass) {
         // Error Overlay
         const overlay = document.createElement('div');
         overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-gray-900/95 animate-fade-in px-4 text-center";
