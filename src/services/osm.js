@@ -1,4 +1,4 @@
-export async function createHydrant(data, creds) {
+export async function createHydrant(data, creds, onProgress = () => { }) {
     const BASE_URL = 'https://api.openstreetmap.org/api/0.6';
     // Use Dev Server if needed? User said "upload to OpenStreetMap", implying Production.
     // Ideally we should use https://master.apis.dev.openstreetmap.org for testing, 
@@ -8,9 +8,9 @@ export async function createHydrant(data, creds) {
     const authHeader = 'Basic ' + btoa(creds.user + ':' + creds.password);
 
     // 0. Reverse Geocode (Get City Name)
+    onProgress("🔍 Ermittle Standort-Namen (Nominatim)...");
     let locationName = "Unknown Location";
     try {
-        console.log("Fetching Address from Nominatim...");
         const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${data.lat}&lon=${data.lng}&zoom=10`, {
             headers: { 'User-Agent': 'HydrantenJaegerApp/0.1' }
         });
@@ -33,6 +33,7 @@ export async function createHydrant(data, creds) {
         </changeset>
     </osm>`;
 
+    onProgress("📝 Erstelle Changeset...");
     console.log(`Creating Changeset (Comment: Adding Hydrant in ${locationName} via Hydranten Jäger)...`);
     const csRes = await fetch(`${BASE_URL}/changeset/create`, {
         method: 'PUT',
@@ -51,6 +52,7 @@ export async function createHydrant(data, creds) {
     console.log("Changeset ID:", changesetId);
 
     // 2. Create Node
+    onProgress("🚀 Lade Hydranten hoch...");
     let tagXml = '';
     for (const [k, v] of Object.entries(data.tags)) {
         if (v) tagXml += `<tag k="${k}" v="${v}"/>`;
