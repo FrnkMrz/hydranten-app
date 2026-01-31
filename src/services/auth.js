@@ -8,7 +8,7 @@ export const auth = osmAuth({
     client_id: 'eJij_gzo2QRG-oRCZYU2FObBOgX2Z8lbIINezbHmJRI', // User Id
     redirect_uri: redirectPath,
     scope: 'read_prefs write_api', // Permissions
-    auto: true, // Auto login if token exists
+    auto: false, // Auto login off to avoid race with main.js
     singlepage: true // For SPA
 });
 
