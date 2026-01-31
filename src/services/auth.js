@@ -23,19 +23,22 @@ export function getAuthHeader() {
 
 // Helper to check login
 export async function checkLogin() {
-    if (auth.authenticated()) {
-        try {
-            // Get User Details for Display
-            const x = await auth.xhr({ method: 'GET', path: '/api/0.6/user/details' });
-            // Parsing XML to get display name is annoying, osm-auth usually returns raw XML
-            // We will implement a quick regex or DOMParser
-            const parser = new DOMParser();
-            const xml = parser.parseFromString(x.responseText, "text/xml");
-            const user = xml.querySelector('user');
-            if (user) return user.getAttribute('display_name');
-        } catch (e) {
-            console.error("Auth Check Failed", e);
+    const headers = getAuthHeader();
+    if (!headers) return null;
+
+    try {
+        const res = await fetch('https://api.openstreetmap.org/api/0.6/user/details', { headers });
+        if (!res.ok) {
+            console.error("User Details Fetch Status:", res.status);
+            return null;
         }
+        const text = await res.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, "text/xml");
+        const user = xml.querySelector('user');
+        return user ? user.getAttribute('display_name') : null;
+    } catch (e) {
+        console.error("Auth Check Failed", e);
+        return null;
     }
-    return null;
 }
