@@ -227,7 +227,7 @@ function showConfirm() {
 
         if (result) {
           document.getElementById('success-close-btn').onclick = () => showIntro();
-          setTimeout(() => showIntro(), 6000);
+          // setTimeout(() => showIntro(), 6000); // Removed auto-close
         }
       };
 

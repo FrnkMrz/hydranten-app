@@ -44,10 +44,6 @@ export function renderSettingsView() {
          <button id="reset-btn" class="w-full max-w-sm py-3 bg-red-900/10 text-red-600 rounded-xl font-bold mt-8 border border-red-500/10 hover:bg-red-900/20 transition text-sm">
              ⚠️ App Zurücksetzen (Logout)
          </button>
-         
-         <div id="debug-log-settings" class="mt-4 text-xs font-mono text-gray-600 max-w-sm overflow-hidden text-left h-20 bg-black/10 rounded p-2">
-            Debug Info...
-         </div>
       </div>
 
       <div class="z-10 mt-auto">
