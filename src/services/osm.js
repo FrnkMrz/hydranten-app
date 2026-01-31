@@ -28,12 +28,12 @@ export async function createHydrant(data, creds) {
     <osm>
         <changeset>
             <tag k="created_by" v="Hydranten Jäger v0.1"/>
-            <tag k="comment" v="Adding Hydrant in ${locationName}"/>
+            <tag k="comment" v="Adding Hydrant in ${locationName} via Hydranten Jäger"/>
             <tag k="locale" v="de"/>
         </changeset>
     </osm>`;
 
-    console.log(`Creating Changeset (Comment: Adding Hydrant in ${locationName})...`);
+    console.log(`Creating Changeset (Comment: Adding Hydrant in ${locationName} via Hydranten Jäger)...`);
     const csRes = await fetch(`${BASE_URL}/changeset/create`, {
         method: 'PUT',
         headers: {
