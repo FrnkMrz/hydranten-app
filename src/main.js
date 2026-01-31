@@ -194,7 +194,7 @@ function showConfirm() {
         let content = `
            <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
               <h2 class="text-xl font-bold text-white mb-4 flex items-center justify-center gap-2">
-                 ${result ? 'Upload Erfolgreich! 🚀' : 'Lade hoch... ⏳'}
+                 ${result ? 'Upload Erfolgreich!' : 'Lade hoch... ⏳'}
               </h2>
               <div class="space-y-1 mb-6 max-h-40 overflow-y-auto">
                  ${linesHtml}
