@@ -7,16 +7,33 @@ export async function createHydrant(data, creds) {
 
     const authHeader = 'Basic ' + btoa(creds.user + ':' + creds.password);
 
+    // 0. Reverse Geocode (Get City Name)
+    let locationName = "Unknown Location";
+    try {
+        console.log("Fetching Address from Nominatim...");
+        const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${data.lat}&lon=${data.lng}&zoom=10`, {
+            headers: { 'User-Agent': 'HydrantenJaegerApp/0.1' }
+        });
+        if (nomRes.ok) {
+            const nomData = await nomRes.json();
+            const addr = nomData.address || {};
+            locationName = addr.city || addr.town || addr.village || addr.municipality || addr.county || "Unknown";
+        }
+    } catch (e) {
+        console.warn("Reverse Geocoding failed:", e);
+    }
+
     // 1. Create Changeset
     const changesetXml = `
     <osm>
         <changeset>
             <tag k="created_by" v="Hydranten Jäger v0.1"/>
-            <tag k="comment" v="Adding Hydrant via Hydranten Jäger"/>
+            <tag k="comment" v="Adding Hydrant in ${locationName}"/>
+            <tag k="locale" v="de"/>
         </changeset>
     </osm>`;
 
-    console.log("Creating Changeset...");
+    console.log(`Creating Changeset (Comment: Adding Hydrant in ${locationName})...`);
     const csRes = await fetch(`${BASE_URL}/changeset/create`, {
         method: 'PUT',
         headers: {
