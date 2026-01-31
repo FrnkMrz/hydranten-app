@@ -72,9 +72,15 @@ export function renderIntroView() {
              STARTEN
           </button>
           
-          <button id="intro-settings-btn" class="w-full py-3 flex items-center justify-center gap-2 ${loginClass} transition-colors text-sm font-medium hover:bg-white/5 rounded-xl">
-             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-             ${loginText}
+          <div class="flex items-center gap-3">
+              <button id="intro-settings-btn" class="flex-grow py-3 flex items-center justify-center gap-2 ${loginClass} transition-colors text-sm font-medium hover:bg-white/5 rounded-xl">
+                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                 ${loginText}
+              </button>
+              <button id="intro-info-btn" class="w-10 h-10 shrink-0 rounded-xl bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition flex items-center justify-center border border-white/10">
+                <span class="font-serif italic font-bold text-lg">i</span>
+              </button>
+          </div>
          
    
     </div>
@@ -106,6 +112,46 @@ export function initIntroView(element, onStart, onSettings) {
    const settingsBtn = element.querySelector('#intro-settings-btn');
    if (settingsBtn && onSettings) {
       settingsBtn.onclick = onSettings;
+   }
+
+   // Info Modal Logic (Intro)
+   const infoBtn = element.querySelector('#intro-info-btn');
+   if (infoBtn) {
+      infoBtn.onclick = () => {
+         const modal = document.createElement('div');
+         modal.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/90 p-6 animate-fade-in backdrop-blur-md";
+         modal.innerHTML = `
+             <div class="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl overflow-y-auto max-h-[80vh]">
+                 <h3 class="text-xl font-bold text-white mb-4">Rechtliche Hinweise</h3>
+                 
+                 <div class="space-y-4 text-sm text-gray-300">
+                     <p><strong>Hydranten Jäger</strong> ist ein Open Source Tool zur Erfassung von Hydranten in OpenStreetMap.</p>
+                     
+                     <div>
+                         <h4 class="font-bold text-white">Daten & Datenschutz</h4>
+                         <p>Diese App speichert keine personenbezogenen Daten auf eigenen Servern. Alle Eingaben werden direkt an OpenStreetMap (OSM) übermittelt.</p>
+                         <p class="mt-2">Mit dem Upload werden Ihre OSM-Benutzerdaten (ID, Name) öffentlich mit dem Changeset verknüpft.</p>
+                     </div>
+
+                     <div>
+                         <h4 class="font-bold text-white">Lizenz</h4>
+                         <p>Kartendaten © OpenStreetMap Mitwirkende.</p>
+                         <p>Code: MIT License</p>
+                     </div>
+
+                     <div class="pt-2 border-t border-gray-700">
+                         <p class="text-xs text-gray-500">Diese App wird "wie besehen" bereitgestellt. Nutzung auf eigene Gefahr.</p>
+                     </div>
+                 </div>
+
+                 <button id="close-intro-info-btn" class="w-full mt-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition">
+                     Verstanden
+                 </button>
+             </div>
+           `;
+         element.appendChild(modal);
+         modal.querySelector('#close-intro-info-btn').onclick = () => modal.remove();
+      };
    }
 
    // Live GPS Update & Map
