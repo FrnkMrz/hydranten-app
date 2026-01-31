@@ -47,7 +47,6 @@ export function renderIntroView() {
              <h1 class="text-4xl font-extrabold text-white mb-2 tracking-tight drop-shadow-xl">
                 Hydranten <span class="text-red-500">Jäger</span>
              </h1>
-             <p class="text-gray-400 text-xs font-bold uppercase tracking-widest opacity-80">OpenStreetMap Tool</p>
          </div>
 
          <!-- Instructions Card -->
@@ -69,14 +68,13 @@ export function renderIntroView() {
 
       <!-- Footer Action -->
       <div class="h-auto shrink-0 z-10 w-full max-w-sm mx-auto flex flex-col justify-end px-6 pb-8">
-          <button id="start-btn" class="w-full py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold text-lg shadow-xl shadow-red-900/30 active:scale-95 transition-all flex items-center justify-center gap-2 mb-4">
-             STARTEN 🚀
+          <button id="start-btn" class="w-full py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-2xl font-bold text-lg shadow-xl shadow-red-900/30 active:scale-95 transition-all flex items-center justify-center gap-2 mb-4">
+             STARTEN
           </button>
           
           <button id="intro-settings-btn" class="w-full py-3 flex items-center justify-center gap-2 ${loginClass} transition-colors text-sm font-medium hover:bg-white/5 rounded-xl">
              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
              ${loginText}
-          </button>
          
    
     </div>
