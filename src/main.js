@@ -165,60 +165,67 @@ function showConfirm() {
       }
 
       const btn = document.getElementById('submit-img-btn');
-      btn.innerHTML = `<span>Speichere...</span>`;
+      btn.innerHTML = `<span>Lade hoch...</span>`;
       btn.disabled = true;
 
-      // Simulate network request duration
-      setTimeout(() => {
-        // Overlay for Success
-        const overlay = document.createElement('div');
-        overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/90 animate-fade-in px-6 text-center backdrop-blur-sm";
+      // Real Upload Logic
+      import('./services/osm.js').then(({ createHydrant }) => {
+        createHydrant(data, creds)
+          .then((result) => {
+            // Overlay for Success
+            const overlay = document.createElement('div');
+            overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/90 animate-fade-in px-6 text-center backdrop-blur-sm";
 
-        const userMsg = creds.user ? `User: <span class="text-blue-400 font-mono">${creds.user}</span>` : "(Simulation / Offline)";
+            overlay.innerHTML = `
+                   <div class="flex flex-col items-center w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
+                      <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-500/30">
+                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                      </div>
+                      <h2 class="text-xl font-bold text-white mb-2">Upload erfolgreich! 🚀</h2>
+                      
+                      <div class="w-full bg-gray-800 rounded-lg p-3 mb-6 text-left space-y-2 border border-gray-700">
+                          <div class="flex justify-between text-xs border-b border-gray-700 pb-2">
+                              <span class="text-gray-400">Status</span>
+                              <span class="text-green-400 font-bold uppercase">OK (200)</span>
+                          </div>
+                          <div class="flex justify-between text-xs border-b border-gray-700 pb-2">
+                              <span class="text-gray-400">Account</span>
+                              <span class="text-white">${result.user}</span>
+                          </div>
+                          <div class="flex justify-between text-xs">
+                              <span class="text-gray-400">Node ID</span>
+                              <span class="text-white font-mono">#${result.id}</span>
+                          </div>
+                          <div class="flex justify-between text-xs pt-1">
+                              <span class="text-gray-400">Changeset</span>
+                              <span class="text-gray-500 font-mono">#${result.changeset}</span>
+                          </div>
+                      </div>
 
-        overlay.innerHTML = `
-           <div class="flex flex-col items-center w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
-              <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-500/30">
-                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-              </div>
-              <h2 class="text-xl font-bold text-white mb-2">Upload erfolgreich! 🚀</h2>
-              
-              <div class="w-full bg-gray-800 rounded-lg p-3 mb-6 text-left space-y-2 border border-gray-700">
-                  <div class="flex justify-between text-xs border-b border-gray-700 pb-2">
-                      <span class="text-gray-400">Status</span>
-                      <span class="text-green-400 font-bold uppercase">OK (200)</span>
-                  </div>
-                  <div class="flex justify-between text-xs border-b border-gray-700 pb-2">
-                      <span class="text-gray-400">Account</span>
-                      <span class="text-white">${userMsg}</span>
-                  </div>
-                  <div class="flex justify-between text-xs">
-                      <span class="text-gray-400">Node ID</span>
-                      <span class="text-white font-mono">#${Math.floor(Math.random() * 9000000) + 1000000}</span>
-                  </div>
-              </div>
+                      <p class="text-xs text-gray-500 mb-4">Daten sind jetzt live auf OpenStreetMap.</p>
+                      
+                      <button id="success-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">
+                         Weiter
+                      </button>
+                   </div>
+                `;
+            app.appendChild(overlay);
 
-              <p class="text-xs text-gray-500 mb-4">Daten wurden an OpenStreetMap übertragen.</p>
-              
-              <button id="success-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">
-                 Weiter
-              </button>
-           </div>
-        `;
-        app.appendChild(overlay);
-
-        // Manual Close
-        document.getElementById('success-close-btn').onclick = () => {
-          showIntro();
-        };
-
-        // Auto-Close Fallback (5s)
-        setTimeout(() => showIntro(), 5000);
-
-      }, 1500);
+            // Manual Close
+            document.getElementById('success-close-btn').onclick = () => {
+              showIntro();
+            };
+          })
+          .catch(err => {
+            alert(`Upload fehlgeschlagen:\n${err.message}`);
+            btn.innerHTML = `<span>Erneut versuchen</span>`;
+            btn.disabled = false;
+          });
+      });
     }
   );
 }
 
 // Init App
 showIntro();
+```
