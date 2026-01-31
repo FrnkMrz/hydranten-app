@@ -7,11 +7,17 @@ export function renderSettingsView() {
       <div class="absolute -top-20 -right-20 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
       <!-- Header -->
-      <div class="flex items-center gap-4 mb-8 z-10">
-         <div class="bg-gray-800 p-3 rounded-2xl shadow-lg border border-gray-700">
-             <span class="text-3xl">⚙️</span>
+      <div class="flex items-center justify-between w-full mb-8 z-10">
+         <div class="flex items-center gap-4">
+             <div class="bg-gray-800 p-3 rounded-2xl shadow-lg border border-gray-700">
+                 <span class="text-3xl">⚙️</span>
+             </div>
+             <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">Einstellungen</h1>
          </div>
-         <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">Einstellungen</h1>
+         <!-- Info Button (Always Visible) -->
+         <button id="info-btn" class="w-10 h-10 rounded-full bg-gray-800/80 text-gray-300 hover:text-white hover:bg-gray-700 transition flex items-center justify-center border border-gray-700 ml-4">
+            <span class="font-serif italic font-bold text-lg">i</span>
+         </button>
       </div>
 
       <!-- Login Section -->
@@ -25,7 +31,6 @@ export function renderSettingsView() {
                 <p class="text-gray-400 text-sm mb-2">Angemeldet als:</p>
                 <div class="flex items-center justify-center gap-2">
                     <p id="user-display" class="text-xl font-bold text-green-400">...</p>
-                    <button id="info-btn" class="w-6 h-6 rounded-full bg-gray-700 text-white text-xs font-serif italic flex items-center justify-center border border-gray-500 hover:bg-gray-600 transition">i</button>
                 </div>
             </div>
 
