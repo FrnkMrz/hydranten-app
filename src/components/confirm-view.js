@@ -105,18 +105,18 @@ export function renderConfirmView() {
 
             <div class="space-y-4">
                <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Nummer / Ref</label>
-                  <input type="text" id="hydrant-ref" placeholder="z.B. 1234" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-               </div>
-               <!-- Operator Field REMOVED -->
-               
-               <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Farbe</label>
                   <div class="flex flex-wrap gap-3" id="color-picker-container">
                       <!-- JS Populated -->
                   </div>
                   <input type="hidden" id="hydrant-colour" value="">
                </div>
+               
+               <div>
+                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Nummer / Ref</label>
+                  <input type="text" id="hydrant-ref" placeholder="z.B. 1234" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+               </div>
+               <!-- Operator Field REMOVED -->
                
                <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Notiz</label>
@@ -212,10 +212,11 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
   posBtns.forEach(btn => {
     btn.onclick = () => updatePos(btn.dataset.value);
   });
-  updatePos(''); // Default Empty? Or keep sidewalk? User said "Position lassen so". But asked for "Nicht angeben". Default should probably be specific if user wants, or sidewalk. User audio implied "Nicht angeben" option needed. Default could be sidewalk or empty. Let's start with sidewalk as per screenshot? No, user asked for "Nicht angeben".
+  updatePos('');
 
   // COLOR PICKER LOGIC
   const colors = [
+    { value: "", label: "Keine", hex: "transparent", border: "#4b5563" },
     { value: "black", label: "Schwarz", hex: "#000000", border: "#333" },
     { value: "grey", label: "Grau", hex: "#808080", border: "#999" },
     { value: "blue", label: "Blau", hex: "#3b82f6", border: "#3b82f6" },
@@ -234,6 +235,10 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
     btn.style.backgroundColor = c.hex;
     btn.style.borderColor = c.border;
+
+    if (c.value === "") {
+      btn.innerHTML = '<span class="text-xs">🚫</span>';
+    }
 
     // Click Handler
     btn.onclick = () => {
