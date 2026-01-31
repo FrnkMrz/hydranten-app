@@ -48,7 +48,7 @@ export function renderConfirmView() {
       </div>
 
       <!-- Scrollable Form Content -->
-      <div class="flex-grow overflow-y-auto px-4 pt-6 pb-24 space-y-8 bg-slate-900">
+      <div class="flex-grow overflow-y-auto px-4 pt-6 pb-48 space-y-8 bg-slate-900">
          
          <!-- Type Selection (Grid) -->
          <div class="space-y-3">
@@ -127,7 +127,7 @@ export function renderConfirmView() {
       </div>
 
       <!-- Submit Footer (Raised) -->
-      <div class="fixed bottom-0 left-0 right-0 p-4 pb-12 bg-slate-900/90 backdrop-blur-xl border-t border-gray-800/50 z-50 max-w-sm mx-auto">
+      <div class="fixed bottom-0 left-0 right-0 p-4 pb-32 bg-slate-900/90 backdrop-blur-xl border-t border-gray-800/50 z-50 max-w-sm mx-auto">
          <button id="submit-img-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-green-900/30 active:scale-95 transition-all flex items-center justify-center gap-2">
             <span>HOCHLADEN ZU OSM ☁️</span>
          </button>
