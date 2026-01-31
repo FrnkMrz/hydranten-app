@@ -62,17 +62,20 @@ export function renderConfirmView() {
          <!-- Position Selection -->
          <div class="space-y-3">
              <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Lage</h3>
-             <div class="grid grid-cols-2 gap-2 bg-gray-800/50 p-1 rounded-xl">
-                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="sidewalk">
+             <div class="grid grid-cols-5 gap-2 bg-gray-800/50 p-1 rounded-xl">
+                 <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="">
+                    🚫 Keine
+                 </button>
+                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="sidewalk">
                    🚶 Gehweg
                 </button>
-                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="street">
+                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="street">
                    🚗 Straße
                 </button>
-                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="parking_lane">
+                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="parking_lane">
                    🅿️ Parkbucht
                 </button>
-                <button type="button" class="pos-option-btn py-2 px-2 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="green">
+                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="green">
                    🌳 Grün
                 </button>
              </div>
@@ -81,7 +84,7 @@ export function renderConfirmView() {
 
          <!-- Details (Visible) -->
          <div class="space-y-4 pt-4 border-t border-gray-800">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Technische Daten (Optional)</h3>
+            <!-- Header REMOVED as requested -->
             
             <!-- Diameter / Volume -->
             <div id="diameter-container">
@@ -105,14 +108,16 @@ export function renderConfirmView() {
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Nummer / Ref</label>
                   <input type="text" id="hydrant-ref" placeholder="z.B. 1234" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                </div>
-               <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Betreiber</label>
-                  <input type="text" id="hydrant-operator" placeholder="Gemeinde" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-               </div>
+               <!-- Operator Field REMOVED -->
+               
                <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Farbe</label>
-                  <input type="text" id="hydrant-colour" placeholder="Rot" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                  <div class="flex flex-wrap gap-3" id="color-picker-container">
+                      <!-- JS Populated -->
+                  </div>
+                  <input type="hidden" id="hydrant-colour" value="">
                </div>
+               
                <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Notiz</label>
                   <textarea id="hydrant-note" placeholder="..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white h-20 outline-none"></textarea>
@@ -207,7 +212,47 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
   posBtns.forEach(btn => {
     btn.onclick = () => updatePos(btn.dataset.value);
   });
-  updatePos('sidewalk');
+  updatePos(''); // Default Empty? Or keep sidewalk? User said "Position lassen so". But asked for "Nicht angeben". Default should probably be specific if user wants, or sidewalk. User audio implied "Nicht angeben" option needed. Default could be sidewalk or empty. Let's start with sidewalk as per screenshot? No, user asked for "Nicht angeben".
+
+  // COLOR PICKER LOGIC
+  const colors = [
+    { value: "black", label: "Schwarz", hex: "#000000", border: "#333" },
+    { value: "grey", label: "Grau", hex: "#808080", border: "#999" },
+    { value: "blue", label: "Blau", hex: "#3b82f6", border: "#3b82f6" },
+    { value: "red", label: "Rot", hex: "#ef4444", border: "#ef4444" },
+    { value: "yellow", label: "Gelb", hex: "#fbbf24", border: "#fbbf24" },
+    { value: "green", label: "Grün", hex: "#22c55e", border: "#22c55e" },
+    { value: "white", label: "Weiß", hex: "#ffffff", border: "#ddd" }
+  ];
+
+  const colorContainer = element.querySelector('#color-picker-container');
+  const colorInput = element.querySelector('#hydrant-colour');
+
+  colors.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = `w-10 h-10 rounded-full border-2 flex items-center justify-center transition hover:scale-110 focus:outline-none relative`;
+
+    btn.style.backgroundColor = c.hex;
+    btn.style.borderColor = c.border;
+
+    // Click Handler
+    btn.onclick = () => {
+      // Reset
+      Array.from(colorContainer.children).forEach(child => {
+        child.classList.remove('ring-4', 'ring-white/50', 'scale-110');
+        child.style.transform = 'scale(1)';
+      });
+
+      // Set Active
+      btn.classList.add('ring-4', 'ring-white/50', 'scale-110');
+      btn.style.transform = 'scale(1.1)';
+
+      // Set Value
+      colorInput.value = c.value;
+    };
+
+    colorContainer.appendChild(btn);
+  });
 
 
   // Map Setup (Hero)
@@ -292,8 +337,6 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     const ref = element.querySelector('#hydrant-ref').value;
     if (ref) tags['ref'] = ref;
 
-    const op = element.querySelector('#hydrant-operator').value;
-    if (op) tags['operator'] = op;
     const col = element.querySelector('#hydrant-colour').value;
     if (col) tags['colour'] = col;
     const note = element.querySelector('#hydrant-note').value;
