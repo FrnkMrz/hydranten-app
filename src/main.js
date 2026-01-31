@@ -339,7 +339,12 @@ if (location.search.includes('code=')) {
       };
     } else {
       console.log("Login Successful!", res);
-      alert("Login OK! Res: " + JSON.stringify(res));
+
+      // PERSISTENT DEBUG OVERLAY
+      const debugDiv = document.createElement('div');
+      debugDiv.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);color:#0f0;font-family:monospace;white-space:pre-wrap;z-index:9999;padding:20px;overflow:auto;";
+      debugDiv.innerHTML = "<h1>LOGIN SUCCESS DEBUG</h1>" + JSON.stringify(res, null, 2) + "<br><br><button onclick='this.parentElement.remove()'>CLOSE</button>";
+      document.body.appendChild(debugDiv);
 
       // FORCE SAVE TOKEN (Fix for missing token issue)
       if (res && res.access_token) {
