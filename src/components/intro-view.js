@@ -146,9 +146,12 @@ export function initIntroView(element, onStart, onSettings) {
                      </div>
 
                      <div>
-                         <h4 class="font-bold text-white">Lizenz</h4>
+                         <h4 class="font-bold text-white">Lizenz & Code</h4>
                          <p>Kartendaten © OpenStreetMap Mitwirkende.</p>
                          <p>Code: MIT License</p>
+                         <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" class="text-blue-400 hover:text-blue-300 underline mt-1 block">
+                             📂 Projekt auf GitHub ansehen
+                         </a>
                      </div>
                  </div>
 
