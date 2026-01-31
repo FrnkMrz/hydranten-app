@@ -36,9 +36,14 @@ export function renderConfirmView() {
            </button>
         </div>
 
-        <!-- Accuracy Pill -->
-        <div class="absolute top-4 right-4 z-20 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white/90 border border-white/10 shadow-lg" id="geo-status-pill">
-           GPS: ...
+        <!-- Accuracy Pill & Retry -->
+        <div class="absolute top-4 right-4 z-20 flex flex-col items-end gap-2">
+           <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white/90 border border-white/10 shadow-lg" id="geo-status-pill">
+              GPS: ...
+           </div>
+           <button id="gps-retry-btn" class="bg-blue-600/80 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-white shadow-lg active:scale-95 transition hidden">
+              🔄 GPS neu laden
+           </button>
         </div>
       </div>
 
@@ -226,7 +231,42 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
   const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
   if (statusPill) statusPill.innerText = `GPS: ±${accuracy}m`;
 
-  retakeBtn.onclick = onRetake;
+  // Retry Button Logic
+  const retryBtn = element.querySelector('#gps-retry-btn');
+  if (retryBtn) {
+    if (location.accuracy > 500 || location.lat === 48.137) {
+      retryBtn.classList.remove('hidden');
+      retryBtn.classList.add('animate-pulse');
+    }
+
+    retryBtn.onclick = async () => {
+      retryBtn.disabled = true;
+      retryBtn.innerText = "Lade...";
+      retryBtn.classList.remove('animate-pulse');
+
+      if (onRetake && onRetake.retryGPS) {
+        const newLoc = await onRetake.retryGPS();
+        if (newLoc) {
+          location.lat = newLoc.lat;
+          location.lng = newLoc.lng;
+          location.accuracy = newLoc.accuracy;
+
+          // Update Map
+          map.setView([newLoc.lat, newLoc.lng], 19);
+          marker.setLatLng([newLoc.lat, newLoc.lng]);
+
+          if (statusPill) statusPill.innerText = `GPS: ±${Math.round(newLoc.accuracy)}m`;
+          retryBtn.innerText = "Geladen!";
+          setTimeout(() => retryBtn.classList.add('hidden'), 1500);
+        } else {
+          retryBtn.innerText = "Fehler";
+          retryBtn.disabled = false;
+        }
+      }
+    };
+  }
+
+  retakeBtn.onclick = () => onRetake.back();
 
   submitBtn.onclick = () => {
     const selectedType = typeInput.value;

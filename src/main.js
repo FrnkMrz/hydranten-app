@@ -130,7 +130,19 @@ function showConfirm() {
   state.view = 'confirm';
   app.innerHTML = renderConfirmView();
   initConfirmView(app, state.capturedBlob, state.location,
-    () => showCamera(), // Retake
+    {
+      back: () => showCamera(),
+      retryGPS: async () => {
+        try {
+          // Hard fetch
+          const l = await getPosition();
+          return { lat: l.lat, lng: l.lng, accuracy: l.accuracy };
+        } catch (e) {
+          alert("GPS Update fehlgeschlagen: " + e.message);
+          return null;
+        }
+      }
+    },
     (data) => {
       // Submit Logic
       const creds = JSON.parse(localStorage.getItem('osm_creds') || '{}');
