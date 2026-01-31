@@ -16,7 +16,21 @@ export const auth = osmAuth({
 // Helper to get Header
 export function getAuthHeader() {
     if (auth.authenticated()) {
-        return { 'Authorization': 'Bearer ' + auth.options().access_token };
+        let token = auth.options().access_token;
+        if (!token) {
+            // Fallback: Read from localStorage directly
+            try {
+                const storage = JSON.parse(localStorage.getItem('osm-auth'));
+                if (storage && storage.access_token) {
+                    token = storage.access_token;
+                }
+            } catch (e) {
+                console.error("Failed to parse token from storage", e);
+            }
+        }
+        if (token) {
+            return { 'Authorization': 'Bearer ' + token };
+        }
     }
     return null;
 }
