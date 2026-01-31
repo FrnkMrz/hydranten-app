@@ -55,6 +55,6 @@ export async function checkLogin() {
         return user ? user.getAttribute('display_name') : "XML Error";
     } catch (e) {
         console.error("Auth Check Failed", e);
-        return null;
+        return "Error: " + String(e);
     }
 }
