@@ -150,8 +150,8 @@ function handleEdit(nodeId) {
     const { fetchNodeData, updateHydrant, deleteHydrant } = osm;
 
     // Safety check
-    if (!fetchNodeData) console.error("Missing fetchNodeData in osm module", module);
-    if (!deleteHydrant) console.error("Missing deleteHydrant in osm module", module);
+    if (!fetchNodeData) console.error("Missing fetchNodeData in osm module", osm);
+    if (!deleteHydrant) console.error("Missing deleteHydrant in osm module", osm);
 
     fetchNodeData(nodeId)
       .then(nodeData => {
