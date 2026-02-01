@@ -7,6 +7,7 @@ import { renderHistoryView, initHistoryView } from './components/history-view.js
 import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition, startTracking, getLastKnownPosition } from './services/geo.js';
 import { auth } from './services/auth.js';
 import { fetchNodeData, updateHydrant, deleteHydrant } from './services/osm.js';
+import { t } from './services/i18n.js';
 
 // Init Compass & GPS Tracking early
 // Init Compass & GPS Tracking (Moved to Start/Camera)
@@ -232,11 +233,11 @@ function handleEdit(nodeId) {
     .catch(err => {
       console.error("Load Failed:", err);
 
-      let msg = "Fehler beim Laden: " + err.message;
+      let msg = t('error.load_failed') + ": " + err.message;
       let autoClose = false;
 
       if (err.message === "NODE_DELETED") {
-        msg = "Dieser Hydrant existiert nicht mehr (wurde gelöscht).";
+        msg = t('error.node_deleted');
         autoClose = true;
       }
 
@@ -244,10 +245,10 @@ function handleEdit(nodeId) {
       app.innerHTML = `
             <div class="h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-6 p-8 text-center animate-fade-in">
                 <div class="text-6xl">⚠️</div>
-                <h2 class="text-2xl font-bold text-red-500">Hoppla!</h2>
+                <h2 class="text-2xl font-bold text-red-500">${t('error.oops')}</h2>
                 <p class="text-lg text-gray-300">${msg}</p>
                 <div class="w-full max-w-xs mt-4">
-                     <button id="error-back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 rounded-xl font-bold transition">Zurück zur Karte</button>
+                     <button id="error-back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 rounded-xl font-bold transition">${t('error.back_to_map')}</button>
                 </div>
             </div>
         `;

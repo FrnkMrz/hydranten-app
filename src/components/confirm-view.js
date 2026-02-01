@@ -160,7 +160,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     // Edit Mode Enhancements
     if (editMode) {
       const titleEl = element.querySelector('#confirm-title');
-      if (titleEl) titleEl.innerText = "Hydrant bearbeiten" || t('confirm.title_edit');
+      if (titleEl) titleEl.innerText = t('confirm.title_edit');
 
       // Show Delete Button
       const delContainer = element.querySelector('#delete-btn-container');
@@ -168,8 +168,10 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
       const delBtn = element.querySelector('#delete-hydrant-btn');
       if (delBtn && onDelete) {
+        // Translate aria-label if possible, or leave/update
+        delBtn.setAttribute('aria-label', t('confirm.delete_btn'));
         delBtn.onclick = () => {
-          if (confirm("Hydrant wirklich löschen?")) {
+          if (confirm(t('confirm.delete_confirm'))) {
             onDelete(initialData.id, initialData.version);
           }
         };
@@ -184,7 +186,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
       // Change Submit Button Text
       const submitBtn = element.querySelector('#submit-img-btn');
-      if (submitBtn) submitBtn.innerHTML = `<span>💾 Speichern</span>`;
+      if (submitBtn) submitBtn.innerHTML = `<span>💾 ${t('confirm.save_btn')}</span>`;
 
       // Hide GPS Retry
       const retryBtn = element.querySelector('#gps-retry-btn');
@@ -192,7 +194,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
       // Update Pill
       const gpsPill = element.querySelector('#geo-status-pill');
-      if (gpsPill) gpsPill.innerText = "Position anpassbar";
+      if (gpsPill) gpsPill.innerText = t('confirm.position_adjustable');
     }
 
     const img = element.querySelector('#preview-img');
