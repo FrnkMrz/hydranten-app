@@ -298,20 +298,15 @@ export function initIntroView(element, onStart, onSettings) {
          // We check 'permissions' API if available, else we wait.
          // Check 'permissions' API to auto-start if already granted
          // This restores "Show my position" for returning users without triggering new prompts.
-         if (navigator.permissions && navigator.permissions.query) {
-            navigator.permissions.query({ name: 'geolocation' }).then(result => {
-               if (result.state === 'granted') {
-                  // Safe to call without user gesture since we already have permission
-                  startMapGps(map, (lat, lng) => {
-                     if (!userMarker) {
-                        userMarker = L.marker([lat, lng]).addTo(map);
-                     } else {
-                        userMarker.setLatLng([lat, lng]);
-                     }
-                  });
-               }
-            });
-         }
+         // Always attempt to start GPS on load to ensure we get a fix.
+         // This might trigger the permission prompt if not granted, which is desired behavior now.
+         startMapGps(map, (lat, lng) => {
+            if (!userMarker) {
+               userMarker = L.marker([lat, lng]).addTo(map);
+            } else {
+               userMarker.setLatLng([lat, lng]);
+            }
+         });
 
          // Debounced Map Move Handler
          const debouncedUpdate = debounce(() => updateHydrants(map), 1000);
