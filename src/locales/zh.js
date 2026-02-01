@@ -30,6 +30,15 @@ export default {
         back_btn: "返回",
         legal_link: "法律信息"
     },
+    history: {
+        title: "历史记录",
+        btn_label: "历史记录",
+        loading: "加载数据中...",
+        error: "加载错误",
+        no_data: "未找到更改。",
+        not_logged_in: "未登录。",
+        back_btn: "返回"
+    },
     camera: {
         permission: "需要相机权限",
         retake: "重拍",

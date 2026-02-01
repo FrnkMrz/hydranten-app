@@ -24,11 +24,20 @@ export default {
         title: "Instellingen",
         account: "OSM Account",
         connect_btn: "Verbinden met OSM",
-        disconnect_btn: "Uitloggen",
+        disconnect_btn: "Afmelden",
         app_reset: "App Resetten",
         reset_btn: "Reset & Cache Wissen",
-        back_btn: "TERUG",
+        back_btn: "Terug",
         legal_link: "Juridische Info"
+    },
+    history: {
+        title: "Geschiedenis",
+        btn_label: "Geschiedenis",
+        loading: "Laden...",
+        error: "Fout bij laden",
+        no_data: "Geen wijzigingen gevonden.",
+        not_logged_in: "Niet ingelogd.",
+        back_btn: "Terug"
     },
     camera: {
         permission: "Cameratoegang Vereist",

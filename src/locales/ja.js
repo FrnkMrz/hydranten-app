@@ -30,6 +30,15 @@ export default {
         back_btn: "戻る",
         legal_link: "法的情報"
     },
+    history: {
+        title: "履歴",
+        btn_label: "履歴",
+        loading: "データを読み込んでいます...",
+        error: "読み込みエラー",
+        no_data: "変更は見つかりませんでした。",
+        not_logged_in: "ログインしていません。",
+        back_btn: "戻る"
+    },
     camera: {
         permission: "カメラへのアクセスが必要です",
         retake: "撮り直す",

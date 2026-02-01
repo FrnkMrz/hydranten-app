@@ -30,6 +30,15 @@ export default {
         back_btn: "뒤로",
         legal_link: "법적 정보"
     },
+    history: {
+        title: "기록",
+        btn_label: "기록",
+        loading: "데이터 로딩 중...",
+        error: "로딩 오류",
+        no_data: "변경 사항이 없습니다.",
+        not_logged_in: "로그인되지 않음.",
+        back_btn: "뒤로"
+    },
     camera: {
         permission: "카메라 액세스 필요",
         retake: "재촬영",

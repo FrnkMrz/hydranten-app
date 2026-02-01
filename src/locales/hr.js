@@ -30,6 +30,15 @@ export default {
         back_btn: "NATRAG",
         legal_link: "Pravne informacije"
     },
+    history: {
+        title: "Povijest",
+        btn_label: "Povijest",
+        loading: "Učitavanje...",
+        error: "Greška pri učitavanju",
+        no_data: "Nema promjena.",
+        not_logged_in: "Niste prijavljeni.",
+        back_btn: "Natrag"
+    },
     camera: {
         permission: "Potreban pristup kameri",
         retake: "Ponovi",

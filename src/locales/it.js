@@ -30,6 +30,15 @@ export default {
         back_btn: "INDIETRO",
         legal_link: "Info Legali"
     },
+    history: {
+        title: "Cronologia",
+        btn_label: "Cronologia",
+        loading: "Caricamento...",
+        error: "Errore di caricamento",
+        no_data: "Nessuna modifica trovata.",
+        not_logged_in: "Non connesso.",
+        back_btn: "Indietro"
+    },
     camera: {
         permission: "Accesso alla fotocamera richiesto",
         retake: "Riprova",

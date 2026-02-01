@@ -30,6 +30,15 @@ export default {
         back_btn: "GERİ",
         legal_link: "Yasal Bilgi"
     },
+    history: {
+        title: "Geçmiş",
+        btn_label: "Geçmiş",
+        loading: "Veriler Yükleniyor...",
+        error: "Yükleme Hatası",
+        no_data: "Değişiklik Bulunamadı.",
+        not_logged_in: "Giriş Yapılmadı.",
+        back_btn: "Geri"
+    },
     camera: {
         permission: "Kamera Erişimi Gerekli",
         retake: "Yeniden Çek",

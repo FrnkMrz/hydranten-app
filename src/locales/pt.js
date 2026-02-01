@@ -23,12 +23,21 @@ export default {
     settings: {
         title: "Configurações",
         account: "Conta OSM",
-        connect_btn: "Conectar com OSM",
+        connect_btn: "Conectar ao OSM",
         disconnect_btn: "Sair",
         app_reset: "Reiniciar App",
         reset_btn: "Reiniciar e Limpar Cache",
-        back_btn: "VOLTAR",
+        back_btn: "Voltar",
         legal_link: "Info Legal"
+    },
+    history: {
+        title: "Histórico",
+        btn_label: "Histórico",
+        loading: "Carregando...",
+        error: "Erro ao carregar",
+        no_data: "Nenhuma alteração encontrada.",
+        not_logged_in: "Não conectado.",
+        back_btn: "Voltar"
     },
     camera: {
         permission: "Acesso à Câmera Necessário",

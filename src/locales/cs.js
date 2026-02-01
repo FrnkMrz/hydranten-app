@@ -30,6 +30,15 @@ export default {
         back_btn: "ZPĚT",
         legal_link: "Právní Info"
     },
+    history: {
+        title: "Historie",
+        btn_label: "Historie",
+        loading: "Načítání...",
+        error: "Chyba načítání",
+        no_data: "Žádné změny.",
+        not_logged_in: "Nepřihlášen.",
+        back_btn: "Zpět"
+    },
     camera: {
         permission: "Vyžadován Přístup ke Kameře",
         retake: "Znovu",
