@@ -19,7 +19,7 @@ L.Icon.Default.mergeOptions({
 const visibleHydrants = new Set();
 let hydrantLayer = null;
 
-import { t } from '../services/i18n.js';
+import { t, lang, setLanguage } from '../services/i18n.js';
 
 export function renderIntroView() {
    // Check Login Status
@@ -79,6 +79,11 @@ export function renderIntroView() {
           </button>
           
           <div class="flex items-center gap-3">
+              <!-- Language Flag -->
+              <button id="lang-btn" class="w-12 h-10 shrink-0 rounded-xl bg-white/5 text-2xl hover:bg-white/10 transition flex items-center justify-center border border-white/10">
+                🇩🇪
+              </button>
+
               <button id="intro-settings-btn" class="flex-grow py-3 flex items-center justify-center gap-2 ${loginClass} transition-colors text-sm font-medium hover:bg-white/5 rounded-xl">
                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                  ${loginText}
@@ -118,6 +123,7 @@ export function initIntroView(element, onStart, onSettings) {
    // Info Modal Logic
    const infoBtn = element.querySelector('#intro-info-btn');
    if (infoBtn) {
+      // ... existing info modal logic ...
       infoBtn.onclick = () => {
          const modal = document.createElement('div');
          modal.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/90 p-6 animate-fade-in backdrop-blur-md";
@@ -164,6 +170,27 @@ export function initIntroView(element, onStart, onSettings) {
          element.appendChild(modal);
          modal.querySelector('#close-intro-info-btn').onclick = () => modal.remove();
       };
+   }
+
+   // Language Switcher Logic
+   const langBtn = element.querySelector('#lang-btn');
+   if (langBtn) {
+      // Set current flag
+      const flags = {
+         'de': '🇩🇪', 'en': '🇺🇸', 'pl': '🇵🇱', 'cs': '🇨🇿',
+         'fr': '🇫🇷', 'nl': '🇳🇱', 'es': '🇪🇸', 'pt': '🇵🇹'
+      };
+      // Need to import lang from i18n to solve this cleanly, or just read from storage/Service
+      // Since I cannot change imports easily with replace_content in middle of file, I will use a trick or assume import is updated?
+      // The previous replace_content only touched the body. I need to make sure 'lang' and 'setLanguage' are imported.
+      // For now, let's assume I can access the i18n module if I imported it fully. 
+      // Currently: import { t } from '../services/i18n.js';
+      // I should probably update the import first.
+
+      // BUT, I can't easily update the import line and this block in one go with replace_file_content if they are far apart.
+      // I will use a separate replace_file_content for the import on top.
+
+      // Temporary mock for visual proof, logic comes in next step if imports are missing
    }
 
 

@@ -15,8 +15,11 @@ const locales = {
 // Default fallback
 const DEFAULT_LANG = 'en';
 
-// Detect Browser Language
+// Detect Browser Language or Load from Storage
 function detectLanguage() {
+    const stored = localStorage.getItem('language');
+    if (stored && locales[stored]) return stored;
+
     const browserLang = navigator.language.split('-')[0]; // 'de-DE' -> 'de'
     return locales[browserLang] ? browserLang : DEFAULT_LANG;
 }
@@ -47,3 +50,10 @@ export function t(key) {
 }
 
 export const lang = currentLang;
+
+export function setLanguage(langCode) {
+    if (locales[langCode]) {
+        localStorage.setItem('language', langCode);
+        window.location.reload();
+    }
+}
