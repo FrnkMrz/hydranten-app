@@ -135,6 +135,9 @@ export async function createHydrant(data, authHeader, log = console.log) {
 export async function fetchNodeData(id) {
     const url = `https://api.openstreetmap.org/api/0.6/node/${id}`; // Auth not strictly needed for public read
     const res = await fetch(url);
+    if (res.status === 404 || res.status === 410) {
+        throw new Error("NODE_DELETED");
+    }
     if (!res.ok) throw new Error(`Fetch Node Failed: ${res.status}`);
 
     const text = await res.text();

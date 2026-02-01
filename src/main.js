@@ -231,8 +231,32 @@ function handleEdit(nodeId) {
     })
     .catch(err => {
       console.error("Load Failed:", err);
-      alert("Fehler beim Laden: " + err.message);
-      showIntro();
+
+      let msg = "Fehler beim Laden: " + err.message;
+      let autoClose = false;
+
+      if (err.message === "NODE_DELETED") {
+        msg = "Dieser Hydrant existiert nicht mehr (wurde gelöscht).";
+        autoClose = true;
+      }
+
+      // Update Loading Screen with Error
+      app.innerHTML = `
+            <div class="h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-6 p-8 text-center animate-fade-in">
+                <div class="text-6xl">⚠️</div>
+                <h2 class="text-2xl font-bold text-red-500">Hoppla!</h2>
+                <p class="text-lg text-gray-300">${msg}</p>
+                <div class="w-full max-w-xs mt-4">
+                     <button id="error-back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 rounded-xl font-bold transition">Zurück zur Karte</button>
+                </div>
+            </div>
+        `;
+
+      document.getElementById('error-back-btn').onclick = () => showIntro();
+
+      if (autoClose) {
+        setTimeout(() => showIntro(), 2500);
+      }
     });
 }
 
