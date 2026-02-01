@@ -404,6 +404,9 @@ function updateHydrants(map, onEdit) {
                   className: 'hydrant-marker cursor-pointer'
                });
 
+               // Fix: Ensure marker is added to layer!
+               m.addTo(hydrantLayer);
+
                m.on('click', () => {
                   console.log("Clicked Hydrant:", node.id, "onEdit:", onEdit); // DEBUG
                   // Visual feedback
