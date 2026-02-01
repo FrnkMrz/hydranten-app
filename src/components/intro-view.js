@@ -321,20 +321,22 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       setTimeout(() => {
          map.invalidateSize();
 
-         // Ensure we are zoomed in enough for updateHydrants
-         if (lastPos) {
-            map.setView([lastPos.lat, lastPos.lng], 18);
+         // Fix: Check if we have a valid last known position to restore
+         if (lastPos && lastPos.lat && lastPos.lng) {
+            // Restore view without animation to be instant
+            map.setView([lastPos.lat, lastPos.lng], 18, { animate: false });
+
             if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
             else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
-         } else {
-            // Fallback if no lastPos (e.g. first load or cleared)
-            // Try to use a default view? Or just leave it?
-            // If we are at default zoom, updateHydrants might fail.
-         }
 
-         // Force update
-         updateHydrants(map, onEdit);
-      }, 200);
+            // Force immediate update now that view is set
+            console.log("Restoring view -> Force update hydrants");
+            updateHydrants(map, onEdit);
+         } else {
+            // If no position, we rely on the GPS fix or default view
+            updateHydrants(map, onEdit);
+         }
+      }, 300); // Increased delay slightly to 300ms to be safe against render jank
    }
 
    // Return Cleanup Function (Stub for now, real cleanup in startMapGps logic if needed)
