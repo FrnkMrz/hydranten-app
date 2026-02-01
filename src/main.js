@@ -143,9 +143,10 @@ function handleEdit(nodeId) {
       </div>
    `;
 
-  import('./services/osm.js').then(module => {
-    // Robust Import Handling: Handle both aggregation and default exports
-    const osm = module.default || module;
+  // Static Import Wrapper
+  {
+    // Use top-level 'osm' import
+
     const { fetchNodeData, updateHydrant, deleteHydrant } = osm;
 
     // Safety check
@@ -239,7 +240,7 @@ function handleEdit(nodeId) {
         alert("Fehler beim Laden: " + err.message);
         showIntro();
       });
-  });
+  }
 }
 
 
