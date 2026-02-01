@@ -63,7 +63,7 @@ export function renderSettingsView() {
 
       <div class="z-10 mt-auto">
          <button id="back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
-            ${t('settings.back')}
+            ${t('settings.back_btn')}
          </button>
          <p class="text-center text-[10px] text-gray-600 mt-4">Version 1.0 Beta (PKCE) • Hydranten Jäger</p>
       </div>
