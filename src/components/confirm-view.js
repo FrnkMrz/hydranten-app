@@ -51,6 +51,8 @@ export function renderConfirmView() {
       <!-- Scrollable Form Content -->
       <div class="flex-grow overflow-y-auto px-4 pt-6 pb-48 space-y-8 bg-slate-900">
          
+         <h2 id="confirm-title" class="text-2xl font-bold text-white text-center mb-4">${t('confirm.title') || 'Neuer Hydrant'}</h2>
+
          <!-- Type Selection (Grid) -->
          <div class="space-y-3">
             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">${t('confirm.type_label')}</h3>
@@ -147,7 +149,8 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
     // Edit Mode Enhancements
     if (editMode) {
-      element.querySelector('h1').innerText = "Hydrant bearbeiten" || t('confirm.title_edit'); // Fallback if no ref (title not in renderConfirmView, wait, need to check where title is rendered)
+      const titleEl = element.querySelector('#confirm-title');
+      if (titleEl) titleEl.innerText = "Hydrant bearbeiten" || t('confirm.title_edit');
       // Title is in renderConfirmView but static. Let's find it. It's not in the export renderConfirmView string directly accessible via ID.
       // It's in <div...><div...><div...>... Confirm Data ...
       // We'll traverse or just leave it for now if we can't find ID. Wait, I see no ID for title.
