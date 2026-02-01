@@ -25,10 +25,16 @@ export default {
         account: "Cuenta OSM",
         connect_btn: "Conectar con OSM",
         disconnect_btn: "Desconectar",
-        app_reset: "Reiniciar App",
-        reset_btn: "Reiniciar y Borrar Caché",
-        back_btn: "ATRÁS",
-        legal_link: "Info Legal"
+        back_btn: "Atrás"
+    },
+    history: {
+        title: "Historial",
+        btn_label: "Historial",
+        loading: "Cargando...",
+        error: "Error al cargar",
+        no_data: "No se encontraron cambios.",
+        not_logged_in: "No conectado.",
+        back_btn: "Atrás"
     },
     camera: {
         permission: "Acceso a Cámara Requerido",

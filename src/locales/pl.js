@@ -27,8 +27,17 @@ export default {
         disconnect_btn: "Wyloguj",
         app_reset: "Reset Aplikacji",
         reset_btn: "Resetuj i Wyczyść Cache",
-        back_btn: "VRÓĆ",
+        back_btn: "Wstecz",
         legal_link: "Info Prawne"
+    },
+    history: {
+        title: "Historia",
+        btn_label: "Historia",
+        loading: "Ładowanie danych...",
+        error: "Błąd ładowania",
+        no_data: "Nie znaleziono zmian.",
+        not_logged_in: "Nie zalogowany.",
+        back_btn: "Wstecz"
     },
     camera: {
         permission: "Wymagany Dostęp do Kamery",

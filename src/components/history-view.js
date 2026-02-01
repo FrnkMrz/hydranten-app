@@ -20,7 +20,10 @@ export function renderHistoryView() {
       </div>
 
       <!-- Footer / Back Button -->
-      <div class="z-10 mt-auto pt-4 border-t border-gray-800">
+      <div class="z-10 mt-auto pt-4 border-t border-gray-800 text-center">
+         <p class="text-[10px] text-gray-600 mb-2 font-mono">
+            Source: api.openstreetmap.org
+         </p>
          <button id="history-back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
             ${t('history.back_btn')}
          </button>
