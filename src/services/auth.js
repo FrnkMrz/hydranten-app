@@ -47,21 +47,46 @@ export const auth = {
         const verifier = generateRandomString(128);
         const challenge = await generateChallenge(verifier);
 
-        // Save Verifier specifically
-        localStorage.setItem('osm_pkce_verifier', verifier);
+        // Stateless PKCE: Encode verifier in state
+        const stateData = {
+            csrf: generateRandomString(16),
+            v: verifier
+        };
+        const state = btoa(JSON.stringify(stateData)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
         const scope = 'read_prefs write_api';
-        const url = `https://www.openstreetmap.org/oauth2/authorize?response_type=code&client_id=${this.options.client_id}&redirect_uri=${encodeURIComponent(this.options.redirect_uri)}&scope=${encodeURIComponent(scope)}&code_challenge=${challenge}&code_challenge_method=S256`;
+        const url = `https://www.openstreetmap.org/oauth2/authorize?response_type=code&client_id=${this.options.client_id}&redirect_uri=${encodeURIComponent(this.options.redirect_uri)}&scope=${encodeURIComponent(scope)}&code_challenge=${challenge}&code_challenge_method=S256&state=${state}`;
 
         window.location.href = url;
     },
 
     // 2. Exchange Code (Call this on callback)
     async exchangeCode(code) {
-        const verifier = localStorage.getItem('osm_pkce_verifier');
-        if (!verifier) throw new Error("PKCE Verifier missing from storage. Please try again.");
+        // Try getting verifier from State (Stateless)
+        const params = new URLSearchParams(window.location.search);
+        const state = params.get('state');
+        let verifier = null;
 
-        const params = new URLSearchParams({
+        if (state) {
+            try {
+                // Decode Base64URL
+                const json = atob(state.replace(/-/g, '+').replace(/_/g, '/'));
+                const data = JSON.parse(json);
+                verifier = data.v;
+                console.log("Stateless PKCE: Recovered verifier from state");
+            } catch (e) {
+                console.error("State decode failed", e);
+            }
+        }
+
+        // Fallback to LocalStorage (Legacy/Backup)
+        if (!verifier) {
+            verifier = localStorage.getItem('osm_pkce_verifier');
+        }
+
+        if (!verifier) throw new Error("PKCE Verifier missing (State & Storage empty). Login failed.");
+
+        const bodyParams = new URLSearchParams({
             grant_type: 'authorization_code',
             code: code,
             client_id: this.options.client_id,
@@ -71,7 +96,7 @@ export const auth = {
 
         const res = await fetch('https://www.openstreetmap.org/oauth2/token', {
             method: 'POST',
-            body: params
+            body: bodyParams
         });
 
         if (!res.ok) {
@@ -83,7 +108,7 @@ export const auth = {
         // Save Token
         localStorage.setItem('osm-auth', JSON.stringify(data));
         // Cleanup Verifier
-        localStorage.removeItem('osm_pkce_verifier');
+        localStorage.removeItem('osm_pkce_verifier'); // Clean legacy if present
 
         return data.access_token;
     },
