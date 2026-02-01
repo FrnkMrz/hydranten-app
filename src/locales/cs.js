@@ -48,8 +48,16 @@ export default {
             underground: "Podzemní",
             pillar: "Nadzemní",
             wall: "Nástěnný",
-            suction: "Sací místo"
+            suction: "Sací místo",
+            none: "Žádný"
         },
+        diameter_label: "PRŮMĚR",
+        diameter_none: "Neuvedeno",
+        color_label: "BARVA",
+        number_label: "ČÍSLO / REF",
+        number_placeholder: "např. 1234",
+        notes_label: "POZNÁMKA",
+        notes_placeholder: "...",
         locations: {
             sidewalk: "Chodník",
             street: "Ulice",

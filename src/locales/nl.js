@@ -48,8 +48,16 @@ export default {
             underground: "Ondergronds",
             pillar: "Bovengronds",
             wall: "Muur",
-            suction: "Zuigpunt"
+            suction: "Zuigpunt",
+            none: "Geen"
         },
+        diameter_label: "DIAMETER",
+        diameter_none: "Niet gespecificeerd",
+        color_label: "KLEUR",
+        number_label: "NUMMER / REF",
+        number_placeholder: "bijv. 1234",
+        notes_label: "NOTITIE",
+        notes_placeholder: "...",
         locations: {
             sidewalk: "Stoep",
             street: "Straat",

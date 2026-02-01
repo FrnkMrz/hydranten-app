@@ -56,6 +56,13 @@ export default {
             green: "Yeşil Alan",
             parking: "Otopark",
             none: "Yok"
-        }
+        },
+        diameter_label: "ÇAP",
+        diameter_none: "Belirtilmemiş",
+        color_label: "RENK",
+        number_label: "NUMARA / REF",
+        number_placeholder: "örn. 1234",
+        notes_label: "NOT",
+        notes_placeholder: "..."
     }
 };

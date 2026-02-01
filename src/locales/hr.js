@@ -56,6 +56,13 @@ export default {
             green: "Zelena površina",
             parking: "Parking",
             none: "Nema"
-        }
+        },
+        diameter_label: "PROMJER",
+        diameter_none: "Nije navedeno",
+        color_label: "BOJA",
+        number_label: "BROJ / REF",
+        number_placeholder: "npr. 1234",
+        notes_label: "BILJEŠKA",
+        notes_placeholder: "..."
     }
 };

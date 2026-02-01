@@ -56,6 +56,13 @@ export default {
             green: "绿地",
             parking: "停车场",
             none: "无"
-        }
+        },
+        diameter_label: "直径",
+        diameter_none: "未指定",
+        color_label: "颜色",
+        number_label: "编号 / 参考",
+        number_placeholder: "例如 1234",
+        notes_label: "备注",
+        notes_placeholder: "..."
     }
 };

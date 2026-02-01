@@ -56,6 +56,13 @@ export default {
             green: "녹지",
             parking: "주차장",
             none: "없음"
-        }
+        },
+        diameter_label: "지름",
+        diameter_none: "지정되지 않음",
+        color_label: "색상",
+        number_label: "번호 / 참조",
+        number_placeholder: "예: 1234",
+        notes_label: "메모",
+        notes_placeholder: "..."
     }
 };

@@ -48,8 +48,16 @@ export default {
             underground: "Subterrâneo",
             pillar: "Pilar",
             wall: "Parede",
-            suction: "Ponto de Sucção"
+            suction: "Ponto de Sucção",
+            none: "Nenhum"
         },
+        diameter_label: "DIÂMETRO",
+        diameter_none: "Não especificado",
+        color_label: "COR",
+        number_label: "NÚMERO / REF",
+        number_placeholder: "ex. 1234",
+        notes_label: "NOTA",
+        notes_placeholder: "...",
         locations: {
             sidewalk: "Calçada",
             street: "Rua",

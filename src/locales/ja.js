@@ -56,6 +56,13 @@ export default {
             green: "緑地",
             parking: "駐車場",
             none: "なし"
-        }
+        },
+        diameter_label: "直径",
+        diameter_none: "指定なし",
+        color_label: "色",
+        number_label: "番号 / 参照",
+        number_placeholder: "例: 1234",
+        notes_label: "メモ",
+        notes_placeholder: "..."
     }
 };
