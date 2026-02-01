@@ -18,7 +18,9 @@ export default {
         info_data: "Data & Privacy",
         info_data_text: "This app does not store personal data. All entries are sent directly to OpenStreetMap (OSM).",
         info_license: "License & Code",
-        info_github: "View on GitHub"
+        info_license: "License & Code",
+        info_github: "View on GitHub",
+        lang_btn_aria: "Language / Sprache"
     },
     settings: {
         title: "Settings",
