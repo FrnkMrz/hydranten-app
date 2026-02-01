@@ -188,19 +188,12 @@ export function initIntroView(element, onStart, onSettings) {
          map = L.map(mapElement, {
             zoomControl: false,
             attributionControl: false,
-            dragging: false, // Keep it static-ish? User said "Only in map changes". 
-            // Wait, if dragging is false, user can't move map to see hydrants.
-            // User said "GUI ... changes only in the map". 
-            // User likely WANTS to see hydrants on the intro location.
-            // Usually intro map follows GPS.
-            // Let's check if map is interactive.
-            // In original code: dragging: false.
-            // If the map is static (intro bg), fetching hydrants makes sense only for the CURRENT location.
-            // But if user walks, does the map move?
-            // Let's check 'gps.watchPosition' in main.js updates this map?
-            // Actually intro view usually just initializes once.
-            // Let's enable interaction? No, user said "GUI not change".
-            // I will stick to: Fetch for INITIAL location and updates if position updates.
+            dragging: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            touchZoom: false,
+            boxZoom: false,
+            keyboard: false,
             zoomSnap: 0,
          }).setView([51.1657, 10.4515], 6); // Default Germany
 
@@ -215,7 +208,7 @@ export function initIntroView(element, onStart, onSettings) {
          if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(pos => {
                const { latitude, longitude } = pos.coords;
-               map.setView([latitude, longitude], 16);
+               map.setView([latitude, longitude], 18); // Force Zoom 18
                updateHydrants(map); // Initial fetch
             }, err => {
                console.log("Intro GPS error", err);
