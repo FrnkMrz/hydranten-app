@@ -51,7 +51,12 @@ export function getCurrentHeading() {
 }
 
 // State for GPS
+// State for GPS
 let lastPosition = null;
+try {
+    const stored = localStorage.getItem('last_known_pos');
+    if (stored) lastPosition = JSON.parse(stored);
+} catch (e) { console.error("Error loading cached pos", e); }
 let watcherId = null;
 
 export function startTracking() {
@@ -67,6 +72,7 @@ export function startTracking() {
                 heading: pos.coords.heading,
                 timestamp: Date.now()
             };
+            localStorage.setItem('last_known_pos', JSON.stringify(lastPosition));
         },
         (err) => {
             console.warn("GPS Tracking Warning:", err);
@@ -87,6 +93,7 @@ export function updatePosition(pos) {
         heading: pos.coords.heading,
         timestamp: Date.now()
     };
+    localStorage.setItem('last_known_pos', JSON.stringify(lastPosition));
 }
 
 export function getLastKnownPosition() {

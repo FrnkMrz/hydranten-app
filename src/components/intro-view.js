@@ -293,20 +293,15 @@ export function initIntroView(element, onStart, onSettings) {
          // Watch GPS to update map & fetch hydrants
          // FIX: Do not auto-request. Only if we have permission or on user interaction.
          // We check 'permissions' API if available, else we wait.
+         // Check 'permissions' API to auto-start if already granted
+         // This restores "Show my position" for returning users without triggering new prompts.
          if (navigator.permissions && navigator.permissions.query) {
             navigator.permissions.query({ name: 'geolocation' }).then(result => {
                if (result.state === 'granted') {
-                  // Safe to call
+                  // Safe to call without user gesture since we already have permission
                   startMapGps(map);
-               } else if (result.state === 'prompt') {
-                  // Wait for user or show "Find me" button?
-                  // For Intro, we can just center on default until user clicks Start.
-                  console.log("GPS permission 'prompt' - waiting for user action.");
                }
             });
-         } else {
-            // Fallback: Try reading (might trigger violation if not granted yet)
-            // Better to just wait for interaction in modern browsers.
          }
 
          // Debounced Map Move Handler
