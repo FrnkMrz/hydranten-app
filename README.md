@@ -18,6 +18,10 @@ Fokus: Geschwindigkeit, Einhand-Bedienung und "Dark Mode" Ästhetik.
     *   Dark Mode Design.
     *   Farbwahl für Hydranten und Lage-Erfassung.
     *   Clean Interface (Keine störenden Emojis im Production-Mode).
+*   **PWA Ready**: Installierbar auf iOS/Android (Standalone Mode) mit **Stateless PKCE OAuth** (Login Fix für iOS).
+*   **Live Vorschau**: Zeigt bereits erfasste Hydranten auf der Startseite an (Overpass API).
+*   **Offline First**: Caching von Assets via Service Worker.
+*   **DSGVO Konform**: Keine Cookies außer lokalem Storage, direkter OSM Upload.
 
 ## Mapping Funktionen 🛠️
 
