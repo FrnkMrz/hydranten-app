@@ -26,7 +26,7 @@ export function renderSettingsView() {
                </button>
                <button id="history-btn" class="flex-1 py-4 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-xl font-bold flex items-center justify-center gap-2">
                   <span>📜</span>
-                  <span>Verlauf</span>
+                  <span>${t('history.btn_label')}</span>
                </button>
             </div>
   `;

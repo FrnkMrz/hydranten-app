@@ -25,12 +25,20 @@ export default {
     settings: {
         title: "Settings",
         account: "OSM Account",
-        connect_btn: "Connect to OSM",
-        disconnect_btn: "Logout",
-        app_reset: "App Reset",
-        reset_btn: "Reset & Clear Cache",
-        back_btn: "BACK",
-        legal_link: "Legal Info & Imprint"
+        connect_btn: "Connect with OSM",
+        disconnect_btn: "Disconnect",
+        back_btn: "Back",
+        app_reset: "Reset App (Emergency)",
+        reset_btn: "Really delete all data and logout?"
+    },
+    history: {
+        title: "History",
+        btn_label: "History",
+        loading: "Loading data...",
+        error: "Error loading data",
+        no_data: "No changesets found.",
+        not_logged_in: "Not logged in.",
+        back_btn: "Back"
     },
     camera: {
         permission: "Camera Access Required",
