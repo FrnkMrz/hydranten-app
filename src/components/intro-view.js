@@ -376,14 +376,40 @@ function updateHydrants(map, onEdit) {
 
          // Optimistic Filter: Remove hydrants that we know are deleted locally
          let localDeleted = [];
+         let localCreated = [];
          try {
             localDeleted = JSON.parse(localStorage.getItem('deleted_hydrants') || '[]');
-            // Cleanup: Optional - remove very old entries? For now, keep it simple.
+            localCreated = JSON.parse(localStorage.getItem('created_hydrants') || '[]');
+
+            // Cleanup Created: Remove items older than 15 minutes or arguably if they appear in API (handled below)
+            const now = Date.now();
+            const validCreated = localCreated.filter(n => (now - (n.timestamp || 0)) < 15 * 60 * 1000);
+            if (validCreated.length !== localCreated.length) {
+               localStorage.setItem('created_hydrants', JSON.stringify(validCreated));
+               localCreated = validCreated;
+            }
          } catch (e) { }
 
-         const filteredElements = elements.filter(node => !localDeleted.includes(String(node.id)));
+         // 1. Filter out deleted
+         let filteredElements = elements.filter(node => !localDeleted.includes(String(node.id)));
 
-         console.log(`Fetched ${elements.length} hydrants, showing ${filteredElements.length} (Hidden: ${elements.length - filteredElements.length})`);
+         // 2. Inject local/newly created hydrants (if not already present)
+         const existingIds = new Set(filteredElements.map(n => String(n.id)));
+         let injectedCount = 0;
+
+         localCreated.forEach(localNode => {
+            // Check bounds (roughly) to only add if in view? 
+            // Or just add them, Leaflet handles off-screen fine usually, but Overpass query was bounded.
+            // Let's checks bounds to be nice.
+            if (map.getBounds().contains([localNode.lat, localNode.lon])) {
+               if (!existingIds.has(String(localNode.id))) {
+                  filteredElements.push(localNode);
+                  injectedCount++;
+               }
+            }
+         });
+
+         console.log(`Fetched ${elements.length}, Deleted ${elements.length - filteredElements.length + injectedCount}, Injected ${injectedCount} locals. Showing ${filteredElements.length}`);
 
          // Jäger Red (Tailwind red-600) = #DC2626
          const RED = '#DC2626';

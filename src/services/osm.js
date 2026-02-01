@@ -121,6 +121,21 @@ export async function createHydrant(data, authHeader, log = console.log) {
         });
         log(c.success(`Changeset Closed`));
 
+        // Optimistic UI: Remember created node locally to show it immediately
+        try {
+            const created = JSON.parse(localStorage.getItem('created_hydrants') || '[]');
+            // Add new node. Remove duplicates if any.
+            const newNode = {
+                id: nodeId,
+                lat: parseFloat(lat),
+                lon: parseFloat(lng),
+                tags: tags,
+                timestamp: Date.now()
+            };
+            created.push(newNode);
+            localStorage.setItem('created_hydrants', JSON.stringify(created));
+        } catch (e) { console.error("Could not save creation to local storage", e); }
+
         return { id: nodeId, changeset: changesetId };
 
     } catch (err) {
