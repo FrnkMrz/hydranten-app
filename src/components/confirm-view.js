@@ -100,7 +100,7 @@ export function renderConfirmView() {
 
             <div id="volume-container" class="hidden">
                 <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen</label>
-                <input type="text" id="hydrant-volume" placeholder="z.B. 100m3" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                <input type="number" id="hydrant-volume" placeholder="z.B. 100m3" inputmode="numeric" max="100000" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
             </div>
 
             <div class="space-y-4">
@@ -114,12 +114,12 @@ export function renderConfirmView() {
                
                <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.number_label')}</label>
-                  <input type="text" id="hydrant-ref" placeholder="${t('confirm.number_placeholder')}" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                  <input type="text" id="hydrant-ref" placeholder="${t('confirm.number_placeholder')}" maxlength="50" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                </div>
                
                <div>
                   <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.notes_label')}</label>
-                  <textarea id="hydrant-note" placeholder="${t('confirm.notes_placeholder')}" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white h-20 outline-none"></textarea>
+                  <textarea id="hydrant-note" placeholder="${t('confirm.notes_placeholder')}" maxlength="255" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white h-20 outline-none"></textarea>
                </div>
             </div>
          </div>
