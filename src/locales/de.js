@@ -56,6 +56,13 @@ export default {
             green: "Grünfläche",
             parking: "Parkplatz",
             none: "Keine Angabe"
-        }
+        },
+        diameter_label: "DURCHMESSER",
+        diameter_none: "Nicht angegeben",
+        color_label: "FARBE",
+        number_label: "NUMMER / REF",
+        number_placeholder: "z.B. 1234",
+        notes_label: "NOTIZ",
+        notes_placeholder: "..."
     }
 };
