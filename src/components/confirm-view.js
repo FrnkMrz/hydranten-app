@@ -228,13 +228,13 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     // COLOR PICKER LOGIC
     const colors = [
       { value: "", label: t('confirm.locations.none'), hex: "transparent", border: "#4b5563" },
-      { value: "black", label: "Black", hex: "#000000", border: "#333" }, // TODO: Translate colors if critical, but standard colors mostly understood.
-      { value: "grey", label: "Grey", hex: "#808080", border: "#999" },
-      { value: "blue", label: "Blue", hex: "#3b82f6", border: "#3b82f6" },
-      { value: "red", label: "Red", hex: "#ef4444", border: "#ef4444" },
-      { value: "yellow", label: "Yellow", hex: "#fbbf24", border: "#fbbf24" },
-      { value: "green", label: "Green", hex: "#22c55e", border: "#22c55e" },
-      { value: "white", label: "White", hex: "#ffffff", border: "#ddd" }
+      { value: "black", label: t('confirm.colors.black'), hex: "#000000", border: "#333" },
+      { value: "grey", label: t('confirm.colors.grey'), hex: "#808080", border: "#999" },
+      { value: "blue", label: t('confirm.colors.blue'), hex: "#3b82f6", border: "#3b82f6" },
+      { value: "red", label: t('confirm.colors.red'), hex: "#ef4444", border: "#ef4444" },
+      { value: "yellow", label: t('confirm.colors.yellow'), hex: "#fbbf24", border: "#fbbf24" },
+      { value: "green", label: t('confirm.colors.green'), hex: "#22c55e", border: "#22c55e" },
+      { value: "white", label: t('confirm.colors.white'), hex: "#ffffff", border: "#ddd" }
     ];
 
     const colorContainer = element.querySelector('#color-picker-container');

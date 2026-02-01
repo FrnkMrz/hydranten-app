@@ -57,6 +57,15 @@ export default {
             parking: "Parkplatz",
             none: "Keine Angabe"
         },
+        colors: {
+            black: "Schwarz",
+            grey: "Grau",
+            blue: "Blau",
+            red: "Rot",
+            yellow: "Gelb",
+            green: "Grün",
+            white: "Weiß"
+        },
         diameter_label: "DURCHMESSER",
         diameter_none: "Nicht angegeben",
         color_label: "FARBE",

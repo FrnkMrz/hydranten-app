@@ -57,6 +57,15 @@ export default {
             parking: "Parking",
             none: "None"
         },
+        colors: {
+            black: "Black",
+            grey: "Grey",
+            blue: "Blue",
+            red: "Red",
+            yellow: "Yellow",
+            green: "Green",
+            white: "White"
+        },
         diameter_label: "DIAMETER",
         diameter_none: "Not specified",
         color_label: "COLOR",
