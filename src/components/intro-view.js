@@ -362,44 +362,54 @@ function updateHydrants(map, onEdit) {
 
    console.log("Hydrant Update. onEdit available?", !!onEdit); // DEBUG
 
-   overpass.fetchHydrants(map.getBounds()).then(elements => {
-      if (!hydrantLayer) return;
-
-      // Jäger Red (Tailwind red-600) = #DC2626
-      const RED = '#DC2626';
-
-      elements.forEach(node => {
-         if (!visibleHydrants.has(node.id)) {
-            visibleHydrants.add(node.id);
-
-            const m = L.circleMarker([node.lat, node.lon], {
-               radius: 8, // Slightly bigger for easier tap
-               fillColor: RED,
-               color: '#fff',
-               weight: 2,
-               opacity: 0.9,
-               fillOpacity: 0.7,
-               className: 'hydrant-marker cursor-pointer'
-            });
-
-            m.on('click', () => {
-               console.log("Clicked Hydrant:", node.id, "onEdit:", onEdit); // DEBUG
-               // Visual feedback
-               m.setStyle({ fillColor: '#3b82f6', radius: 10, color: 'white', weight: 4 });
-               setTimeout(() => {
-                  if (onEdit) {
-                     onEdit(node.id); // Trigger Edit Mode
-                  } else {
-                     console.error("onEdit is MISSING in click handler!");
-                     alert("Interner Fehler: Edit-Funktion fehlt.");
-                  }
-                  // Reset style handled by re-render usually, but let's be nice
-                  // m.setStyle({ fillColor: RED, radius: 8, weight: 2 });
-               }, 100);
-            });
-
-            m.addTo(hydrantLayer);
-         }
+   overpass.fetchHydrants(map.getBounds())
+      .then(elements => {
+         if (!hydrantLayer) return;
+         // ... existing code ...
+      })
+      .catch(err => {
+         console.warn("Hydranten konnten nicht geladen werden:", err);
+         // Optional: Show subtle toast or error indicator
+         const status = document.getElementById('geo-status-pill'); // Reuse pill?
+         // Or just silent retry later? 
+         // Let's at least log it visibly if user is debugging.
       });
+
+   // Jäger Red (Tailwind red-600) = #DC2626
+   const RED = '#DC2626';
+
+   elements.forEach(node => {
+      if (!visibleHydrants.has(node.id)) {
+         visibleHydrants.add(node.id);
+
+         const m = L.circleMarker([node.lat, node.lon], {
+            radius: 8, // Slightly bigger for easier tap
+            fillColor: RED,
+            color: '#fff',
+            weight: 2,
+            opacity: 0.9,
+            fillOpacity: 0.7,
+            className: 'hydrant-marker cursor-pointer'
+         });
+
+         m.on('click', () => {
+            console.log("Clicked Hydrant:", node.id, "onEdit:", onEdit); // DEBUG
+            // Visual feedback
+            m.setStyle({ fillColor: '#3b82f6', radius: 10, color: 'white', weight: 4 });
+            setTimeout(() => {
+               if (onEdit) {
+                  onEdit(node.id); // Trigger Edit Mode
+               } else {
+                  console.error("onEdit is MISSING in click handler!");
+                  alert("Interner Fehler: Edit-Funktion fehlt.");
+               }
+               // Reset style handled by re-render usually, but let's be nice
+               // m.setStyle({ fillColor: RED, radius: 8, weight: 2 });
+            }, 100);
+         });
+
+         m.addTo(hydrantLayer);
+      }
    });
+});
 }

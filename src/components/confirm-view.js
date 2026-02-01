@@ -56,7 +56,7 @@ export function renderConfirmView() {
             
             <!-- Delete Button Container (injected via JS if edit mode) -->
             <div id="delete-btn-container" class="hidden">
-               <button id="delete-hydrant-btn" class="bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white p-2 rounded-full transition border border-red-500/30" aria-label="Löschen">
+               <button id="delete-hydrant-btn" class="bg-red-600 text-white hover:bg-red-700 p-3 rounded-full transition shadow-lg shadow-red-900/40 flex items-center justify-center" aria-label="Löschen">
                   <span class="text-xl">🗑️</span>
                </button>
             </div>
