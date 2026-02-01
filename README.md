@@ -20,6 +20,12 @@ Fokus: Geschwindigkeit, Einhand-Bedienung und "Dark Mode" Ästhetik.
 *   **🎨 UI/UX**:
     *   **Premium Dark Mode**: Optimierter Kontrast, Blur-Effekte, iOS Safe-Area Support.
     *   **Live Vorschau**: Zeigt bereits erfasste Hydranten auf der Startseite an (Overpass API mit erhöhtem Timeout).
+*   **✏️ Editierung & Pflege**:
+    *   **Bearbeiten**: Attribute bestehender Hydranten anpassen.
+    *   **Safe Mode**: "Smart Dirty Check" verhindert leere Uploads & Map-Lock gegen Verschieben.
+    *   **Tag Schutz**: Unbekannte Tags werden beim Speichern respektiert und beibehalten.
+    *   **Löschen**: Entfernen nicht mehr existierender Hydranten (mit Sicherheitsabfrage).
+*   **📜 Verlauf**: Anzeige der eigenen Changesets direkt in der App.
 
 ## Mapping Funktionen 🛠️
 
