@@ -23,7 +23,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
         try {
             const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
                 headers: {
-                    'User-Agent': 'HydrantenJaeger/1.0 (info@openfiremap.org)'
+                    'User-Agent': 'Hydranten-Jaeger-App/1.0'
                 }
             });
             if (nomRes.ok) {
