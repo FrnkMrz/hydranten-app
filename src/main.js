@@ -45,7 +45,8 @@ function showIntro() {
   switchView('intro', renderIntroView, () =>
     initIntroView(app,
       () => showCamera(),
-      () => showSettings()
+      () => showSettings(),
+      handleEdit
     )
   );
 }
