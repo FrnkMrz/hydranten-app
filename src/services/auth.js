@@ -39,7 +39,8 @@ async function generateChallenge(verifier) {
 export const auth = {
     options: {
         client_id: 'eJij_gzo2QRG-oRCZYU2FObBOgX2Z8lbIINezbHmJRI',
-        redirect_uri: window.location.origin + window.location.pathname,
+        // Fix: PWA might be at /index.html, but OSM expects /
+        redirect_uri: (window.location.origin + window.location.pathname).replace(/\/index\.html$/, '/').replace(/\/$/, '') + '/',
     },
 
     // 1. Start Login (Redirects)
