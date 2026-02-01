@@ -142,8 +142,16 @@ function handleEdit(nodeId) {
       </div>
    `;
 
-  import('./services/osm.js').then(osm => {
-    osm.fetchNodeData(nodeId)
+  import('./services/osm.js').then(module => {
+    // Robust Import Handling: Handle both aggregation and default exports
+    const osm = module.default || module;
+    const { fetchNodeData, updateHydrant, deleteHydrant } = osm;
+
+    // Safety check
+    if (!fetchNodeData) console.error("Missing fetchNodeData in osm module", module);
+    if (!deleteHydrant) console.error("Missing deleteHydrant in osm module", module);
+
+    fetchNodeData(nodeId)
       .then(nodeData => {
         console.log("Loaded Node Data:", nodeData);
         // Switch to Confirm View in Edit Mode
@@ -209,13 +217,19 @@ function handleEdit(nodeId) {
           { back: () => { showIntro(); } }, // OnBack (Cancel) -> Intro
           (data) => {
             // OnSubmit (Save)
-            showOverlay("Speichere", (log) => osm.updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log));
+            // Use local updateHydrant reference
+            showOverlay("Speichere", (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log));
           },
           true, // editMode
           nodeData, // initialData
           (id, version) => {
             // OnDelete
-            showOverlay("Lösche", (log) => osm.deleteHydrant(id, version, nodeData.lat, nodeData.lng, log));
+            if (deleteHydrant) {
+              showOverlay("Lösche", (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, log));
+            } else {
+              alert("Interner Fehler: Lösch-Funktion nicht verfügbar. Bitte neu laden.");
+              console.error("deleteHydrant missing", osm);
+            }
           }
         );
       })

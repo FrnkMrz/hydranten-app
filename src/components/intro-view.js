@@ -319,15 +319,21 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       // Force a resize invalidation shortly after render to ensure map fills container
       setTimeout(() => {
          map.invalidateSize();
-         // Always try to fetch hydrants on load using current map center
-         updateHydrants(map, onEdit);
 
+         // Ensure we are zoomed in enough for updateHydrants
          if (lastPos) {
             map.setView([lastPos.lat, lastPos.lng], 18);
             if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
             else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
+         } else {
+            // Fallback if no lastPos (e.g. first load or cleared)
+            // Try to use a default view? Or just leave it?
+            // If we are at default zoom, updateHydrants might fail.
          }
-      }, 100);
+
+         // Force update
+         updateHydrants(map, onEdit);
+      }, 200);
    }
 
    // Return Cleanup Function (Stub for now, real cleanup in startMapGps logic if needed)
