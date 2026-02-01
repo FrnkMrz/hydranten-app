@@ -136,235 +136,258 @@ export function renderConfirmView() {
 }
 
 export function initConfirmView(element, imageBlob, location, onRetake, onSubmit) {
-  const img = element.querySelector('#preview-img');
-  img.src = URL.createObjectURL(imageBlob);
-
-  const retakeBtn = element.querySelector('#retake-btn');
-  const submitBtn = element.querySelector('#submit-img-btn');
-  const typeInput = element.querySelector('#hydrant-type');
-  const posInput = element.querySelector('#hydrant-position');
-
-  const volumeContainer = element.querySelector('#volume-container');
-  const volumeInput = element.querySelector('#hydrant-volume');
-  const diameterContainer = element.querySelector('#diameter-container');
-  const diameterInput = element.querySelector('#hydrant-diameter');
-
-  // GRID OPTIONS (Emojis preferred by user)
-  const options = [
-    { id: 'pillar', label: t('confirm.types.pillar'), icon: '<span class="text-2xl">📮</span>' },
-    { id: 'underground', label: t('confirm.types.underground'), icon: '<span class="text-2xl">🕳️</span>' },
-    { id: 'wall', label: t('confirm.types.wall'), icon: '<span class="text-2xl">🧱</span>' },
-    { id: 'cistern', label: t('confirm.types.suction'), icon: '<span class="text-2xl">💧</span>' },
-    { id: 'dry_hydrant', label: 'Trocken', icon: '<span class="text-2xl">🌵</span>' }
-  ];
-
-  const grid = element.querySelector('#type-grid');
-  grid.innerHTML = options.map(opt => `
-     <button type="button" class="option-btn aspect-square rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-1" data-value="${opt.id}">
-        ${opt.icon}
-        <span class="text-[9px] font-bold uppercase tracking-tight">${opt.label}</span>
-     </button>
-  `).join('');
-
-  // Grid Logic
-  const optionBtns = element.querySelectorAll('.option-btn');
-  const updateGrid = (val) => {
-    typeInput.value = val;
-    optionBtns.forEach(btn => {
-      if (btn.dataset.value === val) {
-        btn.classList.add('border-red-500', 'bg-red-900/30', 'text-white', 'shadow-md', 'shadow-red-900/20');
-        btn.classList.remove('border-transparent', 'bg-gray-800', 'text-gray-400');
-      } else {
-        btn.classList.remove('border-red-500', 'bg-red-900/30', 'text-white', 'shadow-md', 'shadow-red-900/20');
-        btn.classList.add('border-transparent', 'bg-gray-800', 'text-gray-400');
-      }
-    });
-
-    if (val === 'cistern') {
-      volumeContainer.classList.remove('hidden');
-      diameterContainer.classList.add('hidden');
-    } else {
-      volumeContainer.classList.add('hidden');
-      diameterContainer.classList.remove('hidden');
+  try {
+    // Guard Location
+    if (!location) {
+      console.warn("ConfirmView: Location missing, using fallback.");
+      location = { lat: 48.137, lng: 11.576, accuracy: 1000 };
     }
-  };
 
-  element.querySelectorAll('.option-btn').forEach(btn => {
-    btn.onclick = () => updateGrid(btn.dataset.value);
-  });
-  updateGrid('pillar'); // Default
+    const img = element.querySelector('#preview-img');
+    if (imageBlob && img) {
+      img.src = URL.createObjectURL(imageBlob);
+    }
 
-  // Position Logic
-  const posBtns = element.querySelectorAll('.pos-option-btn');
-  const updatePos = (val) => {
-    posInput.value = val;
+    const retakeBtn = element.querySelector('#retake-btn');
+    const submitBtn = element.querySelector('#submit-img-btn');
+    const typeInput = element.querySelector('#hydrant-type');
+    const posInput = element.querySelector('#hydrant-position');
+
+    const volumeContainer = element.querySelector('#volume-container');
+    const volumeInput = element.querySelector('#hydrant-volume');
+    const diameterContainer = element.querySelector('#diameter-container');
+    const diameterInput = element.querySelector('#hydrant-diameter');
+    const retryBtn = element.querySelector('#gps-retry-btn');
+
+    // GRID OPTIONS (Emojis preferred by user)
+    const options = [
+      { id: 'pillar', label: t('confirm.types.pillar'), icon: '<span class="text-2xl">📮</span>' },
+      { id: 'underground', label: t('confirm.types.underground'), icon: '<span class="text-2xl">🕳️</span>' },
+      { id: 'wall', label: t('confirm.types.wall'), icon: '<span class="text-2xl">🧱</span>' },
+      { id: 'cistern', label: t('confirm.types.suction'), icon: '<span class="text-2xl">💧</span>' },
+      { id: 'dry_hydrant', label: 'Trocken', icon: '<span class="text-2xl">🌵</span>' }
+    ];
+
+    const grid = element.querySelector('#type-grid');
+    if (grid) {
+      grid.innerHTML = options.map(opt => `
+             <button type="button" class="option-btn aspect-square rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
+                <span aria-hidden="true">${opt.icon}</span>
+                <span class="text-[9px] font-bold uppercase tracking-tight" aria-hidden="true">${opt.label}</span>
+             </button>
+          `).join('');
+
+      // Grid Logic
+      const optionBtns = element.querySelectorAll('.option-btn');
+      const updateGrid = (val) => {
+        if (typeInput) typeInput.value = val;
+        optionBtns.forEach(btn => {
+          if (btn.dataset.value === val) {
+            btn.classList.add('border-red-500', 'bg-red-900/30', 'text-white', 'shadow-md', 'shadow-red-900/20');
+            btn.classList.remove('border-transparent', 'bg-gray-800', 'text-gray-400');
+          } else {
+            btn.classList.remove('border-red-500', 'bg-red-900/30', 'text-white', 'shadow-md', 'shadow-red-900/20');
+            btn.classList.add('border-transparent', 'bg-gray-800', 'text-gray-400');
+          }
+        });
+
+        if (val === 'cistern') {
+          if (volumeContainer) volumeContainer.classList.remove('hidden');
+          if (diameterContainer) diameterContainer.classList.add('hidden');
+        } else {
+          if (volumeContainer) volumeContainer.classList.add('hidden');
+          if (diameterContainer) diameterContainer.classList.remove('hidden');
+        }
+      };
+
+      element.querySelectorAll('.option-btn').forEach(btn => {
+        btn.onclick = () => updateGrid(btn.dataset.value);
+      });
+      updateGrid('pillar'); // Default
+    }
+
+    // Position Logic
+    const posBtns = element.querySelectorAll('.pos-option-btn');
+    const updatePos = (val) => {
+      if (posInput) posInput.value = val;
+      posBtns.forEach(btn => {
+        if (btn.dataset.value === val) {
+          btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
+          btn.classList.remove('text-gray-400');
+        } else {
+          btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
+          btn.classList.add('text-gray-400');
+        }
+      });
+    };
     posBtns.forEach(btn => {
-      if (btn.dataset.value === val) {
-        btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
-        btn.classList.remove('text-gray-400');
-      } else {
-        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
-        btn.classList.add('text-gray-400');
-      }
+      btn.onclick = () => updatePos(btn.dataset.value);
     });
-  };
-  posBtns.forEach(btn => {
-    btn.onclick = () => updatePos(btn.dataset.value);
-  });
-  updatePos('');
+    updatePos('');
 
-  // COLOR PICKER LOGIC
-  const colors = [
-    { value: "", label: t('confirm.locations.none'), hex: "transparent", border: "#4b5563" },
-    { value: "black", label: "Black", hex: "#000000", border: "#333" }, // TODO: Translate colors if critical, but standard colors mostly understood.
-    { value: "grey", label: "Grey", hex: "#808080", border: "#999" },
-    { value: "blue", label: "Blue", hex: "#3b82f6", border: "#3b82f6" },
-    { value: "red", label: "Red", hex: "#ef4444", border: "#ef4444" },
-    { value: "yellow", label: "Yellow", hex: "#fbbf24", border: "#fbbf24" },
-    { value: "green", label: "Green", hex: "#22c55e", border: "#22c55e" },
-    { value: "white", label: "White", hex: "#ffffff", border: "#ddd" }
-  ];
+    // COLOR PICKER LOGIC
+    const colors = [
+      { value: "", label: t('confirm.locations.none'), hex: "transparent", border: "#4b5563" },
+      { value: "black", label: "Black", hex: "#000000", border: "#333" }, // TODO: Translate colors if critical, but standard colors mostly understood.
+      { value: "grey", label: "Grey", hex: "#808080", border: "#999" },
+      { value: "blue", label: "Blue", hex: "#3b82f6", border: "#3b82f6" },
+      { value: "red", label: "Red", hex: "#ef4444", border: "#ef4444" },
+      { value: "yellow", label: "Yellow", hex: "#fbbf24", border: "#fbbf24" },
+      { value: "green", label: "Green", hex: "#22c55e", border: "#22c55e" },
+      { value: "white", label: "White", hex: "#ffffff", border: "#ddd" }
+    ];
 
-  const colorContainer = element.querySelector('#color-picker-container');
-  const colorInput = element.querySelector('#hydrant-colour');
+    const colorContainer = element.querySelector('#color-picker-container');
+    const colorInput = element.querySelector('#hydrant-colour');
 
-  colors.forEach(c => {
-    const btn = document.createElement('button');
-    btn.className = `w-10 h-10 rounded-full border-2 flex items-center justify-center transition hover:scale-110 focus:outline-none relative`;
+    if (colorContainer && colorInput) {
+      colors.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = `w-10 h-10 rounded-full border-2 flex items-center justify-center transition hover:scale-110 focus:outline-none relative`;
 
-    btn.style.backgroundColor = c.hex;
-    btn.style.borderColor = c.border;
+        btn.style.backgroundColor = c.hex;
+        btn.style.borderColor = c.border;
 
-    if (c.value === "") {
-      btn.innerHTML = '<span class="text-xs">🚫</span>';
+        if (c.value === "") {
+          btn.innerHTML = '<span class="text-xs">🚫</span>';
+        }
+        btn.ariaLabel = c.label;
+
+        // Click Handler
+        btn.onclick = () => {
+          // Reset
+          Array.from(colorContainer.children).forEach(child => {
+            child.classList.remove('ring-4', 'ring-white/50', 'scale-110');
+            child.style.transform = 'scale(1)';
+          });
+
+          // Set Active
+          btn.classList.add('ring-4', 'ring-white/50', 'scale-110');
+          btn.style.transform = 'scale(1.1)';
+
+          // Set Value
+          colorInput.value = c.value;
+        };
+
+        colorContainer.appendChild(btn);
+      });
     }
 
-    // Click Handler
-    btn.onclick = () => {
-      // Reset
-      Array.from(colorContainer.children).forEach(child => {
-        child.classList.remove('ring-4', 'ring-white/50', 'scale-110');
-        child.style.transform = 'scale(1)';
+
+    // Map Setup (Hero)
+    const mapContainer = element.querySelector('#map');
+    if (mapContainer) {
+      const center = [location.lat || 48.137, location.lng || 11.576]; // Safe Access
+      const map = L.map(mapContainer, { zoomControl: false }).setView(center, 19);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: ''
+      }).addTo(map);
+
+      const marker = L.marker(center, { draggable: true }).addTo(map);
+      const statusPill = document.querySelector('#geo-status-pill');
+
+      marker.on('dragend', function (event) {
+        const position = marker.getLatLng();
+        location.lat = position.lat;
+        location.lng = position.lng;
+        if (statusPill) statusPill.innerText = `📍 Verschoben`;
       });
 
-      // Set Active
-      btn.classList.add('ring-4', 'ring-white/50', 'scale-110');
-      btn.style.transform = 'scale(1.1)';
+      const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
+      if (statusPill) statusPill.innerText = `GPS: ±${accuracy}m`;
 
-      // Set Value
-      colorInput.value = c.value;
-    };
-
-    colorContainer.appendChild(btn);
-  });
-
-
-  // Map Setup (Hero)
-  const mapContainer = element.querySelector('#map');
-  const center = [location.lat || 48.137, location.lng || 11.576]; // Safe Access
-  const map = L.map(mapContainer, { zoomControl: false }).setView(center, 19);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: ''
-  }).addTo(map);
-
-  const marker = L.marker(center, { draggable: true }).addTo(map);
-  const statusPill = document.querySelector('#geo-status-pill');
-
-  marker.on('dragend', function (event) {
-    const position = marker.getLatLng();
-    location.lat = position.lat;
-    location.lng = position.lng;
-    if (statusPill) statusPill.innerText = `📍 Verschoben`;
-  });
-
-  const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
-  if (statusPill) statusPill.innerText = `GPS: ±${accuracy}m`;
-
-  // Retry Button Logic
-  if (retryBtn) {
-    if (location.accuracy > 500 || location.lat === 48.137) {
-      retryBtn.classList.remove('hidden');
-      retryBtn.classList.add('animate-pulse');
-    }
-
-    retryBtn.onclick = async () => {
-      retryBtn.disabled = true;
-      retryBtn.innerText = "Lade...";
-      retryBtn.classList.remove('animate-pulse');
-
-      if (onRetake && onRetake.retryGPS) {
-        const newLoc = await onRetake.retryGPS();
-        if (newLoc) {
-          location.lat = newLoc.lat;
-          location.lng = newLoc.lng;
-          location.accuracy = newLoc.accuracy;
-
-          // Update Map
-          map.setView([newLoc.lat, newLoc.lng], 19);
-          marker.setLatLng([newLoc.lat, newLoc.lng]);
-
-          if (statusPill) statusPill.innerText = `GPS: ±${Math.round(newLoc.accuracy)}m`;
-          retryBtn.innerText = "Geladen!";
-          setTimeout(() => retryBtn.classList.add('hidden'), 1500);
-        } else {
-          retryBtn.innerText = "Fehler";
-          retryBtn.disabled = false;
+      // Retry Button Logic
+      if (retryBtn) {
+        if (location.accuracy > 500 || location.lat === 48.137) {
+          retryBtn.classList.remove('hidden');
+          retryBtn.classList.add('animate-pulse');
         }
+
+        retryBtn.onclick = async () => {
+          retryBtn.disabled = true;
+          retryBtn.innerText = "Lade...";
+          retryBtn.classList.remove('animate-pulse');
+
+          if (onRetake && onRetake.retryGPS) {
+            const newLoc = await onRetake.retryGPS();
+            if (newLoc) {
+              location.lat = newLoc.lat;
+              location.lng = newLoc.lng;
+              location.accuracy = newLoc.accuracy;
+
+              // Update Map
+              map.setView([newLoc.lat, newLoc.lng], 19);
+              marker.setLatLng([newLoc.lat, newLoc.lng]);
+
+              if (statusPill) statusPill.innerText = `GPS: ±${Math.round(newLoc.accuracy)}m`;
+              retryBtn.innerText = "Geladen!";
+              setTimeout(() => retryBtn.classList.add('hidden'), 1500);
+            } else {
+              retryBtn.innerText = "Fehler";
+              retryBtn.disabled = false;
+            }
+          }
+        };
       }
-    };
-  }
 
-  if (retakeBtn) {
-    console.log("ConfirmView: Retake Button found, attaching listener.");
-    retakeBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation(); // Prevent map clicks
-      console.log("ConfirmView: Back button clicked");
-      if (onRetake && typeof onRetake.back === 'function') {
-        onRetake.back();
-      } else {
-        console.error("ConfirmView: onRetake.back is not a function", onRetake);
-        alert("Fehler: Zurück-Funktion nicht verfügbar.");
-      }
-    });
-  } else {
-    console.error("ConfirmView: Retake Button NOT found!");
-  }
-
-  submitBtn.onclick = () => {
-    const selectedType = typeInput.value;
-    const selectedPos = posInput.value;
-
-    const tags = {};
-    if (selectedType === 'cistern') {
-      tags['emergency'] = 'water_tank';
-      if (volumeInput.value) tags['water_tank:volume'] = volumeInput.value;
-      tags['fire_hydrant:position'] = selectedPos;
-    } else if (selectedType === 'dry_hydrant') {
-      tags['emergency'] = 'fire_hydrant';
-      tags['fire_hydrant:type'] = 'dry_hydrant';
-      tags['fire_hydrant:position'] = selectedPos;
-    }
-    else {
-      tags['emergency'] = 'fire_hydrant';
-      tags['fire_hydrant:type'] = selectedType;
-      tags['fire_hydrant:position'] = selectedPos;
+      setTimeout(() => map.invalidateSize(), 300);
     }
 
-    if (diameterInput.value) tags['fire_hydrant:diameter'] = diameterInput.value;
-    const ref = element.querySelector('#hydrant-ref').value;
-    if (ref) tags['ref'] = ref;
+    if (retakeBtn) {
+      console.log("ConfirmView: Retake Button found, attaching listener.");
+      retakeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation(); // Prevent map clicks
+        console.log("ConfirmView: Back button clicked");
+        if (onRetake && typeof onRetake.back === 'function') {
+          onRetake.back();
+        } else {
+          console.error("ConfirmView: onRetake.back is not a function", onRetake);
+          alert("Fehler: Zurück-Funktion nicht verfügbar.");
+        }
+      });
+    } else {
+      console.error("ConfirmView: Retake Button NOT found!");
+    }
 
-    const col = element.querySelector('#hydrant-colour').value;
-    if (col) tags['colour'] = col;
-    const note = element.querySelector('#hydrant-note').value;
-    if (note) tags['note'] = note;
+    if (submitBtn) {
+      submitBtn.onclick = () => {
+        const selectedType = typeInput ? typeInput.value : 'pillar';
+        const selectedPos = posInput ? posInput.value : '';
 
-    onSubmit({
-      ...location,
-      tags: tags
-    });
-  };
+        const tags = {};
+        if (selectedType === 'cistern') {
+          tags['emergency'] = 'water_tank';
+          if (volumeInput && volumeInput.value) tags['water_tank:volume'] = volumeInput.value;
+          tags['fire_hydrant:position'] = selectedPos;
+        } else if (selectedType === 'dry_hydrant') {
+          tags['emergency'] = 'fire_hydrant';
+          tags['fire_hydrant:type'] = 'dry_hydrant';
+          tags['fire_hydrant:position'] = selectedPos;
+        }
+        else {
+          tags['emergency'] = 'fire_hydrant';
+          tags['fire_hydrant:type'] = selectedType;
+          tags['fire_hydrant:position'] = selectedPos;
+        }
 
-  setTimeout(() => map.invalidateSize(), 300);
+        if (diameterInput && diameterInput.value) tags['fire_hydrant:diameter'] = diameterInput.value;
+        const ref = element.querySelector('#hydrant-ref');
+        if (ref && ref.value) tags['ref'] = ref.value;
+
+        const col = element.querySelector('#hydrant-colour');
+        if (col && col.value) tags['colour'] = col.value;
+        const note = element.querySelector('#hydrant-note');
+        if (note && note.value) tags['note'] = note.value;
+
+        onSubmit({
+          ...location,
+          tags: tags
+        });
+      };
+    }
+  } catch (err) {
+    console.error("FATAL ConfirmView Error", err);
+    alert("UI Error: " + err.message);
+  }
 }
