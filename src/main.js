@@ -132,7 +132,13 @@ function showConfirm() {
   app.innerHTML = renderConfirmView();
   initConfirmView(app, state.capturedBlob, state.location,
     {
-      back: () => showCamera(),
+      back: () => {
+        console.log("Main: Switching back to Camera...");
+        showCamera().catch(err => {
+          console.error("Main: Failed to show Camera", err);
+          alert("Kamera-Fehler: " + err.message);
+        });
+      },
       retryGPS: async () => {
         try {
           // Hard fetch

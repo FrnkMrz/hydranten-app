@@ -281,7 +281,6 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
   if (statusPill) statusPill.innerText = `GPS: ±${accuracy}m`;
 
   // Retry Button Logic
-  const retryBtn = element.querySelector('#gps-retry-btn');
   if (retryBtn) {
     if (location.accuracy > 500 || location.lat === 48.137) {
       retryBtn.classList.remove('hidden');
@@ -315,7 +314,22 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     };
   }
 
-  retakeBtn.onclick = () => onRetake.back();
+  if (retakeBtn) {
+    console.log("ConfirmView: Retake Button found, attaching listener.");
+    retakeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation(); // Prevent map clicks
+      console.log("ConfirmView: Back button clicked");
+      if (onRetake && typeof onRetake.back === 'function') {
+        onRetake.back();
+      } else {
+        console.error("ConfirmView: onRetake.back is not a function", onRetake);
+        alert("Fehler: Zurück-Funktion nicht verfügbar.");
+      }
+    });
+  } else {
+    console.error("ConfirmView: Retake Button NOT found!");
+  }
 
   submitBtn.onclick = () => {
     const selectedType = typeInput.value;
