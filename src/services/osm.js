@@ -238,3 +238,73 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
         log(c.info(`Changeset Closed`));
     }
 }
+
+/**
+ * Delete a hydrant
+ * @param {string} id - Node ID
+ * @param {string} version - Current version
+ * @param {number} lat - Latitude (required for valid node XML technically, though DELETE might ignore it, best to include)
+ * @param {number} lng - Longitude
+ */
+export async function deleteHydrant(id, version, lat, lng, log = console.log) {
+    log(c.info(`Lösche Hydrant #${id}...`));
+
+    const changesetXml = `
+<osm>
+  <changeset>
+    <tag k="created_by" v="Hydranten Jäger v0.3.5"/>
+    <tag k="comment" v="Deleting Hydrant #${id} via Hydranten Jäger"/>
+    <tag k="locale" v="de"/>
+  </changeset>
+</osm>`;
+
+    log(c.req(`PUT /changeset/create (Delete)`));
+
+    // 1. Open Changeset
+    const csRes = await fetch('https://api.openstreetmap.org/api/0.6/changeset/create', {
+        method: 'PUT',
+        headers: getAuthHeader(),
+        body: changesetXml
+    });
+
+    if (!csRes.ok) throw new Error(`CS Init Failed: ${csRes.status}`);
+    const changesetId = await csRes.text();
+    log(c.res(`Changeset ID: ${changesetId}`));
+
+    try {
+        // 2. Build Delete Payload (Must include ID, Version, Changeset, Lat, Lon)
+        // Note: OSM requires the full node element for delete in API 0.6, similar to modify but with DELETE method.
+        // Actually, for DELETE /api/0.6/node/#id, the BODY must contain the XML with version!
+        const nodeXml = `
+<osm>
+  <node id="${id}" lat="${lat}" lon="${lng}" version="${version}" changeset="${changesetId}"/>
+</osm>`;
+
+        log(c.req(`DELETE /node/${id}`));
+
+        const delRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeader(),
+            body: nodeXml
+        });
+
+        if (!delRes.ok) {
+            if (delRes.status === 409) throw new Error("Konflikt! Löschen fehlgeschlagen (Version mismatch?).");
+            if (delRes.status === 410) throw new Error("Bereits gelöscht.");
+            throw new Error(`Delete Failed: ${delRes.status} ${await delRes.text()}`);
+        }
+
+        const newVersion = await delRes.text();
+        log(c.success(`Gelöscht! (v${newVersion})`));
+        return { id, version: newVersion };
+
+    } finally {
+        await fetch(`https://api.openstreetmap.org/api/0.6/changeset/${changesetId}/close`, {
+            method: 'PUT',
+            headers: getAuthHeader()
+        });
+        log(c.info(`Changeset Closed`));
+    }
+}
+
+// End of OSM Service
