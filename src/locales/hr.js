@@ -42,10 +42,30 @@ export default {
     camera: {
         permission: "Potreban pristup kameri",
         retake: "Ponovi",
-        use_photo: "Koristi sliku"
+        use_photo: "Koristi sliku",
+        back_btn_aria: "Povratak na kameru",
+        back_btn_label: "Natrag",
+        capture_btn_aria: "Uslikaj"
+    },
+    error: {
+        load_failed: "Greška pri učitavanju",
+        node_deleted: "Ovaj hidrant više ne postoji.",
+        oops: "Ups!",
+        back_to_map: "Povratak na kartu"
     },
     confirm: {
         title: "Potvrdi podatke",
+        title_edit: "Uredi hidrant",
+        delete_btn: "Obriši",
+        delete_confirm: "Stvarno obrisati?",
+        save_btn: "Spremi",
+        position_adjustable: "Podesiva pozicija",
+        position_moved: "Pozicija ažurirana",
+        fixed_map: "Pomično (Mapa fiksna)",
+        preview_alt: "Uslikano",
+        back_btn_aria: "Povratak na kameru",
+        back_btn_label: "Natrag",
+        retry_gps_aria: "Ponovi GPS",
         type_label: "Tip",
         position_label: "Lokacija",
         details_label: "Detalji (neobavezno)",

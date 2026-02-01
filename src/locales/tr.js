@@ -42,10 +42,30 @@ export default {
     camera: {
         permission: "Kamera Erişimi Gerekli",
         retake: "Yeniden Çek",
-        use_photo: "Fotoğrafı Kullan"
+        use_photo: "Fotoğrafı Kullan",
+        back_btn_aria: "Kameraya Dön",
+        back_btn_label: "Geri",
+        capture_btn_aria: "Fotoğraf Çek"
+    },
+    error: {
+        load_failed: "Yükleme Hatası",
+        node_deleted: "Bu hidrant artık mevcut değil.",
+        oops: "Hoppala!",
+        back_to_map: "Haritaya Dön"
     },
     confirm: {
         title: "Veriyi Onayla",
+        title_edit: "Hidrantı Düzenle",
+        delete_btn: "Sil",
+        delete_confirm: "Silmek istediğinize emin misiniz?",
+        save_btn: "Kaydet",
+        position_adjustable: "Konum ayarlanabilir",
+        position_moved: "Konum güncellendi",
+        fixed_map: "Sürüklenebilir (Harita Sabit)",
+        preview_alt: "Çekilen Fotoğraf",
+        back_btn_aria: "Kameraya Dön",
+        back_btn_label: "Geri",
+        retry_gps_aria: "GPS Tekrar Dene",
         type_label: "Tip",
         position_label: "Konum",
         details_label: "Detaylar (İsteğe bağlı)",

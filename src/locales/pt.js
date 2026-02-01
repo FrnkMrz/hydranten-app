@@ -42,10 +42,30 @@ export default {
     camera: {
         permission: "Acesso à Câmera Necessário",
         retake: "Retirar",
-        use_photo: "Usar Foto"
+        use_photo: "Usar Foto",
+        back_btn_aria: "Voltar para Câmera",
+        back_btn_label: "Voltar",
+        capture_btn_aria: "Tirar Foto"
+    },
+    error: {
+        load_failed: "Erro ao carregar",
+        node_deleted: "Este hidrante não existe mais.",
+        oops: "Ops!",
+        back_to_map: "Voltar ao Mapa"
     },
     confirm: {
         title: "Confirmar Dados",
+        title_edit: "Editar Hidrante",
+        delete_btn: "Excluir",
+        delete_confirm: "Excluir realmente?",
+        save_btn: "Salvar",
+        position_adjustable: "Posição ajustável",
+        position_moved: "Posição atualizada",
+        fixed_map: "Móvel (Mapa fixo)",
+        preview_alt: "Foto Tirada",
+        back_btn_aria: "Voltar para Câmera",
+        back_btn_label: "Voltar",
+        retry_gps_aria: "Tentar GPS novamente",
         type_label: "Tipo",
         position_label: "Localização",
         details_label: "Detalhes (Opcional)",

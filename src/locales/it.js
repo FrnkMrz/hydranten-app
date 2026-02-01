@@ -42,10 +42,30 @@ export default {
     camera: {
         permission: "Accesso alla fotocamera richiesto",
         retake: "Riprova",
-        use_photo: "Usa Foto"
+        use_photo: "Usa Foto",
+        back_btn_aria: "Torna alla Fotocamera",
+        back_btn_label: "Indietro",
+        capture_btn_aria: "Scatta Foto"
+    },
+    error: {
+        load_failed: "Errore di caricamento",
+        node_deleted: "Questo idrante non esiste più.",
+        oops: "Ops!",
+        back_to_map: "Torna alla Mappa"
     },
     confirm: {
         title: "Conferma Dati",
+        title_edit: "Modifica Idrante",
+        delete_btn: "Elimina",
+        delete_confirm: "Eliminare davvero?",
+        save_btn: "Salva",
+        position_adjustable: "Posizione regolabile",
+        position_moved: "Posizione aggiornata",
+        fixed_map: "Spostabile (Mappa fissa)",
+        preview_alt: "Foto Scattata",
+        back_btn_aria: "Torna alla Fotocamera",
+        back_btn_label: "Indietro",
+        retry_gps_aria: "Riprova GPS",
         type_label: "Tipo",
         position_label: "Posizione",
         details_label: "Dettagli (Opzionale)",

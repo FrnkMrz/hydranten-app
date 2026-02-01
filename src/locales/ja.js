@@ -42,10 +42,30 @@ export default {
     camera: {
         permission: "カメラへのアクセスが必要です",
         retake: "撮り直す",
-        use_photo: "写真を使用"
+        use_photo: "写真を使用",
+        back_btn_aria: "カメラに戻る",
+        back_btn_label: "戻る",
+        capture_btn_aria: "写真を撮る"
+    },
+    error: {
+        load_failed: "読み込みエラー",
+        node_deleted: "この消火栓はもう存在しません。",
+        oops: "おっと！",
+        back_to_map: "地図に戻る"
     },
     confirm: {
         title: "データを確認",
+        title_edit: "消火栓を編集",
+        delete_btn: "削除",
+        delete_confirm: "本当に削除しますか？",
+        save_btn: "保存",
+        position_adjustable: "位置調整可能",
+        position_moved: "位置更新済み",
+        fixed_map: "移動可能（地図固定）",
+        preview_alt: "撮影された写真",
+        back_btn_aria: "カメラに戻る",
+        back_btn_label: "戻る",
+        retry_gps_aria: "GPS再試行",
         type_label: "タイプ",
         position_label: "場所",
         details_label: "詳細（オプション）",

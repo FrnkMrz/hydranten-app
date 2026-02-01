@@ -42,14 +42,33 @@ export default {
     camera: {
         permission: "Vyžadován Přístup ke Kameře",
         retake: "Znovu",
-        use_photo: "Použít Fotku"
+        use_photo: "Použít Fotku",
+        back_btn_aria: "Zpět na kameru",
+        back_btn_label: "Zpět",
+        capture_btn_aria: "Vyfotit"
+    },
+    error: {
+        load_failed: "Chyba načítání",
+        node_deleted: "Tento hydrant již neexistuje.",
+        oops: "Jejda!",
+        back_to_map: "Zpět na mapu"
     },
     confirm: {
         title: "Potvrdit Data",
-        type_label: "Typ",
+        title_edit: "Upravit hydrant",
+        delete_btn: "Smazat",
+        delete_confirm: "Opravdu smazat?",
+        save_btn: "Uložit",
+        position_adjustable: "Pozice nastavitelná",
+        position_moved: "Pozice upravena",
+        fixed_map: "Posuvné (Mapa fixní)",
+        preview_alt: "Vyfoceno",
+        back_btn_aria: "Zpět na kameru",
+        back_btn_label: "Zpět",
+        retry_gps_aria: "Zkusit GPS znovu",
+        upload_btn: "NAHRÁT NA OSM",
         position_label: "Poloha",
         details_label: "Detaily (Volitelné)",
-        upload_btn: "NAHRÁT NA OSM",
         uploading: "Nahrávám...",
         success: "Úspěšně!",
         error: "Chyba Nahrávání",

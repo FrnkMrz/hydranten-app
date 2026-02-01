@@ -42,10 +42,30 @@ export default {
     camera: {
         permission: "需要相机权限",
         retake: "重拍",
-        use_photo: "使用照片"
+        use_photo: "使用照片",
+        back_btn_aria: "返回相机",
+        back_btn_label: "返回",
+        capture_btn_aria: "拍照"
+    },
+    error: {
+        load_failed: "加载错误",
+        node_deleted: "此消防栓已不存在。",
+        oops: "哎呀！",
+        back_to_map: "返回地图"
     },
     confirm: {
         title: "确认数据",
+        title_edit: "编辑消防栓",
+        delete_btn: "删除",
+        delete_confirm: "真的要删除吗？",
+        save_btn: "保存",
+        position_adjustable: "位置可调",
+        position_moved: "位置已更新",
+        fixed_map: "可拖动（地图固定）",
+        preview_alt: "拍摄的照片",
+        back_btn_aria: "返回相机",
+        back_btn_label: "返回",
+        retry_gps_aria: "重试 GPS",
         type_label: "类型",
         position_label: "位置",
         details_label: "详情（可选）",

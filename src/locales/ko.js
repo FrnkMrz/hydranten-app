@@ -42,10 +42,30 @@ export default {
     camera: {
         permission: "카메라 액세스 필요",
         retake: "재촬영",
-        use_photo: "사진 사용"
+        use_photo: "사진 사용",
+        back_btn_aria: "카메라로 돌아가기",
+        back_btn_label: "뒤로",
+        capture_btn_aria: "사진 촬영"
+    },
+    error: {
+        load_failed: "로딩 오류",
+        node_deleted: "이 소화전은 더 이상 존재하지 않습니다.",
+        oops: "이런!",
+        back_to_map: "지도로 돌아가기"
     },
     confirm: {
         title: "데이터 확인",
+        title_edit: "소화전 편집",
+        delete_btn: "삭제",
+        delete_confirm: "정말 삭제하시겠습니까?",
+        save_btn: "저장",
+        position_adjustable: "위치 조정 가능",
+        position_moved: "위치 업데이트됨",
+        fixed_map: "이동 가능 (지도 고정)",
+        preview_alt: "촬영된 사진",
+        back_btn_aria: "카메라로 돌아가기",
+        back_btn_label: "뒤로",
+        retry_gps_aria: "GPS 재시도",
         type_label: "유형",
         position_label: "위치",
         details_label: "세부 정보 (선택 사항)",
