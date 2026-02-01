@@ -25,15 +25,15 @@ export function renderConfirmView() {
 
         <!-- OVERLAY: Photo (Thumbnail - Smaller) -->
         <div class="absolute bottom-4 right-4 w-20 h-28 rounded-xl border-2 border-white/30 shadow-2xl overflow-hidden bg-black z-10 transition transform origin-bottom-right hover:scale-[2.5] active:scale-[2.5] cursor-pointer group">
-            <img id="preview-img" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" />
+            <img id="preview-img" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" alt="${t('confirm.preview_alt') || 'Hydrant Preview'}" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
             <span class="absolute bottom-1 right-2 text-[10px] font-bold text-white/80">FOTO</span>
         </div>
 
         <!-- Back Button (Floating) -->
         <div class="absolute top-4 left-4 z-20">
-           <button id="retake-btn" class="bg-black/40 backdrop-blur-md p-3 rounded-full text-white hover:bg-black/60 transition shadow-lg border border-white/10">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+           <button id="retake-btn" class="bg-black/40 backdrop-blur-md p-3 rounded-full text-white hover:bg-black/60 transition shadow-lg border border-white/10" aria-label="${t('confirm.back_btn_aria') || 'Back to Camera'}">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
            </button>
         </div>
 
@@ -42,7 +42,7 @@ export function renderConfirmView() {
            <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white/90 border border-white/10 shadow-lg" id="geo-status-pill">
               GPS: ...
            </div>
-           <button id="gps-retry-btn" class="bg-blue-600/80 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-white shadow-lg active:scale-95 transition hidden">
+           <button id="gps-retry-btn" class="bg-blue-600/80 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-white shadow-lg active:scale-95 transition hidden" aria-label="${t('confirm.retry_gps_aria') || 'Retry GPS'}">
               🔄 GPS neu laden
            </button>
         </div>

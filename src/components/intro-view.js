@@ -81,7 +81,7 @@ export function renderIntroView() {
           
           <div class="flex items-center gap-3">
               <!-- Language Flag -->
-              <button id="lang-btn" class="w-12 h-10 shrink-0 rounded-xl bg-white/5 text-2xl hover:bg-white/10 transition flex items-center justify-center border border-white/10">
+              <button id="lang-btn" class="w-12 h-10 shrink-0 rounded-xl bg-white/5 text-2xl hover:bg-white/10 transition flex items-center justify-center border border-white/10" aria-label="${t('intro.lang_btn_aria') || 'Language / Sprache'}">
                 🇩🇪
               </button>
 
@@ -89,8 +89,8 @@ export function renderIntroView() {
                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                  ${loginText}
               </button>
-              <button id="intro-info-btn" class="w-10 h-10 shrink-0 rounded-xl bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition flex items-center justify-center border border-white/10">
-                <span class="font-serif italic font-bold text-lg">i</span>
+              <button id="intro-info-btn" class="w-10 h-10 shrink-0 rounded-xl bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition flex items-center justify-center border border-white/10" aria-label="Information & Legal">
+                <span class="font-serif italic font-bold text-lg" aria-hidden="true">i</span>
               </button>
           </div>
          

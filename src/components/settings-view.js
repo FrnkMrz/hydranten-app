@@ -16,7 +16,7 @@ export function renderSettingsView() {
             </p>
 
             <button id="login-btn" class="w-full py-4 bg-[#7EBC6F] hover:bg-[#6CAE5D] text-white rounded-xl font-bold shadow-lg shadow-green-900/20 active:scale-95 transition flex items-center justify-center gap-3">
-               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-1.07 3.97-2.9 5.39z"/></svg>
+               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-1.07 3.97-2.9 5.39z"/></svg>
                <span>${t('settings.connect_btn')}</span>
             </button>
             
@@ -39,8 +39,8 @@ export function renderSettingsView() {
              <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">${t('settings.title')}</h1>
          </div>
          <!-- Info Button (Always Visible) -->
-         <button id="info-btn" class="w-10 h-10 rounded-full bg-gray-800/80 text-gray-300 hover:text-white hover:bg-gray-700 transition flex items-center justify-center border border-gray-700 ml-4">
-            <span class="font-serif italic font-bold text-lg">i</span>
+         <button id="info-btn" class="w-10 h-10 rounded-full bg-gray-800/80 text-gray-300 hover:text-white hover:bg-gray-700 transition flex items-center justify-center border border-gray-700 ml-4" aria-label="Information">
+            <span class="font-serif italic font-bold text-lg" aria-hidden="true">i</span>
          </button>
       </div>
 
