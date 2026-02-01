@@ -82,6 +82,7 @@ export function initSettingsView(element, onBack, onHistory) {
 
   const loginBtn = element.querySelector('#login-btn');
   // Note: logout-btn is now a container div
+  const logoutContainer = element.querySelector('#logout-btn');
   const logoutBtn = element.querySelector('#real-logout-btn');
   const historyBtn = element.querySelector('#history-btn');
   const resetBtn = element.querySelector('#reset-btn');
@@ -151,12 +152,12 @@ export function initSettingsView(element, onBack, onHistory) {
       userDisplay.className = username.startsWith("Error") ? "text-xs font-mono text-red-400 break-words" : "text-xl font-bold text-green-400";
       loginBtn.classList.add('hidden');
       helpText.classList.add('hidden');
-      logoutBtn.classList.remove('hidden');
+      if (logoutContainer) logoutContainer.classList.remove('hidden');
     } else {
       statusDiv.classList.add('hidden');
       loginBtn.classList.remove('hidden');
       helpText.classList.remove('hidden');
-      logoutBtn.classList.add('hidden');
+      if (logoutContainer) logoutContainer.classList.add('hidden');
     }
 
     // Update Debug Info
