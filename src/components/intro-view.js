@@ -266,6 +266,9 @@ export function initIntroView(element, onStart, onSettings) {
    const initialCenter = lastPos ? [lastPos.lat, lastPos.lng] : [48.137, 11.576];
    const initialZoom = lastPos ? 18 : 13;
 
+   // Keep track of marker globally within this scope (closure) for updates
+   let userMarker = null; // Re-introduced
+
    if (mapContainer && !map) {
       // Initialize Map
       const mapElement = element.querySelector('#intro-map');
@@ -299,7 +302,13 @@ export function initIntroView(element, onStart, onSettings) {
             navigator.permissions.query({ name: 'geolocation' }).then(result => {
                if (result.state === 'granted') {
                   // Safe to call without user gesture since we already have permission
-                  startMapGps(map);
+                  startMapGps(map, (lat, lng) => {
+                     if (!userMarker) {
+                        userMarker = L.marker([lat, lng]).addTo(map);
+                     } else {
+                        userMarker.setLatLng([lat, lng]);
+                     }
+                  });
                }
             });
          }
@@ -314,7 +323,11 @@ export function initIntroView(element, onStart, onSettings) {
       // Force a resize invalidation shortly after render to ensure map fills container
       setTimeout(() => {
          map.invalidateSize();
-         if (lastPos) map.setView([lastPos.lat, lastPos.lng], 18);
+         if (lastPos) {
+            map.setView([lastPos.lat, lastPos.lng], 18);
+            // Add Marker immediately if we have a position
+            userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
+         }
       }, 100);
    }
 
@@ -323,7 +336,7 @@ export function initIntroView(element, onStart, onSettings) {
 }
 
 // Extracted GPS start logic
-function startMapGps(map) {
+function startMapGps(map, onLocationFound) {
    if (!navigator.geolocation) return;
 
    // Single fetch for center
@@ -332,6 +345,9 @@ function startMapGps(map) {
       map.setView([latitude, longitude], 18);
       updateHydrants(map);
       updatePosition(pos); // Cache it
+
+      if (onLocationFound) onLocationFound(latitude, longitude);
+
    }, err => console.log("Intro GPS error", err), { enableHighAccuracy: true });
 
    // Watcher
