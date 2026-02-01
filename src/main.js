@@ -149,6 +149,58 @@ function handleEdit(nodeId) {
         // Switch to Confirm View in Edit Mode
         app.innerHTML = renderConfirmView();
 
+        // Helper for Overlay (Duplicated to avoid scope issues)
+        const showOverlay = (title, promiseAction) => {
+          const overlay = document.createElement('div');
+          overlay.className = "absolute inset-0 bg-black/90 z-50 flex items-center justify-center p-6 animate-fade-in";
+          app.appendChild(overlay);
+
+          const logs = [];
+          const renderStatus = (result = null, error = null) => {
+            const linesHtml = logs.map(line => `<div class="text-sm font-mono text-gray-400 border-l-2 border-gray-700 pl-3 py-1 text-left">${line}</div>`).join('');
+            let content = `
+                   <div class="flex flex-col w-full max-w-sm bg-gray-900 border ${error ? 'border-red-500' : 'border-gray-700'} rounded-2xl p-6 shadow-2xl">
+                      <h2 class="text-xl font-bold ${error ? 'text-red-500' : 'text-white'} mb-4 flex items-center justify-center gap-2">
+                         ${error ? '❌ Fehler' : (result ? 'Erfolg! ✅' : title + '... ⏳')}
+                      </h2>
+                      <div class="space-y-1 mb-6 max-h-40 overflow-y-auto custom-scrollbar">
+                         ${linesHtml}
+                      </div>
+                `;
+
+            if (error) {
+              content += `
+                        <div class="bg-red-900/20 text-red-200 p-3 rounded-lg text-xs font-mono mb-4 break-words">
+                           ${error.message || String(error)}
+                        </div>
+                        <button id="overlay-close-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition">Schließen</button>
+                    `;
+            } else if (result) {
+              content += `
+                        <button id="overlay-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">Fertig</button>
+                     `;
+            } else {
+              content += `<div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>`;
+            }
+            content += `</div>`;
+            overlay.innerHTML = content;
+
+            if (document.getElementById('overlay-close-btn')) {
+              document.getElementById('overlay-close-btn').onclick = () => {
+                overlay.remove();
+                if (!error) showIntro();
+              };
+            }
+          };
+
+          const addLog = (msg) => { logs.push(msg); renderStatus(); };
+
+          renderStatus();
+          promiseAction(addLog)
+            .then(res => renderStatus(res))
+            .catch(err => renderStatus(null, err));
+        };
+
         // Init Confirm View with Edit Mode = true
         initConfirmView(
           app,
@@ -157,55 +209,70 @@ function handleEdit(nodeId) {
           { back: () => { showIntro(); } }, // OnBack (Cancel) -> Intro
           (data) => {
             // OnSubmit (Save)
-            console.log("Saving Edited Hydrant:", data);
-            // call update logic
+            showOverlay("Speichere", (log) => osm.updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log));
+          },
+          true, // editMode
+          nodeData, // initialData
+          (id, version) => {
+            // OnDelete
+            showOverlay("Lösche", (log) => osm.deleteHydrant(id, version, nodeData.lat, nodeData.lng, log));
+          }
+        );
+      })
+      .catch(err => {
+        console.error("Load Failed:", err);
+        alert("Fehler beim Laden: " + err.message);
+        showIntro();
+      });
+  });
+}
 
-            const btn = document.getElementById('submit-img-btn');
-            btn.innerHTML = `<span>Speichere...</span>`;
-            btn.disabled = true;
+const btn = document.getElementById('submit-img-btn');
+btn.innerHTML = `<span>Speichere...</span>`;
+btn.disabled = true;
 
-            // Overlay
-            const overlay = document.createElement('div');
-            overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/95 animate-fade-in px-6 text-center backdrop-blur-sm";
-            app.appendChild(overlay);
+// Overlay
+const overlay = document.createElement('div');
+overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/95 animate-fade-in px-6 text-center backdrop-blur-sm";
+app.appendChild(overlay);
 
-            overlay.innerHTML = `
+overlay.innerHTML = `
                          <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
                             <h2 class="text-xl font-bold text-white mb-4 flex items-center justify-center gap-2">Speichere Änderungen... ⏳</h2>
                          </div>`;
 
-            import('./services/osm.js').then(osmService => {
-              // Update call
-              osmService.updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, (msg) => {
-                // Simple log update if we wanted, for now just console
-                console.log(msg);
-              }).then(res => {
-                overlay.innerHTML = `
+import('./services/osm.js').then(osmService => {
+  // Update call
+  osmService.updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, (msg) => {
+    // Simple log update if we wanted, for now just console
+    console.log(msg);
+  }).then(res => {
+    overlay.innerHTML = `
                                  <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
                                     <h2 class="text-xl font-bold text-white mb-4 text-green-400">Gespeichert! ✅</h2>
                                     <p class="text-gray-400 text-sm mb-4">Version ${res.version}</p>
                                     <button id="success-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">OK</button>
                                  </div>`;
-                document.getElementById('success-close-btn').onclick = () => showIntro();
-              }).catch(err => {
-                overlay.innerHTML = `
+    document.getElementById('success-close-btn').onclick = () => showIntro();
+  }).catch(err => {
+    overlay.innerHTML = `
                                  <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-red-500/50 rounded-2xl p-6 shadow-2xl">
                                     <h2 class="text-xl font-bold text-white mb-2 text-red-500">Fehler ❌</h2>
                                     <p class="text-gray-400 text-sm mb-4">${err.message}</p>
                                     <button id="err-close-btn" class="w-full py-3 bg-red-500/20 text-white rounded-xl font-bold transition">Zurück</button>
                                  </div>`;
-                document.getElementById('err-close-btn').onclick = () => { overlay.remove(); btn.disabled = false; btn.innerHTML = "<span>💾 Speichern</span>"; };
-              });
-            });
+    document.getElementById('err-close-btn').onclick = () => { overlay.remove(); btn.disabled = false; btn.innerHTML = "<span>💾 Speichern</span>"; };
+  });
+});
           },
-          true, // editMode
-          nodeData // initialData
+true, // editMode
+  nodeData // initialData
         );
       })
-      .catch(err => {
-        alert("Fehler beim Laden: " + err.message);
-        showIntro();
-      });
+      .catch (err => {
+  alert("Fehler beim Laden: " + err.message);
+  showIntro();
+});
   });
 }
 
