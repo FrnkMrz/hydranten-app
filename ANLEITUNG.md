@@ -20,6 +20,7 @@ Bevor du Daten hochladen kannst, musst du die App mit deinem OSM-Konto verknüpf
 6.  Die App springt automatisch zurück und zeigt jetzt deinen Benutzernamen grün an. ✅
 
 > **Hinweis:** Dein Login bleibt auf diesem Gerät gespeichert, bis du dich wieder abmeldest.
+> **Sprache:** Die Sprache kannst du auf der Startseite oben rechts über die Flagge ändern (z.B. 🇩🇪, 🇺🇸, 🇮🇹, 🇯🇵...).
 
 ## 3. Hydranten eintragen
 

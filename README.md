@@ -1,4 +1,4 @@
-# 🚒 Hydranten Jäger APP (v1.0 Beta)
+# 🚒 Hydranten Jäger APP (v1.1)
 
 Eine moderne, mobil-optimierte Web-App zum schnellen Erfassen von Hydranten für OpenStreetMap (OSM).
 Fokus: Geschwindigkeit, Einhand-Bedienung und "Dark Mode" Ästhetik.
@@ -38,7 +38,32 @@ Technologie: Vite + Vanilla JS + TailwindCSS + Leaflet.
 2.  `npm run dev`
 3.  `npm run build`
 
-## Rechtliches / Credits
+## Unterstützte Sprachen 🌍
+
+Die App ist aktuell in folgenden Sprachen verfügbar:
+*   🇩🇪 Deutsch (de)
+*   🇺🇸 Englisch (en) - *Interface auf British English 🇬🇧 flag*
+*   🇵🇱 Polnisch (pl)
+*   🇨🇿 Tschechisch (cs)
+*   🇫🇷 Französisch (fr)
+*   🇳🇱 Niederländisch (nl)
+*   🇪🇸 Spanisch (es)
+*   🇵🇹 Portugiesisch (pt)
+*   🇭🇷 Kroatisch (hr)
+*   🇮🇹 Italienisch (it)
+*   🇯🇵 Japanisch (ja)
+*   🇰🇷 Koreanisch (ko)
+*   🇨🇳 Mandarin (zh)
+*   🇹🇷 Türkisch (tr)
+
+### Entwickler: Neue Sprache hinzufügen
+
+1.  Erstelle eine neue Datei in `src/locales/xx.js` (kopiere `en.js` als Vorlage).
+2.  Importiere die Datei in `src/services/i18n.js` und füge sie zum `resources` Objekt hinzu.
+3.  Füge die Sprache in `src/components/intro-view.js` hinzu:
+    *   In das `flags` Objekt (Zeile ~190).
+    *   In das `langs` Array für das Modal (Zeile ~210).
+4.  Build & Deploy.
 
 *   Datenbasis: © OpenStreetMap Mitwirkende.
 *   Code Lizenz: MIT.
