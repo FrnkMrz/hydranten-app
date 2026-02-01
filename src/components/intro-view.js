@@ -192,7 +192,7 @@ export function initIntroView(element, onStart, onSettings) {
       const flags = {
          'de': '🇩🇪', 'en': '🇺🇸', 'pl': '🇵🇱', 'cs': '🇨🇿',
          'fr': '🇫🇷', 'nl': '🇳🇱', 'es': '🇪🇸', 'pt': '🇵🇹',
-         'hr': '🇭🇷', 'it': '🇮🇹', 'ja': '🇯🇵', 'ko': '🇰🇷', 'zh': '🇨🇳'
+         'hr': '🇭🇷', 'it': '🇮🇹', 'ja': '🇯🇵', 'ko': '🇰🇷', 'zh': '🇨🇳', 'tr': '🇹🇷'
       };
 
       langBtn.innerText = flags[lang] || '🌐';
@@ -214,7 +214,8 @@ export function initIntroView(element, onStart, onSettings) {
             { code: 'it', label: 'Italiano', flag: '🇮🇹' },
             { code: 'ja', label: '日本語', flag: '🇯🇵' },
             { code: 'ko', label: '한국어', flag: '🇰🇷' },
-            { code: 'zh', label: '中文', flag: '🇨🇳' }
+            { code: 'zh', label: '中文', flag: '🇨🇳' },
+            { code: 'tr', label: 'Türkçe', flag: '🇹🇷' }
          ];
 
          modal.innerHTML = `

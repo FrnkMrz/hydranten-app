@@ -12,9 +12,10 @@ import it from '../locales/it.js';
 import ja from '../locales/ja.js';
 import ko from '../locales/ko.js';
 import zh from '../locales/zh.js';
+import tr from '../locales/tr.js';
 
 const locales = {
-    de, en, pl, cs, fr, nl, es, pt, hr, it, ja, ko, zh
+    de, en, pl, cs, fr, nl, es, pt, hr, it, ja, ko, zh, tr
 };
 
 // Default fallback
