@@ -175,22 +175,55 @@ export function initIntroView(element, onStart, onSettings) {
    // Language Switcher Logic
    const langBtn = element.querySelector('#lang-btn');
    if (langBtn) {
-      // Set current flag
       const flags = {
          'de': '🇩🇪', 'en': '🇺🇸', 'pl': '🇵🇱', 'cs': '🇨🇿',
          'fr': '🇫🇷', 'nl': '🇳🇱', 'es': '🇪🇸', 'pt': '🇵🇹'
       };
-      // Need to import lang from i18n to solve this cleanly, or just read from storage/Service
-      // Since I cannot change imports easily with replace_content in middle of file, I will use a trick or assume import is updated?
-      // The previous replace_content only touched the body. I need to make sure 'lang' and 'setLanguage' are imported.
-      // For now, let's assume I can access the i18n module if I imported it fully. 
-      // Currently: import { t } from '../services/i18n.js';
-      // I should probably update the import first.
 
-      // BUT, I can't easily update the import line and this block in one go with replace_file_content if they are far apart.
-      // I will use a separate replace_file_content for the import on top.
+      langBtn.innerText = flags[lang] || '🌐';
 
-      // Temporary mock for visual proof, logic comes in next step if imports are missing
+      langBtn.onclick = () => {
+         const modal = document.createElement('div');
+         modal.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/90 p-6 animate-fade-in backdrop-blur-md";
+
+         const langs = [
+            { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+            { code: 'en', label: 'English', flag: '🇺🇸' },
+            { code: 'pl', label: 'Polski', flag: '🇵🇱' },
+            { code: 'cs', label: 'Čeština', flag: '🇨🇿' },
+            { code: 'fr', label: 'Français', flag: '🇫🇷' },
+            { code: 'nl', label: 'Nederlands', flag: '🇳🇱' },
+            { code: 'es', label: 'Español', flag: '🇪🇸' },
+            { code: 'pt', label: 'Português', flag: '🇵🇹' }
+         ];
+
+         modal.innerHTML = `
+               <div class="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+                   <h3 class="text-xl font-bold text-white mb-4 text-center">Language / Sprache</h3>
+                   <div class="grid grid-cols-2 gap-3">
+                       ${langs.map(l => `
+                           <button class="lang-option p-3 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/10 flex items-center gap-3 ${lang === l.code ? 'border-green-500 bg-green-900/20' : ''}" data-code="${l.code}">
+                               <span class="text-2xl">${l.flag}</span>
+                               <span class="text-white font-bold text-sm">${l.label}</span>
+                           </button>
+                       `).join('')}
+                   </div>
+                   <button id="close-lang-btn" class="w-full mt-6 py-3 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-xl font-bold transition">
+                       Cancel
+                   </button>
+               </div>
+           `;
+
+         element.appendChild(modal);
+
+         modal.querySelectorAll('.lang-option').forEach(btn => {
+            btn.onclick = () => {
+               setLanguage(btn.dataset.code);
+            };
+         });
+
+         modal.querySelector('#close-lang-btn').onclick = () => modal.remove();
+      };
    }
 
 
