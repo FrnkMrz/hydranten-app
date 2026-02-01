@@ -227,54 +227,7 @@ function handleEdit(nodeId) {
   });
 }
 
-const btn = document.getElementById('submit-img-btn');
-btn.innerHTML = `<span>Speichere...</span>`;
-btn.disabled = true;
 
-// Overlay
-const overlay = document.createElement('div');
-overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/95 animate-fade-in px-6 text-center backdrop-blur-sm";
-app.appendChild(overlay);
-
-overlay.innerHTML = `
-                         <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
-                            <h2 class="text-xl font-bold text-white mb-4 flex items-center justify-center gap-2">Speichere Änderungen... ⏳</h2>
-                         </div>`;
-
-import('./services/osm.js').then(osmService => {
-  // Update call
-  osmService.updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, (msg) => {
-    // Simple log update if we wanted, for now just console
-    console.log(msg);
-  }).then(res => {
-    overlay.innerHTML = `
-                                 <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
-                                    <h2 class="text-xl font-bold text-white mb-4 text-green-400">Gespeichert! ✅</h2>
-                                    <p class="text-gray-400 text-sm mb-4">Version ${res.version}</p>
-                                    <button id="success-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">OK</button>
-                                 </div>`;
-    document.getElementById('success-close-btn').onclick = () => showIntro();
-  }).catch(err => {
-    overlay.innerHTML = `
-                                 <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-red-500/50 rounded-2xl p-6 shadow-2xl">
-                                    <h2 class="text-xl font-bold text-white mb-2 text-red-500">Fehler ❌</h2>
-                                    <p class="text-gray-400 text-sm mb-4">${err.message}</p>
-                                    <button id="err-close-btn" class="w-full py-3 bg-red-500/20 text-white rounded-xl font-bold transition">Zurück</button>
-                                 </div>`;
-    document.getElementById('err-close-btn').onclick = () => { overlay.remove(); btn.disabled = false; btn.innerHTML = "<span>💾 Speichern</span>"; };
-  });
-});
-          },
-true, // editMode
-  nodeData // initialData
-        );
-      })
-      .catch (err => {
-  alert("Fehler beim Laden: " + err.message);
-  showIntro();
-});
-  });
-}
 
 function showHistory() {
   state.view = 'history';
