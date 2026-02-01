@@ -216,6 +216,70 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     const noteInput = element.querySelector('#hydrant-note');
     const colorInput = element.querySelector('#hydrant-colour');
 
+    // DIRTY CHECKING LOGIC
+    let hasChanges = false;
+    const checkChanges = () => {
+      if (!editMode || !initialData) return;
+
+      const currentType = typeInput ? typeInput.value : 'pillar';
+      const currentPos = posInput ? posInput.value : '';
+      const currentDiameter = diameterInput ? diameterInput.value : '';
+      const currentRef = refInput ? refInput.value : '';
+      const currentNote = noteInput ? noteInput.value : '';
+      const currentColor = colorInput ? colorInput.value : '';
+      const currentVolume = volumeInput ? volumeInput.value.replace(' m3', '') : '';
+
+      // Helper to safely get tag
+      const getTag = (k) => initialData.tags[k] || '';
+
+      // Compare Tags
+      let typeChanged = false;
+      if (currentType === 'cistern') {
+        typeChanged = (getTag('emergency') !== 'water_tank');
+      } else if (currentType === 'dry_hydrant') {
+        typeChanged = (getTag('fire_hydrant:type') !== 'dry_hydrant');
+      } else {
+        typeChanged = (getTag('fire_hydrant:type') !== currentType);
+      }
+
+      const posChanged = (getTag('fire_hydrant:position') !== currentPos);
+      const diaChanged = (getTag('fire_hydrant:diameter') !== currentDiameter);
+      const refChanged = (getTag('ref') !== currentRef);
+      const noteChanged = ((getTag('note') || getTag('description')) !== currentNote);
+      const colChanged = (getTag('colour') !== currentColor);
+
+      // Compare Location (Float precision tolerance)
+      const latDiff = Math.abs(location.lat - initialData.lat);
+      const lngDiff = Math.abs(location.lng - initialData.lng);
+      const locChanged = (latDiff > 0.000001 || lngDiff > 0.000001);
+
+      hasChanges = (typeChanged || posChanged || diaChanged || refChanged || noteChanged || colChanged || locChanged);
+
+      // Update UI
+      if (submitBtn) {
+        if (hasChanges) {
+          submitBtn.innerHTML = `<span>💾 ${t('confirm.save_btn')}</span>`;
+          submitBtn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+          submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+        } else {
+          submitBtn.innerHTML = `<span>🔙 ${t('confirm.back_btn_aria')}</span>`;
+          submitBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+          submitBtn.classList.add('bg-gray-700', 'hover:bg-gray-600');
+        }
+      }
+    };
+
+    // Attach Listeners for Dirty Check
+    if (editMode) {
+      // Inputs
+      [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput].forEach(el => {
+        if (el) el.addEventListener('input', checkChanges);
+        if (el) el.addEventListener('change', checkChanges);
+      });
+      // Initial Check (Delayed slightly to handle preload)
+      setTimeout(checkChanges, 300);
+    }
+
     // GRID OPTIONS (Emojis preferred by user)
     const options = [
       { id: 'pillar', label: t('confirm.types.pillar'), icon: '<span class="text-2xl">📮</span>' },
@@ -264,33 +328,33 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
       // PRE-FILL DATA IF EDITING
       if (editMode && initialData && initialData.tags) {
-        const t = initialData.tags;
+        const nodeTags = initialData.tags;
         // Type
         let typeVal = 'pillar';
-        if (t['emergency'] === 'water_tank') typeVal = 'cistern';
-        else if (t['fire_hydrant:type'] === 'dry_hydrant') typeVal = 'dry_hydrant';
-        else if (t['fire_hydrant:type']) typeVal = t['fire_hydrant:type'];
+        if (nodeTags['emergency'] === 'water_tank') typeVal = 'cistern';
+        else if (nodeTags['fire_hydrant:type'] === 'dry_hydrant') typeVal = 'dry_hydrant';
+        else if (nodeTags['fire_hydrant:type']) typeVal = nodeTags['fire_hydrant:type'];
 
         updateGrid(typeVal);
 
         // Position
-        if (t['fire_hydrant:position'] && posInput) {
+        if (nodeTags['fire_hydrant:position'] && posInput) {
           // We need to trigger the position button update logic too
           // let's do it below in position logic
         }
 
         // Diameter
-        if (diameterInput && t['fire_hydrant:diameter']) diameterInput.value = t['fire_hydrant:diameter'];
+        if (diameterInput && nodeTags['fire_hydrant:diameter']) diameterInput.value = nodeTags['fire_hydrant:diameter'];
 
         // Ref
-        if (refInput && t['ref']) refInput.value = t['ref'];
+        if (refInput && nodeTags['ref']) refInput.value = nodeTags['ref'];
 
         // Note
-        if (noteInput && (t['note'] || t['description'])) noteInput.value = t['note'] || t['description'];
+        if (noteInput && (nodeTags['note'] || nodeTags['description'])) noteInput.value = nodeTags['note'] || nodeTags['description'];
 
         // Color (Complex because we have custom UI)
-        if (colorInput && t['colour']) {
-          colorInput.value = t['colour'];
+        if (colorInput && nodeTags['colour']) {
+          colorInput.value = nodeTags['colour'];
           // Timer needed because color UI is built below? No, it's built before this block usually? 
           // Ah, color picker logic is further down. We should move pre-fill to end or ensure UI exists.
         }
@@ -380,63 +444,6 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       });
     }
 
-
-    // DIRTY CHECKING LOGIC
-    let hasChanges = false;
-    const checkChanges = () => {
-      if (!editMode || !initialData) return;
-
-      const currentType = typeInput ? typeInput.value : 'pillar';
-      const currentPos = posInput ? posInput.value : '';
-      const currentDiameter = diameterInput ? diameterInput.value : '';
-      const currentRef = refInput ? refInput.value : '';
-      const currentNote = noteInput ? noteInput.value : '';
-      const currentColor = colorInput ? colorInput.value : '';
-      const currentVolume = volumeInput ? volumeInput.value.replace(' m3', '') : '';
-
-      // Helper to safely get tag
-      const getTag = (k) => initialData.tags[k] || '';
-
-      // Compare Tags
-      let typeChanged = false;
-      if (currentType === 'cistern') {
-        typeChanged = (getTag('emergency') !== 'water_tank');
-        // simplify volume check
-        // const vol = getTag('water_tank:volume').replace(' m3', '');
-        // if (vol !== currentVolume) typeChanged = true; 
-      } else if (currentType === 'dry_hydrant') {
-        typeChanged = (getTag('fire_hydrant:type') !== 'dry_hydrant');
-      } else {
-        typeChanged = (getTag('fire_hydrant:type') !== currentType);
-      }
-
-      const posChanged = (getTag('fire_hydrant:position') !== currentPos);
-      const diaChanged = (getTag('fire_hydrant:diameter') !== currentDiameter);
-      const refChanged = (getTag('ref') !== currentRef);
-      const noteChanged = ((getTag('note') || getTag('description')) !== currentNote);
-      const colChanged = (getTag('colour') !== currentColor);
-
-      // Compare Location (Float precision tolerance)
-      const latDiff = Math.abs(location.lat - initialData.lat);
-      const lngDiff = Math.abs(location.lng - initialData.lng);
-      const locChanged = (latDiff > 0.000001 || lngDiff > 0.000001);
-
-      hasChanges = (typeChanged || posChanged || diaChanged || refChanged || noteChanged || colChanged || locChanged);
-
-      // Update UI
-      if (submitBtn) {
-        if (hasChanges) {
-          submitBtn.innerHTML = `<span>💾 ${t('confirm.save_btn')}</span>`;
-          submitBtn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
-          submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
-        } else {
-          submitBtn.innerHTML = `<span>🔙 ${t('confirm.back_btn_aria')}</span>`; // Reuse "Back" or add "Cancel" key? using back_btn_aria for valid translation "Zurück..."
-          // Or explicitly "Abbrechen"
-          submitBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
-          submitBtn.classList.add('bg-gray-700', 'hover:bg-gray-600');
-        }
-      }
-    };
 
     // Attach Listeners for Dirty Check
     if (editMode) {
