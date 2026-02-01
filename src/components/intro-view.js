@@ -53,6 +53,7 @@ export function renderIntroView() {
              <h1 class="text-4xl font-extrabold text-white mb-2 tracking-tight drop-shadow-xl">
                 Hydranten <span class="text-red-500">Jäger</span>
              </h1>
+             ${lang !== 'de' ? `<p class="text-sm text-gray-400 font-medium tracking-wide uppercase opacity-80 mt-1">${t('intro.title_pre')} ${t('intro.title_post')}</p>` : ''}
          </div>
 
          <!-- Instructions Card -->
