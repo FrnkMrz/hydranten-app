@@ -6,6 +6,7 @@ import { renderIntroView, initIntroView } from './components/intro-view.js';
 import { renderHistoryView, initHistoryView } from './components/history-view.js';
 import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition, startTracking, getLastKnownPosition } from './services/geo.js';
 import { auth } from './services/auth.js';
+import * as osm from './services/osm.js';
 
 // Init Compass & GPS Tracking early
 // Init Compass & GPS Tracking (Moved to Start/Camera)

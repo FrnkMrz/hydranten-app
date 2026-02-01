@@ -264,7 +264,8 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    // Init Cached Position immediately
    const lastPos = getLastKnownPosition();
    const initialCenter = lastPos ? [lastPos.lat, lastPos.lng] : [48.137, 11.576];
-   const initialZoom = lastPos ? 18 : 13;
+   // Fix: Increase default zoom to 16 so that hydrate fetch (min 14) works even without GPS fix
+   const initialZoom = lastPos ? 18 : 16;
 
    // Keep track of marker globally within this scope (closure) for updates
    let userMarker = null; // Re-introduced
