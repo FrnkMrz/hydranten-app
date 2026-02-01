@@ -135,7 +135,12 @@ export const auth = {
 // Compat with existing code expecting getAuthHeader
 export function getAuthHeader() {
     const token = auth.getToken();
-    return token ? { 'Authorization': `Bearer ${token}` } : null;
+    return token ? {
+        'Authorization': `Bearer ${token}`,
+        'User-Agent': 'Hydranten-Jaeger-App/1.0'
+    } : {
+        'User-Agent': 'Hydranten-Jaeger-App/1.0'
+    };
 }
 
 // Compat checkLogin with Caching
