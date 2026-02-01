@@ -50,6 +50,7 @@ export default {
     },
     confirm: {
         title: "Daten prüfen",
+        title_edit: "Hydrant bearbeiten",
         preview_alt: "Aufgenommenes Foto",
         back_btn_aria: "Zurück zur Kamera",
         retry_gps_aria: "GPS Position erneut suchen",

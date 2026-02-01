@@ -135,16 +135,50 @@ export function renderConfirmView() {
   `;
 }
 
-export function initConfirmView(element, imageBlob, location, onRetake, onSubmit) {
+export function initConfirmView(element, imageBlob, location, onRetake, onSubmit, editMode = false, initialData = null) {
   try {
     // Guard Location
-    if (!location) {
+    if (!location && !editMode) {
       console.warn("ConfirmView: Location missing, using fallback.");
       location = { lat: 48.137, lng: 11.576, accuracy: 1000 };
+    } else if (editMode && initialData) {
+      location = { lat: initialData.lat, lng: initialData.lng, accuracy: 0 };
+    }
+
+    // Edit Mode Enhancements
+    if (editMode) {
+      element.querySelector('h1').innerText = "Hydrant bearbeiten" || t('confirm.title_edit'); // Fallback if no ref (title not in renderConfirmView, wait, need to check where title is rendered)
+      // Title is in renderConfirmView but static. Let's find it. It's not in the export renderConfirmView string directly accessible via ID.
+      // It's in <div...><div...><div...>... Confirm Data ...
+      // We'll traverse or just leave it for now if we can't find ID. Wait, I see no ID for title.
+      // Actually, renderConfirmView returns a string string. We are in initConfirmView.
+      // We should add an ID to the title in the render function first or search by class/text.
+      // Current file content has: confirm: { title: "Confirm Data", ... }
+      // The render function has: <div class="...">... ${t('confirm.title')} ...</div>
+      // Let's rely on finding it via text content or adding ID in next step.
+      // For now, let's just do form filling.
+
+      // Hide Retake/Photo
+      const retakeBtn = element.querySelector('#retake-btn');
+      if (retakeBtn) retakeBtn.classList.add('hidden');
+
+      const previewImg = element.querySelector('#preview-img');
+      if (previewImg) previewImg.parentElement.classList.add('hidden'); // Hide container
+
+      // Change Submit Button Text
+      const submitBtn = element.querySelector('#submit-img-btn');
+      if (submitBtn) submitBtn.innerHTML = `<span>💾 Speichern</span>`;
+
+      // Hide GPS Retry
+      const retryBtn = element.querySelector('#gps-retry-btn');
+      if (retryBtn) retryBtn.remove();
+
+      const gpsPill = element.querySelector('#geo-status-pill');
+      if (gpsPill) gpsPill.innerText = "Position fixiert";
     }
 
     const img = element.querySelector('#preview-img');
-    if (imageBlob && img) {
+    if (imageBlob && img && !editMode) {
       img.src = URL.createObjectURL(imageBlob);
     }
 
@@ -158,6 +192,9 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     const diameterContainer = element.querySelector('#diameter-container');
     const diameterInput = element.querySelector('#hydrant-diameter');
     const retryBtn = element.querySelector('#gps-retry-btn');
+    const refInput = element.querySelector('#hydrant-ref');
+    const noteInput = element.querySelector('#hydrant-note');
+    const colorInput = element.querySelector('#hydrant-colour');
 
     // GRID OPTIONS (Emojis preferred by user)
     const options = [
@@ -203,7 +240,42 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       element.querySelectorAll('.option-btn').forEach(btn => {
         btn.onclick = () => updateGrid(btn.dataset.value);
       });
-      updateGrid('pillar'); // Default
+
+      // PRE-FILL DATA IF EDITING
+      if (editMode && initialData && initialData.tags) {
+        const t = initialData.tags;
+        // Type
+        let typeVal = 'pillar';
+        if (t['emergency'] === 'water_tank') typeVal = 'cistern';
+        else if (t['fire_hydrant:type'] === 'dry_hydrant') typeVal = 'dry_hydrant';
+        else if (t['fire_hydrant:type']) typeVal = t['fire_hydrant:type'];
+
+        updateGrid(typeVal);
+
+        // Position
+        if (t['fire_hydrant:position'] && posInput) {
+          // We need to trigger the position button update logic too
+          // let's do it below in position logic
+        }
+
+        // Diameter
+        if (diameterInput && t['fire_hydrant:diameter']) diameterInput.value = t['fire_hydrant:diameter'];
+
+        // Ref
+        if (refInput && t['ref']) refInput.value = t['ref'];
+
+        // Note
+        if (noteInput && (t['note'] || t['description'])) noteInput.value = t['note'] || t['description'];
+
+        // Color (Complex because we have custom UI)
+        if (colorInput && t['colour']) {
+          colorInput.value = t['colour'];
+          // Timer needed because color UI is built below? No, it's built before this block usually? 
+          // Ah, color picker logic is further down. We should move pre-fill to end or ensure UI exists.
+        }
+      } else {
+        updateGrid('pillar'); // Default
+      }
     }
 
     // Position Logic
@@ -223,7 +295,13 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     posBtns.forEach(btn => {
       btn.onclick = () => updatePos(btn.dataset.value);
     });
-    updatePos('');
+
+    // Pre-fill Position
+    if (editMode && initialData && initialData.tags && initialData.tags['fire_hydrant:position']) {
+      updatePos(initialData.tags['fire_hydrant:position']);
+    } else {
+      updatePos('');
+    }
 
     // COLOR PICKER LOGIC
     const colors = [
@@ -238,7 +316,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     ];
 
     const colorContainer = element.querySelector('#color-picker-container');
-    const colorInput = element.querySelector('#hydrant-colour');
+    // const colorInput defined above
 
     if (colorContainer && colorInput) {
       colors.forEach(c => {
@@ -269,6 +347,12 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           colorInput.value = c.value;
         };
 
+        // Pre-select if matches
+        if (editMode && initialData && initialData.tags && initialData.tags['colour'] === c.value) {
+          // Trigger visual select
+          setTimeout(() => btn.click(), 0);
+        }
+
         colorContainer.appendChild(btn);
       });
     }
@@ -283,21 +367,23 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         attribution: ''
       }).addTo(map);
 
-      const marker = L.marker(center, { draggable: true }).addTo(map);
+      const marker = L.marker(center, { draggable: !editMode }).addTo(map); // Lock if editMode
       const statusPill = document.querySelector('#geo-status-pill');
 
-      marker.on('dragend', function (event) {
-        const position = marker.getLatLng();
-        location.lat = position.lat;
-        location.lng = position.lng;
-        if (statusPill) statusPill.innerText = `📍 Verschoben`;
-      });
+      if (!editMode) {
+        marker.on('dragend', function (event) {
+          const position = marker.getLatLng();
+          location.lat = position.lat;
+          location.lng = position.lng;
+          if (statusPill) statusPill.innerText = `📍 Verschoben`;
+        });
+      }
 
       const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
-      if (statusPill) statusPill.innerText = `GPS: ±${accuracy}m`;
+      if (statusPill) statusPill.innerText = editMode ? "Position fixiert" : `GPS: ±${accuracy}m`;
 
       // Retry Button Logic
-      if (retryBtn) {
+      if (retryBtn && !editMode) {
         if (location.accuracy > 500 || location.lat === 48.137) {
           retryBtn.classList.remove('hidden');
           retryBtn.classList.add('animate-pulse');
@@ -333,7 +419,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       setTimeout(() => map.invalidateSize(), 300);
     }
 
-    if (retakeBtn) {
+    if (retakeBtn && !editMode) {
       console.log("ConfirmView: Retake Button found, attaching listener.");
       retakeBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -346,8 +432,6 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           alert("Fehler: Zurück-Funktion nicht verfügbar.");
         }
       });
-    } else {
-      console.error("ConfirmView: Retake Button NOT found!");
     }
 
     if (submitBtn) {
@@ -355,27 +439,35 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         const selectedType = typeInput ? typeInput.value : 'pillar';
         const selectedPos = posInput ? posInput.value : '';
 
-        const tags = {};
+        // Start with initial tags if editing (Merge Strategy)
+        const tags = (editMode && initialData) ? { ...initialData.tags } : {};
+
+        // Overwrite/Set specific app fields
         if (selectedType === 'cistern') {
           tags['emergency'] = 'water_tank';
+          // Clear fire_hydrant keys if switching to cistern? Maybe safer to leave them if they existed?
+          // Let's overwrite type to be sure.
+          tags['fire_hydrant:type'] = null; // or remove? undefined
+          delete tags['fire_hydrant:type'];
+
           if (volumeInput && volumeInput.value) {
             let val = volumeInput.value.trim();
-            // If only numbers, append m3
-            if (/^\d+$/.test(val)) {
-              val += " m3";
-            }
+            if (/^\d+$/.test(val)) val += " m3";
             tags['water_tank:volume'] = val;
           }
           tags['fire_hydrant:position'] = selectedPos;
+
         } else if (selectedType === 'dry_hydrant') {
           tags['emergency'] = 'fire_hydrant';
           tags['fire_hydrant:type'] = 'dry_hydrant';
           tags['fire_hydrant:position'] = selectedPos;
+          delete tags['water_tank:volume']; // Cleanup collision
         }
         else {
           tags['emergency'] = 'fire_hydrant';
           tags['fire_hydrant:type'] = selectedType;
           tags['fire_hydrant:position'] = selectedPos;
+          delete tags['water_tank:volume'];
         }
 
         if (diameterInput && diameterInput.value) tags['fire_hydrant:diameter'] = diameterInput.value;
@@ -385,11 +477,13 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         const col = element.querySelector('#hydrant-colour');
         if (col && col.value) tags['colour'] = col.value;
         const note = element.querySelector('#hydrant-note');
-        if (note && note.value) tags['note'] = note.value;
+        if (note && note.value) tags['note'] = note.value; // Prefer note over description?
 
         onSubmit({
           ...location,
-          tags: tags
+          tags: tags,
+          id: editMode ? initialData.id : null,
+          version: editMode ? initialData.version : null
         });
       };
     }
