@@ -1,0 +1,49 @@
+
+import de from '../locales/de.js';
+import en from '../locales/en.js';
+import pl from '../locales/pl.js';
+import cs from '../locales/cs.js';
+import fr from '../locales/fr.js';
+import nl from '../locales/nl.js';
+import es from '../locales/es.js';
+import pt from '../locales/pt.js';
+
+const locales = {
+    de, en, pl, cs, fr, nl, es, pt
+};
+
+// Default fallback
+const DEFAULT_LANG = 'en';
+
+// Detect Browser Language
+function detectLanguage() {
+    const browserLang = navigator.language.split('-')[0]; // 'de-DE' -> 'de'
+    return locales[browserLang] ? browserLang : DEFAULT_LANG;
+}
+
+const currentLang = detectLanguage();
+const translations = locales[currentLang];
+
+console.log(`i18n: Language detected: ${currentLang}`);
+
+/**
+ * Get translation for key.
+ * @param {string} key - Dot notation e.g. 'intro.start'
+ * @returns {string} Translated text or key if missing
+ */
+export function t(key) {
+    const keys = key.split('.');
+    let value = translations;
+
+    for (const k of keys) {
+        if (value && value[k]) {
+            value = value[k];
+        } else {
+            console.warn(`i18n: Missing translation for ${key} in ${currentLang}`);
+            return key;
+        }
+    }
+    return value;
+}
+
+export const lang = currentLang;

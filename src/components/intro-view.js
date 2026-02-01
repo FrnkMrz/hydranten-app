@@ -19,15 +19,17 @@ L.Icon.Default.mergeOptions({
 const visibleHydrants = new Set();
 let hydrantLayer = null;
 
+import { t } from '../services/i18n.js';
+
 export function renderIntroView() {
    // Check Login Status
-   let loginText = "OSM Login";
+   let loginText = t('intro.login_osm');
    let loginClass = "text-gray-400 hover:text-white";
 
    try {
       const token = JSON.parse(localStorage.getItem('osm-auth') || '{}');
       if (token.access_token) {
-         const name = localStorage.getItem('osm_user_name') || "Angemeldet";
+         const name = localStorage.getItem('osm_user_name') || t('intro.login_connected');
          loginText = `✅ ${name}`;
          loginClass = "text-green-400 hover:text-green-300 font-bold";
       }
@@ -43,31 +45,29 @@ export function renderIntroView() {
           <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black to-transparent pointer-events-none"></div>
       </div>
 
-
-
       <!-- Content (Bottom 70%) -->
       <div class="flex-grow flex flex-col items-center z-10 w-full max-w-sm mx-auto px-6 overflow-y-auto pb-4">
          
-         <!-- Hero Title (Immediately below map with some spacing) -->
+         <!-- Hero Title -->
          <div class="text-center mt-6 mb-8">
              <h1 class="text-4xl font-extrabold text-white mb-2 tracking-tight drop-shadow-xl">
-                Hydranten <span class="text-red-500">Jäger</span>
+                ${t('intro.title_pre')} <span class="text-red-500">${t('intro.title_post')}</span>
              </h1>
          </div>
 
          <!-- Instructions Card -->
          <div class="w-full bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 space-y-3 text-sm text-gray-300 shadow-xl">
              <div class="flex items-center gap-4">
-                <span class="text-xl bg-white/10 p-2 rounded-lg">📏</span> <p><span class="text-white font-bold">3 Meter</span> Abstand</p>
+                <span class="text-xl bg-white/10 p-2 rounded-lg">📏</span> <p><span class="text-white font-bold">${t('intro.step1_bold')}</span> ${t('intro.step1').replace(t('intro.step1_bold'), '')}</p>
              </div>
              <div class="flex items-center gap-4">
-                <span class="text-xl bg-white/10 p-2 rounded-lg">📸</span> <p><span class="text-white font-bold">Foto</span> machen</p>
+                <span class="text-xl bg-white/10 p-2 rounded-lg">📸</span> <p><span class="text-white font-bold">${t('intro.step2_bold')}</span> ${t('intro.step2').replace(t('intro.step2_bold'), '')}</p>
              </div>
              <div class="flex items-center gap-4">
-                <span class="text-xl bg-white/10 p-2 rounded-lg">✏️</span> <p><span class="text-white font-bold">Daten</span> ergänzen</p>
+                <span class="text-xl bg-white/10 p-2 rounded-lg">✏️</span> <p><span class="text-white font-bold">${t('intro.step3_bold')}</span> ${t('intro.step3').replace(t('intro.step3_bold'), '')}</p>
              </div>
              <div class="flex items-center gap-4">
-                <span class="text-xl bg-white/10 p-2 rounded-lg">☁️</span> <p><span class="text-white font-bold">Hochladen</span> zu OSM</p>
+                <span class="text-xl bg-white/10 p-2 rounded-lg">☁️</span> <p><span class="text-white font-bold">${t('intro.step4_bold')}</span> ${t('intro.step4').replace(t('intro.step4_bold'), '')}</p>
              </div>
          </div>
       </div>
@@ -75,7 +75,7 @@ export function renderIntroView() {
       <!-- Footer Action -->
       <div class="h-auto shrink-0 z-10 w-full max-w-sm mx-auto flex flex-col justify-end px-6 pb-24">
           <button id="start-btn" class="w-full py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-2xl font-bold text-lg shadow-xl shadow-red-900/30 active:scale-95 transition-all flex items-center justify-center gap-2 mb-4">
-             STARTEN
+             ${t('intro.start_btn')}
           </button>
           
           <div class="flex items-center gap-3">
@@ -88,24 +88,21 @@ export function renderIntroView() {
               </button>
           </div>
          
-   
+    
     </div>
    `;
 }
 
 export function initIntroView(element, onStart, onSettings) {
+   // ... existing event listeners ...
    const btn = element.querySelector('#start-btn');
    if (btn) {
+      // ... existing start logic ...
       btn.onclick = () => {
-         // iOS 13+ Compass Permission
          if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
             DeviceOrientationEvent.requestPermission()
                .then(response => {
-                  if (response === 'granted') {
-                     console.log("Compass Permission Granted");
-                  } else {
-                     console.warn("Compass Permission Denied");
-                  }
+                  // ...
                })
                .catch(console.error)
                .finally(() => onStart());
@@ -116,11 +113,9 @@ export function initIntroView(element, onStart, onSettings) {
    }
 
    const settingsBtn = element.querySelector('#intro-settings-btn');
-   if (settingsBtn && onSettings) {
-      settingsBtn.onclick = onSettings;
-   }
+   if (settingsBtn && onSettings) settingsBtn.onclick = onSettings;
 
-   // Info Modal Logic (Intro)
+   // Info Modal Logic
    const infoBtn = element.querySelector('#intro-info-btn');
    if (infoBtn) {
       infoBtn.onclick = () => {
@@ -128,13 +123,13 @@ export function initIntroView(element, onStart, onSettings) {
          modal.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/90 p-6 animate-fade-in backdrop-blur-md";
          modal.innerHTML = `
              <div class="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl overflow-y-auto max-h-[80vh]">
-                 <h3 class="text-xl font-bold text-white mb-4">Rechtliche Hinweise</h3>
+                 <h3 class="text-xl font-bold text-white mb-4">${t('intro.info_legal')}</h3>
                  
                  <div class="space-y-4 text-sm text-gray-300">
-                    <p><strong>Hydranten Jäger</strong> ist ein Open Source Tool zur Erfassung von Hydranten in OpenStreetMap.</p>
+                    <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v1.0 Beta)</p>
                     
                     <div class="border-l-2 border-gray-600 pl-3 py-1">
-                        <h4 class="font-bold text-white mb-1">Impressum</h4>
+                        <h4 class="font-bold text-white mb-1">${t('intro.info_impressum')}</h4>
                         <p class="text-xs text-gray-400 mb-1">Angaben gemäß § 5 TMG:</p>
                         <p>Frank März</p>
                         <p>Kersbacher Weg 3</p>
@@ -147,22 +142,22 @@ export function initIntroView(element, onStart, onSettings) {
                     </div>
                      
                      <div>
-                         <h4 class="font-bold text-white">Daten & Datenschutz</h4>
-                         <p>Diese App speichert keine personenbezogenen Daten auf eigenen Servern. Alle Eingaben werden direkt an OpenStreetMap (OSM) übermittelt.</p>
+                         <h4 class="font-bold text-white">${t('intro.info_data')}</h4>
+                         <p>${t('intro.info_data_text')}</p>
                      </div>
 
                      <div>
-                         <h4 class="font-bold text-white">Lizenz & Code</h4>
-                         <p>Kartendaten © OpenStreetMap Mitwirkende.</p>
+                         <h4 class="font-bold text-white">${t('intro.info_license')}</h4>
+                         <p>Data © OpenStreetMap Contributors.</p>
                          <p>Code: MIT License</p>
                          <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" class="text-blue-400 hover:text-blue-300 underline mt-1 block">
-                             📂 Projekt auf GitHub ansehen
+                             📂 ${t('intro.info_github')}
                          </a>
                      </div>
                  </div>
 
                  <button id="close-intro-info-btn" class="w-full mt-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition">
-                     Verstanden
+                     OK
                  </button>
              </div>
            `;
@@ -170,6 +165,7 @@ export function initIntroView(element, onStart, onSettings) {
          modal.querySelector('#close-intro-info-btn').onclick = () => modal.remove();
       };
    }
+
 
    // Live GPS Update & Map
    const mapContainer = element.querySelector('#intro-map');
