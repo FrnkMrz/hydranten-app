@@ -26,9 +26,9 @@ export const overpass = {
         const w = bounds.getWest();
         const e = bounds.getEast();
 
-        // Construct Query: [out:json][timeout:10]; node["emergency"="fire_hydrant"](s,w,n,e); out skel;
+        // Construct Query: [out:json][timeout:25]; node["emergency"="fire_hydrant"](s,w,n,e); out skel;
         const query = `
-            [out:json][timeout:10];
+            [out:json][timeout:25];
             node["emergency"="fire_hydrant"](${s},${w},${n},${e});
             out skel;
         `;
@@ -37,7 +37,7 @@ export const overpass = {
 
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+            const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout (matching query)
 
             const response = await fetch(url, {
                 method: 'POST',
