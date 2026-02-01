@@ -47,6 +47,9 @@ export default {
     },
     confirm: {
         title: "Confirm Data",
+        preview_alt: "Captured Photo",
+        back_btn_aria: "Back to Camera",
+        retry_gps_aria: "Retry GPS Position",
         type_label: "Type",
         position_label: "Location",
         details_label: "Details (Optional)",

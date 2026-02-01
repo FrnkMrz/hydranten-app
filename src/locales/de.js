@@ -48,6 +48,9 @@ export default {
     },
     confirm: {
         title: "Daten prüfen",
+        preview_alt: "Aufgenommenes Foto",
+        back_btn_aria: "Zurück zur Kamera",
+        retry_gps_aria: "GPS Position erneut suchen",
         type_label: "Typ",
         position_label: "Lage",
         details_label: "Details (Optional)",
