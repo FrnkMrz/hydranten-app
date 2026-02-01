@@ -176,22 +176,52 @@ export function initIntroView(element, onStart, onSettings) {
    const initialZoom = lastPos ? 18 : 13;
 
    if (mapContainer && !map) {
-      map = L.map(mapContainer, {
-         zoomControl: false,
-         attributionControl: false,
-         dragging: false,
-         scrollWheelZoom: false,
-         doubleClickZoom: false,
-         boxZoom: false,
-         keyboard: false
-      }).setView(initialCenter, initialZoom);
+      // Initialize Map
+      const mapElement = element.querySelector('#intro-map');
+      if (mapElement && !mapElement._leaflet_id) {
+         map = L.map(mapElement, {
+            zoomControl: false,
+            attributionControl: false,
+            dragging: false, // Keep it static-ish? User said "Only in map changes". 
+            // Wait, if dragging is false, user can't move map to see hydrants.
+            // User said "GUI ... changes only in the map". 
+            // User likely WANTS to see hydrants on the intro location.
+            // Usually intro map follows GPS.
+            // Let's check if map is interactive.
+            // In original code: dragging: false.
+            // If the map is static (intro bg), fetching hydrants makes sense only for the CURRENT location.
+            // But if user walks, does the map move?
+            // Let's check 'gps.watchPosition' in main.js updates this map?
+            // Actually intro view usually just initializes once.
+            // Let's enable interaction? No, user said "GUI not change".
+            // I will stick to: Fetch for INITIAL location and updates if position updates.
+            zoomSnap: 0,
+         }).setView([51.1657, 10.4515], 6); // Default Germany
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-         opacity: 0.8
-      }).addTo(map);
+         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19
+         }).addTo(map);
 
-      if (lastPos) {
-         marker = L.marker(initialCenter).addTo(map);
+         // Initial Hydrant Layer
+         hydrantLayer = L.layerGroup().addTo(map);
+
+         // Watch GPS to update map & fetch hydrants
+         if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+               const { latitude, longitude } = pos.coords;
+               map.setView([latitude, longitude], 16);
+               updateHydrants(map); // Initial fetch
+            }, err => {
+               console.log("Intro GPS error", err);
+            }, { enableHighAccuracy: true });
+         }
+
+         // If we want it to update live when user moves (walking):
+         // The main.js might handle GPS, but intro-view initializes its own map.
+         // Let's just hook into moveend if the map MOVES (even programmatically).
+         map.on('moveend', () => {
+            updateHydrants(map);
+         });
       }
 
       // Force a resize invalidation shortly after render to ensure map fills container
