@@ -359,6 +359,8 @@ function startMapGps(map, onLocationFound, onEdit) {
 function updateHydrants(map, onEdit) {
    if (map.getZoom() < 14) return; // Don't fetch for whole world
 
+   console.log("Hydrant Update. onEdit available?", !!onEdit); // DEBUG
+
    overpass.fetchHydrants(map.getBounds()).then(elements => {
       if (!hydrantLayer) return;
 
@@ -380,11 +382,16 @@ function updateHydrants(map, onEdit) {
             });
 
             m.on('click', () => {
-               console.log("Clicked Hydrant:", node.id);
+               console.log("Clicked Hydrant:", node.id, "onEdit:", onEdit); // DEBUG
                // Visual feedback
                m.setStyle({ fillColor: '#3b82f6', radius: 10, color: 'white', weight: 4 });
                setTimeout(() => {
-                  if (onEdit) onEdit(node.id); // Trigger Edit Mode
+                  if (onEdit) {
+                     onEdit(node.id); // Trigger Edit Mode
+                  } else {
+                     console.error("onEdit is MISSING in click handler!");
+                     alert("Interner Fehler: Edit-Funktion fehlt.");
+                  }
                   // Reset style handled by re-render usually, but let's be nice
                   // m.setStyle({ fillColor: RED, radius: 8, weight: 2 });
                }, 100);
