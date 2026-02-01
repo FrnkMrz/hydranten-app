@@ -6,12 +6,18 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { getLastKnownPosition, updatePosition } from '../services/geo.js';
 
+import { overpass } from '../services/overpass.js';
+
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
    iconRetinaUrl: markerIcon2x,
    iconUrl: markerIcon,
    shadowUrl: markerShadow,
 });
+
+// Globals for Hydrants
+const visibleHydrants = new Set();
+let hydrantLayer = null;
 
 export function renderIntroView() {
    // Check Login Status
@@ -271,4 +277,32 @@ export function initIntroView(element, onStart, onSettings) {
          }
       };
    }
+}
+
+// Helper to fetch and draw
+function updateHydrants(map) {
+   if (map.getZoom() < 14) return; // Don't fetch for whole world
+
+   overpass.fetchHydrants(map.getBounds()).then(elements => {
+      if (!hydrantLayer) return;
+
+      // Jäger Red (Tailwind red-600) = #DC2626
+      const RED = '#DC2626';
+
+      elements.forEach(node => {
+         if (!visibleHydrants.has(node.id)) {
+            visibleHydrants.add(node.id);
+
+            L.circleMarker([node.lat, node.lon], {
+               radius: 5,
+               fillColor: RED,
+               color: '#fff',
+               weight: 1,
+               opacity: 0.8,
+               fillOpacity: 0.9,
+               className: 'hydrant-marker'
+            }).addTo(hydrantLayer);
+         }
+      });
+   });
 }
