@@ -1,0 +1,61 @@
+export default {
+    intro: {
+        title_pre: "消火栓",
+        title_post: "猎人",
+        step1: "3米距离",
+        step1_bold: "3米",
+        step2: "拍照",
+        step2_bold: "拍照",
+        step3: "添加数据",
+        step3_bold: "数据",
+        step4: "上传至OSM",
+        step4_bold: "上传",
+        start_btn: "开始",
+        login_osm: "OSM 登录",
+        login_connected: "已连接",
+        info_legal: "法律信息",
+        info_impressum: "印记",
+        info_data: "数据与隐私",
+        info_data_text: "此应用不存储个人数据。所有条目直接发送至 OpenStreetMap (OSM)。",
+        info_license: "许可与代码",
+        info_github: "在 GitHub 上查看"
+    },
+    settings: {
+        title: "设置",
+        account: "OSM 账户",
+        connect_btn: "连接至 OSM",
+        disconnect_btn: "登出",
+        app_reset: "重置应用",
+        reset_btn: "重置并清除缓存",
+        back_btn: "返回",
+        legal_link: "法律信息"
+    },
+    camera: {
+        permission: "需要相机权限",
+        retake: "重拍",
+        use_photo: "使用照片"
+    },
+    confirm: {
+        title: "确认数据",
+        type_label: "类型",
+        position_label: "位置",
+        details_label: "详情（可选）",
+        upload_btn: "上传至 OSM",
+        uploading: "上传中...",
+        success: "上传成功！",
+        error: "上传错误",
+        types: {
+            underground: "地下式",
+            pillar: "地上式",
+            wall: "墙式",
+            suction: "吸水口"
+        },
+        locations: {
+            sidewalk: "人行道",
+            street: "街道",
+            green: "绿地",
+            parking: "停车场",
+            none: "无"
+        }
+    }
+};

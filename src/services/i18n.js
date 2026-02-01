@@ -7,9 +7,14 @@ import fr from '../locales/fr.js';
 import nl from '../locales/nl.js';
 import es from '../locales/es.js';
 import pt from '../locales/pt.js';
+import hr from '../locales/hr.js';
+import it from '../locales/it.js';
+import ja from '../locales/ja.js';
+import ko from '../locales/ko.js';
+import zh from '../locales/zh.js';
 
 const locales = {
-    de, en, pl, cs, fr, nl, es, pt
+    de, en, pl, cs, fr, nl, es, pt, hr, it, ja, ko, zh
 };
 
 // Default fallback
