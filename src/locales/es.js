@@ -43,8 +43,22 @@ export default {
         back_btn_aria: "Volver al inicio",
         capture_btn_aria: "Tomar foto"
     },
+    error: {
+        load_failed: "Error al cargar",
+        node_deleted: "Este hidrante ya no existe.",
+        oops: "¡Vaya!",
+        back_to_map: "Volver al mapa"
+    },
     confirm: {
-        title: "Confirmar Datos",
+        title: "Confirmar datos",
+        title_edit: "Editar Hidrante",
+        delete_btn: "Eliminar",
+        delete_confirm: "¿Realmente eliminar el hidrante?",
+        save_btn: "Guardar",
+        position_adjustable: "Posición ajustable",
+        position_moved: "Posición actualizada",
+        fixed_map: "Movible (Mapa fijo)",
+        preview_alt: "Foto capturada",
         type_label: "Tipo",
         position_label: "Ubicación",
         details_label: "Detalles (Opcional)",

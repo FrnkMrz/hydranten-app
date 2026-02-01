@@ -43,8 +43,22 @@ export default {
         back_btn_aria: "Retour à l'accueil",
         capture_btn_aria: "Prendre une photo"
     },
+    error: {
+        load_failed: "Erreur de chargement",
+        node_deleted: "Cette borne n'existe plus.",
+        oops: "Oups !",
+        back_to_map: "Retour à la carte"
+    },
     confirm: {
-        title: "Confirmer",
+        title: "Vérifier les données",
+        title_edit: "Modifier la borne",
+        delete_btn: "Supprimer",
+        delete_confirm: "Voulez-vous vraiment supprimer ?",
+        save_btn: "Enregistrer",
+        position_adjustable: "Position ajustable",
+        position_moved: "Position mise à jour",
+        fixed_map: "Déplaçable (Carte fixe)",
+        preview_alt: "Photo prise",
         type_label: "Type",
         position_label: "Position",
         details_label: "Détails (Optionnel)",

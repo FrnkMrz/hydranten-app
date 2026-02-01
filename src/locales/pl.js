@@ -46,8 +46,22 @@ export default {
         back_btn_aria: "Wróć do strony głównej",
         capture_btn_aria: "Zrób zdjęcie"
     },
+    error: {
+        load_failed: "Błąd ładowania",
+        node_deleted: "Ten hydrant już nie istnieje.",
+        oops: "Ups!",
+        back_to_map: "Powrót do mapy"
+    },
     confirm: {
         title: "Potwierdź Dane",
+        title_edit: "Edytuj Hydrant",
+        delete_btn: "Usuń",
+        delete_confirm: "Czy na pewno usunąć hydrant?",
+        save_btn: "Zapisz",
+        position_adjustable: "Pozycja regulowana",
+        position_moved: "Pozycja zaktualizowana",
+        fixed_map: "Przesuwalny (Mapa zablokowana)",
+        preview_alt: "Zrobione zdjęcie",
         type_label: "Typ",
         position_label: "Położenie",
         details_label: "Szczegóły (Opcjonalne)",
