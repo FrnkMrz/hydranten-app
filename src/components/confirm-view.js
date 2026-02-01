@@ -51,7 +51,15 @@ export function renderConfirmView() {
       <!-- Scrollable Form Content -->
       <div class="flex-grow overflow-y-auto px-4 pt-6 pb-48 space-y-8 bg-slate-900">
          
-         <h2 id="confirm-title" class="text-2xl font-bold text-white text-center mb-4">${t('confirm.title') || 'Neuer Hydrant'}</h2>
+         <div class="relative mb-4 text-center">
+            <h2 id="confirm-title" class="text-2xl font-bold text-white">${t('confirm.title') || 'Neuer Hydrant'}</h2>
+            <!-- Delete Button Container (injected via JS if edit mode) -->
+            <div id="delete-btn-container" class="absolute right-0 top-1/2 -translate-y-1/2 hidden">
+               <button id="delete-hydrant-btn" class="text-red-500 hover:text-red-400 p-2 rounded-full hover:bg-white/5 transition" aria-label="Löschen">
+                  <span class="text-xl">🗑️</span>
+               </button>
+            </div>
+         </div>
 
          <!-- Type Selection (Grid) -->
          <div class="space-y-3">
@@ -137,7 +145,8 @@ export function renderConfirmView() {
   `;
 }
 
-export function initConfirmView(element, imageBlob, location, onRetake, onSubmit, editMode = false, initialData = null) {
+// Update signature to include onDelete
+export function initConfirmView(element, imageBlob, location, onRetake, onSubmit, editMode = false, initialData = null, onDelete = null) {
   try {
     // Guard Location
     if (!location && !editMode) {
@@ -151,15 +160,19 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     if (editMode) {
       const titleEl = element.querySelector('#confirm-title');
       if (titleEl) titleEl.innerText = "Hydrant bearbeiten" || t('confirm.title_edit');
-      // Title is in renderConfirmView but static. Let's find it. It's not in the export renderConfirmView string directly accessible via ID.
-      // It's in <div...><div...><div...>... Confirm Data ...
-      // We'll traverse or just leave it for now if we can't find ID. Wait, I see no ID for title.
-      // Actually, renderConfirmView returns a string string. We are in initConfirmView.
-      // We should add an ID to the title in the render function first or search by class/text.
-      // Current file content has: confirm: { title: "Confirm Data", ... }
-      // The render function has: <div class="...">... ${t('confirm.title')} ...</div>
-      // Let's rely on finding it via text content or adding ID in next step.
-      // For now, let's just do form filling.
+
+      // Show Delete Button
+      const delContainer = element.querySelector('#delete-btn-container');
+      if (delContainer) delContainer.classList.remove('hidden');
+
+      const delBtn = element.querySelector('#delete-hydrant-btn');
+      if (delBtn && onDelete) {
+        delBtn.onclick = () => {
+          if (confirm("Hydrant wirklich löschen?")) {
+            onDelete(initialData.id, initialData.version);
+          }
+        };
+      }
 
       // Hide Retake/Photo
       const retakeBtn = element.querySelector('#retake-btn');
@@ -176,8 +189,9 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       const retryBtn = element.querySelector('#gps-retry-btn');
       if (retryBtn) retryBtn.remove();
 
+      // Update Pill
       const gpsPill = element.querySelector('#geo-status-pill');
-      if (gpsPill) gpsPill.innerText = "Position fixiert";
+      if (gpsPill) gpsPill.innerText = "Position anpassbar";
     }
 
     const img = element.querySelector('#preview-img');
@@ -365,25 +379,36 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     const mapContainer = element.querySelector('#map');
     if (mapContainer) {
       const center = [location.lat || 48.137, location.lng || 11.576]; // Safe Access
-      const map = L.map(mapContainer, { zoomControl: false }).setView(center, 19);
+      const map = L.map(mapContainer, {
+        zoomControl: false,
+        dragging: !editMode, // Disable map panning in edit mode
+        touchZoom: !editMode,
+        doubleClickZoom: !editMode,
+        scrollWheelZoom: !editMode,
+        boxZoom: !editMode,
+        keyboard: !editMode
+      }).setView(center, 19);
+
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: ''
       }).addTo(map);
 
-      const marker = L.marker(center, { draggable: !editMode }).addTo(map); // Lock if editMode
+      const marker = L.marker(center, { draggable: true, autoPan: true }).addTo(map); // Always draggable now
       const statusPill = document.querySelector('#geo-status-pill');
 
-      if (!editMode) {
-        marker.on('dragend', function (event) {
-          const position = marker.getLatLng();
-          location.lat = position.lat;
-          location.lng = position.lng;
-          if (statusPill) statusPill.innerText = `📍 Verschoben`;
-        });
-      }
+      marker.on('dragend', function (event) {
+        const position = marker.getLatLng();
+        location.lat = position.lat;
+        location.lng = position.lng;
+        // Re-render pill text correctly
+        // const acc = location.accuracy ? Math.round(location.accuracy) : '?';
+        if (statusPill) statusPill.innerText = editMode ? "Position angepasst" : `📍 Verschoben`;
+      });
 
       const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
-      if (statusPill) statusPill.innerText = editMode ? "Position fixiert" : `GPS: ±${accuracy}m`;
+      if (statusPill && !statusPill.innerText.includes('Verschoben')) {
+        statusPill.innerText = editMode ? "Verschiebbar (Karte fixiert)" : `GPS: ±${accuracy}m`;
+      }
 
       // Retry Button Logic
       if (retryBtn && !editMode) {
