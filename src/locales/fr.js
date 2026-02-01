@@ -39,7 +39,9 @@ export default {
     camera: {
         permission: "Accès Caméra Requis",
         retake: "Reprendre",
-        use_photo: "Utiliser Photo"
+        use_photo: "Utiliser Photo",
+        back_btn_aria: "Retour à l'accueil",
+        capture_btn_aria: "Prendre une photo"
     },
     confirm: {
         title: "Confirmer",

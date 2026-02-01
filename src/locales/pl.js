@@ -42,7 +42,9 @@ export default {
     camera: {
         permission: "Wymagany Dostęp do Kamery",
         retake: "Powtórz",
-        use_photo: "Użyj Zdjęcia"
+        use_photo: "Użyj Zdjęcia",
+        back_btn_aria: "Wróć do strony głównej",
+        capture_btn_aria: "Zrób zdjęcie"
     },
     confirm: {
         title: "Potwierdź Dane",

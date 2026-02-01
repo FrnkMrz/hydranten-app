@@ -1,3 +1,5 @@
+import { t } from '../services/i18n.js';
+
 export function renderCameraView() {
   return `
     <div id="camera-page" class="relative w-full h-full bg-black overflow-hidden">
@@ -6,8 +8,8 @@ export function renderCameraView() {
       
       <!-- Top Bar: Back & GPS Status -->
       <div class="absolute top-0 w-full p-4 z-50 flex justify-between items-start pointer-events-none">
-         <button id="back-to-intro-btn" class="pointer-events-auto bg-black/40 backdrop-blur-md p-3 rounded-full text-white border border-white/10 active:scale-95 transition-transform">
-             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+         <button id="back-to-intro-btn" class="pointer-events-auto bg-black/40 backdrop-blur-md p-3 rounded-full text-white border border-white/10 active:scale-95 transition-transform" aria-label="${t('camera.back_btn_aria') || 'Zurück'}">
+             <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
          </button>
          <div class="bg-black/40 backdrop-blur text-xs px-3 py-1 rounded-full text-white border border-white/10 flex flex-col items-end">
             <span id="gps-status" class="font-mono text-green-400">GPS: --</span>
@@ -33,7 +35,7 @@ export function renderCameraView() {
          <button id="error-back-btn" class="px-6 py-3 bg-red-600 rounded-xl font-bold">Zurück</button>
       </div>
 
-      <button id="capture-btn" class="w-20 h-20 rounded-full border-4 border-white shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center active:scale-90 transition-transform duration-100 group z-[100] relative bg-black/20 backdrop-blur-sm">
+      <button id="capture-btn" class="w-20 h-20 rounded-full border-4 border-white shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center active:scale-90 transition-transform duration-100 group z-[100] relative bg-black/20 backdrop-blur-sm" aria-label="${t('camera.capture_btn_aria') || 'Foto aufnehmen'}">
            <div class="w-16 h-16 bg-red-600 rounded-full group-active:bg-red-700 transition-colors border-2 border-white/20"></div>
       </button>
       </div>

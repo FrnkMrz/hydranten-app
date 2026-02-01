@@ -43,7 +43,9 @@ export default {
     camera: {
         permission: "Camera Access Required",
         retake: "Retake",
-        use_photo: "Use Photo"
+        use_photo: "Use Photo",
+        back_btn_aria: "Back to Home",
+        capture_btn_aria: "Take Photo"
     },
     confirm: {
         title: "Confirm Data",

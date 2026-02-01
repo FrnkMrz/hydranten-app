@@ -33,7 +33,7 @@ export function renderConfirmView() {
         <!-- Back Button (Floating) -->
         <div class="absolute top-4 left-4 z-20">
            <button id="retake-btn" class="bg-black/40 backdrop-blur-md p-3 rounded-full text-white hover:bg-black/60 transition shadow-lg border border-white/10" aria-label="${t('confirm.back_btn_aria') || 'Back to Camera'}">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+              <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
            </button>
         </div>
 
@@ -88,7 +88,7 @@ export function renderConfirmView() {
             
             <!-- Diameter / Volume -->
             <div id="diameter-container">
-                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.diameter_label')}</label>
+                <label for="hydrant-diameter" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.diameter_label')}</label>
                 <select id="hydrant-diameter" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                     <option value="">${t('confirm.diameter_none')}</option>
                     <option value="80">DN 80</option>
@@ -99,7 +99,7 @@ export function renderConfirmView() {
             </div>
 
             <div id="volume-container" class="hidden">
-                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen (m³)</label>
+                <label for="hydrant-volume" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen (m³)</label>
                 <input type="text" id="hydrant-volume" placeholder="z.B. 100" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
             </div>
 
@@ -113,12 +113,12 @@ export function renderConfirmView() {
                </div>
                
                <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.number_label')}</label>
+                  <label for="hydrant-ref" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.number_label')}</label>
                   <input type="text" id="hydrant-ref" placeholder="${t('confirm.number_placeholder')}" maxlength="50" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                </div>
                
                <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.notes_label')}</label>
+                  <label for="hydrant-note" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.notes_label')}</label>
                   <textarea id="hydrant-note" placeholder="${t('confirm.notes_placeholder')}" maxlength="255" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white h-20 outline-none"></textarea>
                </div>
             </div>

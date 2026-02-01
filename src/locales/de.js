@@ -42,9 +42,11 @@ export default {
         back_btn: "Zurück"
     },
     camera: {
-        permission: "Kamera Zugriff benötigt",
+        permission: "Kamerazugriff erforderlich",
         retake: "Wiederholen",
-        use_photo: "Foto benutzen"
+        use_photo: "Foto nutzen",
+        back_btn_aria: "Zurück zur Startseite",
+        capture_btn_aria: "Foto aufnehmen"
     },
     confirm: {
         title: "Daten prüfen",
