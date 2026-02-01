@@ -20,129 +20,108 @@ export function renderConfirmView() {
       <div class="relative w-full h-[25vh] bg-gray-800 shrink-0">
         
         <!-- MAIN: Map -->
-        <div id="map" class="w-full h-full z-0"></div>
+import { t } from '../services/i18n.js';
 
-        <!-- OVERLAY: Photo (Thumbnail - Smaller) -->
-        <div class="absolute bottom-4 right-4 w-20 h-28 rounded-xl border-2 border-white/30 shadow-2xl overflow-hidden bg-black z-10 transition transform origin-bottom-right hover:scale-[2.5] active:scale-[2.5] cursor-pointer group">
-            <img id="preview-img" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
-            <span class="absolute bottom-1 right-2 text-[10px] font-bold text-white/80">FOTO</span>
-        </div>
-
-        <!-- Back Button (Floating) -->
-        <div class="absolute top-4 left-4 z-20">
-           <button id="retake-btn" class="bg-black/40 backdrop-blur-md p-3 rounded-full text-white hover:bg-black/60 transition shadow-lg border border-white/10">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-           </button>
-        </div>
-
-        <!-- Accuracy Pill & Retry -->
-        <div class="absolute top-4 right-4 z-20 flex flex-col items-end gap-2">
-           <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white/90 border border-white/10 shadow-lg" id="geo-status-pill">
-              GPS: ...
+export function renderConfirmView(initialType = 'underground', initialLocation = 'sidewalk') {
+    return `
+    < div class="h-full w-full bg-black text-white flex flex-col" >
+        < !--Map Preview(Fixed Height)-- >
+        <div class="h-1/3 w-full relative z-0">
+           <div id="confirm-map" class="w-full h-full grayscale-[50%]"></div>
+           <!-- Pin Overlay -->
+           <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -mt-4 text-red-600 drop-shadow-lg z-20 pointer-events-none">
+                <svg class="w-10 h-10 filter drop-shadow-md" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
            </div>
-           <button id="gps-retry-btn" class="bg-blue-600/80 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-white shadow-lg active:scale-95 transition hidden">
-              🔄 GPS neu laden
+           
+           <!-- Back Button Overlay -->
+           <button id="confirm-back-btn" class="absolute top-4 left-4 z-30 bg-black/50 p-2 rounded-full text-white backdrop-blur-md">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
            </button>
+        </div>
+
+        <!--Scrollable Form(Bottom 2 / 3)-- >
+    <div class="flex-grow flex flex-col px-6 pt-6 pb-24 bg-black z-10 rounded-t-3xl -mt-6 shadow-[0_-5px_15px_rgba(255,0,0,0.1)] overflow-y-auto">
+
+      <h2 class="text-2xl font-bold mb-6 text-center">${t('confirm.title')}</h2>
+
+      <!-- Form -->
+      <div class="space-y-6">
+
+        <!-- Type Selection -->
+        <div>
+          <label class="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-2">${t('confirm.type_label')}</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="cursor-pointer label-checked-bg">
+              <input type="radio" name="hydrant-type" value="underground" class="peer sr-only" ${initialType === 'underground' ? 'checked' : ''}>
+                <div class="p-4 rounded-xl bg-white/10 border border-white/10 hover:bg-white/20 peer-checked:bg-red-600 peer-checked:border-red-500 peer-checked:text-white transition text-center">
+                  <span class="text-2xl block mb-1">🕳️</span>
+                  <span class="text-sm font-bold">${t('confirm.types.underground')}</span>
+                </div>
+            </label>
+
+            <label class="cursor-pointer label-checked-bg">
+              <input type="radio" name="hydrant-type" value="pillar" class="peer sr-only" ${initialType === 'pillar' ? 'checked' : ''}>
+                <div class="p-4 rounded-xl bg-white/10 border border-white/10 hover:bg-white/20 peer-checked:bg-red-600 peer-checked:border-red-500 peer-checked:text-white transition text-center">
+                  <span class="text-2xl block mb-1">📮</span>
+                  <span class="text-sm font-bold">${t('confirm.types.pillar')}</span>
+                </div>
+            </label>
+
+            <label class="cursor-pointer label-checked-bg">
+              <input type="radio" name="hydrant-type" value="wall" class="peer sr-only" ${initialType === 'wall' ? 'checked' : ''}>
+                <div class="p-4 rounded-xl bg-white/10 border border-white/10 hover:bg-white/20 peer-checked:bg-red-600 peer-checked:border-red-500 peer-checked:text-white transition text-center">
+                  <span class="text-2xl block mb-1">🧱</span>
+                  <span class="text-sm font-bold">${t('confirm.types.wall')}</span>
+                </div>
+            </label>
+
+            <label class="cursor-pointer label-checked-bg">
+              <input type="radio" name="hydrant-type" value="suction_point" class="peer sr-only" ${initialType === 'suction_point' ? 'checked' : ''}>
+                <div class="p-4 rounded-xl bg-white/10 border border-white/10 hover:bg-white/20 peer-checked:bg-red-600 peer-checked:border-red-500 peer-checked:text-white transition text-center">
+                  <span class="text-2xl block mb-1">💧</span>
+                  <span class="text-sm font-bold">${t('confirm.types.suction')}</span>
+                </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Position Selection (Where is it?) -->
+        <div>
+          <label class="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-2">${t('confirm.position_label')}</label>
+          <div class="relative">
+            <select id="hydrant-position" class="w-full bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 appearance-none focus:outline-none focus:border-red-500">
+              <option value="sidewalk" ${initialLocation === 'sidewalk' ? 'selected' : ''}>${t('confirm.locations.sidewalk')}</option>
+              <option value="street" ${initialLocation === 'street' ? 'selected' : ''}>${t('confirm.locations.street')}</option>
+              <option value="green" ${initialLocation === 'green' ? 'selected' : ''}>${t('confirm.locations.green')}</option>
+              <option value="parking" ${initialLocation === 'parking' ? 'selected' : ''}>${t('confirm.locations.parking')}</option>
+            </select>
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">▼</div>
+          </div>
+        </div>
+
+        <!-- Diameter (Input) -->
+        <div>
+          <label class="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-2">${t('confirm.details_label')}</label>
+          <div class="flex gap-4">
+            <input type="number" id="hydrant-diameter" placeholder="100" class="w-1/2 bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-red-500 text-center font-mono placeholder-gray-600">
+              <input type="text" id="hydrant-ref" placeholder="Ref/Nr" class="w-1/2 bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-red-500 text-center font-mono placeholder-gray-600">
+              </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- Scrollable Form Content -->
-      <div class="flex-grow overflow-y-auto px-4 pt-6 pb-48 space-y-8 bg-slate-900">
-         
-         <!-- Type Selection (Grid) -->
-         <div class="space-y-3">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Hydranten-Typ</h3>
-            <div id="type-grid" class="grid grid-cols-5 gap-2">
-               <!-- JS Populated Small Grid -->
-            </div>
-            <input type="hidden" id="hydrant-type" value="pillar">
-         </div>
-
-         <!-- Position Selection -->
-         <div class="space-y-3">
-             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Lage</h3>
-             <div class="grid grid-cols-5 gap-2 bg-gray-800/50 p-1 rounded-xl">
-                 <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="">
-                    🚫 Keine
-                 </button>
-                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="sidewalk">
-                   🚶 Gehweg
-                </button>
-                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="street">
-                   🚗 Straße
-                </button>
-                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="parking_lane">
-                   🅿️ Parkbucht
-                </button>
-                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="green">
-                   🌳 Grün
-                </button>
-             </div>
-             <input type="hidden" id="hydrant-position" value="sidewalk">
-         </div>
-
-         <!-- Details (Visible) -->
-         <div class="space-y-4 pt-4 border-t border-gray-800">
-            <!-- Header REMOVED as requested -->
-            
-            <!-- Diameter / Volume -->
-            <div id="diameter-container">
-                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Durchmesser</label>
-                <select id="hydrant-diameter" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-                    <option value="">Nicht angegeben</option>
-                    <option value="80">DN 80</option>
-                    <option value="100">DN 100</option>
-                    <option value="150">DN 150</option>
-                    <option value="50">DN 50</option>
-                </select>
-            </div>
-
-            <div id="volume-container" class="hidden">
-                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen</label>
-                <input type="text" id="hydrant-volume" placeholder="z.B. 100m3" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-            </div>
-
-            <div class="space-y-4">
-               <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Farbe</label>
-                  <div class="flex flex-wrap gap-3" id="color-picker-container">
-                      <!-- JS Populated -->
-                  </div>
-                  <input type="hidden" id="hydrant-colour" value="">
-               </div>
-               
-               <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Nummer / Ref</label>
-                  <input type="text" id="hydrant-ref" placeholder="z.B. 1234" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-               </div>
-               <!-- Operator Field REMOVED -->
-               
-               <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Notiz</label>
-                  <textarea id="hydrant-note" placeholder="..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white h-20 outline-none"></textarea>
-               </div>
-            </div>
-         </div>
-      </div>
-
-      <!-- Submit Footer (Raised) -->
-      <div class="fixed bottom-0 left-0 right-0 p-4 pb-20 bg-slate-900/90 backdrop-blur-xl border-t border-gray-800/50 z-50 max-w-sm mx-auto">
-         <button id="submit-img-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-green-900/30 active:scale-95 transition-all flex items-center justify-center gap-2">
-            <span>HOCHLADEN ZU OSM</span>
-         </button>
+      <!-- Sticky Footer Action -->
+      <div class="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black via-black to-transparent z-20">
+        <button id="upload-btn" class="w-full py-4 bg-green-600 hover:bg-green-500 text-white rounded-2xl font-bold text-lg shadow-lg shadow-green-900/30 flex items-center justify-center gap-2 active:scale-95 transition-all">
+          <span>☁️</span> ${t('confirm.upload_btn')}
+        </button>
       </div>
     </div>
   `;
 }
 
 export function initConfirmView(element, imageBlob, location, onRetake, onSubmit) {
-  const img = element.querySelector('#preview-img');
-  img.src = URL.createObjectURL(imageBlob);
-
-  const retakeBtn = element.querySelector('#retake-btn');
-  const submitBtn = element.querySelector('#submit-img-btn');
-  const typeInput = element.querySelector('#hydrant-type');
   const posInput = element.querySelector('#hydrant-position');
 
   const volumeContainer = element.querySelector('#volume-container');
@@ -161,11 +140,11 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
   const grid = element.querySelector('#type-grid');
   grid.innerHTML = options.map(opt => `
-     <button type="button" class="option-btn aspect-square rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-1" data-value="${opt.id}">
-        ${opt.icon}
-        <span class="text-[9px] font-bold uppercase tracking-tight">${opt.label}</span>
-     </button>
-  `).join('');
+    < button type = "button" class="option-btn aspect-square rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-1" data - value="${opt.id}" >
+      ${ opt.icon }
+  <span class="text-[9px] font-bold uppercase tracking-tight">${opt.label}</span>
+     </button >
+    `).join('');
 
   // Grid Logic
   const optionBtns = element.querySelectorAll('.option-btn');
@@ -231,7 +210,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
   colors.forEach(c => {
     const btn = document.createElement('button');
-    btn.className = `w-10 h-10 rounded-full border-2 flex items-center justify-center transition hover:scale-110 focus:outline-none relative`;
+    btn.className = `w - 10 h - 10 rounded - full border - 2 flex items - center justify - center transition hover: scale - 110 focus: outline - none relative`;
 
     btn.style.backgroundColor = c.hex;
     btn.style.borderColor = c.border;
@@ -279,7 +258,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
   });
 
   const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
-  if (statusPill) statusPill.innerText = `GPS: ±${accuracy}m`;
+  if (statusPill) statusPill.innerText = `GPS: ±${ accuracy } m`;
 
   // Retry Button Logic
   const retryBtn = element.querySelector('#gps-retry-btn');
@@ -305,7 +284,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           map.setView([newLoc.lat, newLoc.lng], 19);
           marker.setLatLng([newLoc.lat, newLoc.lng]);
 
-          if (statusPill) statusPill.innerText = `GPS: ±${Math.round(newLoc.accuracy)}m`;
+          if (statusPill) statusPill.innerText = `GPS: ±${ Math.round(newLoc.accuracy) } m`;
           retryBtn.innerText = "Geladen!";
           setTimeout(() => retryBtn.classList.add('hidden'), 1500);
         } else {

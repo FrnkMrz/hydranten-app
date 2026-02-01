@@ -1,4 +1,5 @@
 import { auth, checkLogin } from '../services/auth.js';
+import { t } from '../services/i18n.js';
 
 export function renderSettingsView() {
   return `
