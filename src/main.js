@@ -143,32 +143,26 @@ function handleEdit(nodeId) {
       </div>
    `;
 
-  // Static Import Wrapper
-  {
-    // Use top-level 'osm' import
+  // Safety check (Imports should be available)
+  if (!fetchNodeData) console.error("Missing fetchNodeData import");
+  if (!deleteHydrant) console.error("Missing deleteHydrant import");
 
-    const { fetchNodeData, updateHydrant, deleteHydrant } = osm;
+  fetchNodeData(nodeId)
+    .then(nodeData => {
+      console.log("Loaded Node Data:", nodeData);
+      // Switch to Confirm View in Edit Mode
+      app.innerHTML = renderConfirmView();
 
-    // Safety check
-    if (!fetchNodeData) console.error("Missing fetchNodeData in osm module", osm);
-    if (!deleteHydrant) console.error("Missing deleteHydrant in osm module", osm);
+      // Helper for Overlay (Duplicated to avoid scope issues)
+      const showOverlay = (title, promiseAction) => {
+        const overlay = document.createElement('div');
+        overlay.className = "absolute inset-0 bg-black/90 z-50 flex items-center justify-center p-6 animate-fade-in";
+        app.appendChild(overlay);
 
-    fetchNodeData(nodeId)
-      .then(nodeData => {
-        console.log("Loaded Node Data:", nodeData);
-        // Switch to Confirm View in Edit Mode
-        app.innerHTML = renderConfirmView();
-
-        // Helper for Overlay (Duplicated to avoid scope issues)
-        const showOverlay = (title, promiseAction) => {
-          const overlay = document.createElement('div');
-          overlay.className = "absolute inset-0 bg-black/90 z-50 flex items-center justify-center p-6 animate-fade-in";
-          app.appendChild(overlay);
-
-          const logs = [];
-          const renderStatus = (result = null, error = null) => {
-            const linesHtml = logs.map(line => `<div class="text-sm font-mono text-gray-400 border-l-2 border-gray-700 pl-3 py-1 text-left">${line}</div>`).join('');
-            let content = `
+        const logs = [];
+        const renderStatus = (result = null, error = null) => {
+          const linesHtml = logs.map(line => `<div class="text-sm font-mono text-gray-400 border-l-2 border-gray-700 pl-3 py-1 text-left">${line}</div>`).join('');
+          let content = `
                    <div class="flex flex-col w-full max-w-sm bg-gray-900 border ${error ? 'border-red-500' : 'border-gray-700'} rounded-2xl p-6 shadow-2xl">
                       <h2 class="text-xl font-bold ${error ? 'text-red-500' : 'text-white'} mb-4 flex items-center justify-center gap-2">
                          ${error ? '❌ Fehler' : (result ? 'Erfolg! ✅' : title + '... ⏳')}
@@ -178,69 +172,69 @@ function handleEdit(nodeId) {
                       </div>
                 `;
 
-            if (error) {
-              content += `
+          if (error) {
+            content += `
                         <div class="bg-red-900/20 text-red-200 p-3 rounded-lg text-xs font-mono mb-4 break-words">
                            ${error.message || String(error)}
                         </div>
                         <button id="overlay-close-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition">Schließen</button>
                     `;
-            } else if (result) {
-              content += `
+          } else if (result) {
+            content += `
                         <button id="overlay-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">Fertig</button>
                      `;
-            } else {
-              content += `<div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>`;
-            }
-            content += `</div>`;
-            overlay.innerHTML = content;
+          } else {
+            content += `<div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>`;
+          }
+          content += `</div>`;
+          overlay.innerHTML = content;
 
-            if (document.getElementById('overlay-close-btn')) {
-              document.getElementById('overlay-close-btn').onclick = () => {
-                overlay.remove();
-                if (!error) showIntro();
-              };
-            }
-          };
-
-          const addLog = (msg) => { logs.push(msg); renderStatus(); };
-
-          renderStatus();
-          promiseAction(addLog)
-            .then(res => renderStatus(res))
-            .catch(err => renderStatus(null, err));
+          if (document.getElementById('overlay-close-btn')) {
+            document.getElementById('overlay-close-btn').onclick = () => {
+              overlay.remove();
+              if (!error) showIntro();
+            };
+          }
         };
 
-        // Init Confirm View with Edit Mode = true
-        initConfirmView(
-          app,
-          null, // No Photo Blob
-          { lat: nodeData.lat, lng: nodeData.lng, accuracy: 0 }, // Location
-          { back: () => { showIntro(); } }, // OnBack (Cancel) -> Intro
-          (data) => {
-            // OnSubmit (Save)
-            // Use local updateHydrant reference
-            showOverlay("Speichere", (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log));
-          },
-          true, // editMode
-          nodeData, // initialData
-          (id, version) => {
-            // OnDelete
-            if (deleteHydrant) {
-              showOverlay("Lösche", (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, log));
-            } else {
-              alert("Interner Fehler: Lösch-Funktion nicht verfügbar. Bitte neu laden.");
-              console.error("deleteHydrant missing", osm);
-            }
+        const addLog = (msg) => { logs.push(msg); renderStatus(); };
+
+        renderStatus();
+        promiseAction(addLog)
+          .then(res => renderStatus(res))
+          .catch(err => renderStatus(null, err));
+      };
+
+      // Init Confirm View with Edit Mode = true
+      initConfirmView(
+        app,
+        null, // No Photo Blob
+        { lat: nodeData.lat, lng: nodeData.lng, accuracy: 0 }, // Location
+        { back: () => { showIntro(); } }, // OnBack (Cancel) -> Intro
+        (data) => {
+          // OnSubmit (Save)
+          // Use local updateHydrant reference
+          showOverlay("Speichere", (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log));
+        },
+        true, // editMode
+        nodeData, // initialData
+        (id, version) => {
+          // OnDelete
+          if (deleteHydrant) {
+            showOverlay("Lösche", (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, log));
+          } else {
+            alert("Interner Fehler: Lösch-Funktion nicht verfügbar. Bitte neu laden.");
+            console.error("deleteHydrant missing", osm);
           }
-        );
-      })
-      .catch(err => {
-        console.error("Load Failed:", err);
-        alert("Fehler beim Laden: " + err.message);
-        showIntro();
-      });
-  }
+        }
+      );
+    })
+    .catch(err => {
+      console.error("Load Failed:", err);
+      alert("Fehler beim Laden: " + err.message);
+      showIntro();
+    });
+}
 }
 
 
