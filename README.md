@@ -1,70 +1,60 @@
-# 🚒 Hydranten Jäger APP (v1.1)
+# 🚒 Hydranten Jäger APP (v1.2 Beta)
 
-Eine moderne, mobil-optimierte Web-App zum schnellen Erfassen von Hydranten für OpenStreetMap (OSM).
+Eine moderne, mobil-optimierte Web-App (PWA) zum schnellen Erfassen von Hydranten für OpenStreetMap (OSM).
 Fokus: Geschwindigkeit, Einhand-Bedienung und "Dark Mode" Ästhetik.
 
-> **Status**: Version 1.0 Beta (Stable UI, PKCE Auth, iOS Optimized)
+> **Status**: Version 1.2 Beta (Stable UI, PWA Optimized, GPS Force-Fix)
 
 ## Features ✨
 
+*   **📱 PWA Ready**: Vollständige **Progressive Web App**. Installierbar auf iOS & Android ("Add to Home Screen").
+    *   **Offline Icons**: Hochauflösende Icons (v3) für alle Devices.
+    *   **Service Worker**: Caching für Offline-Verfügbarkeit (v5-beta).
+    *   **Stateless PKCE**: Login funktioniert auch im Standalone PWA Modus (iOS Fix).
 *   **📸 Schnelle Erfassung**: Kamera öffnen, Foto machen, fertig.
-*   **📍 Automatisches GPS**: Position wird automatisch ermittelt und via **Nominatim** in eine Adresse aufgelöst.
-    *   **Intelligenter Fallback**: Wenn GPS hängt, wird die letzte bekannte Position genutzt.
+*   **📍 Automatisches GPS**:
+    *   **Force-Fix**: Beim Start wird das GPS aktiv angefordert, um die Karte sofort korrekt zu zentrieren.
     *   **Kompass-Offset**: Position wird 3m in Blickrichtung verschoben (da man vor dem Hydranten steht).
-    *   **iOS Support**: Kompass & Layout optimiert für iPhone 16 Pro (Safe Area).
+    *   **Nominatim**: Automatische Adressermittlung (Reverse Geocoding) mit korrektem `User-Agent`.
 *   **🗺️ Map Hero Layout**: Große Karte zur exakten Positionierung ("Picture-in-Picture" Preview).
-*   **🔒 Sicherer Login**: OSM OAuth 2.0 mit **PKCE** (Proof Key for Code Exchange) für maximale Sicherheit ohne Backend.
 *   **🎨 UI/UX**:
-    *   Dark Mode Design.
-    *   Farbwahl für Hydranten und Lage-Erfassung.
-    *   Clean Interface (Keine störenden Emojis im Production-Mode).
-*   **PWA Ready**: Installierbar auf iOS/Android (Standalone Mode) mit **Stateless PKCE OAuth** (Login Fix für iOS).
-*   **Live Vorschau**: Zeigt bereits erfasste Hydranten auf der Startseite an (Overpass API).
-*   **Offline First**: Caching von Assets via Service Worker.
-*   **DSGVO Konform**: Keine Cookies außer lokalem Storage, direkter OSM Upload.
+    *   **Premium Dark Mode**: Optimierter Kontrast, Blur-Effekte, iOS Safe-Area Support.
+    *   **Live Vorschau**: Zeigt bereits erfasste Hydranten auf der Startseite an (Overpass API mit erhöhtem Timeout).
 
 ## Mapping Funktionen 🛠️
 
-Erfasst werden:
-*   **Typ**: Überflur 📮, Unterflur 🕳️, Wand 🧱, Zisterne 💧, Trocken 🌵.
-*   **Details**: Durchmesser, Farbe, Lage (Gehweg/Straße/Grün).
-*   **Upload**: Erstellt Changeset & Node direkt in OSM.
+Erstellt werden detaillierte Nodes direkt in OSM:
+
+*   **Typen**:
+    *   Überflur 📮 (`fire_hydrant`)
+    *   Unterflur 🕳️ (`underground`)
+    *   Wand 🧱 (`wall`)
+    *   **Zisterne 💧** (`water_tank` + `water_tank:volume` mit automatischer "m³" Einheit)
+    *   Trocken 🌵 (`dry_hydrant`)
+*   **Details**: Durchmesser (DN), Farbe, Referenznummer, Lage (Gehweg/Straße/Grün).
+*   **Upload**:
+    *   Erstellt automatisch Changeset & Node.
+    *   Nutzt OAuth 2.0 PKCE für sicheren Login ohne eigenes Backend.
+    *   Entspricht OSM-Vorgaben (User-Agent Header, API Policy).
 
 ## Installation / Dev
 
-Technologie: Vite + Vanilla JS + TailwindCSS + Leaflet.
+Technologie: Vite + Vanilla JS + TailwindCSS + Leaflet + OpenStreetMap API.
 
 1.  `npm install`
-2.  `npm run dev`
-3.  `npm run build`
+2.  `npm run dev` (Startet lokalen Server)
+3.  `npm run build` (Erstellt `dist` Ordner für Deployment)
 
 ## Unterstützte Sprachen 🌍
 
-Die App ist aktuell in folgenden Sprachen verfügbar:
-*   🇩🇪 Deutsch (de)
-*   🇺🇸 Englisch (en) - *Interface auf British English 🇬🇧 flag*
-*   🇵🇱 Polnisch (pl)
-*   🇨🇿 Tschechisch (cs)
-*   🇫🇷 Französisch (fr)
-*   🇳🇱 Niederländisch (nl)
-*   🇪🇸 Spanisch (es)
-*   🇵🇹 Portugiesisch (pt)
-*   🇭🇷 Kroatisch (hr)
-*   🇮🇹 Italienisch (it)
-*   🇯🇵 Japanisch (ja)
-*   🇰🇷 Koreanisch (ko)
-*   🇨🇳 Mandarin (zh)
-*   🇹🇷 Türkisch (tr)
+Verfügbar in 14 Sprachen, inkl. automatischer Erkennung:
+🇩🇪 🇺🇸 🇵🇱 🇨🇿 🇫🇷 🇳🇱 🇪🇸 🇵🇹 🇭🇷 🇮🇹 🇯🇵 🇰🇷 🇨🇳 🇹🇷
 
-### Entwickler: Neue Sprache hinzufügen
+### Mitwirken
 
-1.  Erstelle eine neue Datei in `src/locales/xx.js` (kopiere `en.js` als Vorlage).
-2.  Importiere die Datei in `src/services/i18n.js` und füge sie zum `resources` Objekt hinzu.
-3.  Füge die Sprache in `src/components/intro-view.js` hinzu:
-    *   In das `flags` Objekt (Zeile ~190).
-    *   In das `langs` Array für das Modal (Zeile ~210).
-4.  Build & Deploy.
+*   **Code**: [GitHub Repository](https://github.com/FrnkMrz/hydranten-app)
+*   **Daten**: © OpenStreetMap Mitwirkende.
+*   **Lizenz**: MIT.
 
-*   Datenbasis: © OpenStreetMap Mitwirkende.
-*   Code Lizenz: MIT.
-*   Disclaimer: Nutzung auf eigene Gefahr.
+---
+*Built with passion by Frank März & Google DeepMind Agent.*
