@@ -51,7 +51,7 @@ export function renderIntroView() {
          <!-- Hero Title -->
          <div class="text-center mt-6 mb-8">
              <h1 class="text-4xl font-extrabold text-white mb-2 tracking-tight drop-shadow-xl">
-                ${t('intro.title_pre')} <span class="text-red-500">${t('intro.title_post')}</span>
+                Hydranten <span class="text-red-500">Jäger</span>
              </h1>
          </div>
 
@@ -96,6 +96,19 @@ export function renderIntroView() {
     
     </div>
    `;
+}
+
+// Debounce Helper
+function debounce(func, wait) {
+   let timeout;
+   return function executedFunction(...args) {
+      const later = () => {
+         clearTimeout(timeout);
+         func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+   };
 }
 
 export function initIntroView(element, onStart, onSettings) {
@@ -272,12 +285,11 @@ export function initIntroView(element, onStart, onSettings) {
             }, { enableHighAccuracy: true });
          }
 
-         // If we want it to update live when user moves (walking):
-         // The main.js might handle GPS, but intro-view initializes its own map.
+         // Debounced Map Move Handler
+         const debouncedUpdate = debounce(() => updateHydrants(map), 1000);
+
          // Let's just hook into moveend if the map MOVES (even programmatically).
-         map.on('moveend', () => {
-            updateHydrants(map);
-         });
+         map.on('moveend', debouncedUpdate);
       }
 
       // Force a resize invalidation shortly after render to ensure map fills container
