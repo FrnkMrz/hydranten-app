@@ -7,8 +7,9 @@ import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition, s
 import { auth } from './services/auth.js';
 
 // Init Compass & GPS Tracking early
-initCompass();
-startTracking();
+// Init Compass & GPS Tracking (Moved to Start/Camera)
+// initCompass();
+// startTracking();
 
 const app = document.querySelector('#app');
 
