@@ -118,15 +118,23 @@ export function initIntroView(element, onStart, onSettings) {
    if (btn) {
       // ... existing start logic ...
       btn.onclick = () => {
+         const startApp = () => {
+            import('../services/geo.js').then(geo => {
+               geo.initCompass();
+               geo.startTracking();
+               onStart();
+            });
+         };
+
          if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
             DeviceOrientationEvent.requestPermission()
                .then(response => {
                   // ...
                })
                .catch(console.error)
-               .finally(() => onStart());
+               .finally(() => startApp());
          } else {
-            onStart();
+            startApp();
          }
       };
    }
