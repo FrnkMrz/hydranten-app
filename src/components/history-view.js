@@ -83,7 +83,7 @@ async function loadHistory(container) {
       return `
                 <div class="p-4 rounded-xl border ${bgClass} text-sm">
                     <div class="flex justify-between mb-1">
-                        <span class="font-bold text-gray-300">#${id}</span>
+                        <a href="https://www.openstreetmap.org/changeset/${id}" target="_blank" class="font-bold text-blue-400 hover:text-blue-300 underline underline-offset-2">#${id} ↗</a>
                         <span class="text-gray-500 text-xs">${date}</span>
                     </div>
                     <div class="text-gray-200 break-words mb-2">
