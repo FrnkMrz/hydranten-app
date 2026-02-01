@@ -368,17 +368,29 @@ function startMapGps(map, onLocationFound, onEdit) {
 // Helper to fetch and draw
 function updateHydrants(map, onEdit) {
    if (map.getZoom() < 14) return; // Don't fetch for whole world
-
    console.log("Hydrant Update. onEdit available?", !!onEdit); // DEBUG
 
    overpass.fetchHydrants(map.getBounds())
       .then(elements => {
          if (!hydrantLayer) return;
 
+         // Optimistic Filter: Remove hydrants that we know are deleted locally
+         let localDeleted = [];
+         try {
+            localDeleted = JSON.parse(localStorage.getItem('deleted_hydrants') || '[]');
+            // Cleanup: Optional - remove very old entries? For now, keep it simple.
+         } catch (e) { }
+
+         const filteredElements = elements.filter(node => !localDeleted.includes(String(node.id)));
+
+         console.log(`Fetched ${elements.length} hydrants, showing ${filteredElements.length} (Hidden: ${elements.length - filteredElements.length})`);
+
          // Jäger Red (Tailwind red-600) = #DC2626
          const RED = '#DC2626';
 
-         elements.forEach(node => {
+         filteredElements.forEach(node => {
+            if (!node.lat || !node.lon) return;
+
             if (!visibleHydrants.has(node.id)) {
                visibleHydrants.add(node.id);
 

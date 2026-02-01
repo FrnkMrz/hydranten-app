@@ -299,6 +299,16 @@ export async function deleteHydrant(id, version, lat, lng, log = console.log) {
 
         const newVersion = await delRes.text();
         log(c.success(`Gelöscht! (v${newVersion})`));
+
+        // Optimistic UI: Remember deleted ID locally to hide it from map until Overpass catches up
+        try {
+            const deleted = JSON.parse(localStorage.getItem('deleted_hydrants') || '[]');
+            if (!deleted.includes(id)) {
+                deleted.push(id);
+                localStorage.setItem('deleted_hydrants', JSON.stringify(deleted));
+            }
+        } catch (e) { console.error("Could not save to local storage", e); }
+
         return { id, version: newVersion };
 
     } finally {
