@@ -197,8 +197,9 @@ export function initIntroView(element, onStart, onSettings) {
             zoomSnap: 0,
          }).setView([51.1657, 10.4515], 6); // Default Germany
 
-         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            maxZoom: 19
+         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            opacity: 0.8 // Slightly dimmed to match dark UI, or 1.0? Old code had 0.8.
          }).addTo(map);
 
          // Initial Hydrant Layer
