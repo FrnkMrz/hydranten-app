@@ -112,7 +112,7 @@ function debounce(func, wait) {
    };
 }
 
-export function initIntroView(element, onStart, onSettings) {
+export function initIntroView(element, onStart, onSettings, onEdit) {
    // ... existing event listeners ...
    const btn = element.querySelector('#start-btn');
    if (btn) {
@@ -276,7 +276,7 @@ export function initIntroView(element, onStart, onSettings) {
          map = L.map(mapElement, {
             zoomControl: false,
             attributionControl: false,
-            dragging: false,
+            dragging: false, // Wait, maybe we should allow dragging in Intro? No, user said no dragging.
             scrollWheelZoom: false,
             doubleClickZoom: false,
             touchZoom: false,
@@ -309,7 +309,8 @@ export function initIntroView(element, onStart, onSettings) {
          });
 
          // Debounced Map Move Handler
-         const debouncedUpdate = debounce(() => updateHydrants(map), 1000);
+         // Pass onEdit here!
+         const debouncedUpdate = debounce(() => updateHydrants(map, onEdit), 1000);
 
          // Let's just hook into moveend if the map MOVES (even programmatically).
          map.on('moveend', debouncedUpdate);
@@ -322,6 +323,8 @@ export function initIntroView(element, onStart, onSettings) {
             map.setView([lastPos.lat, lastPos.lng], 18);
             // Add Marker immediately if we have a position
             userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
+            // Also update hydrants initially
+            updateHydrants(map, onEdit);
          }
       }, 100);
    }
@@ -338,7 +341,8 @@ function startMapGps(map, onLocationFound) {
    navigator.geolocation.getCurrentPosition(pos => {
       const { latitude, longitude } = pos.coords;
       map.setView([latitude, longitude], 18);
-      updateHydrants(map);
+      // We don't call updateHydrants here because moveend will trigger it?
+      // updateHydrants(map); // Triggered by setView -> moveend
       updatePosition(pos); // Cache it
 
       if (onLocationFound) onLocationFound(latitude, longitude);
@@ -352,7 +356,7 @@ function startMapGps(map, onLocationFound) {
 
 
 // Helper to fetch and draw
-function updateHydrants(map) {
+function updateHydrants(map, onEdit) {
    if (map.getZoom() < 14) return; // Don't fetch for whole world
 
    overpass.fetchHydrants(map.getBounds()).then(elements => {
@@ -365,15 +369,28 @@ function updateHydrants(map) {
          if (!visibleHydrants.has(node.id)) {
             visibleHydrants.add(node.id);
 
-            L.circleMarker([node.lat, node.lon], {
-               radius: 5,
+            const m = L.circleMarker([node.lat, node.lon], {
+               radius: 8, // Slightly bigger for easier tap
                fillColor: RED,
                color: '#fff',
-               weight: 1,
-               opacity: 0.8,
-               fillOpacity: 0.9,
-               className: 'hydrant-marker'
-            }).addTo(hydrantLayer);
+               weight: 2,
+               opacity: 0.9,
+               fillOpacity: 0.7,
+               className: 'hydrant-marker cursor-pointer'
+            });
+
+            m.on('click', () => {
+               console.log("Clicked Hydrant:", node.id);
+               // Visual feedback
+               m.setStyle({ fillColor: '#3b82f6', radius: 10, color: 'white', weight: 4 });
+               setTimeout(() => {
+                  if (onEdit) onEdit(node.id); // Trigger Edit Mode
+                  // Reset style handled by re-render usually, but let's be nice
+                  // m.setStyle({ fillColor: RED, radius: 8, weight: 2 });
+               }, 100);
+            });
+
+            m.addTo(hydrantLayer);
          }
       });
    });

@@ -128,3 +128,113 @@ export async function createHydrant(data, authHeader, log = console.log) {
         throw err;
     }
 }
+
+/**
+ * Fetch latest node data (version & tags) to assure safe editing
+ */
+export async function fetchNodeData(id) {
+    const url = `https://api.openstreetmap.org/api/0.6/node/${id}`; // Auth not strictly needed for public read
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Fetch Node Failed: ${res.status}`);
+
+    const text = await res.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, "text/xml");
+    const node = doc.querySelector('node');
+
+    if (!node) throw new Error("Node XML invalid");
+
+    const tags = {};
+    doc.querySelectorAll('tag').forEach(t => {
+        tags[t.getAttribute('k')] = t.getAttribute('v');
+    });
+
+    return {
+        id: node.getAttribute('id'),
+        lat: parseFloat(node.getAttribute('lat')),
+        lng: parseFloat(node.getAttribute('lon')), // OSM uses lon
+        version: node.getAttribute('version'),
+        tags: tags
+    };
+}
+
+/**
+ * Update existing hydrant (PUT)
+ * @param {string} id - Node ID
+ * @param {string} version - Current version (optimistic locking)
+ * @param {object} tags - Merged tags
+ * @param {number} lat - Latitude
+ * @param {number} lng - Longitude
+ */
+export async function updateHydrant(id, version, tags, lat, lng, log = console.log) {
+    // 1. Create Changeset (Reusable logic ideally, but keeping it simple/local for now)
+    log(c.info("Starte Update-Prozess..."));
+
+    // Note: We could reuse the same changeset logic from createHydrant if we refactored, 
+    // but to be safe and isolated, we duplicate the minimal changeset creation here.
+
+    const changesetXml = `
+<osm>
+  <changeset>
+    <tag k="created_by" v="Hydranten Jäger v0.3.5"/>
+    <tag k="comment" v="Updating Hydrant #${id} tags via Hydranten Jäger"/>
+    <tag k="locale" v="de"/>
+  </changeset>
+</osm>`;
+
+    log(c.req(`PUT /changeset/create (Update)`));
+
+    // Changeset
+    const csRes = await fetch('https://api.openstreetmap.org/api/0.6/changeset/create', {
+        method: 'PUT',
+        headers: getAuthHeader(),
+        body: changesetXml
+    });
+
+    if (!csRes.ok) throw new Error(`CS Init Failed: ${csRes.status} ${await csRes.text()}`);
+    const changesetId = await csRes.text();
+    log(c.res(`Changeset ID: ${changesetId}`));
+
+    try {
+        // 2. Build Node XML
+        let tagsXml = '';
+        for (const [k, v] of Object.entries(tags)) {
+            if (v && v.trim() !== "") tagsXml += `<tag k="${k}" v="${v}"/>`;
+        }
+
+        const nodeXml = `
+<osm>
+  <node id="${id}" lat="${lat}" lon="${lng}" version="${version}" changeset="${changesetId}">
+    ${tagsXml}
+  </node>
+</osm>`;
+
+        log(c.req(`PUT /node/${id} (v${version})`));
+
+        // 3. Update Node
+        const nodeRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/${id}`, {
+            method: 'PUT',
+            headers: getAuthHeader(),
+            body: nodeXml
+        });
+
+        if (!nodeRes.ok) {
+            const errorText = await nodeRes.text();
+            if (nodeRes.status === 409) throw new Error("Konflikt! Jemand hat den Hydranten gerade bearbeitet. Bitte neu laden.");
+            throw new Error(`Update Failed: ${nodeRes.status} ${errorText}`);
+        }
+
+        const newVersion = await nodeRes.text(); // Returns new version number
+        log(c.success(`Update Erfolgreich! (v${newVersion})`));
+
+        return { id, version: newVersion, changeset: changesetId };
+
+    } finally {
+        // 4. Always Try to Close Changeset
+        await fetch(`https://api.openstreetmap.org/api/0.6/changeset/${changesetId}/close`, {
+            method: 'PUT',
+            headers: getAuthHeader()
+        });
+        log(c.info(`Changeset Closed`));
+    }
+}

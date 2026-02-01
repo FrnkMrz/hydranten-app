@@ -49,6 +49,7 @@ export default {
     },
     confirm: {
         title: "Confirm Data",
+        title_edit: "Edit Hydrant",
         preview_alt: "Captured Photo",
         back_btn_aria: "Back to Camera",
         retry_gps_aria: "Retry GPS Position",
