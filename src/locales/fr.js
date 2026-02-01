@@ -56,6 +56,13 @@ export default {
             green: "Espace Vert",
             parking: "Parking",
             none: "Aucun"
-        }
+        },
+        diameter_label: "DIAMÈTRE",
+        diameter_none: "Non spécifié",
+        color_label: "COULEUR",
+        number_label: "NUMÉRO / RÉF",
+        number_placeholder: "ex. 1234",
+        notes_label: "NOTE",
+        notes_placeholder: "..."
     }
 };

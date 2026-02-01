@@ -190,7 +190,7 @@ export function initIntroView(element, onStart, onSettings) {
    const langBtn = element.querySelector('#lang-btn');
    if (langBtn) {
       const flags = {
-         'de': '🇩🇪', 'en': '🇺🇸', 'pl': '🇵🇱', 'cs': '🇨🇿',
+         'de': '🇩🇪', 'en': '🇬🇧', 'pl': '🇵🇱', 'cs': '🇨🇿',
          'fr': '🇫🇷', 'nl': '🇳🇱', 'es': '🇪🇸', 'pt': '🇵🇹',
          'hr': '🇭🇷', 'it': '🇮🇹', 'ja': '🇯🇵', 'ko': '🇰🇷', 'zh': '🇨🇳', 'tr': '🇹🇷'
       };

@@ -56,6 +56,13 @@ export default {
             green: "Teren Zielony",
             parking: "Parking",
             none: "Brak"
-        }
+        },
+        diameter_label: "ŚREDNICA",
+        diameter_none: "Nie określono",
+        color_label: "KOLOR",
+        number_label: "NUMER / REF",
+        number_placeholder: "np. 1234",
+        notes_label: "NOTATKA",
+        notes_placeholder: "..."
     }
 };
