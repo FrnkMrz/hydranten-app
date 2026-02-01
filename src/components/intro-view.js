@@ -319,12 +319,13 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       // Force a resize invalidation shortly after render to ensure map fills container
       setTimeout(() => {
          map.invalidateSize();
+         // Always try to fetch hydrants on load using current map center
+         updateHydrants(map, onEdit);
+
          if (lastPos) {
             map.setView([lastPos.lat, lastPos.lng], 18);
-            // Add Marker immediately if we have a position
-            userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
-            // Also update hydrants initially
-            updateHydrants(map, onEdit);
+            if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
+            else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
          }
       }, 100);
    }

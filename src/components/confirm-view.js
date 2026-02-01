@@ -51,11 +51,12 @@ export function renderConfirmView() {
       <!-- Scrollable Form Content -->
       <div class="flex-grow overflow-y-auto px-4 pt-6 pb-48 space-y-8 bg-slate-900">
          
-         <div class="relative mb-4 text-center">
+         <div class="relative mb-4 flex items-center justify-center gap-3">
             <h2 id="confirm-title" class="text-2xl font-bold text-white">${t('confirm.title') || 'Neuer Hydrant'}</h2>
+            
             <!-- Delete Button Container (injected via JS if edit mode) -->
-            <div id="delete-btn-container" class="absolute right-0 top-1/2 -translate-y-1/2 hidden">
-               <button id="delete-hydrant-btn" class="text-red-500 hover:text-red-400 p-2 rounded-full hover:bg-white/5 transition" aria-label="Löschen">
+            <div id="delete-btn-container" class="hidden">
+               <button id="delete-hydrant-btn" class="bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white p-2 rounded-full transition border border-red-500/30" aria-label="Löschen">
                   <span class="text-xl">🗑️</span>
                </button>
             </div>
