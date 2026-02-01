@@ -1,9 +1,9 @@
-# 🚒 Hydranten Jäger APP (v1.2 Beta)
+# 🚒 Hydranten Jäger APP (v1.3)
 
 Eine moderne, mobil-optimierte Web-App (PWA) zum schnellen Erfassen von Hydranten für OpenStreetMap (OSM).
 Fokus: Geschwindigkeit, Einhand-Bedienung und "Dark Mode" Ästhetik.
 
-> **Status**: Version 1.2 Beta (Stable UI, PWA Optimized, GPS Force-Fix)
+> **Status**: Version 1.3.0 (Stable Release) - Edit Mode, Safe Checks, Multi-Language, History
 
 ## Features ✨
 
