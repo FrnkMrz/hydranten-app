@@ -20,9 +20,15 @@ export function renderSettingsView() {
                <span>${t('settings.connect_btn')}</span>
             </button>
             
-            <button id="logout-btn" class="w-full py-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold mt-4 hidden transition">
-               ${t('settings.disconnect_btn')}
-            </button>
+            <div id="logout-btn" class="flex gap-2 w-full mt-4 hidden transition">
+               <button id="real-logout-btn" class="flex-1 py-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold">
+                  ${t('settings.disconnect_btn')}
+               </button>
+               <button id="history-btn" class="flex-1 py-4 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-xl font-bold flex items-center justify-center gap-2">
+                  <span>📜</span>
+                  <span>Verlauf</span>
+               </button>
+            </div>
   `;
 
   return `
@@ -71,11 +77,13 @@ export function renderSettingsView() {
   `;
 }
 
-export function initSettingsView(element, onBack) {
+export function initSettingsView(element, onBack, onHistory) {
   element.querySelector('#back-btn').onclick = onBack;
 
   const loginBtn = element.querySelector('#login-btn');
-  const logoutBtn = element.querySelector('#logout-btn');
+  // Note: logout-btn is now a container div
+  const logoutBtn = element.querySelector('#real-logout-btn');
+  const historyBtn = element.querySelector('#history-btn');
   const resetBtn = element.querySelector('#reset-btn');
   const statusDiv = element.querySelector('#auth-status');
   const userDisplay = element.querySelector('#user-display');
@@ -179,6 +187,10 @@ export function initSettingsView(element, onBack) {
     updateUI(null);
     alert(t('settings.disconnect_btn') + "!");
   };
+
+  if (historyBtn && onHistory) {
+    historyBtn.onclick = onHistory;
+  }
 
   resetBtn.onclick = () => {
     if (confirm(t('settings.reset_btn') + "?")) {

@@ -3,6 +3,7 @@ import { renderCameraView, initCamera } from './components/camera-view.js';
 import { renderConfirmView, initConfirmView } from './components/confirm-view.js';
 import { renderSettingsView, initSettingsView } from './components/settings-view.js';
 import { renderIntroView, initIntroView } from './components/intro-view.js';
+import { renderHistoryView, initHistoryView } from './components/history-view.js';
 import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition, startTracking, getLastKnownPosition } from './services/geo.js';
 import { auth } from './services/auth.js';
 
@@ -122,10 +123,19 @@ async function showCamera() {
   }
 }
 
+function showHistory() {
+  state.view = 'history';
+  app.innerHTML = renderHistoryView();
+  initHistoryView(app, () => showSettings());
+}
+
 function showSettings() {
   state.view = 'settings';
   app.innerHTML = renderSettingsView();
-  initSettingsView(app, () => showIntro());
+  initSettingsView(app,
+    () => showIntro(), // onBack
+    () => showHistory() // onHistory
+  );
 }
 
 function showConfirm() {
