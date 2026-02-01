@@ -40,7 +40,8 @@ export default {
         permission: "Acceso a Cámara Requerido",
         retake: "Reintentar",
         use_photo: "Usar Foto",
-        back_btn_aria: "Volver al inicio",
+        back_btn_aria: "Volver a la cámara",
+        back_btn_label: "Atrás",
         capture_btn_aria: "Tomar foto"
     },
     error: {

@@ -44,6 +44,7 @@ export default {
         retake: "Powtórz",
         use_photo: "Użyj Zdjęcia",
         back_btn_aria: "Wróć do strony głównej",
+        back_btn_label: "Wstecz",
         capture_btn_aria: "Zrób zdjęcie"
     },
     error: {

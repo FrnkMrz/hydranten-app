@@ -64,6 +64,7 @@ export default {
         fixed_map: "Draggable (Map Fixed)",
         preview_alt: "Captured Photo",
         back_btn_aria: "Back to Camera",
+        back_btn_label: "Back",
         retry_gps_aria: "Retry GPS Position",
         type_label: "Type",
         position_label: "Location",

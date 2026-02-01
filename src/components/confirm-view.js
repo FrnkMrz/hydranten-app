@@ -262,7 +262,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           submitBtn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
           submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
         } else {
-          submitBtn.innerHTML = `<span>🔙 ${t('confirm.back_btn_aria')}</span>`;
+          submitBtn.innerHTML = `<span>${t('confirm.back_btn_label') || "Zurück"}</span>`;
           submitBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
           submitBtn.classList.add('bg-gray-700', 'hover:bg-gray-600');
         }
