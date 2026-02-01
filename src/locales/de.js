@@ -48,12 +48,24 @@ export default {
         back_btn_aria: "Zurück zur Startseite",
         capture_btn_aria: "Foto aufnehmen"
     },
+    error: {
+        load_failed: "Fehler beim Laden",
+        node_deleted: "Dieser Hydrant existiert nicht mehr (wurde gelöscht).",
+        oops: "Hoppla!",
+        back_to_map: "Zurück zur Karte"
+    },
     confirm: {
         title: "Daten prüfen",
         title_edit: "Hydrant bearbeiten",
         preview_alt: "Aufgenommenes Foto",
         back_btn_aria: "Zurück zur Kamera",
         retry_gps_aria: "GPS Position erneut suchen",
+        delete_btn: "Löschen",
+        delete_confirm: "Hydrant wirklich löschen?",
+        save_btn: "Speichern",
+        position_adjustable: "Position anpassbar",
+        position_moved: "Position angepasst",
+        fixed_map: "Verschiebbar (Karte fixiert)",
         type_label: "Typ",
         position_label: "Lage",
         details_label: "Details (Optional)",

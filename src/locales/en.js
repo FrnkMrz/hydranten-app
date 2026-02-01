@@ -47,9 +47,21 @@ export default {
         back_btn_aria: "Back to Home",
         capture_btn_aria: "Take Photo"
     },
+    error: {
+        load_failed: "Error loading",
+        node_deleted: "This hydrant no longer exists (data deleted).",
+        oops: "Oops!",
+        back_to_map: "Back to Map"
+    },
     confirm: {
         title: "Confirm Data",
         title_edit: "Edit Hydrant",
+        delete_btn: "Delete",
+        delete_confirm: "Really delete hydrant? This cannot be undone.",
+        save_btn: "Save",
+        position_adjustable: "Position Adjustable",
+        position_moved: "Position Updated",
+        fixed_map: "Draggable (Map Fixed)",
         preview_alt: "Captured Photo",
         back_btn_aria: "Back to Camera",
         retry_gps_aria: "Retry GPS Position",
