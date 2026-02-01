@@ -54,7 +54,8 @@ export default {
             sidewalk: "Chodnik",
             street: "Ulica",
             green: "Teren Zielony",
-            parking: "Parking"
+            parking: "Parking",
+            none: "Brak"
         }
     }
 };

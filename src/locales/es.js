@@ -54,7 +54,8 @@ export default {
             sidewalk: "Acera",
             street: "Calle",
             green: "Zona Verde",
-            parking: "Aparcamiento"
+            parking: "Aparcamiento",
+            none: "Ninguno"
         }
     }
 };

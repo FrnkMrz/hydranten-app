@@ -54,7 +54,8 @@ export default {
             sidewalk: "Trottoir",
             street: "Rue",
             green: "Espace Vert",
-            parking: "Parking"
+            parking: "Parking",
+            none: "Aucun"
         }
     }
 };

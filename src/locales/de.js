@@ -54,7 +54,8 @@ export default {
             sidewalk: "Gehweg",
             street: "Straße",
             green: "Grünfläche",
-            parking: "Parkplatz"
+            parking: "Parkplatz",
+            none: "Keine Angabe"
         }
     }
 };
