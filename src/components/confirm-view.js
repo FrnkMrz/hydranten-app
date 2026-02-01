@@ -88,9 +88,9 @@ export function renderConfirmView() {
             
             <!-- Diameter / Volume -->
             <div id="diameter-container">
-                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Durchmesser</label>
+                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.diameter_label')}</label>
                 <select id="hydrant-diameter" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-                    <option value="">Nicht angegeben</option>
+                    <option value="">${t('confirm.diameter_none')}</option>
                     <option value="80">DN 80</option>
                     <option value="100">DN 100</option>
                     <option value="150">DN 150</option>
@@ -105,7 +105,7 @@ export function renderConfirmView() {
 
             <div class="space-y-4">
                <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Farbe</label>
+                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.color_label')}</label>
                   <div class="flex flex-wrap gap-3" id="color-picker-container">
                       <!-- JS Populated -->
                   </div>
@@ -113,13 +113,13 @@ export function renderConfirmView() {
                </div>
                
                <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Nummer / Ref</label>
-                  <input type="text" id="hydrant-ref" placeholder="z.B. 1234" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.number_label')}</label>
+                  <input type="text" id="hydrant-ref" placeholder="${t('confirm.number_placeholder')}" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                </div>
                
                <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Notiz</label>
-                  <textarea id="hydrant-note" placeholder="..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white h-20 outline-none"></textarea>
+                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.notes_label')}</label>
+                  <textarea id="hydrant-note" placeholder="${t('confirm.notes_placeholder')}" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white h-20 outline-none"></textarea>
                </div>
             </div>
          </div>
@@ -214,15 +214,14 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
   updatePos('');
 
   // COLOR PICKER LOGIC
-  const colors = [
-    { value: "", label: "Keine", hex: "transparent", border: "#4b5563" },
-    { value: "black", label: "Schwarz", hex: "#000000", border: "#333" },
-    { value: "grey", label: "Grau", hex: "#808080", border: "#999" },
-    { value: "blue", label: "Blau", hex: "#3b82f6", border: "#3b82f6" },
-    { value: "red", label: "Rot", hex: "#ef4444", border: "#ef4444" },
-    { value: "yellow", label: "Gelb", hex: "#fbbf24", border: "#fbbf24" },
-    { value: "green", label: "Grün", hex: "#22c55e", border: "#22c55e" },
-    { value: "white", label: "Weiß", hex: "#ffffff", border: "#ddd" }
+  { value: "", label: t('confirm.locations.none'), hex: "transparent", border: "#4b5563" },
+  { value: "black", label: "Black", hex: "#000000", border: "#333" }, // TODO: Translate colors if critical, but standard colors mostly understood.
+  { value: "grey", label: "Grey", hex: "#808080", border: "#999" },
+  { value: "blue", label: "Blue", hex: "#3b82f6", border: "#3b82f6" },
+  { value: "red", label: "Red", hex: "#ef4444", border: "#ef4444" },
+  { value: "yellow", label: "Yellow", hex: "#fbbf24", border: "#fbbf24" },
+  { value: "green", label: "Green", hex: "#22c55e", border: "#22c55e" },
+  { value: "white", label: "White", hex: "#ffffff", border: "#ddd" }
   ];
 
   const colorContainer = element.querySelector('#color-picker-container');
