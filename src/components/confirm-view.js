@@ -255,6 +255,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           if (volumeContainer) volumeContainer.classList.add('hidden');
           if (diameterContainer) diameterContainer.classList.remove('hidden');
         }
+        if (typeof checkChanges === 'function') checkChanges();
       };
 
       element.querySelectorAll('.option-btn').forEach(btn => {
@@ -311,6 +312,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           btn.classList.add('text-gray-400');
         }
       });
+      if (typeof checkChanges === 'function') checkChanges();
     };
     posBtns.forEach(btn => {
       btn.onclick = () => updatePos(btn.dataset.value);
@@ -365,6 +367,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
           // Set Value
           colorInput.value = c.value;
+          if (typeof checkChanges === 'function') checkChanges();
         };
 
         // Pre-select if matches
@@ -377,6 +380,76 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       });
     }
 
+
+    // DIRTY CHECKING LOGIC
+    let hasChanges = false;
+    const checkChanges = () => {
+      if (!editMode || !initialData) return;
+
+      const currentType = typeInput ? typeInput.value : 'pillar';
+      const currentPos = posInput ? posInput.value : '';
+      const currentDiameter = diameterInput ? diameterInput.value : '';
+      const currentRef = refInput ? refInput.value : '';
+      const currentNote = noteInput ? noteInput.value : '';
+      const currentColor = colorInput ? colorInput.value : '';
+      const currentVolume = volumeInput ? volumeInput.value.replace(' m3', '') : '';
+
+      // Helper to safely get tag
+      const getTag = (k) => initialData.tags[k] || '';
+
+      // Compare Tags
+      let typeChanged = false;
+      if (currentType === 'cistern') {
+        typeChanged = (getTag('emergency') !== 'water_tank');
+        // simplify volume check
+        // const vol = getTag('water_tank:volume').replace(' m3', '');
+        // if (vol !== currentVolume) typeChanged = true; 
+      } else if (currentType === 'dry_hydrant') {
+        typeChanged = (getTag('fire_hydrant:type') !== 'dry_hydrant');
+      } else {
+        typeChanged = (getTag('fire_hydrant:type') !== currentType);
+      }
+
+      const posChanged = (getTag('fire_hydrant:position') !== currentPos);
+      const diaChanged = (getTag('fire_hydrant:diameter') !== currentDiameter);
+      const refChanged = (getTag('ref') !== currentRef);
+      const noteChanged = ((getTag('note') || getTag('description')) !== currentNote);
+      const colChanged = (getTag('colour') !== currentColor);
+
+      // Compare Location (Float precision tolerance)
+      const latDiff = Math.abs(location.lat - initialData.lat);
+      const lngDiff = Math.abs(location.lng - initialData.lng);
+      const locChanged = (latDiff > 0.000001 || lngDiff > 0.000001);
+
+      hasChanges = (typeChanged || posChanged || diaChanged || refChanged || noteChanged || colChanged || locChanged);
+
+      // Update UI
+      if (submitBtn) {
+        if (hasChanges) {
+          submitBtn.innerHTML = `<span>💾 ${t('confirm.save_btn')}</span>`;
+          submitBtn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+          submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+        } else {
+          submitBtn.innerHTML = `<span>🔙 ${t('confirm.back_btn_aria')}</span>`; // Reuse "Back" or add "Cancel" key? using back_btn_aria for valid translation "Zurück..."
+          // Or explicitly "Abbrechen"
+          submitBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+          submitBtn.classList.add('bg-gray-700', 'hover:bg-gray-600');
+        }
+      }
+    };
+
+    // Attach Listeners for Dirty Check
+    if (editMode) {
+      // Inputs
+      [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput].forEach(el => {
+        if (el) el.addEventListener('input', checkChanges);
+        if (el) el.addEventListener('change', checkChanges);
+      });
+      // Color input is hidden, handled in click handler below
+
+      // Initial Check
+      setTimeout(checkChanges, 500);
+    }
 
     // Map Setup (Hero)
     const mapContainer = element.querySelector('#map');
@@ -404,13 +477,14 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         location.lat = position.lat;
         location.lng = position.lng;
         // Re-render pill text correctly
-        // const acc = location.accuracy ? Math.round(location.accuracy) : '?';
-        if (statusPill) statusPill.innerText = editMode ? "Position angepasst" : `📍 Verschoben`;
+        if (statusPill) statusPill.innerText = editMode ? t('confirm.position_moved') : `📍 Verschoben`;
+
+        if (editMode) checkChanges();
       });
 
       const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
       if (statusPill && !statusPill.innerText.includes('Verschoben')) {
-        statusPill.innerText = editMode ? "Verschiebbar (Karte fixiert)" : `GPS: ±${accuracy}m`;
+        statusPill.innerText = editMode ? t('confirm.fixed_map') : `GPS: ±${accuracy}m`;
       }
 
       // Retry Button Logic
@@ -467,6 +541,13 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
     if (submitBtn) {
       submitBtn.onclick = () => {
+        // If EditMode and No Changes, just go back (Cancel)
+        if (editMode && !hasChanges) {
+          console.log("No changes detected, cancelling edit.");
+          if (onRetake && onRetake.back) onRetake.back();
+          return;
+        }
+
         const selectedType = typeInput ? typeInput.value : 'pillar';
         const selectedPos = posInput ? posInput.value : '';
 
