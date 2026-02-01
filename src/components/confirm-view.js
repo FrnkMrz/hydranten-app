@@ -99,8 +99,8 @@ export function renderConfirmView() {
             </div>
 
             <div id="volume-container" class="hidden">
-                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen</label>
-                <input type="number" id="hydrant-volume" placeholder="z.B. 100m3" inputmode="numeric" max="100000" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen (m³)</label>
+                <input type="text" id="hydrant-volume" placeholder="z.B. 100" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
             </div>
 
             <div class="space-y-4">
@@ -358,7 +358,14 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         const tags = {};
         if (selectedType === 'cistern') {
           tags['emergency'] = 'water_tank';
-          if (volumeInput && volumeInput.value) tags['water_tank:volume'] = volumeInput.value;
+          if (volumeInput && volumeInput.value) {
+            let val = volumeInput.value.trim();
+            // If only numbers, append m3
+            if (/^\d+$/.test(val)) {
+              val += " m3";
+            }
+            tags['water_tank:volume'] = val;
+          }
           tags['fire_hydrant:position'] = selectedPos;
         } else if (selectedType === 'dry_hydrant') {
           tags['emergency'] = 'fire_hydrant';
