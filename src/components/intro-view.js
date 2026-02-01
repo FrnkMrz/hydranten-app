@@ -306,7 +306,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
             } else {
                userMarker.setLatLng([lat, lng]);
             }
-         });
+         }, onEdit);
 
          // Debounced Map Move Handler
          // Pass onEdit here!
@@ -334,7 +334,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 }
 
 // Extracted GPS start logic
-function startMapGps(map, onLocationFound) {
+function startMapGps(map, onLocationFound, onEdit) {
    if (!navigator.geolocation) return;
 
    // Single fetch for center
@@ -342,7 +342,7 @@ function startMapGps(map, onLocationFound) {
       const { latitude, longitude } = pos.coords;
       map.setView([latitude, longitude], 18);
       // We don't call updateHydrants here because moveend will trigger it?
-      // updateHydrants(map); // Triggered by setView -> moveend
+      updateHydrants(map, onEdit); // Triggered by setView -> moveend
       updatePosition(pos); // Cache it
 
       if (onLocationFound) onLocationFound(latitude, longitude);
