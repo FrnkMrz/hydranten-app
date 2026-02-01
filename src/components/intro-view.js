@@ -255,7 +255,10 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       };
    }
 
-
+   // Reset cached markers on mount to force redraw on the new map instance
+   if (visibleHydrants) visibleHydrants.clear();
+   // Reset global layer reference if needed, though it's overwritten below
+   hydrantLayer = null;
    // Live GPS Update & Map
    const mapContainer = element.querySelector('#intro-map');
    let map = null;
