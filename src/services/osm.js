@@ -23,7 +23,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
         try {
             const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
                 headers: {
-                    'User-Agent': 'Hydranten-Jaeger-App/1.0'
+                    'User-Agent': 'Hydranten-Jaeger-App/1.3.0'
                 }
             });
             if (nomRes.ok) {
@@ -62,7 +62,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
         const changesetXml = `
 <osm>
   <changeset>
-    <tag k="created_by" v="Hydranten Jäger v0.3.5"/>
+    <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
     <tag k="comment" v="Adding Hydrant in ${locationStr} via Hydranten Jäger"/>
     <tag k="locale" v="de"/>
   </changeset>
@@ -194,7 +194,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
     const changesetXml = `
 <osm>
   <changeset>
-    <tag k="created_by" v="Hydranten Jäger v0.3.5"/>
+    <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
     <tag k="comment" v="Updating Hydrant #${id} tags via Hydranten Jäger"/>
     <tag k="locale" v="de"/>
   </changeset>
@@ -270,7 +270,7 @@ export async function deleteHydrant(id, version, lat, lng, log = console.log) {
     const changesetXml = `
 <osm>
   <changeset>
-    <tag k="created_by" v="Hydranten Jäger v0.3.5"/>
+    <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
     <tag k="comment" v="Deleting Hydrant #${id} via Hydranten Jäger"/>
     <tag k="locale" v="de"/>
   </changeset>

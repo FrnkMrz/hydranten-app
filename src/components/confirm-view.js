@@ -81,7 +81,7 @@ export function renderConfirmView() {
                 <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="sidewalk">
                    🚶 ${t('confirm.locations.sidewalk')}
                 </button>
-                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="street">
+                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="lane">
                    🚗 ${t('confirm.locations.street')}
                 </button>
                 <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="parking_lane">
@@ -384,7 +384,9 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
     // Pre-fill Position
     if (editMode && initialData && initialData.tags && initialData.tags['fire_hydrant:position']) {
-      updatePos(initialData.tags['fire_hydrant:position']);
+      let pos = initialData.tags['fire_hydrant:position'];
+      if (pos === 'street') pos = 'lane'; // Allocate legacy 'street' to 'lane'
+      updatePos(pos);
     } else {
       updatePos('');
     }

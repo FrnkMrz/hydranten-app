@@ -97,6 +97,10 @@ export const auth = {
 
         const res = await fetch('https://www.openstreetmap.org/oauth2/token', {
             method: 'POST',
+            headers: {
+                'User-Agent': 'Hydranten-Jaeger-App/1.3.0',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
             body: bodyParams
         });
 
@@ -137,9 +141,9 @@ export function getAuthHeader() {
     const token = auth.getToken();
     return token ? {
         'Authorization': `Bearer ${token}`,
-        'User-Agent': 'Hydranten-Jaeger-App/1.0'
+        'User-Agent': 'Hydranten-Jaeger-App/1.3.0'
     } : {
-        'User-Agent': 'Hydranten-Jaeger-App/1.0'
+        'User-Agent': 'Hydranten-Jaeger-App/1.3.0'
     };
 }
 
