@@ -58,6 +58,8 @@ export default {
         title_edit: "编辑消防栓",
         delete_btn: "删除",
         delete_confirm: "真的要删除吗？",
+        delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
+        delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "保存",
         position_adjustable: "位置可调",
         position_moved: "位置已更新",

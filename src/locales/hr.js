@@ -58,6 +58,8 @@ export default {
         title_edit: "Uredi hidrant",
         delete_btn: "Obriši",
         delete_confirm: "Stvarno obrisati?",
+        delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
+        delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "Spremi",
         position_adjustable: "Podesiva pozicija",
         position_moved: "Pozicija ažurirana",

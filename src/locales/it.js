@@ -58,6 +58,8 @@ export default {
         title_edit: "Modifica Idrante",
         delete_btn: "Elimina",
         delete_confirm: "Eliminare davvero?",
+        delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
+        delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "Salva",
         position_adjustable: "Posizione regolabile",
         position_moved: "Posizione aggiornata",

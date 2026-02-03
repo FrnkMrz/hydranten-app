@@ -55,6 +55,8 @@ export default {
         title_edit: "Editar Hidrante",
         delete_btn: "Eliminar",
         delete_confirm: "¿Realmente eliminar el hidrante?",
+        delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
+        delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "Guardar",
         position_adjustable: "Posición ajustable",
         position_moved: "Posición actualizada",

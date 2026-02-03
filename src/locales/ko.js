@@ -58,6 +58,8 @@ export default {
         title_edit: "소화전 편집",
         delete_btn: "삭제",
         delete_confirm: "정말 삭제하시겠습니까?",
+        delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
+        delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "저장",
         position_adjustable: "위치 조정 가능",
         position_moved: "위치 업데이트됨",

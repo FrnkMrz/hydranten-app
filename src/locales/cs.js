@@ -58,6 +58,8 @@ export default {
         title_edit: "Upravit hydrant",
         delete_btn: "Smazat",
         delete_confirm: "Opravdu smazat?",
+        delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
+        delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "Uložit",
         position_adjustable: "Pozice nastavitelná",
         position_moved: "Pozice upravena",

@@ -10,6 +10,15 @@ const c = {
 import { getAuthHeader } from './auth.js';
 
 /**
+ * Helper to determine object type name for comments
+ */
+function getTypeName(tags) {
+    if (tags['emergency'] === 'water_tank') return 'Cistern';
+    if (tags['emergency'] === 'suction_point') return 'Suction Point';
+    return 'Hydrant';
+}
+
+/**
  * Normalize tags before sending to OSM
  * Enforces rules like: cistern -> water_tank, street -> lane, etc.
  */
@@ -103,7 +112,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
 <osm>
   <changeset>
     <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
-    <tag k="comment" v="Adding Hydrant in ${locationStr} via Hydranten Jäger"/>
+    <tag k="comment" v="Adding ${getTypeName(finalTags)} in ${locationStr} via Hydranten Jäger"/>
     <tag k="locale" v="de"/>
   </changeset>
 </osm>`;
@@ -252,7 +261,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
 <osm>
   <changeset>
     <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
-    <tag k="comment" v="Updating Hydrant #${id} tags via Hydranten Jäger"/>
+    <tag k="comment" v="Updating ${getTypeName(finalTags)} #${id} tags via Hydranten Jäger"/>
     <tag k="locale" v="de"/>
   </changeset>
 </osm>`;
@@ -321,14 +330,15 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
  * @param {number} lat - Latitude (required for valid node XML technically, though DELETE might ignore it, best to include)
  * @param {number} lng - Longitude
  */
-export async function deleteHydrant(id, version, lat, lng, log = console.log) {
-    log(c.info(`Lösche Hydrant #${id}...`));
+export async function deleteHydrant(id, version, lat, lng, tags = {}, log = console.log) {
+    const typeName = getTypeName(tags);
+    log(c.info(`Lösche ${typeName} #${id}...`));
 
     const changesetXml = `
 <osm>
   <changeset>
     <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
-    <tag k="comment" v="Deleting Hydrant #${id} via Hydranten Jäger"/>
+    <tag k="comment" v="Deleting ${typeName} #${id} via Hydranten Jäger"/>
     <tag k="locale" v="de"/>
   </changeset>
 </osm>`;

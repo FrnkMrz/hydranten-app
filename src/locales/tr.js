@@ -58,6 +58,8 @@ export default {
         title_edit: "Hidrantı Düzenle",
         delete_btn: "Sil",
         delete_confirm: "Silmek istediğinize emin misiniz?",
+        delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
+        delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "Kaydet",
         position_adjustable: "Konum ayarlanabilir",
         position_moved: "Konum güncellendi",

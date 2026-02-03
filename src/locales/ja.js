@@ -58,6 +58,8 @@ export default {
         title_edit: "消火栓を編集",
         delete_btn: "削除",
         delete_confirm: "本当に削除しますか？",
+        delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
+        delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "保存",
         position_adjustable: "位置調整可能",
         position_moved: "位置更新済み",

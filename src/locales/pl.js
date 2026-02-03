@@ -58,6 +58,8 @@ export default {
         title_edit: "Edytuj Hydrant",
         delete_btn: "Usuń",
         delete_confirm: "Czy na pewno usunąć hydrant?",
+        delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
+        delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "Zapisz",
         position_adjustable: "Pozycja regulowana",
         position_moved: "Pozycja zaktualizowana",

@@ -222,7 +222,7 @@ function handleEdit(nodeId) {
         (id, version) => {
           // OnDelete
           if (deleteHydrant) {
-            showOverlay("Lösche", (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, log));
+            showOverlay("Lösche", (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log));
           } else {
             alert("Interner Fehler: Lösch-Funktion nicht verfügbar. Bitte neu laden.");
             console.error("deleteHydrant missing", osm);

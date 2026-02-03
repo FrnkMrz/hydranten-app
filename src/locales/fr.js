@@ -55,6 +55,8 @@ export default {
         title_edit: "Modifier la borne",
         delete_btn: "Supprimer",
         delete_confirm: "Voulez-vous vraiment supprimer ?",
+        delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
+        delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "Enregistrer",
         position_adjustable: "Position ajustable",
         position_moved: "Position mise à jour",
