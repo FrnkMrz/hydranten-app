@@ -36,8 +36,13 @@ Erstellt werden detaillierte Nodes direkt in OSM:
     *   Unterflur 🕳️ (`underground`)
     *   Wand 🧱 (`wall`)
     *   **Zisterne 💧** (`water_tank` + `water_tank:volume` mit automatischer "m³" Einheit)
+    *   **Saugstelle 🏞️** (`suction_point`)
     *   Trocken 🌵 (`dry_hydrant`)
-*   **Details**: Durchmesser (DN), Farbe, Referenznummer, Lage (Gehweg/Straße/Grün).
+*   **Details**:
+    *   Durchmesser (DN) - manuell eingebbar.
+    *   **Wasserquelle** (`water_source`): Dynamisch je nach Typ (z.B. *Leitungsnetz*, *Teich*, *Zisterne*).
+    *   **Hinweisschild**: Spezielle Logik für Unterflurhydranten (`fire_hydrant:diameter:signed`).
+    *   Referenznummer.
 *   **Upload**:
     *   Erstellt automatisch Changeset & Node.
     *   Nutzt OAuth 2.0 PKCE für sicheren Login ohne eigenes Backend.
