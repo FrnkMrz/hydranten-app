@@ -9,6 +9,17 @@ import { auth } from './services/auth.js';
 import { fetchNodeData, updateHydrant, deleteHydrant } from './services/osm.js';
 import { t } from './services/i18n.js';
 
+// Security Helper
+function escapeHtml(text) {
+  if (text === null || text === undefined) return '';
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 // Init Compass & GPS Tracking early
 // Init Compass & GPS Tracking (Moved to Start/Camera)
 // initCompass();
@@ -140,7 +151,7 @@ function handleEdit(nodeId) {
   app.innerHTML = `
       <div class="h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-4">
           <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p class="font-bold">Lade Hydrant #${nodeId}...</p>
+          <p class="font-bold">Lade Hydrant #${escapeHtml(nodeId)}...</p>
       </div>
    `;
 
@@ -162,7 +173,7 @@ function handleEdit(nodeId) {
 
         const logs = [];
         const renderStatus = (result = null, error = null) => {
-          const linesHtml = logs.map(line => `<div class="text-sm font-mono text-gray-400 border-l-2 border-gray-700 pl-3 py-1 text-left">${line}</div>`).join('');
+          const linesHtml = logs.map(line => `<div class="text-sm font-mono text-gray-400 border-l-2 border-gray-700 pl-3 py-1 text-left">${escapeHtml(line)}</div>`).join('');
           let content = `
                    <div class="flex flex-col w-full max-w-sm bg-gray-900 border ${error ? 'border-red-500' : 'border-gray-700'} rounded-2xl p-6 shadow-2xl">
                       <h2 class="text-xl font-bold ${error ? 'text-red-500' : 'text-white'} mb-4 flex items-center justify-center gap-2">
@@ -176,7 +187,7 @@ function handleEdit(nodeId) {
           if (error) {
             content += `
                         <div class="bg-red-900/20 text-red-200 p-3 rounded-lg text-xs font-mono mb-4 break-words">
-                           ${error.message || String(error)}
+                           ${escapeHtml(error.message || String(error))}
                         </div>
                         <button id="overlay-close-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition">Schließen</button>
                     `;
@@ -225,7 +236,7 @@ function handleEdit(nodeId) {
             showOverlay("Lösche", (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log));
           } else {
             alert("Interner Fehler: Lösch-Funktion nicht verfügbar. Bitte neu laden.");
-            console.error("deleteHydrant missing", osm);
+            console.error("deleteHydrant missing");
           }
         }
       );
@@ -409,11 +420,11 @@ function showConfirm() {
                          ❌ Upload Fehlgeschlagen
                       </h2>
                       <div class="space-y-1 mb-6 max-h-40 overflow-y-auto">
-                         ${logs.map(line => `<div class="text-sm font-mono text-gray-400 border-l-2 border-red-900 pl-3 py-1 text-left">${line}</div>`).join('')}
+                         ${logs.map(line => `<div class="text-sm font-mono text-gray-400 border-l-2 border-red-900 pl-3 py-1 text-left">${escapeHtml(line)}</div>`).join('')}
                       </div>
                       
                       <div class="bg-red-900/20 text-red-200 p-3 rounded-lg text-xs font-mono mb-4 break-words custom-scrollbar overflow-auto max-h-32">
-                         ${err.message || String(err)}
+                         ${escapeHtml(err.message || String(err))}
                       </div>
 
                       <button id="error-overlay-close" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition">

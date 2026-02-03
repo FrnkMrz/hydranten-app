@@ -16,7 +16,7 @@ export default {
         info_legal: "법적 정보",
         info_impressum: "인프린트",
         info_data: "데이터 및 개인정보",
-        info_data_text: "이 앱은 개인 데이터를 저장하지 않습니다. 모든 항목은 OpenStreetMap(OSM)으로 직접 전송됩니다.",
+        info_data_text: "이 앱은 개인 데이터를 자체 서버에 저장하지 않습니다. 지도 데이터와 주소를 검색하기 위해 귀하의 IP 주소가 Overpass API 및 Nominatim(OSM Foundation)으로 전송됩니다. GPS 처리는 기기에서 로컬로 수행됩니다.",
         info_license: "라이선스 및 코드",
         info_github: "GitHub에서 보기"
     },

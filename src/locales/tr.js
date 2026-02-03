@@ -16,7 +16,7 @@ export default {
         info_legal: "Yasal Bilgiler",
         info_impressum: "Künye",
         info_data: "Veri ve Gizlilik",
-        info_data_text: "Bu uygulama kişisel veri saklamaz. Tüm girişler doğrudan OpenStreetMap'e (OSM) gönderilir.",
+        info_data_text: "Bu uygulama kendi sunucularında kişisel veri saklamaz. Harita verilerini ve adresleri almak için IP adresiniz Overpass API ve Nominatim'e (OSM Foundation) iletilir. GPS işlemleri cihazınızda yerel olarak yapılır.",
         info_license: "Lisans ve Kod",
         info_github: "GitHub'da Görüntüle"
     },

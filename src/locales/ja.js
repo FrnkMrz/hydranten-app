@@ -16,7 +16,7 @@ export default {
         info_legal: "法的情報",
         info_impressum: "刻印",
         info_data: "データとプライバシー",
-        info_data_text: "このアプリは個人データを保存しません。すべてのエントリは直接OpenStreetMap（OSM）に送信されます。",
+        info_data_text: "このアプリは独自のサーバーに個人データを保存しません。地図データや住所を取得するために、IPアドレスがOverpass APIおよびNominatim（OSM財団）に送信されます。GPS処理はデバイス上でローカルに行われます。",
         info_license: "ライセンスとコード",
         info_github: "GitHubで見る"
     },

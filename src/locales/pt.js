@@ -16,7 +16,7 @@ export default {
         info_legal: "Informação Legal",
         info_impressum: "Ficha Técnica",
         info_data: "Dados e Privacidade",
-        info_data_text: "Este aplicativo não armazena dados pessoais. Todas as entradas são enviadas diretamente para o OpenStreetMap (OSM).",
+        info_data_text: "Este aplicativo não armazena dados pessoais em servidores próprios. Seu endereço IP é transmitido para a API Overpass e para o Nominatim (OSM Foundation) para recuperar dados do mapa e endereços. O processamento de GPS é realizado localmente no seu dispositivo.",
         info_license: "Licença e Código",
         info_github: "Ver no GitHub"
     },

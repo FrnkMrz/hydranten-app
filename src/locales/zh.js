@@ -16,7 +16,7 @@ export default {
         info_legal: "法律信息",
         info_impressum: "印记",
         info_data: "数据与隐私",
-        info_data_text: "此应用不存储个人数据。所有条目直接发送至 OpenStreetMap (OSM)。",
+        info_data_text: "此应用程序不会在自己的服务器上存储任何个人数据。您的 IP 地址将传输到 Overpass API 和 Nominatim (OSM 基金会) 以检索地图数据和地址。GPS 处理在您的设备上本地执行。",
         info_license: "许可与代码",
         info_github: "在 GitHub 上查看"
     },
