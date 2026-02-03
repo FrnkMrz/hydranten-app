@@ -83,9 +83,13 @@ export function renderIntroView() {
 
       <!-- Footer Action -->
       <div class="h-auto shrink-0 z-10 w-full max-w-sm mx-auto flex flex-col justify-end px-6 pb-24">
-          <button id="start-btn" class="w-full py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-2xl font-bold text-lg shadow-xl shadow-red-900/30 active:scale-95 transition-all flex items-center justify-center gap-2 mb-4">
+          <button id="start-btn" class="w-full py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-2xl font-bold text-lg shadow-xl shadow-red-900/30 active:scale-95 transition-all flex items-center justify-center gap-2 mb-2">
              ${t('intro.start_btn')}
           </button>
+          
+          <p class="text-[10px] text-center text-gray-500 mb-6 leading-tight max-w-[280px] mx-auto">
+             ${t('intro.disclaimer_text')}
+          </p>
           
           <div class="flex items-center gap-3">
               <!-- Language Flag -->
@@ -385,7 +389,7 @@ function startMapGps(map, onLocationFound, onEdit) {
 // Helper to fetch and draw
 function updateHydrants(map, onEdit) {
    if (map.getZoom() < 14) return; // Don't fetch for whole world
-   console.log("Hydrant Update. onEdit available?", !!onEdit); // DEBUG
+   // console.log("Hydrant Update. onEdit available?", !!onEdit); // DEBUG
 
    overpass.fetchHydrants(map.getBounds())
       .then(elements => {
@@ -469,7 +473,7 @@ function updateHydrants(map, onEdit) {
                m.addTo(hydrantLayer);
 
                m.on('click', () => {
-                  console.log("Clicked Hydrant:", node.id, "onEdit:", onEdit); // DEBUG
+                  // console.log("Clicked Hydrant:", node.id, "onEdit:", onEdit); // DEBUG
                   // Visual feedback
                   m.setStyle({ fillColor: '#3b82f6', radius: 10, color: 'white', weight: 4 });
                   setTimeout(() => {
@@ -490,7 +494,17 @@ function updateHydrants(map, onEdit) {
       })
       .catch(err => {
          console.warn("Hydranten konnten nicht geladen werden:", err);
-         const status = document.getElementById('geo-status-pill');
-         if (status) status.innerText = "Netzwerkfehler";
+         // Show Toast
+         const mapContainer = document.querySelector('#intro-map');
+         if (mapContainer && mapContainer.parentNode) {
+            const toast = document.createElement('div');
+            toast.className = "absolute top-4 left-1/2 -translate-x-1/2 bg-red-600/90 backdrop-blur text-white px-4 py-2 rounded-full shadow-lg text-xs font-bold z-50 animate-fade-in pointer-events-none";
+            toast.innerText = "Laden fehlgeschlagen (Netzwerk/API)";
+            mapContainer.parentNode.appendChild(toast);
+            setTimeout(() => {
+               toast.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+               setTimeout(() => toast.remove(), 500);
+            }, 3000);
+         }
       });
 }

@@ -161,7 +161,7 @@ function handleEdit(nodeId) {
 
   fetchNodeData(nodeId)
     .then(nodeData => {
-      console.log("Loaded Node Data:", nodeData);
+      // console.log("Loaded Node Data:", nodeData);
       // Switch to Confirm View in Edit Mode
       app.innerHTML = renderConfirmView();
 
@@ -315,7 +315,7 @@ function showConfirm() {
     },
     (data) => {
       // Submit Logic
-      console.log("Submitting Hydrant:", data);
+      // console.log("Submitting Hydrant:", data);
 
       // 1. Validate Credentials
       if (!auth.authenticated()) {
