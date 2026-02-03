@@ -16,7 +16,7 @@ export default {
         info_legal: "Rechtliche Hinweise",
         info_impressum: "Impressum",
         info_data: "Daten & Datenschutz",
-        info_data_text: "Diese App speichert keine personenbezogenen Daten auf eigenen Servern. Alle Eingaben werden direkt an OpenStreetMap (OSM) übermittelt.",
+        info_data_text: "Diese App speichert keine personenbezogenen Daten auf eigenen Servern. Deine IP-Adresse wird an die Overpass API und Nominatim (OSM Foundation) übertragen, um Kartendaten und Adressen abzurufen. Die GPS-Verarbeitung erfolgt lokal auf deinem Gerät.",
         info_license: "Lizenz & Code",
         info_license: "Lizenz & Code",
         info_github: "Projekt auf GitHub ansehen",
