@@ -65,6 +65,8 @@ export default {
         delete_confirm: "Hydrant wirklich löschen?",
         delete_confirm_cistern: "Zisterne wirklich löschen?",
         delete_confirm_suction: "Saugstelle wirklich löschen?",
+        water_source_label: "Wasserquelle",
+        water_source_default: "Leitungsnetz (Standard)",
         save_btn: "Speichern",
         position_adjustable: "Position anpassbar",
         position_moved: "Position angepasst",

@@ -60,6 +60,8 @@ export default {
         delete_confirm: "Really delete hydrant? This cannot be undone.",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
         delete_confirm_suction: "Really delete suction point? This cannot be undone.",
+        water_source_label: "Water Source",
+        water_source_default: "Water Main (Default)",
         save_btn: "Save",
         position_adjustable: "Position Adjustable",
         position_moved: "Position Updated",

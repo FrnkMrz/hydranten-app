@@ -140,6 +140,26 @@ export function renderConfirmView() {
                   <label for="hydrant-ref" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.number_label')}</label>
                   <input type="text" id="hydrant-ref" placeholder="${t('confirm.number_placeholder')}" maxlength="50" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                </div>
+
+               <!-- Water Source (NEW) -->
+               <div>
+                  <label for="hydrant-water-source" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.water_source_label') || "Wasserquelle"}</label>
+                   <div class="relative">
+                      <select id="hydrant-water-source" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none appearance-none">
+                        <option value="">${t('confirm.water_source_default') || "Leitungsnetz (Standard)"}</option>
+                        <option value="main">Leitungsnetz</option>
+                        <option value="groundwater">Grundwasser</option>
+                        <option value="pond">Teich</option>
+                        <option value="lake">See</option>
+                        <option value="river">Fluss</option>
+                        <option value="reservoir">Speicher/Becken</option>
+                      </select>
+                      <!-- Custom Arrow -->
+                      <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                      </div>
+                   </div>
+               </div>
                
                <div>
                   <label for="hydrant-note" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.notes_label')}</label>
@@ -261,6 +281,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     const refInput = element.querySelector('#hydrant-ref');
     const noteInput = element.querySelector('#hydrant-note');
     const signInput = element.querySelector('#hydrant-sign');
+    const sourceInput = element.querySelector('#hydrant-water-source');
 
     // DIRTY CHECKING LOGIC
     let hasChanges = false;
@@ -273,6 +294,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       const currentRef = refInput ? refInput.value : '';
       const currentNote = noteInput ? noteInput.value : '';
       const currentSign = signInput ? signInput.value : 'unknown';
+      const currentSource = sourceInput ? sourceInput.value : '';
       const currentVolume = volumeInput ? volumeInput.value.replace(' m3', '') : '';
 
       // Helper to safely get tag
@@ -293,6 +315,19 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       const refChanged = (getTag('ref') !== currentRef);
       const noteChanged = ((getTag('note') || getTag('description')) !== currentNote);
 
+      // Source Check (Default "main" logic? Osm default is main if undefined usually? 
+      // If user sets "main" explicitly, we send it? Or do we treat empty as main?
+      // Let's treat distinct values.
+      const originalSource = getTag('water_source') || '';
+      // If UI is empty (default), and original is 'main', that's a match? Or empty?
+      // Our UI default option has value="" but label "Leitungsnetz (Standard)".
+      // Let's assume value="" means "don't tag it" (standard behavior) or "keep existing if main"?
+      // Actually standard hydrants don't usually map water_source=main unless needed.
+      // Let's map value="main" to sending water_source=main.
+      // And value="" to NOT sending it.
+
+      const sourceChanged = (originalSource !== (currentSource || ''));
+
       // Sign check logic
       let signChanged = false;
       const originalSign = getTag('fire_hydrant:diameter:signed');
@@ -311,7 +346,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       const lngDiff = Math.abs(location.lng - initialData.lng);
       const locChanged = (latDiff > 0.000001 || lngDiff > 0.000001);
 
-      hasChanges = (typeChanged || posChanged || diaChanged || refChanged || noteChanged || signChanged || locChanged);
+      hasChanges = (typeChanged || posChanged || diaChanged || refChanged || noteChanged || signChanged || sourceChanged || locChanged);
 
       // Update UI
       if (submitBtn) {
@@ -476,6 +511,11 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         // Note
         if (noteInput && (nodeTags['note'] || nodeTags['description'])) noteInput.value = nodeTags['note'] || nodeTags['description'];
 
+        // Water Source
+        if (sourceInput && nodeTags['water_source']) {
+          sourceInput.value = nodeTags['water_source'];
+        }
+
         // Sign (Pre-calc)
         if (signInput) {
           if (nodeTags['fire_hydrant:diameter:signed'] === 'no' || nodeTags['ref:signed'] === 'no') {
@@ -554,7 +594,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     // Attach Listeners for Dirty Check
     if (editMode) {
       // Inputs
-      [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput, signInput].forEach(el => {
+      [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput, signInput, sourceInput].forEach(el => {
         if (el) el.addEventListener('input', checkChanges);
         if (el) el.addEventListener('change', checkChanges);
       });
@@ -731,6 +771,17 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
         const note = element.querySelector('#hydrant-note');
         if (note && note.value) tags['note'] = note.value; // Prefer note over description?
+
+        // Water Source
+        if (sourceInput) {
+          if (sourceInput.value) {
+            tags['water_source'] = sourceInput.value;
+          } else {
+            // If set to default (empty), remove check? 
+            // Only remove if it was set before? 
+            if (editMode && initialData.tags['water_source']) delete tags['water_source'];
+          }
+        }
 
         onSubmit({
           ...location,
