@@ -17,28 +17,29 @@ L.Icon.Default.mergeOptions({
 export function renderConfirmView() {
   return `
     <div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in pb-safe">
-      <!-- Top: Map (Compact Hero 25%) -->
+      // Top: Map (Compact Hero 25%) 
+      // Increased z-indices for overlays to ensuring visibility over map (Leaflet can be high z-index)
       <div class="relative w-full h-[25vh] bg-gray-800 shrink-0">
         
         <!-- MAIN: Map -->
         <div id="map" class="w-full h-full z-0"></div>
 
         <!-- OVERLAY: Photo (Thumbnail - Smaller) -->
-        <div class="absolute bottom-4 right-4 w-20 h-28 rounded-xl border-2 border-white/30 shadow-2xl overflow-hidden bg-black z-10 transition transform origin-bottom-right hover:scale-[2.5] active:scale-[2.5] cursor-pointer group">
+        <div class="absolute bottom-4 right-4 w-20 h-28 rounded-xl border-2 border-white/30 shadow-2xl overflow-hidden bg-black z-50 transition transform origin-bottom-right hover:scale-[2.5] active:scale-[2.5] cursor-pointer group">
             <img id="preview-img" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" alt="${t('confirm.preview_alt') || 'Hydrant Preview'}" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
             <span class="absolute bottom-1 right-2 text-[10px] font-bold text-white/80">FOTO</span>
         </div>
 
-        <!-- Back Button (Floating) -->
-        <div class="absolute top-4 left-4 z-20">
+        <!-- Back Button (Floating) - Ensuring correct z-index -->
+        <div class="absolute top-4 left-4 z-50">
            <button id="retake-btn" class="bg-black/40 backdrop-blur-md p-3 rounded-full text-white hover:bg-black/60 transition shadow-lg border border-white/10" aria-label="${t('confirm.back_btn_aria') || 'Back to Camera'}">
               <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
            </button>
         </div>
 
         <!-- Accuracy Pill & Retry -->
-        <div class="absolute top-4 right-4 z-20 flex flex-col items-end gap-2">
+        <div class="absolute top-4 right-4 z-50 flex flex-col items-end gap-2">
            <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white/90 border border-white/10 shadow-lg" id="geo-status-pill">
               GPS: ...
            </div>
@@ -176,8 +177,6 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     // Edit Mode Enhancements
     if (editMode) {
       const titleEl = element.querySelector('#confirm-title');
-      if (titleEl) titleEl.innerText = t('confirm.title_edit');
-
       // Show Delete Button
       const delContainer = element.querySelector('#delete-btn-container');
       if (delContainer) delContainer.classList.remove('hidden');
@@ -193,9 +192,19 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         };
       }
 
-      // Hide Retake/Photo
+      // Modify Retake/Back Button for Cancel
       const retakeBtn = element.querySelector('#retake-btn');
-      if (retakeBtn) retakeBtn.classList.add('hidden');
+      if (retakeBtn) {
+        console.log("ConfirmView: Converting Retake Button to Cancel Button.");
+        retakeBtn.classList.remove('hidden');
+        retakeBtn.style.display = 'flex'; // Force display
+        retakeBtn.style.zIndex = '50'; // Force on top
+        retakeBtn.setAttribute('aria-label', t('confirm.cancel_btn') || "Abbrechen");
+        // Change Icon to X
+        retakeBtn.innerHTML = `<svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+      } else {
+        console.error("ConfirmView: Retake Button NOT FOUND in DOM.");
+      }
 
       const previewImg = element.querySelector('#preview-img');
       if (previewImg) previewImg.parentElement.classList.add('hidden'); // Hide container
@@ -270,14 +279,18 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       const refChanged = (getTag('ref') !== currentRef);
       const noteChanged = ((getTag('note') || getTag('description')) !== currentNote);
 
-      // Sign check logic (approximate)
+      // Sign check logic
       let signChanged = false;
+      const originalSign = getTag('fire_hydrant:diameter:signed');
+
       if (currentSign === 'no') {
-        signChanged = (getTag('fire_hydrant:diameter:signed') !== 'no');
+        signChanged = (originalSign !== 'no');
+      } else if (currentSign === 'yes') {
+        signChanged = (originalSign !== 'yes');
+      } else {
+        // Unknown: Changed if it currently HAS a value (either yes or no)
+        signChanged = (originalSign === 'yes' || originalSign === 'no');
       }
-      // We don't really track 'yes' or 'unknown' explicitly vs default absence, so logic is fuzzy.
-      // If it has 'no' tag but current is not no -> changed.
-      if (getTag('fire_hydrant:diameter:signed') === 'no' && currentSign !== 'no') signChanged = true;
 
       // Compare Location (Float precision tolerance)
       const latDiff = Math.abs(location.lat - initialData.lat);
@@ -299,6 +312,29 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         }
       }
     };
+
+    // ... skipping listener code ...
+
+    // Sign Logic in SUBMIT (Updating tags)
+    if (selectedType === 'underground' && signInput) {
+      const signVal = signInput.value;
+      // If NO -> explicit tags
+      if (signVal === 'no') {
+        tags['fire_hydrant:diameter:signed'] = 'no';
+        tags['ref:signed'] = 'no';
+      }
+      else if (signVal === 'yes') {
+        // Explicit Yes
+        tags['fire_hydrant:diameter:signed'] = 'yes';
+        // Maybe ref:signed too? Let's stick to diameter for now or consistent?
+        // The original code tried to delete 'no'. Let's overwrite.
+        if (tags['ref:signed'] === 'no') delete tags['ref:signed']; // Remove conflict
+      } else {
+        // Unknown -> Remove tags if they exist (Reset to default)
+        delete tags['fire_hydrant:diameter:signed'];
+        delete tags['ref:signed'];
+      }
+    }
 
     // Attach Listeners for Dirty Check
     if (editMode) {
@@ -611,7 +647,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       setTimeout(() => map.invalidateSize(), 300);
     }
 
-    if (retakeBtn && !editMode) {
+    if (retakeBtn) {
       console.log("ConfirmView: Retake Button found, attaching listener.");
       retakeBtn.addEventListener('click', (e) => {
         e.preventDefault();
