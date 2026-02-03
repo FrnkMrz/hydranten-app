@@ -76,8 +76,10 @@ export default {
         types: {
             underground: "Underground",
             pillar: "Pillar",
-            wall: "Wall",
-            suction: "Suction Point"
+            wall: "Wall Hydrant",
+            suction: "Suction Point",
+            cistern: "Cistern / Tank",
+            dry_hydrant: "Dry Hydrant"
         },
         locations: {
             sidewalk: "Sidewalk",
@@ -95,9 +97,9 @@ export default {
             green: "Green",
             white: "White"
         },
-        diameter_label: "DIAMETER",
+        diameter_label: "DIAMETER / SIZE",
         diameter_none: "Not specified",
-        color_label: "COLOR",
+        // color_label removed
         number_label: "NUMBER / REF",
         number_placeholder: "e.g. 1234",
         notes_label: "NOTE",

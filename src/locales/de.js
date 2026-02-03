@@ -77,8 +77,10 @@ export default {
         types: {
             underground: "Unterflur",
             pillar: "Überflur",
-            wall: "Wand",
-            suction: "Saugstelle"
+            wall: "Wandhydrant",
+            suction: "Saugstelle",
+            cistern: "Zisterne",
+            dry_hydrant: "Trockenhydrant"
         },
         locations: {
             sidewalk: "Gehweg",
@@ -96,9 +98,9 @@ export default {
             green: "Grün",
             white: "Weiß"
         },
-        diameter_label: "DURCHMESSER",
+        diameter_label: "DURCHMESSER / GRÖSSE",
         diameter_none: "Nicht angegeben",
-        color_label: "FARBE",
+        // color_label removed
         number_label: "NUMMER / REF",
         number_placeholder: "z.B. 1234",
         notes_label: "NOTIZ",

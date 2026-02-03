@@ -63,13 +63,38 @@ export function renderConfirmView() {
          </div>
 
          <!-- Type Selection (Grid) -->
-         <div class="space-y-3">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">${t('confirm.type_label')}</h3>
-            <div id="type-grid" class="grid grid-cols-5 gap-2">
-               <!-- JS Populated Small Grid -->
-            </div>
-            <input type="hidden" id="hydrant-type" value="pillar">
-         </div>
+          <div class="space-y-3">
+             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">${t('confirm.type_label')}</h3>
+             
+             <!-- Row 1: Main Types -->
+             <div id="type-grid-main" class="grid grid-cols-2 gap-2">
+                 <!-- JS Populated Main -->
+             </div>
+             
+             <!-- Row 2: Secondary Types -->
+             <div id="type-grid-secondary" class="grid grid-cols-4 gap-2">
+                 <!-- JS Populated Secondary -->
+             </div>
+             
+             <!-- SIGN Container (Moved here for proximity) -->
+             <div id="sign-container" class="hidden mt-2 border-t border-gray-800 pt-2 animate-fade-in">
+                 <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Hinweisschild für Unterflurhydrant</label>
+                 <div class="grid grid-cols-3 gap-2 bg-gray-800/50 p-1 rounded-xl">
+                     <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="yes">
+                        ✅ Ja
+                     </button>
+                     <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="no">
+                        ❌ Nein
+                     </button>
+                     <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="unknown">
+                        ❓ Unbekannt
+                     </button>
+                 </div>
+                 <input type="hidden" id="hydrant-sign" value="unknown">
+             </div>
+
+             <input type="hidden" id="hydrant-type" value="pillar">
+          </div>
 
          <!-- Position Selection -->
          <div class="space-y-3">
@@ -98,16 +123,11 @@ export function renderConfirmView() {
          <div class="space-y-4 pt-4 border-t border-gray-800">
             
             <!-- Diameter / Volume -->
-            <div id="diameter-container">
-                <label for="hydrant-diameter" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.diameter_label')}</label>
-                <select id="hydrant-diameter" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
-                    <option value="">${t('confirm.diameter_none')}</option>
-                    <option value="80">DN 80</option>
-                    <option value="100">DN 100</option>
-                    <option value="150">DN 150</option>
-                    <option value="50">DN 50</option>
-                </select>
-            </div>
+             <div id="diameter-container">
+                 <label for="hydrant-diameter" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.diameter_label')}</label>
+                 <!-- Using type="tel" to trigger numeric keypad on mobile but avoid spinner arrows -->
+                 <input type="tel" inputmode="numeric" pattern="[0-9]*" id="hydrant-diameter" placeholder="z.B. 80, 100" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none appearance-none">
+             </div>
 
             <div id="volume-container" class="hidden">
                 <label for="hydrant-volume" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen (m³)</label>
@@ -115,15 +135,11 @@ export function renderConfirmView() {
             </div>
 
             <div class="space-y-4">
-               <div>
-                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.color_label')}</label>
-                  <div class="flex flex-wrap gap-3" id="color-picker-container">
-                      <!-- JS Populated -->
-                  </div>
-                  <input type="hidden" id="hydrant-colour" value="">
-               </div>
+                <!-- SIGN Container removed from here -->
                
-               <div>
+
+               
+               <div id="ref-container">
                   <label for="hydrant-ref" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.number_label')}</label>
                   <input type="text" id="hydrant-ref" placeholder="${t('confirm.number_placeholder')}" maxlength="50" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                </div>
@@ -214,7 +230,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     const retryBtn = element.querySelector('#gps-retry-btn');
     const refInput = element.querySelector('#hydrant-ref');
     const noteInput = element.querySelector('#hydrant-note');
-    const colorInput = element.querySelector('#hydrant-colour');
+    const signInput = element.querySelector('#hydrant-sign');
 
     // DIRTY CHECKING LOGIC
     let hasChanges = false;
@@ -226,7 +242,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       const currentDiameter = diameterInput ? diameterInput.value : '';
       const currentRef = refInput ? refInput.value : '';
       const currentNote = noteInput ? noteInput.value : '';
-      const currentColor = colorInput ? colorInput.value : '';
+      const currentSign = signInput ? signInput.value : 'unknown';
       const currentVolume = volumeInput ? volumeInput.value.replace(' m3', '') : '';
 
       // Helper to safely get tag
@@ -246,14 +262,22 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       const diaChanged = (getTag('fire_hydrant:diameter') !== currentDiameter);
       const refChanged = (getTag('ref') !== currentRef);
       const noteChanged = ((getTag('note') || getTag('description')) !== currentNote);
-      const colChanged = (getTag('colour') !== currentColor);
+
+      // Sign check logic (approximate)
+      let signChanged = false;
+      if (currentSign === 'no') {
+        signChanged = (getTag('fire_hydrant:diameter:signed') !== 'no');
+      }
+      // We don't really track 'yes' or 'unknown' explicitly vs default absence, so logic is fuzzy.
+      // If it has 'no' tag but current is not no -> changed.
+      if (getTag('fire_hydrant:diameter:signed') === 'no' && currentSign !== 'no') signChanged = true;
 
       // Compare Location (Float precision tolerance)
       const latDiff = Math.abs(location.lat - initialData.lat);
       const lngDiff = Math.abs(location.lng - initialData.lng);
       const locChanged = (latDiff > 0.000001 || lngDiff > 0.000001);
 
-      hasChanges = (typeChanged || posChanged || diaChanged || refChanged || noteChanged || colChanged || locChanged);
+      hasChanges = (typeChanged || posChanged || diaChanged || refChanged || noteChanged || signChanged || locChanged);
 
       // Update UI
       if (submitBtn) {
@@ -280,45 +304,108 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       setTimeout(checkChanges, 300);
     }
 
-    // GRID OPTIONS (Emojis preferred by user)
-    const options = [
-      { id: 'pillar', label: t('confirm.types.pillar'), icon: '<span class="text-2xl">📮</span>' },
-      { id: 'underground', label: t('confirm.types.underground'), icon: '<span class="text-2xl">🕳️</span>' },
-      { id: 'wall', label: t('confirm.types.wall'), icon: '<span class="text-2xl">🧱</span>' },
-      { id: 'cistern', label: t('confirm.types.suction'), icon: '<span class="text-2xl">💧</span>' },
-      { id: 'dry_hydrant', label: 'Trocken', icon: '<span class="text-2xl">🌵</span>' }
+    // GRID OPTIONS UPDATED
+    const mainTypes = [
+      // SVG Icon for Pillar Hydrant (Red Pillar shape)
+      {
+        id: 'pillar',
+        label: t('confirm.types.pillar'),
+        icon: `<svg viewBox="0 0 24 24" class="w-10 h-10 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M7 21H17V19H15V11H17C17.55 11 18 10.55 18 10V8C18 7.45 17.55 7 17 7H15V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V7H7C6.45 7 6 7.45 6 8V10C6 10.55 6.45 11 7 11H9V19H7V21ZM11 5C11 4.45 11.45 4 12 4C12.55 4 13 4.45 13 5V7H11V5ZM7 8H9V10H7V8ZM15 8H17V10H15V8Z" fill="#DC2626"/>
+               </svg>`
+      },
+      { id: 'underground', label: t('confirm.types.underground'), icon: '<span class="text-4xl mb-1">🕳️</span>' }
+    ];
+    const subTypes = [
+      { id: 'dry_hydrant', label: t('confirm.types.dry_hydrant'), icon: '<span class="text-xl">🌵</span>' },
+      // Wall Hydrant SVG: A building with a small box on side
+      // Or simpler: A wall section with a small square
+      {
+        id: 'wall',
+        label: t('confirm.types.wall'),
+        icon: `<svg viewBox="0 0 24 24" class="w-8 h-8 drop-shadow-md" fill="none" class="text-gray-400" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M4 22H20V2H4V22ZM13 14H16V17H13V14Z" fill="currentColor"/>
+                 <path d="M12 12V19H17V12H12Z" stroke="#EF4444" stroke-width="2"/>
+               </svg>`
+      },
+      { id: 'cistern', label: t('confirm.types.cistern'), icon: '<span class="text-xl">🛢️</span>' },
+      // Suction Point SVG: River/Stream with plants
+      {
+        id: 'suction_point',
+        label: t('confirm.types.suction'),
+        icon: `<svg viewBox="0 0 24 24" class="w-8 h-8 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M22 17C22 17 19 14 15 14C11 14 9 17 5 17C2.5 17 2 15.5 2 15.5V19C2 19 4 21 8 21C12 21 14 18 18 18C21 18 22 19 22 19V17Z" fill="#3B82F6"/>
+                 <path d="M22 13C22 13 19 10 15 10C11 10 9 13 5 13C2.5 13 2 11.5 2 11.5V9.5C2 9.5 4 11 8 11C12 11 14 8 18 8C21 8 22 9 22 9V13Z" fill="#60A5FA"/>
+                 <circle cx="17" cy="5" r="2" fill="#FCD34D"/>
+               </svg>`
+      }
     ];
 
-    const grid = element.querySelector('#type-grid');
-    if (grid) {
-      grid.innerHTML = options.map(opt => `
-             <button type="button" class="option-btn aspect-square rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
+    const gridMain = element.querySelector('#type-grid-main');
+    const gridSub = element.querySelector('#type-grid-secondary');
+    const signContainer = element.querySelector('#sign-container');
+    const refContainer = element.querySelector('#ref-container');
+
+    if (gridMain && gridSub) {
+      // Render Main
+      gridMain.innerHTML = mainTypes.map(opt => `
+             <button type="button" class="option-btn h-24 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-[1.02] active:scale-95 transition flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
+                <span aria-hidden="true">${opt.icon}</span>
+                <span class="text-sm font-bold uppercase tracking-tight" aria-hidden="true">${opt.label}</span>
+             </button>
+       `).join('');
+
+      // Render Sub
+      gridSub.innerHTML = subTypes.map(opt => `
+             <button type="button" class="option-btn h-16 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
                 <span aria-hidden="true">${opt.icon}</span>
                 <span class="text-[9px] font-bold uppercase tracking-tight" aria-hidden="true">${opt.label}</span>
              </button>
-          `).join('');
+       `).join('');
 
       // Grid Logic
       const optionBtns = element.querySelectorAll('.option-btn');
       const updateGrid = (val) => {
         if (typeInput) typeInput.value = val;
+
         optionBtns.forEach(btn => {
           if (btn.dataset.value === val) {
-            btn.classList.add('border-red-500', 'bg-red-900/30', 'text-white', 'shadow-md', 'shadow-red-900/20');
+            btn.classList.add('border-green-500', 'bg-green-900/30', 'text-white', 'shadow-md');
             btn.classList.remove('border-transparent', 'bg-gray-800', 'text-gray-400');
           } else {
-            btn.classList.remove('border-red-500', 'bg-red-900/30', 'text-white', 'shadow-md', 'shadow-red-900/20');
+            btn.classList.remove('border-green-500', 'bg-green-900/30', 'text-white', 'shadow-md');
             btn.classList.add('border-transparent', 'bg-gray-800', 'text-gray-400');
           }
         });
 
+        // Visibility Toggles
+        // Suction Point: No Diameter, No Number.
+        // Cistern: No Diameter, Yes Volume, (Number? keep default)
+
         if (val === 'cistern') {
           if (volumeContainer) volumeContainer.classList.remove('hidden');
           if (diameterContainer) diameterContainer.classList.add('hidden');
+          if (refContainer) refContainer.classList.remove('hidden');
+        } else if (val === 'suction_point') {
+          if (volumeContainer) volumeContainer.classList.add('hidden');
+          if (diameterContainer) diameterContainer.classList.add('hidden');
+          if (refContainer) refContainer.classList.add('hidden');
         } else {
+          // Normal cases
           if (volumeContainer) volumeContainer.classList.add('hidden');
           if (diameterContainer) diameterContainer.classList.remove('hidden');
+          if (refContainer) refContainer.classList.remove('hidden');
         }
+
+        // Sign Container Logic
+        if (signContainer) {
+          if (val === 'underground') {
+            signContainer.classList.remove('hidden');
+          } else {
+            signContainer.classList.add('hidden');
+          }
+        }
+
         if (typeof checkChanges === 'function') checkChanges();
       };
 
@@ -332,6 +419,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         // Type
         let typeVal = 'pillar';
         if (nodeTags['emergency'] === 'water_tank') typeVal = 'cistern';
+        else if (nodeTags['emergency'] === 'suction_point') typeVal = 'suction_point';
         else if (nodeTags['fire_hydrant:type'] === 'dry_hydrant') typeVal = 'dry_hydrant';
         else if (nodeTags['fire_hydrant:type']) typeVal = nodeTags['fire_hydrant:type'];
 
@@ -352,11 +440,19 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         // Note
         if (noteInput && (nodeTags['note'] || nodeTags['description'])) noteInput.value = nodeTags['note'] || nodeTags['description'];
 
-        // Color (Complex because we have custom UI)
-        if (colorInput && nodeTags['colour']) {
-          colorInput.value = nodeTags['colour'];
-          // Timer needed because color UI is built below? No, it's built before this block usually? 
-          // Ah, color picker logic is further down. We should move pre-fill to end or ensure UI exists.
+        // Sign (Pre-calc)
+        if (signInput) {
+          if (nodeTags['fire_hydrant:diameter:signed'] === 'no' || nodeTags['ref:signed'] === 'no') {
+            // If it's explicitly NO
+            // We need to update sign UI
+            // We'll do it via updateSign logic below if we extract it, 
+            // or just set input and let init do it? 
+            // Let's set the input value for now, logic below handles UI state
+            signInput.value = 'no';
+          } else if (nodeTags['fire_hydrant:diameter:signed'] === 'yes') {
+            signInput.value = 'yes';
+          }
+          // else unknown
         }
       } else {
         updateGrid('pillar'); // Default
@@ -391,66 +487,38 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       updatePos('');
     }
 
-    // COLOR PICKER LOGIC
-    const colors = [
-      { value: "", label: t('confirm.locations.none'), hex: "transparent", border: "#4b5563" },
-      { value: "black", label: t('confirm.colors.black'), hex: "#000000", border: "#333" },
-      { value: "grey", label: t('confirm.colors.grey'), hex: "#808080", border: "#999" },
-      { value: "blue", label: t('confirm.colors.blue'), hex: "#3b82f6", border: "#3b82f6" },
-      { value: "red", label: t('confirm.colors.red'), hex: "#ef4444", border: "#ef4444" },
-      { value: "yellow", label: t('confirm.colors.yellow'), hex: "#fbbf24", border: "#fbbf24" },
-      { value: "green", label: t('confirm.colors.green'), hex: "#22c55e", border: "#22c55e" },
-      { value: "white", label: t('confirm.colors.white'), hex: "#ffffff", border: "#ddd" }
-    ];
-
-    const colorContainer = element.querySelector('#color-picker-container');
-    // const colorInput defined above
-
-    if (colorContainer && colorInput) {
-      colors.forEach(c => {
-        const btn = document.createElement('button');
-        btn.className = `w-10 h-10 rounded-full border-2 flex items-center justify-center transition hover:scale-110 focus:outline-none relative`;
-
-        btn.style.backgroundColor = c.hex;
-        btn.style.borderColor = c.border;
-
-        if (c.value === "") {
-          btn.innerHTML = '<span class="text-xs">🚫</span>';
+    // Sign Logic
+    const signBtns = element.querySelectorAll('.sign-option-btn');
+    const updateSign = (val) => {
+      if (signInput) signInput.value = val;
+      signBtns.forEach(btn => {
+        if (btn.dataset.value === val) {
+          btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
+          btn.classList.remove('text-gray-400', 'bg-gray-800');
+        } else {
+          btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
+          btn.classList.add('text-gray-400');
         }
-        btn.ariaLabel = c.label;
-
-        // Click Handler
-        btn.onclick = () => {
-          // Reset
-          Array.from(colorContainer.children).forEach(child => {
-            child.classList.remove('ring-4', 'ring-white/50', 'scale-110');
-            child.style.transform = 'scale(1)';
-          });
-
-          // Set Active
-          btn.classList.add('ring-4', 'ring-white/50', 'scale-110');
-          btn.style.transform = 'scale(1.1)';
-
-          // Set Value
-          colorInput.value = c.value;
-          if (typeof checkChanges === 'function') checkChanges();
-        };
-
-        // Pre-select if matches
-        if (editMode && initialData && initialData.tags && initialData.tags['colour'] === c.value) {
-          // Trigger visual select
-          setTimeout(() => btn.click(), 0);
-        }
-
-        colorContainer.appendChild(btn);
       });
+      if (typeof checkChanges === 'function') checkChanges();
+    };
+    signBtns.forEach(btn => {
+      btn.onclick = () => updateSign(btn.dataset.value);
+    });
+
+    // Initial Sign State
+    if (signInput && signInput.value) {
+      updateSign(signInput.value);
+    } else {
+      updateSign('unknown');
     }
+
 
 
     // Attach Listeners for Dirty Check
     if (editMode) {
       // Inputs
-      [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput].forEach(el => {
+      [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput, signInput].forEach(el => {
         if (el) el.addEventListener('input', checkChanges);
         if (el) el.addEventListener('change', checkChanges);
       });
@@ -584,19 +652,43 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           tags['fire_hydrant:position'] = selectedPos;
           delete tags['water_tank:volume']; // Cleanup collision
         }
+        else if (selectedType === 'suction_point') {
+          tags['emergency'] = 'suction_point';
+          tags['fire_hydrant:position'] = selectedPos;
+          delete tags['fire_hydrant:type'];
+          delete tags['water_tank:volume'];
+          delete tags['ref'];
+          delete tags['fire_hydrant:diameter'];
+        }
         else {
           tags['emergency'] = 'fire_hydrant';
           tags['fire_hydrant:type'] = selectedType;
           tags['fire_hydrant:position'] = selectedPos;
           delete tags['water_tank:volume'];
+
+          // Sign Logic
+          if (selectedType === 'underground' && signInput) {
+            const signVal = signInput.value;
+            // If NO -> explicit tags
+            if (signVal === 'no') {
+              tags['fire_hydrant:diameter:signed'] = 'no';
+              tags['ref:signed'] = 'no';
+            } else {
+              // If Yes/Unknown, we probably shouldn't FORCE delete if it exists,
+              // but for now, if user says "Yes Sign", maybe we should remove the "no" tags?
+              // Let's remove negation tags if user selects Yes
+              if (signVal === 'yes') {
+                if (tags['fire_hydrant:diameter:signed'] === 'no') delete tags['fire_hydrant:diameter:signed'];
+                if (tags['ref:signed'] === 'no') delete tags['ref:signed'];
+              }
+            }
+          }
         }
 
         if (diameterInput && diameterInput.value) tags['fire_hydrant:diameter'] = diameterInput.value;
         const ref = element.querySelector('#hydrant-ref');
         if (ref && ref.value) tags['ref'] = ref.value;
 
-        const col = element.querySelector('#hydrant-colour');
-        if (col && col.value) tags['colour'] = col.value;
         const note = element.querySelector('#hydrant-note');
         if (note && note.value) tags['note'] = note.value; // Prefer note over description?
 

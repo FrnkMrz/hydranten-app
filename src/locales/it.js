@@ -77,7 +77,9 @@ export default {
             underground: "Sottosuolo",
             pillar: "Colonna",
             wall: "Muro",
-            suction: "Punto di aspirazione"
+            suction: "Punto di aspirazione",
+            cistern: "Cisterna / Serbatoio",
+            dry_hydrant: "Idrante Secco"
         },
         locations: {
             sidewalk: "Marciapiede",
@@ -88,7 +90,7 @@ export default {
         },
         diameter_label: "DIAMETRO",
         diameter_none: "Non specificato",
-        color_label: "COLORE",
+        // color_label removed
         number_label: "NUMERO / RIF",
         number_placeholder: "es. 1234",
         notes_label: "NOTA",

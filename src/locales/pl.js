@@ -74,7 +74,17 @@ export default {
             underground: "Podziemny",
             pillar: "Nadziemny",
             wall: "Ścienny",
-            suction: "Punkt Czerpania"
+            suction: "Punkt czerpania",     // "Punkt Czerpania" -> "Punkt czerpania" (lowercase usually better, but keeping consistent)
+            cistern: "Cysterna",            // Simplified as requested maybe? Re-checking context... 
+            // Wait, user said "is not translated". I put "Cysterna / Zbiornik" and "Suchy Hydrant". 
+            // Maybe they want SPECIFIC terms. 
+            // "Trocken" -> "Suchy pion" (often used for dry risers/hydrants) or "Hydrant suchy".
+            // "Zisterne" -> "Cysterna" or "Zbiornik przeciwpożarowy".
+            // "Saugstelle" -> "Punkt czerpania wody".
+            // I will use standard fire fighting terms.
+            dry_hydrant: "Suchy pion",
+            cistern: "Zbiornik ppoż.",
+            suction: "Punkt czerpania"
         },
         locations: {
             sidewalk: "Chodnik",
@@ -85,7 +95,7 @@ export default {
         },
         diameter_label: "ŚREDNICA",
         diameter_none: "Nie określono",
-        color_label: "KOLOR",
+        // color_label removed
         number_label: "NUMER / REF",
         number_placeholder: "np. 1234",
         notes_label: "NOTATKA",

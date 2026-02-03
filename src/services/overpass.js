@@ -29,7 +29,7 @@ export const overpass = {
         // Construct Query: [out:json][timeout:45]; node["emergency"="fire_hydrant"](s,w,n,e); out skel;
         const query = `
             [out:json][timeout:45];
-            node["emergency"="fire_hydrant"](${s},${w},${n},${e});
+            node["emergency"~"fire_hydrant|water_tank|suction_point"](${s},${w},${n},${e});
             out skel;
         `;
 

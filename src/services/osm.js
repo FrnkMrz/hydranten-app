@@ -9,9 +9,49 @@ const c = {
 
 import { getAuthHeader } from './auth.js';
 
+/**
+ * Normalize tags before sending to OSM
+ * Enforces rules like: cistern -> water_tank, street -> lane, etc.
+ */
+function normalizeTags(tags) {
+    const t = { ...tags }; // Copy
+
+    // 1. Cistern Handling
+    // If it was marked internally as cistern (we might track this via a temp tag or infer from emergency=water_tank)
+    // But confirm-view sets emergency=water_tank directly now. 
+    // Just ensure if type is cistern (legacy?), we map it.
+    if (t['fire_hydrant:type'] === 'cistern') {
+        t['emergency'] = 'water_tank';
+        delete t['fire_hydrant:type'];
+    }
+
+    // 2. Suction Point
+    if (t['emergency'] === 'suction_point') {
+        // Ensure regular hydrant tags don't conflict if they exist
+        delete t['fire_hydrant:type'];
+        // Suction points might have diameter, keeping it is fine.
+    }
+
+    // 3. Position Mapping: street -> lane
+    if (t['fire_hydrant:position'] === 'street') {
+        t['fire_hydrant:position'] = 'lane';
+    }
+
+    // 4. Underground Sign Logic Cleanup
+    // If signed=no tags are present, ensure they are correct strings
+    if (t['fire_hydrant:diameter:signed'] === 'no') {
+        t['ref:signed'] = 'no'; // Enforce consistency
+    }
+
+    return t;
+}
+
 export async function createHydrant(data, authHeader, log = console.log) {
     try {
         const { lat, lng, tags } = data;
+
+        // Normalize Tags
+        const finalTags = normalizeTags(tags);
 
         // 1. Reverse Geocoding (Nominatim)
         // We do this concurrently or before changeset? 
@@ -88,7 +128,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
         log(c.info("Lade Hydranten hoch..."));
 
         let tagsXml = '';
-        for (const [k, v] of Object.entries(tags)) {
+        for (const [k, v] of Object.entries(finalTags)) {
             if (v) tagsXml += `<tag k="${k}" v="${v}"/>`;
         }
 
@@ -129,7 +169,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
                 id: nodeId,
                 lat: parseFloat(lat),
                 lon: parseFloat(lng),
-                tags: tags,
+                tags: finalTags,
                 timestamp: Date.now()
             };
             created.push(newNode);
@@ -188,6 +228,8 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
     // 1. Create Changeset (Reusable logic ideally, but keeping it simple/local for now)
     log(c.info("Starte Update-Prozess..."));
 
+    const finalTags = normalizeTags(tags);
+
     // Note: We could reuse the same changeset logic from createHydrant if we refactored, 
     // but to be safe and isolated, we duplicate the minimal changeset creation here.
 
@@ -216,7 +258,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
     try {
         // 2. Build Node XML
         let tagsXml = '';
-        for (const [k, v] of Object.entries(tags)) {
+        for (const [k, v] of Object.entries(finalTags)) {
             if (v && v.trim() !== "") tagsXml += `<tag k="${k}" v="${v}"/>`;
         }
 
