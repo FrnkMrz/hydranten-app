@@ -1,92 +1,99 @@
+// src/services/overpass.js
 
-// Service to interact with Overpass API
+// Liste bekannter, stabiler Overpass-Instanzen
+const SERVERS = [
+    'https://overpass-api.de/api/interpreter',       // Hauptserver (DE)
+    'https://overpass.kumi.systems/api/interpreter', // Starker Backup
+    'https://maps.mail.ru/osm/tools/overpass/api/interpreter' // Weiterer Backup
+];
 
-// Caching to avoid duplicate requests for same areas (simple implementation)
-// We use a Set of loaded tile IDs or simply debounce. 
-// For simplicity: We just fetch and Leaflet handles marker deduplication by ID if we implement it, 
-// OR we just plain clear and redraw (easier but flashes),
-// OR we keep a Set of known node IDs.
+/**
+ * Versucht eine Query auf mehreren Servern nacheinander auszuführen
+ */
+async function fetchWithFallback(query, attempt = 0) {
+    if (attempt >= SERVERS.length) {
+        throw new Error("Alle Overpass-Server sind nicht erreichbar.");
+    }
 
-const loadedNodes = new Set();
-// Bounding box buffer ratio (fetch a bit more than visible)
-const BUFFER = 0.2;
+    const server = SERVERS[attempt];
+    // Timeout etwas reduziert pro Request für schnelleren Wechsel
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+    try {
+        // console.log(`Versuche Server ${attempt + 1}/${SERVERS.length}: ${server}`);
+
+        const response = await fetch(server, {
+            method: 'POST',
+            body: `data=${encodeURIComponent(query)}`,
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (response.status === 429) {
+            // Rate Limit: Kurz warten und nächsten Server probieren
+            // console.warn("Rate Limit (429). Warte kurz...");
+            await new Promise(r => setTimeout(r, 2000));
+            return fetchWithFallback(query, attempt + 1);
+        }
+
+        if (!response.ok) {
+            if (response.status === 400) throw new Error(`Bad Request (400)`); // Syntax error, don't retry
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        return await response.json();
+
+    } catch (err) {
+        clearTimeout(timeoutId);
+        // console.warn(`Server ${server} fehlgeschlagen:`, err.message);
+        // Rekursiver Aufruf des nächsten Servers
+        return fetchWithFallback(query, attempt + 1);
+    }
+}
 
 export const overpass = {
-    /**
-     * Fetch hydrants within the given Leaflet bounds.
-     * @param {L.LatLngBounds} bounds 
-     * @returns {Promise<Array>} Array of hydrant objects {id, lat, lon}
-     */
     async fetchHydrants(bounds) {
-        // Pad bounds
-        const south = bounds.getSouth() - (bounds.getSouth() - bounds.getNorth()) * 0.1; // roughly
-        // Let's just use raw coords
+        // Query Optimierung: Timeout im Overpass QL selbst setzen
+        // [timeout:25] damit der Server selbst abbricht, bevor unser Fetch-Timeout greift
         const s = bounds.getSouth();
         const n = bounds.getNorth();
         const w = bounds.getWest();
         const e = bounds.getEast();
 
-        // Construct Query: [out:json][timeout:45]; node["emergency"="fire_hydrant"](s,w,n,e); out skel;
         const query = `
-            [out:json][timeout:45];
+            [out:json][timeout:25];
             node["emergency"~"fire_hydrant|water_tank|suction_point"](${s},${w},${n},${e})->.n;
             .n out body;
             way(bn.n);
             out skel;
         `;
 
-        const url = 'https://overpass-api.de/api/interpreter';
-
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 45000); // 45s timeout
-
-            const response = await fetch(url, {
-                method: 'POST',
-                body: `data=${encodeURIComponent(query)}`,
-                signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-                // Too many requests (429) -> just return empty, don't crash
-                if (response.status === 429) {
-                    console.warn("Overpass Rate Limit hit. Skipping.");
-                    return [];
-                }
-                throw new Error(`Overpass Error: ${response.status}`);
-            }
-
-            const data = await response.json();
+            const data = await fetchWithFallback(query);
             const elements = data.elements || [];
 
-            // Post-Processing: Separate Nodes and Ways
+            // Post-Processing wie gehabt
             const nodes = [];
             const lockedNodeIds = new Set();
 
             elements.forEach(el => {
                 if (el.type === 'node') {
                     nodes.push(el);
-                } else if (el.type === 'way') {
-                    // Collect all node IDs referenced by ways
-                    if (el.nodes) {
-                        el.nodes.forEach(nid => lockedNodeIds.add(nid));
-                    }
+                } else if (el.type === 'way' && el.nodes) {
+                    el.nodes.forEach(nid => lockedNodeIds.add(nid));
                 }
             });
 
-            // Tag nodes as locked if they are part of a way
             return nodes.map(node => {
-                if (lockedNodeIds.has(node.id)) {
-                    node._isPartOfWay = true; // Internal flag
-                }
+                if (lockedNodeIds.has(node.id)) node._isPartOfWay = true;
                 return node;
             });
 
         } catch (err) {
-            console.error("Fetch Hydrants failed:", err);
-            throw err; // Re-throw to allow UI to handle it
+            // console.error("Overpass Totalausfall:", err);
+            throw err; // WICHTIG: Fehler werfen, damit UI Toast erscheint!
         }
     }
 };
