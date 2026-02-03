@@ -48,12 +48,12 @@ export const auth = {
         const verifier = generateRandomString(128);
         const challenge = await generateChallenge(verifier);
 
-        // Stateless PKCE: Encode verifier in state
-        const stateData = {
-            csrf: generateRandomString(16),
-            v: verifier
-        };
-        const state = btoa(JSON.stringify(stateData)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        // SECURITY: Verifier lokal speichern, NICHT in den State packen!
+        localStorage.setItem('osm_pkce_verifier', verifier);
+
+        // State nur noch für CSRF nutzen
+        const state = generateRandomString(16);
+        localStorage.setItem('osm_auth_state', state);
 
         const scope = 'read_prefs write_api';
         const url = `https://www.openstreetmap.org/oauth2/authorize?response_type=code&client_id=${this.options.client_id}&redirect_uri=${encodeURIComponent(this.options.redirect_uri)}&scope=${encodeURIComponent(scope)}&code_challenge=${challenge}&code_challenge_method=S256&state=${state}`;
@@ -63,29 +63,20 @@ export const auth = {
 
     // 2. Exchange Code (Call this on callback)
     async exchangeCode(code) {
-        // Try getting verifier from State (Stateless)
+        // State prüfen (CSRF Schutz)
         const params = new URLSearchParams(window.location.search);
-        const state = params.get('state');
-        let verifier = null;
+        const serverState = params.get('state');
+        const localState = localStorage.getItem('osm_auth_state');
 
-        if (state) {
-            try {
-                // Decode Base64URL
-                const json = atob(state.replace(/-/g, '+').replace(/_/g, '/'));
-                const data = JSON.parse(json);
-                verifier = data.v;
-                console.log("Stateless PKCE: Recovered verifier from state");
-            } catch (e) {
-                console.error("State decode failed", e);
-            }
+        if (serverState && localState && serverState !== localState) {
+            console.error("State Mismatch!", { server: serverState, local: localState });
+            throw new Error("Security Alert: State mismatch! Möglicher CSRF Angriff.");
         }
 
-        // Fallback to LocalStorage (Legacy/Backup)
-        if (!verifier) {
-            verifier = localStorage.getItem('osm_pkce_verifier');
-        }
+        // Verifier aus Storage holen
+        const verifier = localStorage.getItem('osm_pkce_verifier');
 
-        if (!verifier) throw new Error("PKCE Verifier missing (State & Storage empty). Login failed.");
+        if (!verifier) throw new Error("PKCE Verifier missing (Login Session expired?). Please retry login.");
 
         const bodyParams = new URLSearchParams({
             grant_type: 'authorization_code',
@@ -110,10 +101,13 @@ export const auth = {
         }
 
         const data = await res.json();
+
         // Save Token
         localStorage.setItem('osm-auth', JSON.stringify(data));
-        // Cleanup Verifier
-        localStorage.removeItem('osm_pkce_verifier'); // Clean legacy if present
+
+        // Cleanup Security Items
+        localStorage.removeItem('osm_pkce_verifier');
+        localStorage.removeItem('osm_auth_state');
 
         return data.access_token;
     },
