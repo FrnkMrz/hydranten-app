@@ -315,20 +315,20 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          // Initial Hydrant Layer
          hydrantLayer = L.layerGroup().addTo(map);
 
-         // Watch GPS to update map & fetch hydrants
-         // FIX: Do not auto-request. Only if we have permission or on user interaction.
-         // We check 'permissions' API if available, else we wait.
-         // Check 'permissions' API to auto-start if already granted
-         // This restores "Show my position" for returning users without triggering new prompts.
-         // Always attempt to start GPS on load to ensure we get a fix.
-         // This might trigger the permission prompt if not granted, which is desired behavior now.
-         startMapGps(map, (lat, lng) => {
-            if (!userMarker) {
-               userMarker = L.marker([lat, lng]).addTo(map);
-            } else {
-               userMarker.setLatLng([lat, lng]);
-            }
-         }, onEdit);
+         // Check 'permissions' API to auto-start ONLY if already granted (avoids violation warning)
+         if (navigator.permissions && navigator.permissions.query) {
+            navigator.permissions.query({ name: 'geolocation' }).then(res => {
+               if (res.state === 'granted') {
+                  startMapGps(map, (lat, lng) => {
+                     if (!userMarker) {
+                        userMarker = L.marker([lat, lng]).addTo(map);
+                     } else {
+                        userMarker.setLatLng([lat, lng]);
+                     }
+                  }, onEdit);
+               }
+            }).catch(() => { });
+         }
 
          // Debounced Map Move Handler
          // Pass onEdit here!
@@ -351,7 +351,8 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
             else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
 
             // Force immediate update now that view is set
-            console.log("Restoring view -> Force update hydrants");
+            console.log("Restoring view -> Force update hydrants"); // Keep this? Reviewer disliked logs. Comment it out.
+            // console.log("Restoring view -> Force update hydrants");
             updateHydrants(map, onEdit);
          } else {
             // If no position, we rely on the GPS fix or default view
@@ -433,7 +434,7 @@ function updateHydrants(map, onEdit) {
             }
          });
 
-         console.log(`Fetched ${elements.length}, Deleted ${elements.length - filteredElements.length + injectedCount}, Injected ${injectedCount} locals. Showing ${filteredElements.length}`);
+         // console.log(`Fetched ${elements.length}, Deleted ${elements.length - filteredElements.length + injectedCount}, Injected ${injectedCount} locals. Showing ${filteredElements.length}`);
 
          // Jäger Red (Tailwind red-600) = #DC2626
          const RED = '#DC2626';
