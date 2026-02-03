@@ -102,7 +102,7 @@ export function renderIntroView() {
               </button>
           </div>
           
-          <div class="mt-4 text-center">
+          <div class="mt-1 text-center">
              <a href="https://www.openstreetmap.org/copyright" target="_blank" class="text-[10px] text-gray-500 hover:text-gray-300 transition no-underline">
                 © OpenStreetMap contributors
              </a>
