@@ -110,6 +110,12 @@ export default {
         },
         diameter_label: "DIAMETER / SIZE",
         diameter_none: "Not specified",
+        sign_label: "Underground Hydrant Sign",
+        sign_options: {
+            yes: "Yes",
+            no: "No",
+            unknown: "Unknown"
+        },
         // color_label removed
         number_label: "NUMBER / REF",
         number_placeholder: "e.g. 1234",

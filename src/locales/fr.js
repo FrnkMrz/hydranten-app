@@ -55,6 +55,7 @@ export default {
     confirm: {
         title: "Vérifier les données",
         title_edit: "Modifier la borne",
+        back_btn_label: "Retour",
         delete_btn: "Supprimer",
         delete_confirm: "Voulez-vous vraiment supprimer ?",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
@@ -96,6 +97,12 @@ export default {
         },
         diameter_label: "DIAMÈTRE / TAILLE",
         diameter_none: "Non spécifié",
+        sign_label: "Panneau d'Hydrante Souterrain",
+        sign_options: {
+            yes: "Oui",
+            no: "Non",
+            unknown: "Inconnu"
+        },
         // color_label removed
         number_label: "NUMÉRO / RÉF",
         number_placeholder: "ex. 1234",

@@ -102,6 +102,12 @@ export default {
         },
         diameter_label: "ÇAP / BOYUT",
         diameter_none: "Belirtilmemiş",
+        sign_label: "Yeraltı Hidrant İşareti",
+        sign_options: {
+            yes: "Evet",
+            no: "Hayır",
+            unknown: "Bilinmiyor"
+        },
         // color_label removed
         number_label: "NUMARA / REF",
         number_placeholder: "örn. 1234",

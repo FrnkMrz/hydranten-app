@@ -102,6 +102,12 @@ export default {
         },
         diameter_label: "DIAMETRO",
         diameter_none: "Non specificato",
+        sign_label: "Segnale Idrante Sotterraneo",
+        sign_options: {
+            yes: "Sì",
+            no: "No",
+            unknown: "Sconosciuto"
+        },
         // color_label removed
         number_label: "NUMERO / RIF",
         number_placeholder: "es. 1234",

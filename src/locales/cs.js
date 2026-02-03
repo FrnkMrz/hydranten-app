@@ -94,6 +94,12 @@ export default {
         },
         diameter_label: "PRŮMĚR / VELIKOST",
         diameter_none: "Neuvedeno",
+        sign_label: "Značka Podzemního Hydrantu",
+        sign_options: {
+            yes: "Ano",
+            no: "Ne",
+            unknown: "Neznámé"
+        },
         // color_label removed
         number_label: "ČÍSLO / REF",
         number_placeholder: "např. 1234",

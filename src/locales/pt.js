@@ -96,6 +96,12 @@ export default {
         },
         diameter_label: "DIÂMETRO / TAMANHO",
         diameter_none: "Não especificado",
+        sign_label: "Sinal de Hidrante Subterrâneo",
+        sign_options: {
+            yes: "Sim",
+            no: "Não",
+            unknown: "Desconhecido"
+        },
         // color_label removed
         number_label: "NÚMERO / REF",
         number_placeholder: "ex. 1234",

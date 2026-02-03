@@ -57,6 +57,7 @@ export default {
     confirm: {
         title: "Potwierdź Dane",
         title_edit: "Edytuj Hydrant",
+        back_btn_label: "Wstecz",
         cancel_btn: "Anuluj",
         delete_btn: "Usuń",
         delete_confirm: "Czy na pewno usunąć hydrant?",
@@ -107,6 +108,12 @@ export default {
         },
         diameter_label: "ŚREDNICA",
         diameter_none: "Nie określono",
+        sign_label: "Znak Hydrantu Podziemnego",
+        sign_options: {
+            yes: "Tak",
+            no: "Nie",
+            unknown: "Nieznane"
+        },
         // color_label removed
         number_label: "NUMER / REF",
         number_placeholder: "np. 1234",

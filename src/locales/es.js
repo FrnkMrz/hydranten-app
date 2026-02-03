@@ -56,6 +56,7 @@ export default {
     confirm: {
         title: "Confirmar datos",
         title_edit: "Editar Hidrante",
+        back_btn_label: "Atrás",
         delete_btn: "Eliminar",
         delete_confirm: "¿Realmente eliminar el hidrante?",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
@@ -97,6 +98,12 @@ export default {
         },
         diameter_label: "DIÁMETRO / TAMAÑO",
         diameter_none: "No especificado",
+        sign_label: "Señal de hidrante subterráneo",
+        sign_options: {
+            yes: "Sí",
+            no: "No",
+            unknown: "Desconocido"
+        },
         // color_label removed
         number_label: "NÚMERO / REF",
         number_placeholder: "ej. 1234",

@@ -102,6 +102,12 @@ export default {
         },
         diameter_label: "지름 / 크기",
         diameter_none: "지정되지 않음",
+        sign_label: "지하 소화전 표지판",
+        sign_options: {
+            yes: "예",
+            no: "아니요",
+            unknown: "알 수 없음"
+        },
         // color_label removed
         number_label: "번호 / 참조",
         number_placeholder: "예: 1234",

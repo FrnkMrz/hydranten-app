@@ -111,6 +111,12 @@ export default {
         },
         diameter_label: "DURCHMESSER / GRÖSSE",
         diameter_none: "Nicht angegeben",
+        sign_label: "Hinweisschild für Unterflurhydrant",
+        sign_options: {
+            yes: "Ja",
+            no: "Nein",
+            unknown: "Unbekannt"
+        },
         // color_label removed
         number_label: "NUMMER / REF",
         number_placeholder: "z.B. 1234",

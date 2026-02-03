@@ -102,6 +102,12 @@ export default {
         },
         diameter_label: "PROMJER / VELIČINA",
         diameter_none: "Nije navedeno",
+        sign_label: "Znak Podzemnog Hidranta",
+        sign_options: {
+            yes: "Da",
+            no: "Ne",
+            unknown: "Nepoznato"
+        },
         // color_label removed
         number_label: "BROJ / REF",
         number_placeholder: "npr. 1234",

@@ -102,6 +102,12 @@ export default {
         },
         diameter_label: "直径 / 尺寸",
         diameter_none: "未指定",
+        sign_label: "地下消火栓标志",
+        sign_options: {
+            yes: "是",
+            no: "否",
+            unknown: "未知"
+        },
         // color_label removed
         number_label: "编号 / 参考",
         number_placeholder: "例如 1234",

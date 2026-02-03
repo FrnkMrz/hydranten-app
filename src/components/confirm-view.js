@@ -75,16 +75,16 @@ export function renderConfirmView() {
              
              <!-- SIGN Container (Moved here for proximity) -->
              <div id="sign-container" class="hidden mt-2 border-t border-gray-800 pt-2 animate-fade-in">
-                 <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Hinweisschild für Unterflurhydrant</label>
+                 <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.sign_label') || 'Hinweisschild'}</label>
                  <div class="grid grid-cols-3 gap-2 bg-gray-800/50 p-1 rounded-xl">
                      <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="yes">
-                        ✅ Ja
+                        ✅ ${t('confirm.sign_options.yes') || 'Ja'}
                      </button>
                      <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="no">
-                        ❌ Nein
+                        ❌ ${t('confirm.sign_options.no') || 'Nein'}
                      </button>
                      <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="unknown">
-                        ❓ Unbekannt
+                        ❓ ${t('confirm.sign_options.unknown') || 'Unbekannt'}
                      </button>
                  </div>
                  <input type="hidden" id="hydrant-sign" value="unknown">

@@ -86,6 +86,12 @@ export default {
         },
         diameter_label: "DIAMETER / GROOTTE",
         diameter_none: "Niet gespecificeerd",
+        sign_label: "Ondergronds Hydrantenbord",
+        sign_options: {
+            yes: "Ja",
+            no: "Nee",
+            unknown: "Onbekend"
+        },
         // color_label removed
         number_label: "NUMMER / REF",
         number_placeholder: "bijv. 1234",
