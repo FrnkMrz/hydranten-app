@@ -54,7 +54,7 @@ export function renderIntroView() {
       </div>
 
       <!-- Content (Bottom 70%) -->
-      <div class="flex-grow flex flex-col items-center z-10 w-full max-w-sm mx-auto px-6 overflow-y-auto pb-4">
+      <div class="flex-grow flex flex-col items-center z-10 w-full max-w-sm mx-auto px-6 overflow-y-auto pb-4 no-scrollbar">
          
          <!-- Hero Title -->
          <div class="text-center mt-6 mb-8">
