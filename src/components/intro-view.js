@@ -162,7 +162,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                  <h3 class="text-xl font-bold text-white mb-4">${t('intro.info_legal')}</h3>
                  
                  <div class="space-y-4 text-sm text-gray-300">
-                    <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v1.0 Beta)</p>
+                     <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v1.3.0)</p>
                     
                     <div class="border-l-2 border-gray-600 pl-3 py-1">
                         <h4 class="font-bold text-white mb-1">${t('intro.info_impressum')}</h4>
@@ -184,7 +184,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 
                      <div>
                          <h4 class="font-bold text-white">${t('intro.info_license')}</h4>
-                         <p>Data © OpenStreetMap Contributors.</p>
+                         <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" class="text-blue-400 hover:text-blue-300 underline">© OpenStreetMap contributors</a>.</p>
                          <p>Code: MIT License</p>
                          <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" class="text-blue-400 hover:text-blue-300 underline mt-1 block">
                              📂 ${t('intro.info_github')}
