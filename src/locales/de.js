@@ -63,6 +63,8 @@ export default {
         retry_gps_aria: "GPS Position erneut suchen",
         delete_btn: "Löschen",
         delete_confirm: "Hydrant wirklich löschen?",
+        delete_confirm_cistern: "Zisterne wirklich löschen?",
+        delete_confirm_suction: "Saugstelle wirklich löschen?",
         save_btn: "Speichern",
         position_adjustable: "Position anpassbar",
         position_moved: "Position angepasst",

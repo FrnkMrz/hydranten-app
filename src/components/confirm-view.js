@@ -185,7 +185,16 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         // Translate aria-label if possible, or leave/update
         delBtn.setAttribute('aria-label', t('confirm.delete_btn'));
         delBtn.onclick = () => {
-          if (confirm(t('confirm.delete_confirm'))) {
+          let confirmMsg = t('confirm.delete_confirm');
+          if (initialData.tags) {
+            if (initialData.tags['emergency'] === 'water_tank') {
+              confirmMsg = t('confirm.delete_confirm_cistern') || confirmMsg;
+            } else if (initialData.tags['emergency'] === 'suction_point') {
+              confirmMsg = t('confirm.delete_confirm_suction') || confirmMsg;
+            }
+          }
+
+          if (confirm(confirmMsg)) {
             onDelete(initialData.id, initialData.version);
           }
         };
