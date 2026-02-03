@@ -17,8 +17,7 @@ L.Icon.Default.mergeOptions({
 export function renderConfirmView() {
   return `
     <div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in pb-safe">
-      // Top: Map (Compact Hero 25%) 
-      // Increased z-indices for overlays to ensuring visibility over map (Leaflet can be high z-index)
+      <!-- Top: Map (Compact Hero 25%) -->
       <div class="relative w-full h-[25vh] bg-gray-800 shrink-0">
         
         <!-- MAIN: Map -->
@@ -313,28 +312,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       }
     };
 
-    // ... skipping listener code ...
 
-    // Sign Logic in SUBMIT (Updating tags)
-    if (selectedType === 'underground' && signInput) {
-      const signVal = signInput.value;
-      // If NO -> explicit tags
-      if (signVal === 'no') {
-        tags['fire_hydrant:diameter:signed'] = 'no';
-        tags['ref:signed'] = 'no';
-      }
-      else if (signVal === 'yes') {
-        // Explicit Yes
-        tags['fire_hydrant:diameter:signed'] = 'yes';
-        // Maybe ref:signed too? Let's stick to diameter for now or consistent?
-        // The original code tried to delete 'no'. Let's overwrite.
-        if (tags['ref:signed'] === 'no') delete tags['ref:signed']; // Remove conflict
-      } else {
-        // Unknown -> Remove tags if they exist (Reset to default)
-        delete tags['fire_hydrant:diameter:signed'];
-        delete tags['ref:signed'];
-      }
-    }
 
     // Attach Listeners for Dirty Check
     if (editMode) {
@@ -719,14 +697,15 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
             if (signVal === 'no') {
               tags['fire_hydrant:diameter:signed'] = 'no';
               tags['ref:signed'] = 'no';
+            }
+            else if (signVal === 'yes') {
+              // Explicit Yes
+              tags['fire_hydrant:diameter:signed'] = 'yes';
+              if (tags['ref:signed'] === 'no') delete tags['ref:signed']; // Remove conflict
             } else {
-              // If Yes/Unknown, we probably shouldn't FORCE delete if it exists,
-              // but for now, if user says "Yes Sign", maybe we should remove the "no" tags?
-              // Let's remove negation tags if user selects Yes
-              if (signVal === 'yes') {
-                if (tags['fire_hydrant:diameter:signed'] === 'no') delete tags['fire_hydrant:diameter:signed'];
-                if (tags['ref:signed'] === 'no') delete tags['ref:signed'];
-              }
+              // Unknown -> Remove tags if they exist (Reset to default)
+              delete tags['fire_hydrant:diameter:signed'];
+              delete tags['ref:signed'];
             }
           }
         }
