@@ -87,10 +87,6 @@ export function renderIntroView() {
              ${t('intro.start_btn')}
           </button>
           
-          <p class="text-[10px] text-center text-gray-500 mb-6 leading-tight max-w-[280px] mx-auto">
-             ${t('intro.disclaimer_text')}
-          </p>
-          
           <div class="flex items-center gap-3">
               <!-- Language Flag -->
               <button id="lang-btn" class="w-12 h-10 shrink-0 rounded-xl bg-white/5 text-2xl hover:bg-white/10 transition flex items-center justify-center border border-white/10" aria-label="${t('intro.lang_btn_aria') || 'Language / Sprache'}">
@@ -172,7 +168,13 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                  <h3 class="text-xl font-bold text-white mb-4">${t('intro.info_legal')}</h3>
                  
                  <div class="space-y-4 text-sm text-gray-300">
-                     <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v1.3.0)</p>
+                     <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v1.3.1)</p>
+                     
+                     <!-- Disclaimer Moved Here -->
+                     <div class="bg-red-900/20 border border-red-500/30 p-3 rounded-xl text-red-200 text-xs mb-4">
+                         <strong>⚠️ WICHTIG:</strong><br>
+                         ${t('intro.disclaimer_text')}
+                     </div>
                     
                     <div class="border-l-2 border-gray-600 pl-3 py-1">
                         <h4 class="font-bold text-white mb-1">${t('intro.info_impressum')}</h4>
