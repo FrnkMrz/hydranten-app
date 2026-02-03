@@ -55,6 +55,48 @@ function normalizeTags(tags) {
     return t;
 }
 
+/**
+ * Reverse Geocoding Helper
+ */
+async function getLocationName(lat, lng, log) {
+    log(c.info("Ermittle Standort-Namen (Nominatim)..."));
+    let locationStr = "Unbekannt";
+
+    try {
+        const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
+            headers: {
+                'User-Agent': 'Hydranten-Jaeger-App/1.3.0'
+            }
+        });
+        if (nomRes.ok) {
+            const nomData = await nomRes.json();
+            const a = nomData.address || {};
+
+            // Try to build: "91234 Schnaittach, Hauptstraße"
+            const zip = a.postcode || "";
+            const city = a.city || a.town || a.village || a.municipality || "Ort";
+            const street = a.road || a.pedestrian || a.footway || a.path || "";
+
+            if (street && zip) {
+                locationStr = `${zip} ${city}, ${street}`;
+            } else if (zip) {
+                locationStr = `${zip} ${city}`;
+            } else if (street) {
+                locationStr = `${city}, ${street}`;
+            } else {
+                locationStr = city;
+            }
+
+            log(c.success(`Standort: ${locationStr} (${nomData.display_name})`));
+        } else {
+            log(c.err("Nominatim Fehler: " + nomRes.status));
+        }
+    } catch (e) {
+        log(c.err("Nominatim Exception: " + e.message));
+    }
+    return locationStr;
+}
+
 export async function createHydrant(data, authHeader, log = console.log) {
     try {
         const { lat, lng, tags } = data;
@@ -62,47 +104,8 @@ export async function createHydrant(data, authHeader, log = console.log) {
         // Normalize Tags
         const finalTags = normalizeTags(tags);
 
-        // 1. Reverse Geocoding (Nominatim)
-        // We do this concurrently or before changeset? 
-        // Doing it before allows us to put address in changeset comment.
-        log(c.info("Ermittle Standort-Namen (Nominatim)..."));
-
-        let locationStr = "Unbekannt";
-
-        try {
-            const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
-                headers: {
-                    'User-Agent': 'Hydranten-Jaeger-App/1.3.0'
-                }
-            });
-            if (nomRes.ok) {
-                const nomData = await nomRes.json();
-                const a = nomData.address || {};
-
-                // Try to build: "91234 Schnaittach, Hauptstraße"
-                const zip = a.postcode || "";
-                const city = a.city || a.town || a.village || a.municipality || "Ort";
-                const street = a.road || a.pedestrian || a.footway || a.path || "";
-
-                if (street && zip) {
-                    locationStr = `${zip} ${city}, ${street}`;
-                } else if (zip) {
-                    locationStr = `${zip} ${city}`;
-                } else if (street) {
-                    locationStr = `${city}, ${street}`;
-                } else {
-                    locationStr = city;
-                }
-
-                log(c.success(`Standort: ${locationStr} (${nomData.display_name})`));
-            } else {
-                log(c.err("Nominatim Fehler: " + nomRes.status));
-                locationStr = "Unbekannt";
-            }
-        } catch (e) {
-            log(c.err("Nominatim Exception: " + e.message));
-            locationStr = "Unbekannt";
-        }
+        // 1. Determine Location Name
+        const locationStr = await getLocationName(lat, lng, log);
 
 
         // 2. Create Changeset
@@ -249,19 +252,19 @@ export async function fetchNodeData(id) {
  * @param {number} lng - Longitude
  */
 export async function updateHydrant(id, version, tags, lat, lng, log = console.log) {
-    // 1. Create Changeset (Reusable logic ideally, but keeping it simple/local for now)
+    // 1. Create Changeset
     log(c.info("Starte Update-Prozess..."));
 
     const finalTags = normalizeTags(tags);
 
-    // Note: We could reuse the same changeset logic from createHydrant if we refactored, 
-    // but to be safe and isolated, we duplicate the minimal changeset creation here.
+    // Get Location
+    const locationStr = await getLocationName(lat, lng, log);
 
     const changesetXml = `
 <osm>
   <changeset>
     <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
-    <tag k="comment" v="Updating ${getTypeName(finalTags)} #${id} tags via Hydranten Jäger"/>
+    <tag k="comment" v="Updating ${getTypeName(finalTags)} #${id} in ${locationStr} via Hydranten Jäger"/>
     <tag k="locale" v="de"/>
   </changeset>
 </osm>`;
@@ -334,11 +337,14 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
     const typeName = getTypeName(tags);
     log(c.info(`Lösche ${typeName} #${id}...`));
 
+    // Get Location
+    const locationStr = await getLocationName(lat, lng, log);
+
     const changesetXml = `
 <osm>
   <changeset>
     <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
-    <tag k="comment" v="Deleting ${typeName} #${id} via Hydranten Jäger"/>
+    <tag k="comment" v="Deleting ${typeName} #${id} in ${locationStr} via Hydranten Jäger"/>
     <tag k="locale" v="de"/>
   </changeset>
 </osm>`;
