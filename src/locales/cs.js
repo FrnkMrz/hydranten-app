@@ -18,6 +18,7 @@ export default {
         info_data: "Data a Soukromí",
         info_data_text: "Tato aplikace neukládá žádné osobní údaje na vlastní servery. Vaše IP adresa je přenášena do rozhraní Overpass API a Nominatim (OSM Foundation) pro získání mapových dat a adres. Zpracování GPS probíhá lokálně na vašem zařízení.",
         info_license: "Licence a Kód",
+        disclaimer_text: "Nepoužívejte v nouzi. Bez záruky.\nSpuštění znamená souhlas s použitím dat.",
         info_github: "Zobrazit na GitHubu"
     },
     settings: {

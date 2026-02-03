@@ -18,7 +18,8 @@ export default {
         info_data: "Gegevens & Privacy",
         info_data_text: "Deze app slaat geen persoonlijke gegevens op eigen servers op. Uw IP-adres wordt verzonden naar de Overpass API en Nominatim (OSM Foundation) om kaartgegevens en adressen op te halen. GPS-verwerking vindt lokaal op uw apparaat plaats.",
         info_license: "Licentie & Code",
-        info_github: "Bekijk op GitHub"
+        disclaimer_text: "Niet voor noodgevallen. Geen garantie.\nStart impliceert toestemming voor gegevensgebruik.",
+        info_github: "Bekijk op GitHub",
     },
     settings: {
         title: "Instellingen",

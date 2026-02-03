@@ -18,6 +18,7 @@ export default {
         info_data: "データとプライバシー",
         info_data_text: "このアプリは独自のサーバーに個人データを保存しません。地図データや住所を取得するために、IPアドレスがOverpass APIおよびNominatim（OSM財団）に送信されます。GPS処理はデバイス上でローカルに行われます。",
         info_license: "ライセンスとコード",
+        disclaimer_text: "緊急時には使用しないでください。保証はありません。\n開始はデータ使用への同意を意味します。",
         info_github: "GitHubで見る"
     },
     settings: {

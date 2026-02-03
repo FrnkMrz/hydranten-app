@@ -18,7 +18,8 @@ export default {
         info_data: "Dati e Privacy",
         info_data_text: "Questa app non memorizza dati personali sui propri server. Il tuo indirizzo IP viene trasmesso all'API Overpass e a Nominatim (Fondazione OSM) per recuperare dati cartografici e indirizzi. L'elaborazione GPS avviene localmente sul tuo dispositivo.",
         info_license: "Licenza e Codice",
-        info_github: "Vedi su GitHub"
+        disclaimer_text: "Non usare in caso di emergenza. Nessuna garanzia.\nL'avvio implica il consenso all'uso dei dati.",
+        info_github: "Vedi su GitHub",
     },
     settings: {
         title: "Impostazioni",
