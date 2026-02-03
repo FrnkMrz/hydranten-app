@@ -231,7 +231,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 
          const langs = [
             { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-            { code: 'en', label: 'English', flag: '🇺🇸' },
+            { code: 'en', label: 'English', flag: '🇬🇧' },
             { code: 'pl', label: 'Polski', flag: '🇵🇱' },
             { code: 'cs', label: 'Čeština', flag: '🇨🇿' },
             { code: 'fr', label: 'Français', flag: '🇫🇷' },
