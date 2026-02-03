@@ -427,7 +427,14 @@ function updateHydrants(map, onEdit) {
 
                // Determine color based on tags
                let fillColor = RED;
-               if (node.tags && (node.tags.emergency === 'suction_point' || node.tags.emergency === 'water_tank')) {
+               const isSuction = node.tags && (
+                  node.tags.emergency === 'suction_point' ||
+                  node.tags.emergency === 'water_tank' ||
+                  node.tags['fire_hydrant:type'] === 'suction_point' ||
+                  node.tags['fire_hydrant:type'] === 'cistern'
+               );
+
+               if (isSuction) {
                   fillColor = BLUE;
                }
 
