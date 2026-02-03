@@ -76,6 +76,7 @@ export default {
         preview_alt: "Foto Tirada",
         back_btn_aria: "Voltar para Câmera",
         back_btn_label: "Voltar",
+        cancel_btn: "Cancelar",
         retry_gps_aria: "Tentar GPS novamente",
         type_label: "Tipo",
         position_label: "Localização",

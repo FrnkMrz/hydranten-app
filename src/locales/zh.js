@@ -57,6 +57,7 @@ export default {
     confirm: {
         title: "确认数据",
         title_edit: "编辑消防栓",
+        cancel_btn: "取消",
         delete_btn: "删除",
         delete_confirm: "真的要删除吗？",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",

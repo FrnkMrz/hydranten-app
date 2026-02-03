@@ -57,6 +57,7 @@ export default {
     confirm: {
         title: "データを確認",
         title_edit: "消火栓を編集",
+        cancel_btn: "キャンセル",
         delete_btn: "削除",
         delete_confirm: "本当に削除しますか？",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",

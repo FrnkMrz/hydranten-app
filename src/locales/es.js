@@ -42,7 +42,9 @@ export default {
         retake: "Reintentar",
         use_photo: "Usar Foto",
         back_btn_aria: "Volver a la cámara",
-        back_btn_label: "Atrás",
+        back_btn_label: "Volver",
+        cancel_btn: "Cancelar",
+        retry_gps_aria: "Reintentar búsqueda GPS",
         capture_btn_aria: "Tomar foto"
     },
     error: {

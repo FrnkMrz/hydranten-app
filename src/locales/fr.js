@@ -43,7 +43,8 @@ export default {
         use_photo: "Utiliser Photo",
         back_btn_aria: "Retour à la caméra",
         back_btn_label: "Retour",
-        capture_btn_aria: "Prendre une photo"
+        cancel_btn: "Annuler",
+        retry_gps_aria: "Réessayer la recherche GPS",
     },
     error: {
         load_failed: "Erreur de chargement",

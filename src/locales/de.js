@@ -60,6 +60,7 @@ export default {
         preview_alt: "Aufgenommenes Foto",
         back_btn_aria: "Zurück zur Kamera",
         back_btn_label: "Zurück",
+        cancel_btn: "Abbrechen",
         retry_gps_aria: "GPS Position erneut suchen",
         delete_btn: "Löschen",
         delete_confirm: "Hydrant wirklich löschen?",

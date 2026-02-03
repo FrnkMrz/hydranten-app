@@ -57,6 +57,7 @@ export default {
     confirm: {
         title: "Veriyi Onayla",
         title_edit: "Hidrantı Düzenle",
+        cancel_btn: "İptal",
         delete_btn: "Sil",
         delete_confirm: "Silmek istediğinize emin misiniz?",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",

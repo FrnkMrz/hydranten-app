@@ -57,6 +57,7 @@ export default {
     confirm: {
         title: "Potwierdź Dane",
         title_edit: "Edytuj Hydrant",
+        cancel_btn: "Anuluj",
         delete_btn: "Usuń",
         delete_confirm: "Czy na pewno usunąć hydrant?",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",

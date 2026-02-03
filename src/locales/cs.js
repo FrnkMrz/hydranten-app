@@ -76,6 +76,7 @@ export default {
         preview_alt: "Vyfoceno",
         back_btn_aria: "Zpět na kameru",
         back_btn_label: "Zpět",
+        cancel_btn: "Zrušit",
         retry_gps_aria: "Zkusit GPS znovu",
         upload_btn: "NAHRÁT NA OSM",
         position_label: "Poloha",

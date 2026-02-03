@@ -57,6 +57,7 @@ export default {
     confirm: {
         title: "Potvrdi podatke",
         title_edit: "Uredi hidrant",
+        cancel_btn: "Odustani",
         delete_btn: "Obriši",
         delete_confirm: "Stvarno obrisati?",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",

@@ -57,6 +57,7 @@ export default {
     confirm: {
         title: "Conferma Dati",
         title_edit: "Modifica Idrante",
+        cancel_btn: "Annulla",
         delete_btn: "Elimina",
         delete_confirm: "Eliminare davvero?",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",

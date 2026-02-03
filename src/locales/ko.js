@@ -57,6 +57,7 @@ export default {
     confirm: {
         title: "데이터 확인",
         title_edit: "소화전 편집",
+        cancel_btn: "취소",
         delete_btn: "삭제",
         delete_confirm: "정말 삭제하시겠습니까?",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
