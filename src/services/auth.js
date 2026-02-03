@@ -172,8 +172,16 @@ export async function checkLogin() {
 
         if (user) {
             const name = user.getAttribute('display_name');
-            // CACHE IT
             localStorage.setItem('osm_user_name', name);
+
+            // Try to find image
+            const img = user.querySelector('img');
+            if (img && img.getAttribute('href')) {
+                localStorage.setItem('osm_user_img', img.getAttribute('href'));
+            } else {
+                localStorage.removeItem('osm_user_img');
+            }
+
             return name;
         }
         return "XML Error";

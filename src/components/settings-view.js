@@ -6,7 +6,10 @@ export function renderSettingsView() {
   let loginStatusHTML = `
             <div id="auth-status" class="mb-6 text-center py-4 bg-black/20 rounded-xl hidden relative">
                 <p class="text-gray-400 text-sm mb-2">${t('settings.account')}</p>
-                <div class="flex items-center justify-center gap-2">
+                <div class="flex flex-col items-center justify-center gap-3">
+                    <div id="user-avatar-container" class="hidden">
+                        <img id="user-avatar" src="" alt="Avatar" class="w-16 h-16 rounded-full border-2 border-green-400 shadow-lg object-cover">
+                    </div>
                     <p id="user-display" class="text-xl font-bold text-green-400">...</p>
                 </div>
             </div>
@@ -71,7 +74,7 @@ export function renderSettingsView() {
          <button id="back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
             ${t('settings.back_btn')}
          </button>
-         <p class="text-center text-[10px] text-gray-600 mt-4">Version 1.0 Beta (PKCE) • Hydranten Jäger</p>
+         <p class="text-center text-[10px] text-gray-600 mt-4">Version 1.3.0 (Stable) • Hydranten Jäger</p>
       </div>
     </div>
   `;
@@ -150,6 +153,17 @@ export function initSettingsView(element, onBack, onHistory) {
       statusDiv.classList.remove('hidden');
       userDisplay.innerText = username.startsWith("Error") ? username : username;
       userDisplay.className = username.startsWith("Error") ? "text-xs font-mono text-red-400 break-words" : "text-xl font-bold text-green-400";
+
+      const img = localStorage.getItem('osm_user_img');
+      const avatarContainer = element.querySelector('#user-avatar-container');
+      const avatarImg = element.querySelector('#user-avatar');
+
+      if (img && avatarContainer && avatarImg) {
+        avatarImg.src = img;
+        avatarContainer.classList.remove('hidden');
+      } else if (avatarContainer) {
+        avatarContainer.classList.add('hidden');
+      }
       loginBtn.classList.add('hidden');
       helpText.classList.add('hidden');
       if (logoutContainer) logoutContainer.classList.remove('hidden');
@@ -185,6 +199,7 @@ export function initSettingsView(element, onBack, onHistory) {
 
   logoutBtn.onclick = () => {
     auth.logout();
+    localStorage.removeItem('osm_user_img');
     updateUI(null);
     alert(t('settings.disconnect_btn') + "!");
   };
@@ -196,7 +211,8 @@ export function initSettingsView(element, onBack, onHistory) {
   resetBtn.onclick = () => {
     if (confirm(t('settings.reset_btn') + "?")) {
       auth.logout();
-      localStorage.removeItem('osm_pkce_verifier'); // Clean legacy
+      localStorage.removeItem('osm_pkce_verifier');
+      localStorage.removeItem('osm_user_img');
       window.location.reload();
     }
   };
