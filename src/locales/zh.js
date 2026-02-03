@@ -63,6 +63,7 @@ export default {
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
         delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "保存",
+        update_btn: "更新 OSM",
         water_source_label: "水源",
         water_source_default: "未指定",
         water_source_main: "供水管网 (main)",

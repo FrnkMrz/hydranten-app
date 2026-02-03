@@ -63,6 +63,7 @@ export default {
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
         delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "Kaydet",
+        update_btn: "OSM Güncelle",
         water_source_label: "Su Kaynağı",
         water_source_default: "Belirtilmedi",
         water_source_main: "Şebeke Suyu (main)",

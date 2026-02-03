@@ -63,6 +63,7 @@ export default {
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
         delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "저장",
+        update_btn: "OSM 업데이트",
         water_source_label: "수원",
         water_source_default: "지정되지 않음",
         water_source_main: "상수도 (main)",

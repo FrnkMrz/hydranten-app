@@ -351,7 +351,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       // Update UI
       if (submitBtn) {
         if (hasChanges) {
-          submitBtn.innerHTML = `<span>💾 ${t('confirm.save_btn')}</span>`;
+          submitBtn.innerHTML = `<span>☁️ ${t('confirm.update_btn') || 'Update OSM'}</span>`;
           submitBtn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
           submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
         } else {

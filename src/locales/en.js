@@ -69,6 +69,7 @@ export default {
         water_source_river: "River",
         water_source_reservoir: "Reservoir",
         save_btn: "Save",
+        update_btn: "Update OSM",
         position_adjustable: "Position Adjustable",
         position_moved: "Position Updated",
         fixed_map: "Draggable (Map Fixed)",

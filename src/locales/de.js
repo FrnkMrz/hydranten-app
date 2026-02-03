@@ -75,6 +75,7 @@ export default {
         water_source_river: "Fluss",
         water_source_reservoir: "Speicher/Becken",
         save_btn: "Speichern",
+        update_btn: "OSM Aktualisieren",
         position_adjustable: "Position anpassbar",
         position_moved: "Position angepasst",
         fixed_map: "Verschiebbar (Karte fixiert)",

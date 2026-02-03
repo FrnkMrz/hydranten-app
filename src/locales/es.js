@@ -62,6 +62,7 @@ export default {
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
         delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "Guardar",
+        update_btn: "Actualizar OSM",
         water_source_label: "Fuente de agua",
         water_source_default: "No especificado",
         water_source_main: "Red de agua (main)",

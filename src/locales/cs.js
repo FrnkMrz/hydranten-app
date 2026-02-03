@@ -62,6 +62,7 @@ export default {
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
         delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "Uložit",
+        update_btn: "Aktualizovat OSM",
         water_source_label: "Zdroj vody",
         water_source_default: "Nespecifikováno",
         water_source_main: "Vodovodní řad (main)",

@@ -52,6 +52,7 @@ export default {
         delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         delete_btn: "Verwijderen",
         save_btn: "Opslaan",
+        update_btn: "OSM Bijwerken",
         water_source_label: "Waterbron",
         water_source_default: "Niet gespecificeerd",
         water_source_main: "Waterleiding (main)",

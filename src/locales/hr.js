@@ -63,6 +63,7 @@ export default {
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
         delete_confirm_suction: "Really delete suction point? This cannot be undone.",
         save_btn: "Spremi",
+        update_btn: "Ažuriraj OSM",
         water_source_label: "Izvor vode",
         water_source_default: "Nije navedeno",
         water_source_main: "Vodovod (main)",
