@@ -478,6 +478,42 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         }
 
         if (typeof checkChanges === 'function') checkChanges();
+
+        // Dynamic Water Source Logic
+        const sourceSelect = element.querySelector('#hydrant-water-source');
+        if (sourceSelect) {
+          let options = [];
+          // Default Empty Option
+          options.push({ value: "", label: t('confirm.water_source_default') || "Keine Angabe" });
+
+          if (val === 'cistern') {
+            // Cistern: reservoir only
+            options.push({ value: "reservoir", label: t('confirm.water_source_reservoir') || "Speicher/Becken (reservoir)" });
+          } else if (val === 'suction_point') {
+            // Suction Point: groundwater, pond, lake, river
+            options.push({ value: "groundwater", label: t('confirm.water_source_groundwater') || "Grundwasser (groundwater)" });
+            options.push({ value: "pond", label: t('confirm.water_source_pond') || "Teich (pond)" });
+            options.push({ value: "lake", label: t('confirm.water_source_lake') || "See (lake)" });
+            options.push({ value: "river", label: t('confirm.water_source_river') || "Fluss (river)" });
+          } else {
+            // Hydrants: main only
+            options.push({ value: "main", label: t('confirm.water_source_main') || "Leitungsnetz (main)" });
+          }
+
+          // Render Options
+          sourceSelect.innerHTML = options.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('');
+
+          // Restore previous selection if valid, else reset
+          // (But wait, we might have just switched types. If switching types, generally reset is better unless values overlap?)
+          // Logic: If current value is valid for new type, keep it. Else reset to "".
+          // BUT: We need to know the *current* value before we cleared innerHTML? 
+          // Yes, but we can't easily get it here if we just cleared it. 
+          // Actually, the `initialData` or current state *should* guide us? 
+          // For simplicity: If switching types, we reset to default, UNLESS we are initializing (editMode).
+          // If we are in init cycle (editMode), we set value from tags *after* updateGrid is called?
+          // Ah, updateGrid is called during init.
+          // Let's rely on the init code setting the value *after* calling updateGrid.
+        }
       };
 
       element.querySelectorAll('.option-btn').forEach(btn => {
