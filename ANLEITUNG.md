@@ -47,7 +47,7 @@ Du siehst nun die Bestätigungs-Ansicht:
 *   Warte kurz, bis die Bestätigung "Upload Erfolgreich!" erscheint.
 
 **Fertig!** 🎉
-Der Hydrant ist nun in der OpenStreetMap-Datenbank eingetragen und bald auf allen Karten sichtbar.
+Der Hydrant ist nun in der OpenStreetMap-Datenbank eingetragen und bald auf allen Hydrantenkarten sichtbar.
 
 ---
 
