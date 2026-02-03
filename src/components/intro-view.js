@@ -101,6 +101,12 @@ export function renderIntroView() {
                 <span class="font-serif italic font-bold text-lg" aria-hidden="true">i</span>
               </button>
           </div>
+          
+          <div class="mt-4 text-center">
+             <a href="https://www.openstreetmap.org/copyright" target="_blank" class="text-[10px] text-gray-500 hover:text-gray-300 transition no-underline">
+                © OpenStreetMap contributors
+             </a>
+          </div>
          
     
     </div>
