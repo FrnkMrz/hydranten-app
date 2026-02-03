@@ -416,6 +416,8 @@ function updateHydrants(map, onEdit) {
 
          // Jäger Red (Tailwind red-600) = #DC2626
          const RED = '#DC2626';
+         // Blue for Suction Points (Tailwind blue-600) = #2563EB
+         const BLUE = '#2563EB';
 
          filteredElements.forEach(node => {
             if (!node.lat || !node.lon) return;
@@ -423,9 +425,15 @@ function updateHydrants(map, onEdit) {
             if (!visibleHydrants.has(node.id)) {
                visibleHydrants.add(node.id);
 
+               // Determine color based on tags
+               let fillColor = RED;
+               if (node.tags && (node.tags.emergency === 'suction_point' || node.tags.emergency === 'water_tank')) {
+                  fillColor = BLUE;
+               }
+
                const m = L.circleMarker([node.lat, node.lon], {
                   radius: 8, // Slightly bigger for easier tap
-                  fillColor: RED,
+                  fillColor: fillColor,
                   color: '#fff',
                   weight: 2,
                   opacity: 0.9,

@@ -207,12 +207,27 @@ export async function fetchNodeData(id) {
         tags[t.getAttribute('k')] = t.getAttribute('v');
     });
 
+    let isPartOfWay = false;
+    try {
+        const waysRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/${id}/ways`);
+        if (waysRes.ok) {
+            const waysText = await waysRes.text();
+            const waysDoc = parser.parseFromString(waysText, "text/xml");
+            if (waysDoc.querySelectorAll('way').length > 0) {
+                isPartOfWay = true;
+            }
+        }
+    } catch (e) {
+        console.warn("Could not fetch parent ways", e);
+    }
+
     return {
         id: node.getAttribute('id'),
         lat: parseFloat(node.getAttribute('lat')),
         lng: parseFloat(node.getAttribute('lon')), // OSM uses lon
         version: node.getAttribute('version'),
-        tags: tags
+        tags: tags,
+        _isPartOfWay: isPartOfWay
     };
 }
 

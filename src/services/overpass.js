@@ -29,7 +29,9 @@ export const overpass = {
         // Construct Query: [out:json][timeout:45]; node["emergency"="fire_hydrant"](s,w,n,e); out skel;
         const query = `
             [out:json][timeout:45];
-            node["emergency"~"fire_hydrant|water_tank|suction_point"](${s},${w},${n},${e});
+            node["emergency"~"fire_hydrant|water_tank|suction_point"](${s},${w},${n},${e})->.n;
+            .n out body;
+            way(bn.n);
             out skel;
         `;
 
@@ -57,7 +59,30 @@ export const overpass = {
             }
 
             const data = await response.json();
-            return data.elements || [];
+            const elements = data.elements || [];
+
+            // Post-Processing: Separate Nodes and Ways
+            const nodes = [];
+            const lockedNodeIds = new Set();
+
+            elements.forEach(el => {
+                if (el.type === 'node') {
+                    nodes.push(el);
+                } else if (el.type === 'way') {
+                    // Collect all node IDs referenced by ways
+                    if (el.nodes) {
+                        el.nodes.forEach(nid => lockedNodeIds.add(nid));
+                    }
+                }
+            });
+
+            // Tag nodes as locked if they are part of a way
+            return nodes.map(node => {
+                if (lockedNodeIds.has(node.id)) {
+                    node._isPartOfWay = true; // Internal flag
+                }
+                return node;
+            });
 
         } catch (err) {
             console.error("Fetch Hydrants failed:", err);

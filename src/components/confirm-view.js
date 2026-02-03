@@ -210,7 +210,14 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
       // Update Pill
       const gpsPill = element.querySelector('#geo-status-pill');
-      if (gpsPill) gpsPill.innerText = t('confirm.position_adjustable');
+      if (gpsPill) {
+        if (initialData._isPartOfWay) {
+          gpsPill.innerText = "🔒 Position fixiert";
+          gpsPill.classList.add('text-red-400', 'border-red-500/50');
+        } else {
+          gpsPill.innerText = t('confirm.position_adjustable');
+        }
+      }
     }
 
     const img = element.querySelector('#preview-img');
@@ -542,11 +549,14 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         keyboard: !editMode
       }).setView(center, 19);
 
+      const isLocked = editMode && initialData && initialData._isPartOfWay;
+
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: ''
       }).addTo(map);
 
-      const marker = L.marker(center, { draggable: true, autoPan: true }).addTo(map); // Always draggable now
+      // Disable dragging if locked
+      const marker = L.marker(center, { draggable: !isLocked, autoPan: !isLocked }).addTo(map); // Always draggable now
       const statusPill = document.querySelector('#geo-status-pill');
 
       marker.on('dragend', function (event) {
