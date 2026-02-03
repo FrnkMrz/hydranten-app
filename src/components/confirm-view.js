@@ -55,11 +55,8 @@ export function renderConfirmView() {
             <h2 id="confirm-title" class="text-2xl font-bold text-white">${t('confirm.title') || 'Neuer Hydrant'}</h2>
             
             <!-- Delete Button Container (injected via JS if edit mode) -->
-            <div id="delete-btn-container" class="hidden">
-               <button id="delete-hydrant-btn" class="bg-red-600 text-white hover:bg-red-700 p-3 rounded-full transition shadow-lg shadow-red-900/40 flex items-center justify-center" aria-label="Löschen">
-                  <span class="text-xl">🗑️</span>
-               </button>
-            </div>
+            <!-- Delete Button Container REMOVED from header -->
+            <div id="delete-btn-container" class="hidden"></div>
          </div>
 
          <!-- Type Selection (Grid) -->
@@ -150,6 +147,14 @@ export function renderConfirmView() {
                </div>
             </div>
          </div>
+
+          <!-- DELETE BUTTON SECTION (New) -->
+          <div id="delete-section" class="pt-8 pb-4 hidden">
+             <button id="delete-hydrant-btn" class="w-full py-4 rounded-xl border border-red-600/30 bg-red-900/10 text-red-500 hover:bg-red-900/30 hover:border-red-500 font-bold transition flex items-center justify-center gap-2">
+                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                <span>${t('confirm.delete_btn')}</span>
+             </button>
+          </div>
       </div>
 
       <!-- Submit Footer (Raised) -->
@@ -176,9 +181,10 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     // Edit Mode Enhancements
     if (editMode) {
       const titleEl = element.querySelector('#confirm-title');
-      // Show Delete Button
-      const delContainer = element.querySelector('#delete-btn-container');
-      if (delContainer) delContainer.classList.remove('hidden');
+
+      // Show Delete Section
+      const delSection = element.querySelector('#delete-section');
+      if (delSection) delSection.classList.remove('hidden');
 
       const delBtn = element.querySelector('#delete-hydrant-btn');
       if (delBtn && onDelete) {

@@ -405,9 +405,12 @@ function updateHydrants(map, onEdit) {
             // Or just add them, Leaflet handles off-screen fine usually, but Overpass query was bounded.
             // Let's checks bounds to be nice.
             if (map.getBounds().contains([localNode.lat, localNode.lon])) {
-               if (!existingIds.has(String(localNode.id))) {
-                  filteredElements.push(localNode);
-                  injectedCount++;
+               // Fix: Ensure we don't re-inject if it was deleted locally!
+               if (!localDeleted.includes(String(localNode.id))) {
+                  if (!existingIds.has(String(localNode.id))) {
+                     filteredElements.push(localNode);
+                     injectedCount++;
+                  }
                }
             }
          });
