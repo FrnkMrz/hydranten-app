@@ -16,7 +16,7 @@ export default {
         info_legal: "Información Legal",
         info_impressum: "Aviso Legal",
         info_data: "Datos y Privacidad",
-        info_data_text: "Esta aplicación no almacena datos personales. Tu dirección IP se transmite a la API de Overpass y a Nominatim (Fundación OSM) para recuperar datos de mapas y direcciones. El procesamiento de GPS se realiza localmente en tu dispositivo.",
+        info_data_text: "Esta aplicación no almacena datos personales en sus propios servidores. Tu dirección IP se transmite a la API de Overpass y a Nominatim (Fundación OSM) para recuperar datos de mapas y direcciones. El procesamiento de GPS se realiza localmente en tu dispositivo.",
         info_license: "Licencia y Código",
         info_github: "Ver en GitHub"
     },

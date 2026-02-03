@@ -16,7 +16,7 @@ export default {
         info_legal: "Mentions Légales",
         info_impressum: "Impressum",
         info_data: "Données et Confidentialité",
-        info_data_text: "Cette application ne stocke pas de données personnelles. Votre adresse IP est transmise à l'API Overpass et à Nominatim (Fondation OSM) pour récupérer les données cartographiques et les adresses. Le traitement GPS est effectué localement sur votre appareil.",
+        info_data_text: "Cette application ne stocke pas de données personnelles sur ses propres serveurs. Votre adresse IP est transmise à l'API Overpass et à Nominatim (Fondation OSM) pour récupérer les données cartographiques et les adresses. Le traitement GPS est effectué localement sur votre appareil.",
         info_license: "Licence et Code",
         info_github: "Voir sur GitHub"
     },
