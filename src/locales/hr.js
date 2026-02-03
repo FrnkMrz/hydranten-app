@@ -77,7 +77,9 @@ export default {
             underground: "Podzemni",
             pillar: "Nadzemni",
             wall: "Zidni",
-            suction: "Usisno mjesto"
+            suction: "Usisno mjesto",
+            cistern: "Cisterna / Spremnik",
+            dry_hydrant: "Suhi hidrant"
         },
         locations: {
             sidewalk: "Nogostup",
@@ -86,9 +88,9 @@ export default {
             parking: "Parking",
             none: "Nema"
         },
-        diameter_label: "PROMJER",
+        diameter_label: "PROMJER / VELIČINA",
         diameter_none: "Nije navedeno",
-        color_label: "BOJA",
+        // color_label removed
         number_label: "BROJ / REF",
         number_placeholder: "npr. 1234",
         notes_label: "BILJEŠKA",

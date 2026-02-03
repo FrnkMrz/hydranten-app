@@ -77,7 +77,9 @@ export default {
             underground: "Yeraltı",
             pillar: "Yerüstü",
             wall: "Duvar",
-            suction: "Emme Noktası"
+            suction: "Emme Noktası",
+            cistern: "Sarnıç",
+            dry_hydrant: "Kuru Hidrant"
         },
         locations: {
             sidewalk: "Kaldırım",
@@ -86,9 +88,9 @@ export default {
             parking: "Otopark",
             none: "Yok"
         },
-        diameter_label: "ÇAP",
+        diameter_label: "ÇAP / BOYUT",
         diameter_none: "Belirtilmemiş",
-        color_label: "RENK",
+        // color_label removed
         number_label: "NUMARA / REF",
         number_placeholder: "örn. 1234",
         notes_label: "NOT",

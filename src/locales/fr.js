@@ -71,7 +71,9 @@ export default {
             underground: "Souterrain",
             pillar: "Pilier",
             wall: "Mural",
-            suction: "Point d'aspiration"
+            suction: "Point d'aspiration",
+            cistern: "Citerne",
+            dry_hydrant: "Colonne sèche"
         },
         locations: {
             sidewalk: "Trottoir",
@@ -80,9 +82,9 @@ export default {
             parking: "Parking",
             none: "Aucun"
         },
-        diameter_label: "DIAMÈTRE",
+        diameter_label: "DIAMÈTRE / TAILLE",
         diameter_none: "Non spécifié",
-        color_label: "COULEUR",
+        // color_label removed
         number_label: "NUMÉRO / RÉF",
         number_placeholder: "ex. 1234",
         notes_label: "NOTE",

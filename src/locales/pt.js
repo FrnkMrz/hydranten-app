@@ -78,11 +78,13 @@ export default {
             pillar: "Pilar",
             wall: "Parede",
             suction: "Ponto de Sucção",
+            cistern: "Cisterna",
+            dry_hydrant: "Coluna seca",
             none: "Nenhum"
         },
-        diameter_label: "DIÂMETRO",
+        diameter_label: "DIÂMETRO / TAMANHO",
         diameter_none: "Não especificado",
-        color_label: "COR",
+        // color_label removed
         number_label: "NÚMERO / REF",
         number_placeholder: "ex. 1234",
         notes_label: "NOTA",

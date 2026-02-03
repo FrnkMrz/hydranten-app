@@ -77,11 +77,12 @@ export default {
             pillar: "Nadzemní",
             wall: "Nástěnný",
             suction: "Sací místo",
-            none: "Žádný"
+            cistern: "Cisterna",
+            dry_hydrant: "Suchovod"
         },
-        diameter_label: "PRŮMĚR",
+        diameter_label: "PRŮMĚR / VELIKOST",
         diameter_none: "Neuvedeno",
-        color_label: "BARVA",
+        // color_label removed
         number_label: "ČÍSLO / REF",
         number_placeholder: "např. 1234",
         notes_label: "POZNÁMKA",

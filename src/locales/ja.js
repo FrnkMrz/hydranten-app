@@ -77,7 +77,9 @@ export default {
             underground: "地下式",
             pillar: "地上式",
             wall: "壁面",
-            suction: "採水口"
+            suction: "採水口",
+            cistern: "貯水槽",
+            dry_hydrant: "連結送水管"
         },
         locations: {
             sidewalk: "歩道",
@@ -86,9 +88,9 @@ export default {
             parking: "駐車場",
             none: "なし"
         },
-        diameter_label: "直径",
+        diameter_label: "直径 / サイズ",
         diameter_none: "指定なし",
-        color_label: "色",
+        // color_label removed
         number_label: "番号 / 参照",
         number_placeholder: "例: 1234",
         notes_label: "メモ",

@@ -58,11 +58,13 @@ export default {
             pillar: "Bovengronds",
             wall: "Muur",
             suction: "Zuigpunt",
+            cistern: "Cisterne / Tank",
+            dry_hydrant: "Droge blusleiding",
             none: "Geen"
         },
-        diameter_label: "DIAMETER",
+        diameter_label: "DIAMETER / GROOTTE",
         diameter_none: "Niet gespecificeerd",
-        color_label: "KLEUR",
+        // color_label removed
         number_label: "NUMMER / REF",
         number_placeholder: "bijv. 1234",
         notes_label: "NOTITIE",

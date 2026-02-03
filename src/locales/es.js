@@ -71,7 +71,9 @@ export default {
             underground: "Subterráneo",
             pillar: "Pilar",
             wall: "Mural",
-            suction: "Punto de Succión"
+            suction: "Punto de Succión",
+            cistern: "Cisterna",
+            dry_hydrant: "Columna seca"
         },
         locations: {
             sidewalk: "Acera",
@@ -80,9 +82,9 @@ export default {
             parking: "Aparcamiento",
             none: "Ninguno"
         },
-        diameter_label: "DIÁMETRO",
+        diameter_label: "DIÁMETRO / TAMAÑO",
         diameter_none: "No especificado",
-        color_label: "COLOR",
+        // color_label removed
         number_label: "NÚMERO / REF",
         number_placeholder: "ej. 1234",
         notes_label: "NOTA",

@@ -77,7 +77,9 @@ export default {
             underground: "지하식",
             pillar: "지상식",
             wall: "벽면형",
-            suction: "흡수관"
+            suction: "흡수관",
+            cistern: "저수조",
+            dry_hydrant: "건식 소화전"
         },
         locations: {
             sidewalk: "보도",
@@ -86,9 +88,9 @@ export default {
             parking: "주차장",
             none: "없음"
         },
-        diameter_label: "지름",
+        diameter_label: "지름 / 크기",
         diameter_none: "지정되지 않음",
-        color_label: "색상",
+        // color_label removed
         number_label: "번호 / 참조",
         number_placeholder: "예: 1234",
         notes_label: "메모",
