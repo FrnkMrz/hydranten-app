@@ -9,6 +9,17 @@ const c = {
 
 import { getAuthHeader } from './auth.js';
 
+// XML Escaping Helper
+function escapeXml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+}
+
 /**
  * Helper to determine object type name for comments
  */
@@ -115,7 +126,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
 <osm>
   <changeset>
     <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
-    <tag k="comment" v="Adding ${getTypeName(finalTags)} in ${locationStr} via Hydranten Jäger"/>
+    <tag k="comment" v="${escapeXml(`Adding ${getTypeName(finalTags)} in ${locationStr} via Hydranten Jäger`)}"/>
     <tag k="locale" v="de"/>
   </changeset>
 </osm>`;
@@ -141,7 +152,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
 
         let tagsXml = '';
         for (const [k, v] of Object.entries(finalTags)) {
-            if (v) tagsXml += `<tag k="${k}" v="${v}"/>`;
+            if (v) tagsXml += `<tag k="${escapeXml(k)}" v="${escapeXml(v)}"/>`;
         }
 
         const nodeXml = `
@@ -264,7 +275,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
 <osm>
   <changeset>
     <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
-    <tag k="comment" v="Updating ${getTypeName(finalTags)} #${id} in ${locationStr} via Hydranten Jäger"/>
+    <tag k="comment" v="${escapeXml(`Updating ${getTypeName(finalTags)} #${id} in ${locationStr} via Hydranten Jäger`)}"/>
     <tag k="locale" v="de"/>
   </changeset>
 </osm>`;
@@ -286,7 +297,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
         // 2. Build Node XML
         let tagsXml = '';
         for (const [k, v] of Object.entries(finalTags)) {
-            if (v && v.trim() !== "") tagsXml += `<tag k="${k}" v="${v}"/>`;
+            if (v && v.trim() !== "") tagsXml += `<tag k="${escapeXml(k)}" v="${escapeXml(v)}"/>`;
         }
 
         const nodeXml = `
@@ -344,7 +355,7 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
 <osm>
   <changeset>
     <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
-    <tag k="comment" v="Deleting ${typeName} #${id} in ${locationStr} via Hydranten Jäger"/>
+    <tag k="comment" v="${escapeXml(`Deleting ${typeName} #${id} in ${locationStr} via Hydranten Jäger`)}"/>
     <tag k="locale" v="de"/>
   </changeset>
 </osm>`;
