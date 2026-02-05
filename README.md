@@ -1,16 +1,16 @@
-# 🚒 Hydranten Jäger APP (v1.3.2)
+# 🚒 Hydranten Jäger APP (v1.3.3)
 
 Eine moderne, mobil-optimierte Progressive Web App (PWA) zum blitzschnellen Erfassen und Pflegen von Hydranten in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
-> **Status**: Version 1.3.2 (Stable Release)
-> *Features: Failover-System, Edit-Mode, Smart-Tags, Dark Mode, Offline-Ready.*
+> **Status**: Version 1.3.3 (Stable Release)
+> *Features: Failover-System, Edit-Mode, Smart-Tags, Dark Mode, Map Layers.*
 
 ## ✨ Features
 
-### 🚀 PWA & Offline-First
+### 🚀 PWA & Live-Daten
 *   **Installierbar**: Fühlt sich an wie eine Native App (iOS & Android).
-*   **Offline-Ready**: Funktioniert auch bei schlechtem Netz (Service Worker Caching).
+*   **Online-Only**: Benötigt eine Internetverbindung für Live-Daten (Overpass API) und Kartenkacheln.
 *   **Smart Icon**: Passt sich dem Device an (Adaptive Icons).
 
 ### 📍 Intelligente Erfassung (Smart Mapping)
@@ -23,6 +23,7 @@ Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 *   **Client-Side Only**: Kein Backend-Server. Deine Daten bleiben bei dir.
 *   **OAuth 2.0 (PKCE)**: Sicherer Login via OpenStreetMap ohne Passwort-Weitergabe.
 *   **Overpass Failover**: Automatische Umschaltung auf Backup-Server (DE, Kumi, Mail.ru), falls die API überlastet ist.
+*   **Karten-Vielfalt**: Wähle zwischen **Standard**, **Satellit** und **Topo** Karten.
 
 ---
 

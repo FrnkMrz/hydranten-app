@@ -20,7 +20,7 @@ Bevor du Daten hochladen kannst, musst du die App mit deinem OSM-Konto verknüpf
 6.  Die App springt automatisch zurück und zeigt jetzt deinen Benutzernamen grün an. ✅
 
 > **Hinweis:** Dein Login bleibt auf diesem Gerät gespeichert, bis du dich wieder abmeldest.
-> **Sprache:** Die Sprache kannst du auf der Startseite oben rechts über die Flagge ändern (z.B. 🇩🇪, 🇺🇸, 🇮🇹, 🇯🇵...).
+> **Sprache & Karte:** Du kannst die Sprache (Flagge) und den **Kartenstil** (Standard, Satellit, Topo) in den Einstellungen ändern.
 
 ## 3. Hydranten eintragen
 
@@ -28,6 +28,7 @@ So erfasst du einen neuen Hydranten in 4 Schritten:
 
 ### Schritt 1: Starten 🚀
 *   Klicke auf der Startseite auf den großen Button **"STARTEN"**.
+*   **Karte**: Du kannst die Karte auf der Startseite jetzt auch verschieben (ca. 200m Umkreis), um dich besser zu orientieren.
 *   **Wichtig (iPhone):** Erlaube den Zugriff auf **Standort** und (falls gefragt) **Bewegungssensoren** (für den Kompass).
 
 ### Schritt 2: Foto & Position 📸
