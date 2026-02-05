@@ -220,7 +220,15 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                          <h4 class="font-bold text-white">${t('intro.info_license')}</h4>
                          <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" class="text-blue-400 hover:text-blue-300 underline">© OpenStreetMap contributors</a>.</p>
                          <p>Code: MIT License</p>
-                         <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" class="text-blue-400 hover:text-blue-300 underline mt-1 block">
+                         
+                         <p class="mt-3 text-xs font-bold text-gray-400">Map Tiles:</p>
+                         <p class="text-[10px] text-gray-500 leading-tight">
+                            Basemap: © OpenStreetMap contributors<br>
+                            Satellite: Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community<br>
+                            Topo: Map style: © OpenTopoMap (CC-BY-SA)
+                         </p>
+
+                         <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" class="text-blue-400 hover:text-blue-300 underline mt-2 block">
                              📂 ${t('intro.info_github')}
                          </a>
                      </div>
