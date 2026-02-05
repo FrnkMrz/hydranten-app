@@ -332,7 +332,6 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          }).setView([51.1657, 10.4515], 6); // Default Germany
 
          // Dynamic Tile Layer
-         // Dynamic Tile Layer
          const style = localStorage.getItem('map_style') || 'osm';
          let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
          let attribution = '&copy; OpenStreetMap contributors';
@@ -344,7 +343,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          } else if (style === 'topo') {
             tileUrl = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
             attribution = 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)';
-            maxNativeZoom = 17; // Topo max zoom
+            maxNativeZoom = 16; // Topo reliable max zoom (scaled up to 19)
          }
 
          L.tileLayer(tileUrl, {

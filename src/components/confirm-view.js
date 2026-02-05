@@ -666,7 +666,6 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       const isLocked = editMode && initialData && initialData._isPartOfWay;
 
       // Dynamic Tile Layer
-      // Dynamic Tile Layer
       const style = localStorage.getItem('map_style') || 'osm';
       let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
       let attribution = '';
@@ -678,7 +677,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       } else if (style === 'topo') {
         tileUrl = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
         attribution = 'Map style: &copy; OpenTopoMap';
-        maxNativeZoom = 17;
+        maxNativeZoom = 16;
       }
 
       L.tileLayer(tileUrl, {
