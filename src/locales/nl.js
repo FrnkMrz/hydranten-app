@@ -23,6 +23,7 @@ export default {
     },
     settings: {
         title: "Instellingen",
+        map_style: "Kaartstijl",
         account: "OSM Account",
         connect_btn: "Verbinden met OSM",
         disconnect_btn: "Afmelden",
