@@ -105,9 +105,9 @@ export function getLastKnownPosition() {
     return lastPosition;
 }
 
-export async function getPosition() {
-    // Return cached position if fresh (< 20s old)
-    if (lastPosition && (Date.now() - lastPosition.timestamp < 20000)) {
+export async function getPosition(forceFresh = false) {
+    // Return cached position if fresh (< 20s old) and not forced
+    if (!forceFresh && lastPosition && (Date.now() - lastPosition.timestamp < 20000)) {
         return lastPosition;
     }
 
@@ -132,6 +132,7 @@ export async function getPosition() {
                 resolve(p);
             },
             (err) => {
+                // macOS/Safari often returns Timeout (code 3) if GPS is cold
                 // If current check fails but we have an old cached one, use it!
                 if (lastPosition) {
                     console.warn("Fresh GPS failed, using cached:", err);
@@ -142,7 +143,7 @@ export async function getPosition() {
             },
             {
                 enableHighAccuracy: true,
-                timeout: 5000, // Short timeout because we prefer cache over waiting too long
+                timeout: 10000, // Increased to 10s for desktop/macOS
                 maximumAge: 0
             }
         );

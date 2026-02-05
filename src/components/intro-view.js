@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-import { getLastKnownPosition, updatePosition } from '../services/geo.js';
+import { getLastKnownPosition, updatePosition, getPosition, initCompass, startTracking, hasCompassAccess } from '../services/geo.js';
 
 import { overpass } from '../services/overpass.js';
 
@@ -138,36 +138,37 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    if (btn) {
       // ... existing start logic ...
       btn.onclick = () => {
+         // UI Feedback
+         const originalText = btn.innerHTML;
+         btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ' + btn.innerText;
+         btn.classList.add('opacity-75', 'cursor-wait', 'pointer-events-none');
+
          const startApp = () => {
-            import('../services/geo.js').then(geo => {
-               // Step 1: Force immediate GPS update
-               geo.getPosition().then(pos => {
-                  geo.updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
-               }).catch(console.warn).finally(() => {
-                  geo.initCompass();
-                  geo.startTracking();
-                  onStart();
-               });
+            // Step 1: Force immediate fresh GPS update
+            getPosition(true).then(pos => {
+               updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
+            }).catch(console.warn).finally(() => {
+               initCompass();
+               startTracking();
+               onStart();
             });
          };
 
          if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-            // Step 4: Skip prompt if we already have access (e.g. from PWA persistence or previous interaction)
-            import('../services/geo.js').then(geo => {
-               if (geo.hasCompassAccess()) {
-                  console.log("Compass access already granted, skipping prompt.");
-                  startApp();
-               } else {
-                  DeviceOrientationEvent.requestPermission()
-                     .then(response => {
-                        if (response === 'granted') {
-                           // good
-                        }
-                     })
-                     .catch(console.error)
-                     .finally(() => startApp());
-               }
-            });
+            // Step 4: Skip prompt if we already have access
+            if (hasCompassAccess()) {
+               console.log("Compass access already granted, skipping prompt.");
+               startApp();
+            } else {
+               DeviceOrientationEvent.requestPermission()
+                  .then(response => {
+                     if (response === 'granted') {
+                        // good
+                     }
+                  })
+                  .catch(console.error)
+                  .finally(() => startApp());
+            }
          } else {
             startApp();
          }
@@ -365,20 +366,19 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          if (locateBtn) {
             locateBtn.onclick = () => {
                locateBtn.classList.add('animate-pulse');
-               import('../services/geo.js').then(geo => {
-                  geo.getPosition().then(pos => {
-                     map.setView([pos.lat, pos.lng], 18);
-                     if (!userMarker) userMarker = L.marker([pos.lat, pos.lng]).addTo(map);
-                     else userMarker.setLatLng([pos.lat, pos.lng]);
+               // Force fresh position for Locate Me too
+               getPosition(true).then(pos => {
+                  map.setView([pos.lat, pos.lng], 18);
+                  if (!userMarker) userMarker = L.marker([pos.lat, pos.lng]).addTo(map);
+                  else userMarker.setLatLng([pos.lat, pos.lng]);
 
-                     geo.updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
-                     updateHydrants(map, onEdit);
-                  }).catch(err => {
-                     console.warn("Manual Locate failed", err);
-                     alert("Position nicht gefunden.");
-                  }).finally(() => {
-                     locateBtn.classList.remove('animate-pulse');
-                  });
+                  updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
+                  updateHydrants(map, onEdit);
+               }).catch(err => {
+                  console.warn("Manual Locate failed", err);
+                  alert("Position nicht gefunden. (Fehler: " + (err.message || err.code || 'Unbekannt') + ")");
+               }).finally(() => {
+                  locateBtn.classList.remove('animate-pulse');
                });
             };
          }
