@@ -27,10 +27,13 @@ export default {
         account: "OSM Konto",
         connect_btn: "Verbinden mit OSM",
         disconnect_btn: "Abmelden",
+        connect_btn: "Verbinden mit OSM",
+        disconnect_btn: "Abmelden",
         back_btn: "Zurück",
         app_reset: "App Zurücksetzen (Notfall)",
         reset_btn: "Wirklich alle Daten löschen und ausloggen",
-        legal_link: "Rechtliche Hinweise & Impressum"
+        legal_link: "Rechtliche Hinweise & Impressum",
+        map_style: "Kartenstil"
     },
     history: {
         title: "Verlauf",

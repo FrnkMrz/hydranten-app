@@ -27,9 +27,12 @@ export default {
         account: "OSM Account",
         connect_btn: "Connect with OSM",
         disconnect_btn: "Disconnect",
+        connect_btn: "Connect with OSM",
+        disconnect_btn: "Disconnect",
         back_btn: "Back",
         app_reset: "Reset App (Emergency)",
-        reset_btn: "Really delete all data and logout?"
+        reset_btn: "Really delete all data and logout?",
+        map_style: "Map Style"
     },
     history: {
         title: "History",

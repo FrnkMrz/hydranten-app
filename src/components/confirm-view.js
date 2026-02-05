@@ -666,9 +666,11 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       const isLocked = editMode && initialData && initialData._isPartOfWay;
 
       // Dynamic Tile Layer
+      // Dynamic Tile Layer
       const style = localStorage.getItem('map_style') || 'osm';
       let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
       let attribution = '';
+      let maxNativeZoom = 19;
 
       if (style === 'satellite') {
         tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
@@ -676,11 +678,13 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       } else if (style === 'topo') {
         tileUrl = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
         attribution = 'Map style: &copy; OpenTopoMap';
+        maxNativeZoom = 17;
       }
 
       L.tileLayer(tileUrl, {
         attribution: attribution,
-        maxZoom: 19
+        maxZoom: 19,
+        maxNativeZoom: maxNativeZoom
       }).addTo(map);
 
       // Disable dragging if locked -> Now always draggable but restricted by map bounds

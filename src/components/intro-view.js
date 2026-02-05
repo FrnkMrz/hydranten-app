@@ -332,9 +332,11 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          }).setView([51.1657, 10.4515], 6); // Default Germany
 
          // Dynamic Tile Layer
+         // Dynamic Tile Layer
          const style = localStorage.getItem('map_style') || 'osm';
          let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
          let attribution = '&copy; OpenStreetMap contributors';
+         let maxNativeZoom = 19; // Default OSM
 
          if (style === 'satellite') {
             tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
@@ -342,10 +344,12 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          } else if (style === 'topo') {
             tileUrl = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
             attribution = 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)';
+            maxNativeZoom = 17; // Topo max zoom
          }
 
          L.tileLayer(tileUrl, {
             maxZoom: 19,
+            maxNativeZoom: maxNativeZoom,
             attribution: attribution,
             opacity: style === 'osm' ? 0.8 : 1.0 // Dim OSM slightly for dark mode, others full brightness
          }).addTo(map);
