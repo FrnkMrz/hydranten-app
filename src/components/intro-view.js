@@ -347,7 +347,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          }
 
          L.tileLayer(tileUrl, {
-            maxZoom: style === 'topo' ? 18 : 19, // Limit Topo to 18 as requested
+            maxZoom: style === 'topo' ? 17 : 19, // Limit Topo to 17 as requested
             maxNativeZoom: maxNativeZoom,
             attribution: attribution,
             opacity: style === 'osm' ? 0.8 : 1.0
@@ -454,11 +454,13 @@ function startMapGps(map, onLocationFound, onEdit) {
       const { latitude, longitude } = pos.coords;
       map.setView([latitude, longitude], 18);
 
-      // RESTRICT DRAGGING (New)
-      map.setMaxBounds([
-         [latitude - BOUND_OFFSET, longitude - BOUND_OFFSET],
-         [latitude + BOUND_OFFSET, longitude + BOUND_OFFSET]
-      ]);
+      // RESTRICT DRAGGING (New) - Ensure it applies after view is set
+      setTimeout(() => {
+         map.setMaxBounds([
+            [latitude - BOUND_OFFSET, longitude - BOUND_OFFSET],
+            [latitude + BOUND_OFFSET, longitude + BOUND_OFFSET]
+         ]);
+      }, 100);
 
       // We don't call updateHydrants here because moveend will trigger it?
       // updateHydrants(map, onEdit); // Triggered by setView -> moveend
