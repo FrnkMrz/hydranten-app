@@ -322,7 +322,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          map = L.map(mapElement, {
             zoomControl: false,
             attributionControl: false,
-            dragging: false, // Wait, maybe we should allow dragging in Intro? No, user said no dragging.
+            dragging: true, // User requested dragging within 200m
             scrollWheelZoom: false,
             doubleClickZoom: false,
             touchZoom: false,
@@ -386,11 +386,19 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                // Force fresh position for Locate Me too
                getPosition(true).then(pos => {
                   map.setView([pos.lat, pos.lng], 18);
+
+                  // Update Bounds
+                  const BOUND_OFFSET = 0.002;
+                  map.setMaxBounds([
+                     [pos.lat - BOUND_OFFSET, pos.lng - BOUND_OFFSET],
+                     [pos.lat + BOUND_OFFSET, pos.lng + BOUND_OFFSET]
+                  ]);
+
                   if (!userMarker) userMarker = L.marker([pos.lat, pos.lng]).addTo(map);
                   else userMarker.setLatLng([pos.lat, pos.lng]);
 
                   updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
-                  updateHydrants(map, onEdit);
+                  // updateHydrants(map, onEdit); // triggered by moveend
                }).catch(err => {
                   console.warn("Manual Locate failed", err);
                   alert("Position nicht gefunden. (Fehler: " + (err.message || err.code || 'Unbekannt') + ")");
@@ -432,12 +440,24 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 function startMapGps(map, onLocationFound, onEdit) {
    if (!navigator.geolocation) return;
 
+   // BOUND_OFFSET ~ 200m
+   const BOUND_OFFSET = 0.002;
+
    // Single fetch for center
    navigator.geolocation.getCurrentPosition(pos => {
       const { latitude, longitude } = pos.coords;
       map.setView([latitude, longitude], 18);
+
+      // RESTRICT DRAGGING (New)
+      map.setMaxBounds([
+         [latitude - BOUND_OFFSET, longitude - BOUND_OFFSET],
+         [latitude + BOUND_OFFSET, longitude + BOUND_OFFSET]
+      ]);
+
       // We don't call updateHydrants here because moveend will trigger it?
-      updateHydrants(map, onEdit); // Triggered by setView -> moveend
+      // updateHydrants(map, onEdit); // Triggered by setView -> moveend
+      // Actually, if we setMaxBounds, it might constrain view.
+
       updatePosition(pos); // Cache it
 
       if (onLocationFound) onLocationFound(latitude, longitude);
