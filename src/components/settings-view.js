@@ -58,9 +58,6 @@ export function renderSettingsView() {
          
          <!-- Map Style Section -->
          <div class="bg-gray-800/80 backdrop-blur-md p-6 rounded-3xl border border-gray-700 shadow-xl w-full max-w-sm mb-6 mt-4">
-             <h2 class="text-xl font-bold mb-4 flex items-center justify-center gap-2">
-                🗺️ ${t('settings.map_style') || 'Kartenstil'}
-             </h2>
              <div class="grid grid-cols-3 gap-3" id="map-style-options">
                 <button class="map-style-btn flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition active:scale-95 text-gray-400" data-style="osm">
                    <div class="w-10 h-10 rounded-full bg-blue-500/20 border-2 border-blue-400 flex items-center justify-center text-xl">🚗</div>
