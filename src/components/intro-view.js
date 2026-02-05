@@ -347,10 +347,10 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          }
 
          L.tileLayer(tileUrl, {
-            maxZoom: 19,
+            maxZoom: style === 'topo' ? 18 : 19, // Limit Topo to 18 as requested
             maxNativeZoom: maxNativeZoom,
             attribution: attribution,
-            opacity: style === 'osm' ? 0.8 : 1.0 // Dim OSM slightly for dark mode, others full brightness
+            opacity: style === 'osm' ? 0.8 : 1.0
          }).addTo(map);
 
          // Initial Hydrant Layer
@@ -473,9 +473,11 @@ function startMapGps(map, onLocationFound, onEdit) {
 // Helper to fetch and draw
 function updateHydrants(map, onEdit) {
    if (map.getZoom() < 14) return; // Don't fetch for whole world
-   // console.log("Hydrant Update. onEdit available?", !!onEdit); // DEBUG
 
-   overpass.fetchHydrants(map.getBounds())
+   // Fetch padded bounds to ensure we cover the draggable area
+   const bounds = map.getBounds().pad(0.5);
+
+   overpass.fetchHydrants(bounds)
       .then(elements => {
          if (!hydrantLayer) return;
 
