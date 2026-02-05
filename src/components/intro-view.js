@@ -409,37 +409,37 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          }
       }
 
+
+      // Helper to consistently apply bounds
+      const applyConstraints = (centerLat, centerLng) => {
+         const BOUND_OFFSET = 0.002;
+         map.setMaxBounds([
+            [centerLat - BOUND_OFFSET, centerLng - BOUND_OFFSET],
+            [centerLat + BOUND_OFFSET, centerLng + BOUND_OFFSET]
+         ]);
+      };
+
       // Force a resize invalidation shortly after render to ensure map fills container
-   }, 300); // Increased delay slightly to 300ms to be safe against render jank
+      setTimeout(() => {
+         map.invalidateSize();
 
-   // Helper to consistently apply bounds
-   const applyConstraints = (centerLat, centerLng) => {
-      const BOUND_OFFSET = 0.002;
-      map.setMaxBounds([
-         [centerLat - BOUND_OFFSET, centerLng - BOUND_OFFSET],
-         [centerLat + BOUND_OFFSET, centerLng + BOUND_OFFSET]
-      ]);
-   };
+         // Restore Cached View with Constraints
+         if (lastPos && lastPos.lat && lastPos.lng) {
+            map.setView([lastPos.lat, lastPos.lng], 18, { animate: false });
+            applyConstraints(lastPos.lat, lastPos.lng);
 
-   // Restore Cached View with Constraints
-   setTimeout(() => {
-      map.invalidateSize();
-      if (lastPos && lastPos.lat && lastPos.lng) {
-         map.setView([lastPos.lat, lastPos.lng], 18, { animate: false });
-         applyConstraints(lastPos.lat, lastPos.lng);
+            if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
+            else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
 
-         if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
-         else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
+            updateHydrants(map, onEdit);
+         } else {
+            updateHydrants(map, onEdit);
+         }
+      }, 300);
+   }
 
-         updateHydrants(map, onEdit);
-      } else {
-         updateHydrants(map, onEdit);
-      }
-   }, 300);
-}
-
-// Return Cleanup Function (Stub for now, real cleanup in startMapGps logic if needed)
-return () => { };
+   // Return Cleanup Function (Stub for now, real cleanup in startMapGps logic if needed)
+   return () => { };
 }
 
 // Extracted GPS start logic
