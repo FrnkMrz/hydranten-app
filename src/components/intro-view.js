@@ -362,7 +362,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                if (res.state === 'granted') {
                   startMapGps(map, (lat, lng) => {
                      if (!userMarker) {
-                        userMarker = L.marker([lat, lng]).addTo(map);
+                        userMarker = L.marker([lat, lng], { interactive: false }).addTo(map);
                      } else {
                         userMarker.setLatLng([lat, lng]);
                      }
@@ -394,54 +394,52 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                      [pos.lat + BOUND_OFFSET, pos.lng + BOUND_OFFSET]
                   ]);
 
-                  ]);
+                  if (!userMarker) userMarker = L.marker([pos.lat, pos.lng], { interactive: false }).addTo(map);
+                  else userMarker.setLatLng([pos.lat, pos.lng]);
 
-               if (!userMarker) userMarker = L.marker([pos.lat, pos.lng], { interactive: false }).addTo(map);
-               else userMarker.setLatLng([pos.lat, pos.lng]);
-
-               updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
-               // updateHydrants(map, onEdit); // triggered by moveend
-            }).catch (err => {
-               console.warn("Manual Locate failed", err);
-               alert("Position nicht gefunden. (Fehler: " + (err.message || err.code || 'Unbekannt') + ")");
-            }).finally(() => {
-               locateBtn.classList.remove('animate-pulse');
-            });
-         };
+                  updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
+                  // updateHydrants(map, onEdit); // triggered by moveend
+               }).catch(err => {
+                  console.warn("Manual Locate failed", err);
+                  alert("Position nicht gefunden. (Fehler: " + (err.message || err.code || 'Unbekannt') + ")");
+               }).finally(() => {
+                  locateBtn.classList.remove('animate-pulse');
+               });
+            };
+         }
       }
+
+
+      // Helper to consistently apply bounds
+      const applyConstraints = (centerLat, centerLng) => {
+         const BOUND_OFFSET = 0.002;
+         map.setMaxBounds([
+            [centerLat - BOUND_OFFSET, centerLng - BOUND_OFFSET],
+            [centerLat + BOUND_OFFSET, centerLng + BOUND_OFFSET]
+         ]);
+      };
+
+      // Force a resize invalidation shortly after render to ensure map fills container
+      setTimeout(() => {
+         map.invalidateSize();
+
+         // Restore Cached View with Constraints
+         if (lastPos && lastPos.lat && lastPos.lng) {
+            map.setView([lastPos.lat, lastPos.lng], 18, { animate: false });
+            applyConstraints(lastPos.lat, lastPos.lng);
+
+            if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
+            else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
+
+            updateHydrants(map, onEdit);
+         } else {
+            updateHydrants(map, onEdit);
+         }
+      }, 300);
    }
 
-
-   // Helper to consistently apply bounds
-   const applyConstraints = (centerLat, centerLng) => {
-      const BOUND_OFFSET = 0.002;
-      map.setMaxBounds([
-         [centerLat - BOUND_OFFSET, centerLng - BOUND_OFFSET],
-         [centerLat + BOUND_OFFSET, centerLng + BOUND_OFFSET]
-      ]);
-   };
-
-   // Force a resize invalidation shortly after render to ensure map fills container
-   setTimeout(() => {
-      map.invalidateSize();
-
-      // Restore Cached View with Constraints
-      if (lastPos && lastPos.lat && lastPos.lng) {
-         map.setView([lastPos.lat, lastPos.lng], 18, { animate: false });
-         applyConstraints(lastPos.lat, lastPos.lng);
-
-         if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
-         else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
-
-         updateHydrants(map, onEdit);
-      } else {
-         updateHydrants(map, onEdit);
-      }
-   }, 300);
-}
-
-// Return Cleanup Function (Stub for now, real cleanup in startMapGps logic if needed)
-return () => { };
+   // Return Cleanup Function (Stub for now, real cleanup in startMapGps logic if needed)
+   return () => { };
 }
 
 // Extracted GPS start logic
