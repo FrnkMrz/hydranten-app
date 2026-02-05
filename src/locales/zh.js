@@ -23,6 +23,7 @@ export default {
     },
     settings: {
         title: "设置",
+        map_style: "地图样式",
         account: "OSM 账户",
         connect_btn: "连接至 OSM",
         disconnect_btn: "登出",

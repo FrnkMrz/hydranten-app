@@ -23,6 +23,7 @@ export default {
     },
     settings: {
         title: "Ayarlar",
+        map_style: "Harita Stili",
         account: "OSM Hesabı",
         connect_btn: "OSM'ye Bağlan",
         disconnect_btn: "Çıkış Yap",

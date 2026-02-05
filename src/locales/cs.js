@@ -23,6 +23,7 @@ export default {
     },
     settings: {
         title: "Nastavení",
+        map_style: "Styl mapy",
         account: "Účet OSM",
         connect_btn: "Připojit k OSM",
         disconnect_btn: "Odhlásit",

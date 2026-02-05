@@ -23,6 +23,7 @@ export default {
     },
     settings: {
         title: "Postavke",
+        map_style: "Stil karte",
         account: "OSM Račun",
         connect_btn: "Poveži s OSM-om",
         disconnect_btn: "Odjava",

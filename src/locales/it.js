@@ -23,6 +23,7 @@ export default {
     },
     settings: {
         title: "Impostazioni",
+        map_style: "Stile mappa",
         account: "Account OSM",
         connect_btn: "Connetti a OSM",
         disconnect_btn: "Disconnetti",

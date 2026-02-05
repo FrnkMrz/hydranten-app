@@ -23,6 +23,7 @@ export default {
     },
     settings: {
         title: "Configurações",
+        map_style: "Estilo do mapa",
         account: "Conta OSM",
         connect_btn: "Conectar ao OSM",
         disconnect_btn: "Sair",

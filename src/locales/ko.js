@@ -23,6 +23,7 @@ export default {
     },
     settings: {
         title: "설정",
+        map_style: "지도 스타일",
         account: "OSM 계정",
         connect_btn: "OSM 연결",
         disconnect_btn: "로그아웃",
