@@ -264,10 +264,35 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     }
 
     const img = element.querySelector('#preview-img');
-    if (imageBlob && img && !editMode) {
-      img.src = URL.createObjectURL(imageBlob);
-    }
+    const imgContainer = img ? img.parentElement : null;
 
+    if (imageBlob && img && !editMode) {
+      const blobUrl = URL.createObjectURL(imageBlob);
+      img.src = blobUrl;
+
+      // Click to Save (Download)
+      if (imgContainer) {
+        imgContainer.onclick = (e) => {
+          e.stopPropagation(); // Prevent bubbling if needed
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = `hydrant_photo_${new Date().toISOString().replace(/[:.]/g, '-')}.jpg`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          // Optional: Visual Feedback?
+          const originalBorder = imgContainer.style.borderColor;
+          imgContainer.style.borderColor = '#4ade80'; // Green
+          setTimeout(() => {
+            imgContainer.style.borderColor = originalBorder;
+          }, 500);
+        };
+        // Add hint to title
+        const label = imgContainer.querySelector('span');
+        if (label) label.innerText = "💾 SAVEN";
+      }
+    }
     const retakeBtn = element.querySelector('#retake-btn');
     const submitBtn = element.querySelector('#submit-img-btn');
     const typeInput = element.querySelector('#hydrant-type');
