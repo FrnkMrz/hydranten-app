@@ -152,12 +152,22 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          };
 
          if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-            DeviceOrientationEvent.requestPermission()
-               .then(response => {
-                  // ...
-               })
-               .catch(console.error)
-               .finally(() => startApp());
+            // Step 4: Skip prompt if we already have access (e.g. from PWA persistence or previous interaction)
+            import('../services/geo.js').then(geo => {
+               if (geo.hasCompassAccess()) {
+                  console.log("Compass access already granted, skipping prompt.");
+                  startApp();
+               } else {
+                  DeviceOrientationEvent.requestPermission()
+                     .then(response => {
+                        if (response === 'granted') {
+                           // good
+                        }
+                     })
+                     .catch(console.error)
+                     .finally(() => startApp());
+               }
+            });
          } else {
             startApp();
          }

@@ -646,13 +646,22 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       const center = [location.lat || 48.137, location.lng || 11.576]; // Safe Access
       const map = L.map(mapContainer, {
         zoomControl: false,
-        dragging: !editMode, // Disable map panning in edit mode
-        touchZoom: !editMode,
-        doubleClickZoom: !editMode,
-        scrollWheelZoom: !editMode,
-        boxZoom: !editMode,
-        keyboard: !editMode
+        dragging: true, // Always allow dragging to correct position
+        touchZoom: true,
+        doubleClickZoom: true,
+        scrollWheelZoom: true,
+        boxZoom: false,
+        keyboard: false
       }).setView(center, 19);
+
+      // Max Bounds (approx +/- 0.002 degrees ~ 200 meters)
+      // This prevents the user from "losing" the hydrant
+      const BOUND_OFFSET = 0.002;
+      map.setMaxBounds([
+        [center[0] - BOUND_OFFSET, center[1] - BOUND_OFFSET], // SouthWest
+        [center[0] + BOUND_OFFSET, center[1] + BOUND_OFFSET]  // NorthEast
+      ]);
+      map.setMinZoom(17); // Don't allow zooming out too far
 
       const isLocked = editMode && initialData && initialData._isPartOfWay;
 
@@ -660,8 +669,8 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         attribution: ''
       }).addTo(map);
 
-      // Disable dragging if locked
-      const marker = L.marker(center, { draggable: !isLocked, autoPan: !isLocked }).addTo(map); // Always draggable now
+      // Disable dragging if locked -> Now always draggable but restricted by map bounds
+      const marker = L.marker(center, { draggable: true, autoPan: true }).addTo(map);
       const statusPill = document.querySelector('#geo-status-pill');
 
       marker.on('dragend', function (event) {

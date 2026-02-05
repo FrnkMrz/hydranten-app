@@ -50,6 +50,11 @@ export function getCurrentHeading() {
     return currentHeading;
 }
 
+// Check if we have received valid data (implicit permission)
+export function hasCompassAccess() {
+    return currentHeading !== null;
+}
+
 // State for GPS
 // State for GPS
 let lastPosition = null;
