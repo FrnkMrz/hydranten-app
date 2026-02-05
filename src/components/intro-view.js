@@ -410,30 +410,36 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       }
 
       // Force a resize invalidation shortly after render to ensure map fills container
-      setTimeout(() => {
-         map.invalidateSize();
+   }, 300); // Increased delay slightly to 300ms to be safe against render jank
 
-         // Fix: Check if we have a valid last known position to restore
-         if (lastPos && lastPos.lat && lastPos.lng) {
-            // Restore view without animation to be instant
-            map.setView([lastPos.lat, lastPos.lng], 18, { animate: false });
+   // Helper to consistently apply bounds
+   const applyConstraints = (centerLat, centerLng) => {
+      const BOUND_OFFSET = 0.002;
+      map.setMaxBounds([
+         [centerLat - BOUND_OFFSET, centerLng - BOUND_OFFSET],
+         [centerLat + BOUND_OFFSET, centerLng + BOUND_OFFSET]
+      ]);
+   };
 
-            if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
-            else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
+   // Restore Cached View with Constraints
+   setTimeout(() => {
+      map.invalidateSize();
+      if (lastPos && lastPos.lat && lastPos.lng) {
+         map.setView([lastPos.lat, lastPos.lng], 18, { animate: false });
+         applyConstraints(lastPos.lat, lastPos.lng);
 
-            // Force immediate update now that view is set
-            console.log("Restoring view -> Force update hydrants"); // Keep this? Reviewer disliked logs. Comment it out.
-            // console.log("Restoring view -> Force update hydrants");
-            updateHydrants(map, onEdit);
-         } else {
-            // If no position, we rely on the GPS fix or default view
-            updateHydrants(map, onEdit);
-         }
-      }, 300); // Increased delay slightly to 300ms to be safe against render jank
-   }
+         if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
+         else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
 
-   // Return Cleanup Function (Stub for now, real cleanup in startMapGps logic if needed)
-   return () => { };
+         updateHydrants(map, onEdit);
+      } else {
+         updateHydrants(map, onEdit);
+      }
+   }, 300);
+}
+
+// Return Cleanup Function (Stub for now, real cleanup in startMapGps logic if needed)
+return () => { };
 }
 
 // Extracted GPS start logic
