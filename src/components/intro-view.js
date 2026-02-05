@@ -331,9 +331,23 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
             zoomSnap: 0,
          }).setView([51.1657, 10.4515], 6); // Default Germany
 
-         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+         // Dynamic Tile Layer
+         const style = localStorage.getItem('map_style') || 'osm';
+         let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+         let attribution = '&copy; OpenStreetMap contributors';
+
+         if (style === 'satellite') {
+            tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+            attribution = 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+         } else if (style === 'topo') {
+            tileUrl = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
+            attribution = 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)';
+         }
+
+         L.tileLayer(tileUrl, {
             maxZoom: 19,
-            opacity: 0.8 // Slightly dimmed to match dark UI, or 1.0? Old code had 0.8.
+            attribution: attribution,
+            opacity: style === 'osm' ? 0.8 : 1.0 // Dim OSM slightly for dark mode, others full brightness
          }).addTo(map);
 
          // Initial Hydrant Layer

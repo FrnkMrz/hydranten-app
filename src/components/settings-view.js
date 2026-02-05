@@ -54,7 +54,29 @@ export function renderSettingsView() {
       </div>
 
       <!-- Login Section -->
-      <div class="flex-grow z-10 text-center flex flex-col items-center justify-center">
+      <div class="flex-grow z-10 text-center flex flex-col items-center justify-start overflow-y-auto w-full px-4 pb-4">
+         
+         <!-- Map Style Section -->
+         <div class="bg-gray-800/80 backdrop-blur-md p-6 rounded-3xl border border-gray-700 shadow-xl w-full max-w-sm mb-6 mt-4">
+             <h2 class="text-xl font-bold mb-4 flex items-center justify-center gap-2">
+                🗺️ ${t('settings.map_style') || 'Kartenstil'}
+             </h2>
+             <div class="grid grid-cols-3 gap-3" id="map-style-options">
+                <button class="map-style-btn flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition active:scale-95 text-gray-400" data-style="osm">
+                   <div class="w-10 h-10 rounded-full bg-blue-500/20 border-2 border-blue-400 flex items-center justify-center text-xl">🚗</div>
+                   <span class="text-xs font-bold">Standard</span>
+                </button>
+                <button class="map-style-btn flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition active:scale-95 text-gray-400" data-style="satellite">
+                   <div class="w-10 h-10 rounded-full bg-green-500/20 border-2 border-green-400 flex items-center justify-center text-xl">🛰️</div>
+                   <span class="text-xs font-bold">Satellit</span>
+                </button>
+                <button class="map-style-btn flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition active:scale-95 text-gray-400" data-style="topo">
+                   <div class="w-10 h-10 rounded-full bg-orange-500/20 border-2 border-orange-400 flex items-center justify-center text-xl">🏔️</div>
+                   <span class="text-xs font-bold">Topo</span>
+                </button>
+             </div>
+         </div>
+
          <div class="bg-gray-800/80 backdrop-blur-md p-8 rounded-3xl border border-gray-700 shadow-xl w-full max-w-sm" id="login-container">
             <h2 class="text-xl font-bold mb-6 flex items-center justify-center gap-2">
                OpenStreetMap Login
@@ -147,6 +169,32 @@ export function initSettingsView(element, onBack, onHistory) {
       modal.querySelector('#close-info-btn').onclick = () => modal.remove();
     };
   }
+
+  // Map Style Logic
+  const mapStyleBtns = element.querySelectorAll('.map-style-btn');
+  const updateMapStyleUI = () => {
+    const currentStyle = localStorage.getItem('map_style') || 'osm';
+    mapStyleBtns.forEach(btn => {
+      if (btn.dataset.style === currentStyle) {
+        btn.classList.add('bg-blue-600/30', 'border-blue-400', 'shadow-lg');
+        btn.classList.remove('bg-white/5', 'border-white/10');
+      } else {
+        btn.classList.remove('bg-blue-600/30', 'border-blue-400', 'shadow-lg');
+        btn.classList.add('bg-white/5', 'border-white/10');
+      }
+    });
+  };
+
+  mapStyleBtns.forEach(btn => {
+    btn.onclick = () => {
+      const style = btn.dataset.style;
+      localStorage.setItem('map_style', style);
+      updateMapStyleUI();
+      // Optional: Show toast feedback
+      // But visual active state is usually enough
+    };
+  });
+  updateMapStyleUI(); // Init State
 
   const updateUI = (username) => {
     if (username) {
