@@ -428,7 +428,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
             map.setView([lastPos.lat, lastPos.lng], 18, { animate: false });
             applyConstraints(lastPos.lat, lastPos.lng);
 
-            if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng]).addTo(map);
+            if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng], { interactive: false }).addTo(map);
             else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
 
             updateHydrants(map, onEdit);
