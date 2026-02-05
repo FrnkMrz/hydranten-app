@@ -49,6 +49,12 @@ export function renderIntroView() {
       <!-- Top 30% Map -->
       <div class="w-full h-[30%] shrink-0 relative z-0">
           <div id="intro-map" class="w-full h-full"></div>
+          
+          <!-- LOCATE ME BUTTON (NEW) -->
+          <button id="locate-me-btn" class="absolute top-4 right-4 z-[401] bg-white/10 backdrop-blur-md text-white p-3 rounded-full shadow-lg border border-white/20 active:scale-95 transition" aria-label="Locate Me">
+            <svg class="w-6 h-6 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          </button>
+
           <!-- Gradient Overlay -->
           <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black to-transparent pointer-events-none"></div>
       </div>
@@ -134,9 +140,14 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       btn.onclick = () => {
          const startApp = () => {
             import('../services/geo.js').then(geo => {
-               geo.initCompass();
-               geo.startTracking();
-               onStart();
+               // Step 1: Force immediate GPS update
+               geo.getPosition().then(pos => {
+                  geo.updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
+               }).catch(console.warn).finally(() => {
+                  geo.initCompass();
+                  geo.startTracking();
+                  onStart();
+               });
             });
          };
 
@@ -338,6 +349,29 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 
          // Let's just hook into moveend if the map MOVES (even programmatically).
          map.on('moveend', debouncedUpdate);
+
+         // Locate Me Logic
+         const locateBtn = element.querySelector('#locate-me-btn');
+         if (locateBtn) {
+            locateBtn.onclick = () => {
+               locateBtn.classList.add('animate-pulse');
+               import('../services/geo.js').then(geo => {
+                  geo.getPosition().then(pos => {
+                     map.setView([pos.lat, pos.lng], 18);
+                     if (!userMarker) userMarker = L.marker([pos.lat, pos.lng]).addTo(map);
+                     else userMarker.setLatLng([pos.lat, pos.lng]);
+
+                     geo.updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
+                     updateHydrants(map, onEdit);
+                  }).catch(err => {
+                     console.warn("Manual Locate failed", err);
+                     alert("Position nicht gefunden.");
+                  }).finally(() => {
+                     locateBtn.classList.remove('animate-pulse');
+                  });
+               });
+            };
+         }
       }
 
       // Force a resize invalidation shortly after render to ensure map fills container
