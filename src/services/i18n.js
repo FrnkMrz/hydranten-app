@@ -13,9 +13,10 @@ import ja from '../locales/ja.js';
 import ko from '../locales/ko.js';
 import zh from '../locales/zh.js';
 import tr from '../locales/tr.js';
+import ar from '../locales/ar.js';
 
 const locales = {
-    de, en, pl, cs, fr, nl, es, pt, hr, it, ja, ko, zh, tr
+    de, en, pl, cs, fr, nl, es, pt, hr, it, ja, ko, zh, tr, ar
 };
 
 // Default fallback
@@ -33,7 +34,16 @@ function detectLanguage() {
 const currentLang = detectLanguage();
 const translations = locales[currentLang];
 
-console.log(`i18n: Language detected: ${currentLang}`);
+// RTL Support
+if (currentLang === 'ar') {
+    document.documentElement.dir = 'rtl';
+    document.documentElement.lang = 'ar';
+} else {
+    document.documentElement.dir = 'ltr';
+    document.documentElement.lang = currentLang;
+}
+
+console.log(`i18n: Language detected: ${currentLang}, RTL: ${currentLang === 'ar'}`);
 
 /**
  * Get translation for key.
