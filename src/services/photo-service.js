@@ -92,9 +92,21 @@ export async function addExifGpsData(imageBlob, lat, lng) {
  * Generate descriptive filename based on location and hydrant type
  * @param {Object} location - Location object with lat, lng
  * @param {Object} tags - Hydrant tags (type, etc.)
- * @returns {Promise<string>} Filename (e.g., "91220_Schnaittach_Hauptstrasse_Hydrant.jpg")
+ * @returns {Promise<string>} Filename (e.g., "Schnaittach_Hauptstrasse_Hydrant_153045.jpg")
  */
 export async function generateFilename(location, tags = {}) {
+    // Get timestamp in HHMMSS format
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const timestamp = `${hours}${minutes}${seconds}`;
+
+    // Determine type label
+    let typeLabel = 'Hydrant';
+    if (tags.emergency === 'water_tank') typeLabel = 'Zisterne';
+    else if (tags.emergency === 'suction_point') typeLabel = 'Saugstelle';
+
     try {
         // Try to reverse geocode
         const response = await fetch(
@@ -110,31 +122,23 @@ export async function generateFilename(location, tags = {}) {
             const data = await response.json();
             const addr = data.address || {};
 
-            // Extract components
-            const zip = addr.postcode || '';
+            // Extract components (NO postal code)
             const city = addr.city || addr.town || addr.village || addr.municipality || '';
             const street = (addr.road || addr.pedestrian || addr.footway || addr.path || '').replace(/\s+/g, '_');
 
-            // Determine type label
-            let typeLabel = 'Hydrant';
-            if (tags.emergency === 'water_tank') typeLabel = 'Zisterne';
-            else if (tags.emergency === 'suction_point') typeLabel = 'Saugstelle';
-
-            // Build filename
-            if (zip && city && street) {
-                return `${zip}_${city}_${street}_${typeLabel}.jpg`;
-            } else if (zip && city) {
-                return `${zip}_${city}_${typeLabel}.jpg`;
+            // Build filename with timestamp
+            if (city && street) {
+                return `${city}_${street}_${typeLabel}_${timestamp}.jpg`;
             } else if (city) {
-                return `${city}_${typeLabel}.jpg`;
+                return `${city}_${typeLabel}_${timestamp}.jpg`;
             }
         }
     } catch (error) {
         console.warn('Nominatim geocoding failed, using coordinate fallback:', error);
     }
 
-    // Fallback: Use coordinates
+    // Fallback: Use coordinates + timestamp
     const latStr = location.lat.toFixed(4).replace('.', '_');
     const lngStr = location.lng.toFixed(4).replace('.', '_');
-    return `Hydrant_${latStr}_${lngStr}.jpg`;
+    return `Hydrant_${latStr}_${lngStr}_${timestamp}.jpg`;
 }
