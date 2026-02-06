@@ -179,7 +179,11 @@ export async function initCamera(element, onBack, onCapture) {
 
   try {
     stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment' },
+      video: {
+        facingMode: 'environment',
+        width: { min: 1280, ideal: 3840, max: 4096 },  // 4K ideal, Full HD minimum
+        height: { min: 720, ideal: 2160, max: 2160 }   // 4K ideal, HD minimum
+      },
       audio: false
     });
     video.srcObject = stream;
