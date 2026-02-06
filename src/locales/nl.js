@@ -48,6 +48,12 @@ export default {
         back_btn_aria: "Terug naar home",
         capture_btn_aria: "Foto maken"
     },
+    error: {
+        load_failed: "Fout bij laden",
+        node_deleted: "Deze hydrant bestaat niet meer (verwijderd).",
+        oops: "Oeps!",
+        back_to_map: "Terug naar kaart"
+    },
     confirm: {
         title: "Gegevens Bevestigen",
         delete_confirm: "Hydrant werkelijk verwijderen?",
