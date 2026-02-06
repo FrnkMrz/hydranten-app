@@ -178,12 +178,36 @@ export async function initCamera(element, onBack, onCapture) {
   btn.onclick = performCapture;
 
   try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: {
+    // Detect mobile for optimized constraints
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    let videoConstraints;
+
+    if (isMobile) {
+      // Mobile-optimized: Use aspectRatio and advanced constraints
+      // iOS Safari respects these better than width/height
+      videoConstraints = {
+        facingMode: { exact: 'environment' },  // Force back camera
+        aspectRatio: { ideal: 16 / 9 },
+        frameRate: { ideal: 30 },
+        // Advanced constraints for resolution
+        advanced: [
+          { width: 3840, height: 2160 },  // Try 4K first
+          { width: 1920, height: 1080 },  // Then Full HD
+          { width: 1280, height: 720 }    // Fallback HD
+        ]
+      };
+    } else {
+      // Desktop: Use standard constraints
+      videoConstraints = {
         facingMode: 'environment',
-        width: { min: 1280, ideal: 3840, max: 4096 },  // 4K ideal, Full HD minimum
-        height: { min: 720, ideal: 2160, max: 2160 }   // 4K ideal, HD minimum
-      },
+        width: { min: 1280, ideal: 3840, max: 4096 },
+        height: { min: 720, ideal: 2160, max: 2160 }
+      };
+    }
+
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: videoConstraints,
       audio: false
     });
     video.srcObject = stream;
