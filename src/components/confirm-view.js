@@ -280,19 +280,33 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         zoomOverlay = document.createElement('div');
         zoomOverlay.className = 'fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 animate-fade-in';
         zoomOverlay.innerHTML = `
-          <img src="${blobUrl}" class="max-w-[90vw] max-h-[80vh] rounded-lg shadow-2xl object-contain" alt="${t('confirm.preview_alt') || 'Hydrant Photo'}" />
-          <p class="mt-4 text-white/70 text-sm animate-pulse">${t('confirm.click_to_save') || 'Nochmal klicken zum Speichern'}</p>
+          <img src="${blobUrl}" class="max-w-[90vw] max-h-[70vh] rounded-lg shadow-2xl object-contain mb-6" alt="${t('confirm.preview_alt') || 'Hydrant Photo'}" />
+          <div class="flex gap-4">
+            <button id="zoom-back-btn" class="px-8 py-3 bg-gray-700/80 backdrop-blur text-white rounded-xl font-semibold hover:bg-gray-600/80 active:scale-95 transition">
+              ${t('confirm.cancel_btn') || 'Zurück'}
+            </button>
+            <button id="zoom-save-btn" class="px-8 py-3 bg-green-600/90 backdrop-blur text-white rounded-xl font-semibold hover:bg-green-500/90 active:scale-95 transition">
+              ${t('confirm.save_btn') || 'Speichern'}
+            </button>
+          </div>
         `;
 
-        // Click on photo: Download
-        const zoomedImg = zoomOverlay.querySelector('img');
-        zoomedImg.onclick = async (e) => {
+        // Button: Save
+        const saveBtn = zoomOverlay.querySelector('#zoom-save-btn');
+        saveBtn.onclick = async (e) => {
           e.stopPropagation();
 
           // Prevent multiple saves
           if (isSaving) return;
 
           await downloadPhotoWithExif();
+        };
+
+        // Button: Back (Close)
+        const backBtn = zoomOverlay.querySelector('#zoom-back-btn');
+        backBtn.onclick = (e) => {
+          e.stopPropagation();
+          closeZoom();
         };
 
         // Click outside (backdrop): Close
@@ -330,9 +344,14 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         isSaving = true;
 
         try {
-          // Show loading state
-          const hint = zoomOverlay?.querySelector('p');
-          if (hint) hint.innerText = "Speichere...";
+          // Show loading state on button
+          const saveBtn = zoomOverlay?.querySelector('#zoom-save-btn');
+          const originalText = saveBtn?.innerText;
+          if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.innerText = "Speichere...";
+            saveBtn.classList.add('opacity-50');
+          }
 
           // Import photo service
           const { addExifGpsData, generateFilename } = await import('../services/photo-service.js');
@@ -398,8 +417,12 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
           // Reset state on error
           isSaving = false;
-          const hint = zoomOverlay?.querySelector('p');
-          if (hint) hint.innerText = "❌ Fehler - nochmal versuchen";
+          const saveBtn = zoomOverlay?.querySelector('#zoom-save-btn');
+          if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.innerText = "Fehler - Nochmal?";
+            saveBtn.classList.remove('opacity-50');
+          }
 
           // Don't auto-close on error, let user retry
         }

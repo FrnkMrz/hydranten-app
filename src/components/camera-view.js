@@ -152,22 +152,27 @@ export async function initCamera(element, onBack, onCapture) {
     // However, for debugging without camera availability on Desktop, we might still want it logic-wise?
     // If stream is null, simple red fallback.
 
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
+    // Use full video resolution for high quality photos
+    const width = video.videoWidth || 1920;
+    const height = video.videoHeight || 1080;
+
+    canvas.width = width;
+    canvas.height = height;
     const ctx = canvas.getContext('2d');
 
     if (stream && stream.active) {
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(video, 0, 0, width, height);
       stream.getTracks().forEach(track => track.stop());
     } else {
       // Fallback Red
       ctx.fillStyle = '#cc0000';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, width, height);
     }
 
+    // High quality JPEG (95% instead of 85%)
     canvas.toBlob((blob) => {
       onCapture(blob);
-    }, 'image/jpeg', 0.85);
+    }, 'image/jpeg', 0.95);
   };
 
   btn.onclick = performCapture;
