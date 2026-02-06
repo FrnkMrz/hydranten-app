@@ -44,7 +44,9 @@ export default {
     camera: {
         permission: "Cameratoegang Vereist",
         retake: "Opnieuw",
-        use_photo: "Gebruik Foto"
+        use_photo: "Gebruik Foto",
+        back_btn_aria: "Terug naar home",
+        capture_btn_aria: "Foto maken"
     },
     confirm: {
         title: "Gegevens Bevestigen",

@@ -47,6 +47,7 @@ export default {
         back_btn_label: "Retour",
         cancel_btn: "Annuler",
         retry_gps_aria: "Réessayer la recherche GPS",
+        capture_btn_aria: "Prendre une photo"
     },
     error: {
         load_failed: "Erreur de chargement",
