@@ -27,7 +27,6 @@ export function renderConfirmView() {
         <div class="absolute bottom-4 right-4 w-20 h-28 rounded-xl border-2 border-white/30 shadow-2xl overflow-hidden bg-black z-50 transition transform origin-bottom-right hover:scale-[2.5] active:scale-[2.5] cursor-pointer group">
             <img id="preview-img" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" alt="${t('confirm.preview_alt') || 'Hydrant Preview'}" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
-            <span class="absolute bottom-1 right-2 text-[10px] font-bold text-white/80">FOTO</span>
         </div>
 
         <!-- Back Button (Floating) - Ensuring correct z-index -->
@@ -282,7 +281,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         zoomOverlay.className = 'fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 animate-fade-in';
         zoomOverlay.innerHTML = `
           <img src="${blobUrl}" class="max-w-[90vw] max-h-[80vh] rounded-lg shadow-2xl object-contain" alt="${t('confirm.preview_alt') || 'Hydrant Photo'}" />
-          <p class="mt-4 text-white/70 text-sm animate-pulse">💾 ${t('confirm.click_to_save') || 'Nochmal klicken zum Speichern'}</p>
+          <p class="mt-4 text-white/70 text-sm animate-pulse">${t('confirm.click_to_save') || 'Nochmal klicken zum Speichern'}</p>
         `;
 
         // Click on photo: Download
@@ -306,9 +305,9 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         element.appendChild(zoomOverlay);
         isZoomed = true;
 
-        // Update thumbnail label
+        // Hide thumbnail label when zoomed
         const label = imgContainer.querySelector('span');
-        if (label) label.innerText = "💾 SAVEN";
+        if (label) label.style.display = 'none';
       };
 
       // Helper: Close Zoom Overlay
@@ -320,9 +319,9 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         isZoomed = false;
         isSaving = false; // Reset save state
 
-        // Reset thumbnail label
+        // Show thumbnail label again
         const label = imgContainer.querySelector('span');
-        if (label) label.innerText = "📷 FOTO";
+        if (label) label.style.display = '';
       };
 
       // Helper: Download Photo with EXIF & Descriptive Filename
@@ -333,7 +332,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         try {
           // Show loading state
           const hint = zoomOverlay?.querySelector('p');
-          if (hint) hint.innerText = "💾 Speichere...";
+          if (hint) hint.innerText = "Speichere...";
 
           // Import photo service
           const { addExifGpsData, generateFilename } = await import('../services/photo-service.js');
