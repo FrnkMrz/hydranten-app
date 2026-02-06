@@ -20,6 +20,7 @@ export default {
         info_license: "Licença e Código",
         disclaimer_text: "Não usar em emergências. Sem garantia.\nIniciar implica consentimento de uso de dados.",
         info_github: "Ver no GitHub",
+        lang_btn_aria: "Idioma / Language"
     },
     settings: {
         title: "Configurações",

@@ -20,6 +20,7 @@ export default {
         info_license: "라이선스 및 코드",
         disclaimer_text: "비상시 사용 금지. 보증 없음.\n시작은 데이터 사용 동의를 의미합니다。",
         info_github: "GitHub에서 보기",
+        lang_btn_aria: "언어 / Language"
     },
     settings: {
         title: "설정",

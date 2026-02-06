@@ -19,7 +19,8 @@ export default {
         info_data_text: "此应用程序不会在自己的服务器上存储任何个人数据。您的 IP 地址将传输到 Overpass API 和 Nominatim (OSM 基金会) 以检索地图数据和地址。GPS 处理在您的设备上本地执行。",
         info_license: "许可与代码",
         disclaimer_text: "请勿在紧急情况下使用。无担保。\n开始即表示同意数据使用。",
-        info_github: "在 GitHub 上查看"
+        info_github: "在GitHub上查看",
+        lang_btn_aria: "语言 / Language"
     },
     settings: {
         title: "设置",

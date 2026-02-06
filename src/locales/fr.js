@@ -20,6 +20,7 @@ export default {
         info_license: "Licence & Code",
         disclaimer_text: "Ne pas utiliser en cas d'urgence. Aucune garantie.\nLe démarrage implique le consentement à l'utilisation des données.",
         info_github: "Voir sur GitHub",
+        lang_btn_aria: "Langue / Language"
     },
     settings: {
         title: "Paramètres",

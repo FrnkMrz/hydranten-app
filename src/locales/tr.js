@@ -19,7 +19,8 @@ export default {
         info_data_text: "Bu uygulama kendi sunucularında kişisel veri saklamaz. Harita verilerini ve adresleri almak için IP adresiniz Overpass API ve Nominatim'e (OSM Foundation) iletilir. GPS işlemleri cihazınızda yerel olarak yapılır.",
         info_license: "Lisans ve Kod",
         disclaimer_text: "Acil durumlarda kullanmayın. Garanti yoktur.\nBaşlatma, veri kullanım onayını ifade eder.",
-        info_github: "GitHub'da Görüntüle"
+        info_github: "GitHub'da Görüntüle",
+        lang_btn_aria: "Dil / Language"
     },
     settings: {
         title: "Ayarlar",
