@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "geolib": "^3.3.4",
-    "leaflet": "^1.9.4"
+    "leaflet": "^1.9.4",
+    "piexifjs": "^1.0.6"
   }
 }
