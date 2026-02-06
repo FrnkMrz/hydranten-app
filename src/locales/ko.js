@@ -76,6 +76,7 @@ export default {
         position_adjustable: "위치 조정 가능",
         position_moved: "위치 업데이트됨",
         fixed_map: "이동 가능 (지도 고정)",
+        click_to_save: "다시 클릭하여 저장",
         preview_alt: "촬영된 사진",
         back_btn_aria: "카메라로 돌아가기",
         back_btn_label: "뒤로",

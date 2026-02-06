@@ -82,6 +82,7 @@ export default {
         position_adjustable: "Position anpassbar",
         position_moved: "Position angepasst",
         fixed_map: "Verschiebbar (Karte fixiert)",
+        click_to_save: "Nochmal klicken zum Speichern",
         type_label: "Typ",
         position_label: "Lage",
         details_label: "Details (Optional)",

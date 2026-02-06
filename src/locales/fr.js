@@ -74,6 +74,7 @@ export default {
         position_adjustable: "Position ajustable",
         position_moved: "Position mise à jour",
         fixed_map: "Déplaçable (Carte fixe)",
+        click_to_save: "Cliquer à nouveau pour enregistrer",
         preview_alt: "Photo prise",
         type_label: "Type",
         position_label: "Position",

@@ -76,6 +76,7 @@ export default {
         position_adjustable: "Konum ayarlanabilir",
         position_moved: "Konum güncellendi",
         fixed_map: "Sürüklenebilir (Harita Sabit)",
+        click_to_save: "Kaydetmek için tekrar tıklayın",
         preview_alt: "Çekilen Fotoğraf",
         back_btn_aria: "Kameraya Dön",
         back_btn_label: "Geri",

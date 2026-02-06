@@ -76,6 +76,7 @@ export default {
         position_adjustable: "位置調整可能",
         position_moved: "位置更新済み",
         fixed_map: "移動可能（地図固定）",
+        click_to_save: "もう一度クリックして保存",
         preview_alt: "撮影された写真",
         back_btn_aria: "カメラに戻る",
         back_btn_label: "戻る",

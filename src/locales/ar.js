@@ -80,6 +80,7 @@ export default {
         position_adjustable: "الموقع قابل للتعديل",
         position_moved: "تم تعديل الموقع",
         fixed_map: "قابل للتحريك (الخريطة ثابتة)",
+        click_to_save: "انقر مرة أخرى للحفظ",
         type_label: "النوع",
         position_label: "الموقع",
         details_label: "تفاصيل (اختياري)",

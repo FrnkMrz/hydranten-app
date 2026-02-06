@@ -69,6 +69,7 @@ export default {
         position_adjustable: "Positie aanpasbaar",
         position_moved: "Positie bijgewerkt",
         fixed_map: "Verplaatsbaar (Kaart vast)",
+        click_to_save: "Klik nogmaals om op te slaan",
         preview_alt: "Genomen foto",
         type_label: "Type",
         position_label: "Locatie",

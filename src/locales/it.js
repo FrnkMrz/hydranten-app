@@ -76,6 +76,7 @@ export default {
         position_adjustable: "Posizione regolabile",
         position_moved: "Posizione aggiornata",
         fixed_map: "Spostabile (Mappa fissa)",
+        click_to_save: "Clicca di nuovo per salvare",
         preview_alt: "Foto Scattata",
         back_btn_aria: "Torna alla Fotocamera",
         back_btn_label: "Indietro",

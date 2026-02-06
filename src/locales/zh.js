@@ -76,6 +76,7 @@ export default {
         position_adjustable: "位置可调",
         position_moved: "位置已更新",
         fixed_map: "可拖动（地图固定）",
+        click_to_save: "再次点击保存",
         preview_alt: "拍摄的照片",
         back_btn_aria: "返回相机",
         back_btn_label: "返回",

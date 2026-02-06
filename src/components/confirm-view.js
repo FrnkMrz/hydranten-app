@@ -270,29 +270,115 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       const blobUrl = URL.createObjectURL(imageBlob);
       img.src = blobUrl;
 
-      // Click to Save (Download)
-      if (imgContainer) {
-        imgContainer.onclick = (e) => {
-          e.stopPropagation(); // Prevent bubbling if needed
+      // State for Zoom Overlay
+      let isZoomed = false;
+      let zoomOverlay = null;
+
+      // Helper: Show Fullscreen Photo Zoom
+      const showPhotoZoom = () => {
+        // Create Overlay
+        zoomOverlay = document.createElement('div');
+        zoomOverlay.className = 'fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 animate-fade-in';
+        zoomOverlay.innerHTML = `
+          <img src="${blobUrl}" class="max-w-[90vw] max-h-[80vh] rounded-lg shadow-2xl object-contain" alt="${t('confirm.preview_alt') || 'Hydrant Photo'}" />
+          <p class="mt-4 text-white/70 text-sm animate-pulse">💾 ${t('confirm.click_to_save') || 'Nochmal klicken zum Speichern'}</p>
+        `;
+
+        // Click on photo: Download
+        const zoomedImg = zoomOverlay.querySelector('img');
+        zoomedImg.onclick = async (e) => {
+          e.stopPropagation();
+          await downloadPhotoWithExif();
+        };
+
+        // Click outside (backdrop): Close
+        zoomOverlay.onclick = (e) => {
+          if (e.target === zoomOverlay) {
+            closeZoom();
+          }
+        };
+
+        element.appendChild(zoomOverlay);
+        isZoomed = true;
+
+        // Update thumbnail label
+        const label = imgContainer.querySelector('span');
+        if (label) label.innerText = "💾 SAVEN";
+      };
+
+      // Helper: Close Zoom Overlay
+      const closeZoom = () => {
+        if (zoomOverlay) {
+          zoomOverlay.remove();
+          zoomOverlay = null;
+        }
+        isZoomed = false;
+
+        // Reset thumbnail label
+        const label = imgContainer.querySelector('span');
+        if (label) label.innerText = "📷 FOTO";
+      };
+
+      // Helper: Download Photo with EXIF & Descriptive Filename
+      const downloadPhotoWithExif = async () => {
+        try {
+          // Import photo service
+          const { addExifGpsData, generateFilename } = await import('../services/photo-service.js');
+
+          // Add EXIF GPS data
+          const enrichedBlob = await addExifGpsData(imageBlob, location.lat, location.lng);
+
+          // Generate filename
+          const typeInput = element.querySelector('#hydrant-type');
+          const tags = {};
+          if (typeInput) {
+            const type = typeInput.value;
+            if (type === 'cistern') tags.emergency = 'water_tank';
+            else if (type === 'suction_point') tags.emergency = 'suction_point';
+          }
+
+          const filename = await generateFilename(location, tags);
+
+          // Download
           const a = document.createElement('a');
-          a.href = blobUrl;
-          a.download = `hydrant_photo_${new Date().toISOString().replace(/[:.]/g, '-')}.jpg`;
+          a.href = URL.createObjectURL(enrichedBlob);
+          a.download = filename;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
 
-          // Optional: Visual Feedback?
-          const originalBorder = imgContainer.style.borderColor;
-          imgContainer.style.borderColor = '#4ade80'; // Green
-          setTimeout(() => {
-            imgContainer.style.borderColor = originalBorder;
-          }, 500);
+          // Visual Feedback: Green flash
+          if (imgContainer) {
+            const originalBorder = imgContainer.style.borderColor;
+            imgContainer.style.borderColor = '#4ade80'; // Green
+            setTimeout(() => {
+              imgContainer.style.borderColor = originalBorder;
+            }, 500);
+          }
+
+          // Close zoom after download
+          closeZoom();
+
+        } catch (error) {
+          console.error('Photo download with EXIF failed:', error);
+          alert('Fehler beim Speichern: ' + error.message);
+        }
+      };
+
+      // Thumbnail Click Handler
+      if (imgContainer) {
+        imgContainer.onclick = (e) => {
+          e.stopPropagation();
+
+          if (!isZoomed) {
+            // First click: Zoom
+            showPhotoZoom();
+          }
+          // Note: Second click is now handled by zoomedImg.onclick inside showPhotoZoom
         };
-        // Add hint to title
-        const label = imgContainer.querySelector('span');
-        if (label) label.innerText = "💾 SAVEN";
       }
     }
+
     const retakeBtn = element.querySelector('#retake-btn');
     const submitBtn = element.querySelector('#submit-img-btn');
     const typeInput = element.querySelector('#hydrant-type');

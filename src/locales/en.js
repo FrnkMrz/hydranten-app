@@ -76,6 +76,7 @@ export default {
         position_adjustable: "Position Adjustable",
         position_moved: "Position Updated",
         fixed_map: "Draggable (Map Fixed)",
+        click_to_save: "Click again to save",
         preview_alt: "Captured Photo",
         back_btn_aria: "Back to Camera",
         back_btn_label: "Back",

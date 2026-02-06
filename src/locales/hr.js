@@ -76,6 +76,7 @@ export default {
         position_adjustable: "Podesiva pozicija",
         position_moved: "Pozicija ažurirana",
         fixed_map: "Pomično (Mapa fiksna)",
+        click_to_save: "Kliknite ponovno za spremanje",
         preview_alt: "Uslikano",
         back_btn_aria: "Povratak na kameru",
         back_btn_label: "Natrag",

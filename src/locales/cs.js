@@ -75,6 +75,7 @@ export default {
         position_adjustable: "Pozice nastavitelná",
         position_moved: "Pozice upravena",
         fixed_map: "Posuvné (Mapa fixní)",
+        click_to_save: "Klikněte znovu pro uložení",
         preview_alt: "Vyfoceno",
         back_btn_aria: "Zpět na kameru",
         back_btn_label: "Zpět",
