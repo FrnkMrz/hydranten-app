@@ -273,6 +273,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       // State for Zoom Overlay
       let isZoomed = false;
       let zoomOverlay = null;
+      let isSaving = false; // Prevent multiple saves
 
       // Helper: Show Fullscreen Photo Zoom
       const showPhotoZoom = () => {
@@ -288,6 +289,10 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         const zoomedImg = zoomOverlay.querySelector('img');
         zoomedImg.onclick = async (e) => {
           e.stopPropagation();
+
+          // Prevent multiple saves
+          if (isSaving) return;
+
           await downloadPhotoWithExif();
         };
 
@@ -313,6 +318,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           zoomOverlay = null;
         }
         isZoomed = false;
+        isSaving = false; // Reset save state
 
         // Reset thumbnail label
         const label = imgContainer.querySelector('span');
@@ -321,7 +327,14 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
       // Helper: Download Photo with EXIF & Descriptive Filename
       const downloadPhotoWithExif = async () => {
+        if (isSaving) return; // Double-check
+        isSaving = true;
+
         try {
+          // Show loading state
+          const hint = zoomOverlay?.querySelector('p');
+          if (hint) hint.innerText = "💾 Speichere...";
+
           // Import photo service
           const { addExifGpsData, generateFilename } = await import('../services/photo-service.js');
 
@@ -339,7 +352,27 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
           const filename = await generateFilename(location, tags);
 
-          // Download
+          // Check if mobile (iOS/Android) - prefer native share for photo library
+          const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+          if (isMobile && navigator.share && navigator.canShare) {
+            // Try native share (saves to photo library on iOS/Android)
+            const file = new File([enrichedBlob], filename, { type: 'image/jpeg' });
+
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                files: [file],
+                title: 'Hydrant Foto',
+                text: 'Hydrant aufgenommen mit Hydranten Jäger'
+              });
+
+              // Success - close immediately
+              closeZoom();
+              return;
+            }
+          }
+
+          // Fallback: Regular download (Desktop or if share fails)
           const a = document.createElement('a');
           a.href = URL.createObjectURL(enrichedBlob);
           a.download = filename;
@@ -356,12 +389,20 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
             }, 500);
           }
 
-          // Close zoom after download
-          closeZoom();
+          // Auto-close after successful save
+          setTimeout(() => {
+            closeZoom();
+          }, 800);
 
         } catch (error) {
-          console.error('Photo download with EXIF failed:', error);
-          alert('Fehler beim Speichern: ' + error.message);
+          console.error('Photo save failed:', error);
+
+          // Reset state on error
+          isSaving = false;
+          const hint = zoomOverlay?.querySelector('p');
+          if (hint) hint.innerText = "❌ Fehler - nochmal versuchen";
+
+          // Don't auto-close on error, let user retry
         }
       };
 
