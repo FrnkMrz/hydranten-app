@@ -54,7 +54,9 @@ export default {
         load_failed: "Greška pri učitavanju",
         node_deleted: "Ovaj hidrant više ne postoji.",
         oops: "Ups!",
-        back_to_map: "Povratak na kartu"
+        back_to_map: "Povratak na kartu",
+        gps_failed: "Lokacija se ne može odrediti. Provjerite GPS postavke.",
+        gps_unavailable: "GPS nije dostupan. Prikazuje se zadana karta."
     },
     confirm: {
         title: "Potvrdi podatke",

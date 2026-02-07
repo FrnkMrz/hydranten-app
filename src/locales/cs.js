@@ -54,7 +54,9 @@ export default {
         load_failed: "Chyba načítání",
         node_deleted: "Tento hydrant již neexistuje.",
         oops: "Jejda!",
-        back_to_map: "Zpět na mapu"
+        back_to_map: "Zpět na mapu",
+        gps_failed: "Polohu nelze určit. Zkontrolujte nastavení GPS.",
+        gps_unavailable: "GPS není k dispozici. Zobrazuje se výchozí mapa."
     },
     confirm: {
         title: "Potvrdit Data",

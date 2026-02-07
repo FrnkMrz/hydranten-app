@@ -53,7 +53,9 @@ export default {
         load_failed: "فشل التحميل",
         node_deleted: "هذا الصنبور لم يعد موجودًا (تم حذفه).",
         oops: "عفواً!",
-        back_to_map: "العودة للخريطة"
+        back_to_map: "العودة للخريطة",
+        gps_failed: "لم يتم تحديد الموقع. تحقق من إعدادات GPS.",
+        gps_unavailable: "GPS غير متاح. عرض الخريطة الافتراضية."
     },
     confirm: {
         title: "بيانات الصنبور",

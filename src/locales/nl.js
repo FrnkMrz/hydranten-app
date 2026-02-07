@@ -52,7 +52,9 @@ export default {
         load_failed: "Fout bij laden",
         node_deleted: "Deze hydrant bestaat niet meer (verwijderd).",
         oops: "Oeps!",
-        back_to_map: "Terug naar kaart"
+        back_to_map: "Terug naar kaart",
+        gps_failed: "Locatie kon niet worden bepaald. Controleer GPS-instellingen.",
+        gps_unavailable: "GPS niet beschikbaar. Standaardkaart wordt getoond."
     },
     confirm: {
         title: "Gegevens Bevestigen",

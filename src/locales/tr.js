@@ -54,7 +54,11 @@ export default {
         load_failed: "Yükleme Hatası",
         node_deleted: "Bu hidrant artık mevcut değil.",
         oops: "Hoppala!",
-        back_to_map: "Haritaya Dön"
+        back_to_map: "Haritaya Dön",
+        gps_failed: "Konum belirlenemedi. GPS ayarlarını kontrol edin.",
+        gps_unavailable: "GPS kullanılamıyor. Varsayılan harita gösteriliyor.",
+        gps_failed: "Konum belirlenemedi. GPS ayarlarını kontrol edin.",
+        gps_unavailable: "GPS kullanılamıyor. Varsayılan harita gösteriliyor."
     },
     confirm: {
         title: "Veriyi Onayla",

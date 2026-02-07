@@ -53,7 +53,9 @@ export default {
         load_failed: "Erreur de chargement",
         node_deleted: "Cette borne n'existe plus.",
         oops: "Oups !",
-        back_to_map: "Retour à la carte"
+        back_to_map: "Retour à la carte",
+        gps_failed: "Localisation impossible. Vérifiez les paramètres GPS.",
+        gps_unavailable: "GPS non disponible. Affichage de la carte par défaut."
     },
     confirm: {
         title: "Vérifier les données",

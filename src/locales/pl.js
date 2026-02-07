@@ -54,7 +54,9 @@ export default {
         load_failed: "Błąd ładowania",
         node_deleted: "Ten hydrant już nie istnieje.",
         oops: "Ups!",
-        back_to_map: "Powrót do mapy"
+        back_to_map: "Powrót do mapy",
+        gps_failed: "Nie można ustalić lokalizacji. Sprawdź ustawienia GPS.",
+        gps_unavailable: "GPS niedostępny. Wyświetlanie domyślnej mapy."
     },
     confirm: {
         title: "Potwierdź Dane",

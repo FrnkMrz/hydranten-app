@@ -54,7 +54,9 @@ export default {
         load_failed: "로딩 오류",
         node_deleted: "이 소화전은 더 이상 존재하지 않습니다.",
         oops: "이런!",
-        back_to_map: "지도로 돌아가기"
+        back_to_map: "지도로 돌아가기",
+        gps_failed: "위치를 확인할 수 없습니다. GPS 설정을 확인하세요.",
+        gps_unavailable: "GPS를 사용할 수 없습니다. 기본 지도를 표시합니다."
     },
     confirm: {
         title: "데이터 확인",

@@ -54,7 +54,9 @@ export default {
         load_failed: "読み込みエラー",
         node_deleted: "この消火栓はもう存在しません。",
         oops: "おっと！",
-        back_to_map: "地図に戻る"
+        back_to_map: "地図に戻る",
+        gps_failed: "位置を特定できませんでした。GPS設定を確認してください。",
+        gps_unavailable: "GPSが利用できません。デフォルトの地図を表示します。"
     },
     confirm: {
         title: "データを確認",

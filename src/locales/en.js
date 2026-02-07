@@ -54,7 +54,9 @@ export default {
         load_failed: "Error loading",
         node_deleted: "This hydrant no longer exists (data deleted).",
         oops: "Oops!",
-        back_to_map: "Back to Map"
+        back_to_map: "Back to Map",
+        gps_failed: "Location could not be determined. Check GPS settings.",
+        gps_unavailable: "GPS not available. Showing default map."
     },
     confirm: {
         title: "Confirm Data",

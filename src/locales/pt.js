@@ -54,7 +54,9 @@ export default {
         load_failed: "Erro ao carregar",
         node_deleted: "Este hidrante não existe mais.",
         oops: "Ops!",
-        back_to_map: "Voltar ao Mapa"
+        back_to_map: "Voltar ao Mapa",
+        gps_failed: "Não foi possível determinar a localização. Verifique as configurações de GPS.",
+        gps_unavailable: "GPS indisponível. Mostrando mapa padrão."
     },
     confirm: {
         title: "Confirmar Dados",

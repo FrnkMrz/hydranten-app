@@ -442,7 +442,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                         // updateHydrants(map, onEdit); // triggered by moveend
                      }).catch(err => {
                         console.warn("Manual Locate failed", err);
-                        showToast("Standort konnte nicht ermittelt werden. Überprüfe deine GPS-Einstellungen.", true);
+                        showToast(t('error.gps_failed'), true);
                      }).finally(() => {
                         locateBtn.classList.remove('animate-pulse');
                      });
@@ -484,7 +484,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          })
          .catch(err => {
             console.warn("Startup GPS failed, using fallback", err);
-            showToast("GPS nicht verfügbar. Zeige Standard-Karte.", true);
+            showToast(t('error.gps_unavailable'), true);
             // Fallback: Last known or Default
             if (lastPos) initMap(lastPos.lat, lastPos.lng, 18);
             else initMap(51.1657, 10.4515, 6);

@@ -54,7 +54,9 @@ export default {
         load_failed: "加载错误",
         node_deleted: "此消防栓已不存在。",
         oops: "哎呀！",
-        back_to_map: "返回地图"
+        back_to_map: "返回地图",
+        gps_failed: "无法确定位置。请检查GPS设置。",
+        gps_unavailable: "GPS不可用。显示默认地图。"
     },
     confirm: {
         title: "确认数据",

@@ -55,7 +55,9 @@ export default {
         load_failed: "Fehler beim Laden",
         node_deleted: "Dieser Hydrant existiert nicht mehr (wurde gelöscht).",
         oops: "Hoppla!",
-        back_to_map: "Zurück zur Karte"
+        back_to_map: "Zurück zur Karte",
+        gps_failed: "Standort konnte nicht ermittelt werden. Überprüfe deine GPS-Einstellungen.",
+        gps_unavailable: "GPS nicht verfügbar. Zeige Standard-Karte."
     },
     confirm: {
         title: "Daten prüfen",

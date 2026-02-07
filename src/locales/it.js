@@ -54,7 +54,9 @@ export default {
         load_failed: "Errore di caricamento",
         node_deleted: "Questo idrante non esiste più.",
         oops: "Ops!",
-        back_to_map: "Torna alla Mappa"
+        back_to_map: "Torna alla Mappa",
+        gps_failed: "Impossibile determinare la posizione. Controlla le impostazioni GPS.",
+        gps_unavailable: "GPS non disponibile. Visualizzazione mappa predefinita."
     },
     confirm: {
         title: "Conferma Dati",
