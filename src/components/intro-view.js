@@ -329,135 +329,151 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    let userMarker = null; // Re-introduced
 
    if (mapContainer && !map) {
-      // Initialize Map
-      const mapElement = element.querySelector('#intro-map');
-      if (mapElement && !mapElement._leaflet_id) {
-         map = L.map(mapElement, {
-            zoomControl: false,
-            attributionControl: false,
-            dragging: true, // User requested dragging within 200m
-            scrollWheelZoom: false,
-            doubleClickZoom: false,
-            touchZoom: false,
-            boxZoom: false,
-            keyboard: false,
-            zoomSnap: 0,
-         }).setView([51.1657, 10.4515], 6); // Default Germany
+      // Show Loading UI
+      mapContainer.innerHTML = '<div class="flex h-full w-full items-center justify-center bg-gray-900 z-50 relative"><svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="ml-3 text-white font-medium">Standort wird ermittelt...</span></div>';
 
-         // Dynamic Tile Layer
-         const style = localStorage.getItem('map_style') || 'osm';
-         let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-         let attribution = '&copy; OpenStreetMap contributors';
-         let maxNativeZoom = 19; // Default OSM
+      const initMap = (centerLat, centerLng, zoomLevel) => {
+         mapContainer.innerHTML = ''; // Clear loading
 
-         if (style === 'satellite') {
-            tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-            attribution = 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
-         } else if (style === 'topo') {
-            tileUrl = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
-            attribution = 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)';
-            maxNativeZoom = 16; // Topo reliable max zoom (scaled up to 19)
+         const mapElement = element.querySelector('#intro-map');
+         if (mapElement && !mapElement._leaflet_id) {
+            map = L.map(mapElement, {
+               zoomControl: false,
+               attributionControl: false,
+               dragging: true, // User requested dragging within 200m
+               scrollWheelZoom: false,
+               doubleClickZoom: false,
+               touchZoom: false,
+               boxZoom: false,
+               keyboard: false,
+               zoomSnap: 0,
+            }).setView([centerLat, centerLng], zoomLevel);
+
+            // Dynamic Tile Layer
+            const style = localStorage.getItem('map_style') || 'osm';
+            let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            let attribution = '&copy; OpenStreetMap contributors';
+            let maxNativeZoom = 19; // Default OSM
+
+            if (style === 'satellite') {
+               tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+               attribution = 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+            } else if (style === 'topo') {
+               tileUrl = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
+               attribution = 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)';
+               maxNativeZoom = 16; // Topo reliable max zoom (scaled up to 19)
+            }
+
+            L.tileLayer(tileUrl, {
+               maxZoom: style === 'topo' ? 17 : 19, // Limit Topo to 17 as requested
+               maxNativeZoom: maxNativeZoom,
+               attribution: attribution,
+               opacity: style === 'osm' ? 0.8 : 1.0
+            }).addTo(map);
+
+            // Initial Hydrant Layer
+            hydrantLayer = L.layerGroup().addTo(map);
+
+            // Check 'permissions' API to auto-start ONLY if already granted (avoids violation warning)
+            if (navigator.permissions && navigator.permissions.query) {
+               navigator.permissions.query({ name: 'geolocation' }).then(res => {
+                  if (res.state === 'granted') {
+                     startMapGps(map, (lat, lng) => {
+                        if (!userMarker) {
+                           userMarker = L.marker([lat, lng], { interactive: false }).addTo(map);
+                        } else {
+                           userMarker.setLatLng([lat, lng]);
+                        }
+                     }, onEdit);
+                  }
+               }).catch(() => { });
+            }
+
+            // Debounced Map Move Handler
+            // Pass onEdit here!
+            const debouncedUpdate = debounce(() => updateHydrants(map, onEdit), 1000);
+
+            // Let's just hook into moveend if the map MOVES (even programmatically).
+            map.on('moveend', debouncedUpdate);
+
+            // Locate Me Logic
+            const locateBtn = element.querySelector('#locate-me-btn');
+            if (locateBtn) {
+               locateBtn.onclick = () => {
+                  locateBtn.classList.add('animate-pulse');
+                  // Force fresh position (with auto-retry for better accuracy)
+                  getPosition(true)
+                     .then(pos => {
+                        // If accuracy is poor (>40m), try once more immediately
+                        if (pos.accuracy > 40) {
+                           console.log(`GPS accuracy ${pos.accuracy}m - Retrying...`);
+                           return getPosition(true);
+                        }
+                        return pos;
+                     })
+                     .then(pos => {
+                        map.setView([pos.lat, pos.lng], 18);
+
+                        // Update Bounds
+                        const BOUND_OFFSET = 0.002;
+                        map.setMaxBounds([
+                           [pos.lat - BOUND_OFFSET, pos.lng - BOUND_OFFSET],
+                           [pos.lat + BOUND_OFFSET, pos.lng + BOUND_OFFSET]
+                        ]);
+
+                        if (!userMarker) userMarker = L.marker([pos.lat, pos.lng], { interactive: false }).addTo(map);
+                        else userMarker.setLatLng([pos.lat, pos.lng]);
+
+                        updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
+                        // updateHydrants(map, onEdit); // triggered by moveend
+                     }).catch(err => {
+                        console.warn("Manual Locate failed", err);
+                        alert("Position nicht gefunden. (Fehler: " + (err.message || err.code || 'Unbekannt') + ")");
+                     }).finally(() => {
+                        locateBtn.classList.remove('animate-pulse');
+                     });
+               };
+            }
          }
 
-         L.tileLayer(tileUrl, {
-            maxZoom: style === 'topo' ? 17 : 19, // Limit Topo to 17 as requested
-            maxNativeZoom: maxNativeZoom,
-            attribution: attribution,
-            opacity: style === 'osm' ? 0.8 : 1.0
-         }).addTo(map);
 
-         // Initial Hydrant Layer
-         hydrantLayer = L.layerGroup().addTo(map);
+         // Helper to consistently apply bounds
+         const applyConstraints = (centerLat, centerLng) => {
+            const BOUND_OFFSET = 0.002;
+            map.setMaxBounds([
+               [centerLat - BOUND_OFFSET, centerLng - BOUND_OFFSET],
+               [centerLat + BOUND_OFFSET, centerLng + BOUND_OFFSET]
+            ]);
+         };
 
-         // Check 'permissions' API to auto-start ONLY if already granted (avoids violation warning)
-         if (navigator.permissions && navigator.permissions.query) {
-            navigator.permissions.query({ name: 'geolocation' }).then(res => {
-               if (res.state === 'granted') {
-                  startMapGps(map, (lat, lng) => {
-                     if (!userMarker) {
-                        userMarker = L.marker([lat, lng], { interactive: false }).addTo(map);
-                     } else {
-                        userMarker.setLatLng([lat, lng]);
-                     }
-                  }, onEdit);
-               }
-            }).catch(() => { });
-         }
+         // Force a resize invalidation shortly after render to ensure map fills container
+         setTimeout(() => {
+            map.invalidateSize();
 
-         // Debounced Map Move Handler
-         // Pass onEdit here!
-         const debouncedUpdate = debounce(() => updateHydrants(map, onEdit), 1000);
-
-         // Let's just hook into moveend if the map MOVES (even programmatically).
-         map.on('moveend', debouncedUpdate);
-
-         // Locate Me Logic
-         const locateBtn = element.querySelector('#locate-me-btn');
-         if (locateBtn) {
-            locateBtn.onclick = () => {
-               locateBtn.classList.add('animate-pulse');
-               // Force fresh position (with auto-retry for better accuracy)
-               getPosition(true)
-                  .then(pos => {
-                     // If accuracy is poor (>40m), try once more immediately
-                     if (pos.accuracy > 40) {
-                        console.log(`GPS accuracy ${pos.accuracy}m - Retrying...`);
-                        return getPosition(true);
-                     }
-                     return pos;
-                  })
-                  .then(pos => {
-                     map.setView([pos.lat, pos.lng], 18);
-
-                     // Update Bounds
-                     const BOUND_OFFSET = 0.002;
-                     map.setMaxBounds([
-                        [pos.lat - BOUND_OFFSET, pos.lng - BOUND_OFFSET],
-                        [pos.lat + BOUND_OFFSET, pos.lng + BOUND_OFFSET]
-                     ]);
-
-                     if (!userMarker) userMarker = L.marker([pos.lat, pos.lng], { interactive: false }).addTo(map);
-                     else userMarker.setLatLng([pos.lat, pos.lng]);
-
-                     updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
-                     // updateHydrants(map, onEdit); // triggered by moveend
-                  }).catch(err => {
-                     console.warn("Manual Locate failed", err);
-                     alert("Position nicht gefunden. (Fehler: " + (err.message || err.code || 'Unbekannt') + ")");
-                  }).finally(() => {
-                     locateBtn.classList.remove('animate-pulse');
-                  });
-            };
-         }
-      }
-
-
-      // Helper to consistently apply bounds
-      const applyConstraints = (centerLat, centerLng) => {
-         const BOUND_OFFSET = 0.002;
-         map.setMaxBounds([
-            [centerLat - BOUND_OFFSET, centerLng - BOUND_OFFSET],
-            [centerLat + BOUND_OFFSET, centerLng + BOUND_OFFSET]
-         ]);
-      };
-
-      // Force a resize invalidation shortly after render to ensure map fills container
-      setTimeout(() => {
-         map.invalidateSize();
-
-         // Restore Cached View with Constraints
-         if (lastPos && lastPos.lat && lastPos.lng) {
-            map.setView([lastPos.lat, lastPos.lng], 18, { animate: false });
-            applyConstraints(lastPos.lat, lastPos.lng);
-
-            if (!userMarker) userMarker = L.marker([lastPos.lat, lastPos.lng], { interactive: false }).addTo(map);
-            else userMarker.setLatLng([lastPos.lat, lastPos.lng]);
+            // Apply constraints if we have a specific position (zoom 18)
+            if (zoomLevel >= 18) {
+               applyConstraints(centerLat, centerLng);
+               if (!userMarker) userMarker = L.marker([centerLat, centerLng], { interactive: false }).addTo(map);
+               else userMarker.setLatLng([centerLat, centerLng]);
+            }
 
             updateHydrants(map, onEdit);
-         } else {
-            updateHydrants(map, onEdit);
-         }
-      }, 300);
+         }, 300);
+      }; // End initMap function
+
+      // EXECUTE: Try to get fresh position first
+      getPosition(true)
+         .then(pos => {
+            // Success: Init map with fresh pos
+            initMap(pos.lat, pos.lng, 18);
+            updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
+         })
+         .catch(err => {
+            console.warn("Startup GPS failed, using fallback", err);
+            // Fallback: Last known or Default
+            if (lastPos) initMap(lastPos.lat, lastPos.lng, 18);
+            else initMap(51.1657, 10.4515, 6);
+         });
    }
 
    // Return Cleanup Function (Stub for now, real cleanup in startMapGps logic if needed)
