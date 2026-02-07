@@ -51,7 +51,7 @@ export function renderIntroView() {
           <div id="intro-map" class="w-full h-full"></div>
           
           <!-- LOCATE ME BUTTON (NEW) -->
-          <button id="locate-me-btn" class="absolute bottom-4 right-4 z-[401] bg-white/10 backdrop-blur-md text-white p-3 rounded-full shadow-lg border border-white/20 active:scale-95 transition" aria-label="Locate Me">
+          <button id="locate-me-btn" class="absolute bottom-4 right-4 z-[401] bg-blue-600/90 text-white p-3 rounded-full shadow-lg shadow-blue-900/40 border border-white/20 active:scale-95 hover:bg-blue-500 transition" aria-label="Locate Me">
             <svg class="w-6 h-6 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           </button>
 
@@ -316,7 +316,11 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    let marker = null;
 
    // Init Cached Position immediately
-   const lastPos = getLastKnownPosition();
+   let lastPos = getLastKnownPosition();
+   // Fix: Discard stale position (>15 min) to prevent "old position" confusion on startup
+   if (lastPos && (Date.now() - (lastPos.timestamp || 0) > 900000)) {
+      lastPos = null;
+   }
    const initialCenter = lastPos ? [lastPos.lat, lastPos.lng] : [48.137, 11.576];
    // Fix: Increase default zoom to 16 so that hydrate fetch (min 14) works even without GPS fix
    const initialZoom = lastPos ? 18 : 16;
@@ -392,28 +396,37 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          if (locateBtn) {
             locateBtn.onclick = () => {
                locateBtn.classList.add('animate-pulse');
-               // Force fresh position for Locate Me too
-               getPosition(true).then(pos => {
-                  map.setView([pos.lat, pos.lng], 18);
+               // Force fresh position (with auto-retry for better accuracy)
+               getPosition(true)
+                  .then(pos => {
+                     // If accuracy is poor (>40m), try once more immediately
+                     if (pos.accuracy > 40) {
+                        console.log(`GPS accuracy ${pos.accuracy}m - Retrying...`);
+                        return getPosition(true);
+                     }
+                     return pos;
+                  })
+                  .then(pos => {
+                     map.setView([pos.lat, pos.lng], 18);
 
-                  // Update Bounds
-                  const BOUND_OFFSET = 0.002;
-                  map.setMaxBounds([
-                     [pos.lat - BOUND_OFFSET, pos.lng - BOUND_OFFSET],
-                     [pos.lat + BOUND_OFFSET, pos.lng + BOUND_OFFSET]
-                  ]);
+                     // Update Bounds
+                     const BOUND_OFFSET = 0.002;
+                     map.setMaxBounds([
+                        [pos.lat - BOUND_OFFSET, pos.lng - BOUND_OFFSET],
+                        [pos.lat + BOUND_OFFSET, pos.lng + BOUND_OFFSET]
+                     ]);
 
-                  if (!userMarker) userMarker = L.marker([pos.lat, pos.lng], { interactive: false }).addTo(map);
-                  else userMarker.setLatLng([pos.lat, pos.lng]);
+                     if (!userMarker) userMarker = L.marker([pos.lat, pos.lng], { interactive: false }).addTo(map);
+                     else userMarker.setLatLng([pos.lat, pos.lng]);
 
-                  updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
-                  // updateHydrants(map, onEdit); // triggered by moveend
-               }).catch(err => {
-                  console.warn("Manual Locate failed", err);
-                  alert("Position nicht gefunden. (Fehler: " + (err.message || err.code || 'Unbekannt') + ")");
-               }).finally(() => {
-                  locateBtn.classList.remove('animate-pulse');
-               });
+                     updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
+                     // updateHydrants(map, onEdit); // triggered by moveend
+                  }).catch(err => {
+                     console.warn("Manual Locate failed", err);
+                     alert("Position nicht gefunden. (Fehler: " + (err.message || err.code || 'Unbekannt') + ")");
+                  }).finally(() => {
+                     locateBtn.classList.remove('animate-pulse');
+                  });
             };
          }
       }
