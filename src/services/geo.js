@@ -120,30 +120,50 @@ export async function getPosition(forceFresh = false) {
             return;
         }
 
-        navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                const p = {
-                    lat: pos.coords.latitude,
-                    lng: pos.coords.longitude,
-                    accuracy: pos.coords.accuracy,
-                    heading: pos.coords.heading
-                };
-                lastPosition = { ...p, timestamp: Date.now() }; // Update cache
-                resolve(p);
-            },
-            (err) => {
-                // macOS/Safari often returns Timeout (code 3) if GPS is cold
-                // If current check fails but we have an old cached one, use it!
-                if (lastPosition) {
-                    console.warn("Fresh GPS failed, using cached:", err);
-                    resolve(lastPosition);
-                } else {
-                    reject(err);
+        const success = (pos) => {
+            const p = {
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+                accuracy: pos.coords.accuracy,
+                heading: pos.coords.heading
+            };
+            lastPosition = { ...p, timestamp: Date.now() }; // Update cache
+            resolve(p);
+        };
+
+        const error = (err) => {
+            console.warn("High Accuracy GPS failed:", err);
+
+            // If High Accuracy fails, try Low Accuracy (WiFi/Cell)
+            // This is crucial for indoors or when GPS signal is weak
+            console.log("Retrying with Low Accuracy...");
+            navigator.geolocation.getCurrentPosition(
+                success,
+                (errLow) => {
+                    console.warn("Low Accuracy GPS also failed:", errLow);
+                    // Final Fallback: Cached Position
+                    if (lastPosition) {
+                        console.warn("Using last known cached position.");
+                        resolve(lastPosition);
+                    } else {
+                        reject(errLow);
+                    }
+                },
+                {
+                    enableHighAccuracy: false, // Low accuracy
+                    timeout: 10000,
+                    maximumAge: Infinity // Accept any cached OS position
                 }
-            },
+            );
+        };
+
+        // First Try: High Accuracy
+        navigator.geolocation.getCurrentPosition(
+            success,
+            error,
             {
                 enableHighAccuracy: true,
-                timeout: 10000, // Increased to 10s for desktop/macOS
+                timeout: 5000, // Short timeout for High Acc to fail fast
                 maximumAge: 0
             }
         );
