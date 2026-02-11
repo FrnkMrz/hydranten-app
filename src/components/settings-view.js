@@ -150,6 +150,39 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
     console.log("[Settings]", msg);
   };
 
+  // --- EVENT LISTENERS (Define FIRST to ensure they are attached) ---
+
+  // LOGIN HANDLER: Use Custom Auth
+  if (loginBtn) {
+    loginBtn.onclick = () => {
+      log("Starting Login...");
+      auth.login().catch(err => {
+        log("Login Start Error: " + err);
+        alert("Login Fehler: " + err);
+      });
+    };
+  }
+
+  if (logoutBtn) {
+    logoutBtn.onclick = () => {
+      auth.logout();
+      localStorage.removeItem('osm_user_img');
+      updateUI(null);
+      alert(t('settings.disconnect_btn') + "!");
+    };
+  }
+
+  if (resetBtn) {
+    resetBtn.onclick = () => {
+      if (confirm(t('settings.reset_btn') + "?")) {
+        auth.logout();
+        localStorage.removeItem('osm_pkce_verifier');
+        localStorage.removeItem('osm_user_img');
+        window.location.reload();
+      }
+    };
+  }
+
   // Info Modal Logic
   if (infoBtn) {
     infoBtn.onclick = () => {
@@ -315,32 +348,13 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
     updateUI(null);
   }
 
-  // LOGIN HANDLER: Use Custom Auth
-  loginBtn.onclick = () => {
-    log("Starting Login...");
-    auth.login().catch(err => {
-      log("Login Start Error: " + err);
-      alert("Login Fehler: " + err);
-    });
-  };
 
-  logoutBtn.onclick = () => {
-    auth.logout();
-    localStorage.removeItem('osm_user_img');
-    updateUI(null);
-    alert(t('settings.disconnect_btn') + "!");
-  };
+
+
 
   if (historyBtn && onHistory) {
     historyBtn.onclick = onHistory;
   }
 
-  resetBtn.onclick = () => {
-    if (confirm(t('settings.reset_btn') + "?")) {
-      auth.logout();
-      localStorage.removeItem('osm_pkce_verifier');
-      localStorage.removeItem('osm_user_img');
-      window.location.reload();
-    }
-  };
+
 }
