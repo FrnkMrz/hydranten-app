@@ -114,9 +114,19 @@ export default {
         sign_options: {
             yes: "Sim",
             no: "Não",
+            yes: "Sim",
+            no: "Não",
             unknown: "Desconhecido"
         },
-        // color_label removed
+        colors: {
+            black: "Preto",
+            grey: "Cinza",
+            blue: "Azul",
+            red: "Vermelho",
+            yellow: "Amarelo",
+            green: "Verde",
+            white: "Branco"
+        },
         number_label: "NÚMERO / REF",
         number_placeholder: "ex. 1234",
         notes_label: "NOTA",
@@ -125,7 +135,8 @@ export default {
             sidewalk: "Calçada",
             street: "Rua",
             green: "Área Verde",
-            parking: "Estacionamento"
-        }
+            parking: "Estacionamento",
+            none: "Nenhum"
+        },
     }
 };

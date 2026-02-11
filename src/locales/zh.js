@@ -120,9 +120,19 @@ export default {
         sign_options: {
             yes: "是",
             no: "否",
+            yes: "是",
+            no: "否",
             unknown: "未知"
         },
-        // color_label removed
+        colors: {
+            black: "黑色",
+            grey: "灰色",
+            blue: "蓝色",
+            red: "红色",
+            yellow: "黄色",
+            green: "绿色",
+            white: "白色"
+        },
         number_label: "编号 / 参考",
         number_placeholder: "例如 1234",
         notes_label: "备注",

@@ -8,7 +8,8 @@
     "build": "npm test && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "verify:i18n": "node scripts/verify-i18n.js"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",

@@ -71,7 +71,10 @@ export default {
     confirm: {
         title: "Vérifier les données",
         title_edit: "Modifier la borne",
+        back_btn_aria: "Retour à la caméra",
         back_btn_label: "Retour",
+        cancel_btn: "Annuler",
+        retry_gps_aria: "Réessayer GPS",
         delete_btn: "Supprimer",
         delete_confirm: "Voulez-vous vraiment supprimer ?",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
@@ -119,9 +122,19 @@ export default {
         sign_options: {
             yes: "Oui",
             no: "Non",
+            yes: "Oui",
+            no: "Non",
             unknown: "Inconnu"
         },
-        // color_label removed
+        colors: {
+            black: "Noir",
+            grey: "Gris",
+            blue: "Bleu",
+            red: "Rouge",
+            yellow: "Jaune",
+            green: "Vert",
+            white: "Blanc"
+        },
         number_label: "NUMÉRO / RÉF",
         number_placeholder: "ex. 1234",
         notes_label: "NOTE",

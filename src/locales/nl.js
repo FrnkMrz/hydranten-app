@@ -111,9 +111,19 @@ export default {
         sign_options: {
             yes: "Ja",
             no: "Nee",
+            yes: "Ja",
+            no: "Nee",
             unknown: "Onbekend"
         },
-        // color_label removed
+        colors: {
+            black: "Zwart",
+            grey: "Grijs",
+            blue: "Blauw",
+            red: "Rood",
+            yellow: "Geel",
+            green: "Groen",
+            white: "Wit"
+        },
         number_label: "NUMMER / REF",
         number_placeholder: "bijv. 1234",
         notes_label: "NOTITIE",

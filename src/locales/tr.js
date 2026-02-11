@@ -122,9 +122,19 @@ export default {
         sign_options: {
             yes: "Evet",
             no: "Hayır",
+            yes: "Evet",
+            no: "Hayır",
             unknown: "Bilinmiyor"
         },
-        // color_label removed
+        colors: {
+            black: "Siyah",
+            grey: "Gri",
+            blue: "Mavi",
+            red: "Kırmızı",
+            yellow: "Sarı",
+            green: "Yeşil",
+            white: "Beyaz"
+        },
         number_label: "NUMARA / REF",
         number_placeholder: "örn. 1234",
         notes_label: "NOT",

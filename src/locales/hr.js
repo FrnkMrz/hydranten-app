@@ -33,6 +33,14 @@ export default {
         back_btn: "NATRAG",
         legal_link: "Pravne informacije"
     },
+    gamification: {
+        rank_progress: "Još {count} do {rank}!",
+        rank_max: "Ti si legenda!",
+        legend: "Činovi i Značke",
+        list_title: "Svi Činovi",
+        from_hydrants: "od {count} Hidranata",
+        level_title: "Čin Lovca na Hidrante"
+    },
     history: {
         title: "Povijest",
         btn_label: "Povijest",
@@ -112,9 +120,19 @@ export default {
         sign_options: {
             yes: "Da",
             no: "Ne",
+            yes: "Da",
+            no: "Ne",
             unknown: "Nepoznato"
         },
-        // color_label removed
+        colors: {
+            black: "Crna",
+            grey: "Siva",
+            blue: "Plava",
+            red: "Crvena",
+            yellow: "Žuta",
+            green: "Zelena",
+            white: "Bijela"
+        },
         number_label: "BROJ / REF",
         number_placeholder: "npr. 1234",
         notes_label: "BILJEŠKA",

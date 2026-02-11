@@ -69,7 +69,9 @@ export default {
     confirm: {
         title: "Potwierdź Dane",
         title_edit: "Edytuj Hydrant",
+        back_btn_aria: "Wróć do kamery",
         back_btn_label: "Wstecz",
+        retry_gps_aria: "Spróbuj ponownie GPS",
         cancel_btn: "Anuluj",
         delete_btn: "Usuń",
         delete_confirm: "Czy na pewno usunąć hydrant?",
@@ -126,9 +128,19 @@ export default {
         sign_options: {
             yes: "Tak",
             no: "Nie",
+            yes: "Tak",
+            no: "Nie",
             unknown: "Nieznane"
         },
-        // color_label removed
+        colors: {
+            black: "Czarny",
+            grey: "Szary",
+            blue: "Niebieski",
+            red: "Czerwony",
+            yellow: "Żółty",
+            green: "Zielony",
+            white: "Biały"
+        },
         number_label: "NUMER / REF",
         number_placeholder: "np. 1234",
         notes_label: "NOTATKA",

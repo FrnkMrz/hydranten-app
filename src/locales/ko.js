@@ -120,9 +120,19 @@ export default {
         sign_options: {
             yes: "예",
             no: "아니요",
+            yes: "예",
+            no: "아니요",
             unknown: "알 수 없음"
         },
-        // color_label removed
+        colors: {
+            black: "검정",
+            grey: "회색",
+            blue: "파랑",
+            red: "빨강",
+            yellow: "노랑",
+            green: "초록",
+            white: "흰색"
+        },
         number_label: "번호 / 참조",
         number_placeholder: "예: 1234",
         notes_label: "메모",

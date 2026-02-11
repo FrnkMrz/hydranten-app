@@ -120,9 +120,19 @@ export default {
         sign_options: {
             yes: "Sì",
             no: "No",
+            yes: "Sì",
+            no: "No",
             unknown: "Sconosciuto"
         },
-        // color_label removed
+        colors: {
+            black: "Nero",
+            grey: "Grigio",
+            blue: "Blu",
+            red: "Rosso",
+            yellow: "Giallo",
+            green: "Verde",
+            white: "Bianco"
+        },
         number_label: "NUMERO / RIF",
         number_placeholder: "es. 1234",
         notes_label: "NOTA",

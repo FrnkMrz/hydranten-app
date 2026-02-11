@@ -89,6 +89,7 @@ export default {
         fixed_map: "Posuvné (Mapa fixní)",
         click_to_save: "Klikněte znovu pro uložení",
         preview_alt: "Vyfoceno",
+        type_label: "Typ",
         back_btn_aria: "Zpět na kameru",
         back_btn_label: "Zpět",
         cancel_btn: "Zrušit",
@@ -113,9 +114,19 @@ export default {
         sign_options: {
             yes: "Ano",
             no: "Ne",
+            yes: "Ano",
+            no: "Ne",
             unknown: "Neznámé"
         },
-        // color_label removed
+        colors: {
+            black: "Černá",
+            grey: "Šedá",
+            blue: "Modrá",
+            red: "Červená",
+            yellow: "Žlutá",
+            green: "Zelená",
+            white: "Bílá"
+        },
         number_label: "ČÍSLO / REF",
         number_placeholder: "např. 1234",
         notes_label: "POZNÁMKA",
@@ -124,7 +135,8 @@ export default {
             sidewalk: "Chodník",
             street: "Ulice",
             green: "Zeleň",
-            parking: "Parkoviště"
+            parking: "Parkoviště",
+            none: "Žádné"
         }
     }
 };

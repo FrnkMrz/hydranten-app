@@ -71,7 +71,10 @@ export default {
     confirm: {
         title: "Confirmar datos",
         title_edit: "Editar Hidrante",
-        back_btn_label: "Atrás",
+        back_btn_aria: "Volver a la cámara",
+        back_btn_label: "Volver",
+        cancel_btn: "Cancelar",
+        retry_gps_aria: "Reintentar GPS",
         delete_btn: "Eliminar",
         delete_confirm: "¿Realmente eliminar el hidrante?",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
@@ -119,9 +122,19 @@ export default {
         sign_options: {
             yes: "Sí",
             no: "No",
+            yes: "Sí",
+            no: "No",
             unknown: "Desconocido"
         },
-        // color_label removed
+        colors: {
+            black: "Negro",
+            grey: "Gris",
+            blue: "Azul",
+            red: "Rojo",
+            yellow: "Amarillo",
+            green: "Verde",
+            white: "Blanco"
+        },
         number_label: "NÚMERO / REF",
         number_placeholder: "ej. 1234",
         notes_label: "NOTA",

@@ -120,9 +120,19 @@ export default {
         sign_options: {
             yes: "はい",
             no: "いいえ",
+            yes: "はい",
+            no: "いいえ",
             unknown: "不明"
         },
-        // color_label removed
+        colors: {
+            black: "黒",
+            grey: "グレー",
+            blue: "青",
+            red: "赤",
+            yellow: "黄色",
+            green: "緑",
+            white: "白"
+        },
         number_label: "番号 / 参照",
         number_placeholder: "例: 1234",
         notes_label: "メモ",
