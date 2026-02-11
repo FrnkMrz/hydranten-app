@@ -307,7 +307,8 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
 
     // 2. Network
     checkLogin().then(name => {
-      if (!cached || (name && name !== cached)) renderUserLogic(name);
+      // Always update to ensure avatar is refresh/loaded (even if name is same)
+      if (name) renderUserLogic(name);
     });
 
   } else {
