@@ -41,12 +41,26 @@ body {
   /* Shadow for pop feeling */
 }
 
-/* Mobile-first override: On actual mobile devices, take full space */
-@media (max-width: 480px) {
+/* Mobile-first override: Tablets & Phones up to 768px */
+@media (max-width: 768px) {
   #app {
     max-width: 100%;
     max-height: 100%;
     border-radius: 0;
+  }
+}
+
+/* Force full screen when installed as PWA (standalone) */
+@media all and (display-mode: standalone) {
+  body {
+    background-color: #1a1a1a; /* Match app bg */
+  }
+  
+  #app {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    box-shadow: none;
   }
 }
 
