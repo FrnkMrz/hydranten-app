@@ -85,7 +85,7 @@ export function renderSettingsView() {
             
             <!-- Rank / Gamification Section -->
             <div id="gamification-container" class="hidden w-full mt-6 mb-2 border-t border-gray-700 pt-6">
-                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Mein Dienstgrad</h3>
+                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Mein Hydranten Jäger Level</h3>
                  
                  <div class="bg-gradient-to-br from-red-900/40 to-black p-4 rounded-2xl border border-red-500/30 relative overflow-hidden">
                     <!-- Background Icon -->
