@@ -24,6 +24,7 @@ export default {
     },
     settings: {
         title: "Paramètres",
+        legal_link: "Mentions légales & Mentions",
         map_style: "Style de carte",
         account: "Compte OSM",
         connect_btn: "Se connecter avec OSM",
@@ -31,6 +32,11 @@ export default {
         back_btn: "Retour",
         app_reset: "Réinitialiser l'App (Urgence)",
         reset_btn: "Vraiment tout effacer et se déconnecter ?"
+    },
+    gamification: {
+        rank_progress: "Plus que {count} pour atteindre {rank} !",
+        rank_max: "Tu es une légende !",
+        legend: "Grades & Insignes"
     },
     history: {
         title: "Historique",

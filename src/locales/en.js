@@ -32,7 +32,13 @@ export default {
         back_btn: "Back",
         app_reset: "Reset App (Emergency)",
         reset_btn: "Really delete all data and logout?",
+        legal_link: "Legal & Imprint",
         map_style: "Map Style"
+    },
+    gamification: {
+        rank_progress: "{count} more to reach {rank}!",
+        rank_max: "You are a legend!",
+        legend: "Ranks & Badges"
     },
     history: {
         title: "History",

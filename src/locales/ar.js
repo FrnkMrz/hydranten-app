@@ -31,7 +31,12 @@ export default {
         app_reset: "إعادة تعيين التطبيق",
         reset_btn: "إعادة تعيين ومسح الذاكرة المؤقتة",
         back_btn: "رجوع",
-        legal_link: "معلومات قانونية"
+        legal_link: "الحواشي القانونية"
+    },
+    gamification: {
+        rank_progress: "باقي {count} للوصول لـ {rank}!",
+        rank_max: "أنت أسطورة!",
+        legend: "الرتب والشارات"
     },
     history: {
         title: "السجل",

@@ -31,7 +31,12 @@ export default {
         app_reset: "Uygulama Sıfırlama",
         reset_btn: "Sıfırla ve Önbelleği Temizle",
         back_btn: "GERİ",
-        legal_link: "Yasal Bilgi"
+        legal_link: "Yasal Uyarı & Künye"
+    },
+    gamification: {
+        rank_progress: "{rank} rütbesine {count} kaldı!",
+        rank_max: "Sen bir efsanesin!",
+        legend: "Rütbeler ve Rozetler"
     },
     history: {
         title: "Geçmiş",

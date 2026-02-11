@@ -31,7 +31,12 @@ export default {
         app_reset: "Reiniciar App",
         reset_btn: "Reiniciar e Limpar Cache",
         back_btn: "Voltar",
-        legal_link: "Info Legal"
+        legal_link: "Aviso Legal & Expediente"
+    },
+    gamification: {
+        rank_progress: "Mais {count} para {rank}!",
+        rank_max: "Você é uma lenda!",
+        legend: "Classificações e Insígnias"
     },
     history: {
         title: "Histórico",

@@ -313,11 +313,15 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
               rankNext.innerText = rank.next.min;
               const pct = Math.min(100, Math.max(0, rank.progress * 100));
               rankProgress.style.width = `${pct}%`;
-              rankMsg.innerText = `Noch ${rank.needed} bis zum ${rank.next.name}!`;
+              // Localized message: "Noch {count} bis zum {rank}!"
+              // We pass the German Rank Name as a variable, so it stays German in all languages.
+              rankMsg.innerText = t('gamification.rank_progress')
+                .replace('{count}', rank.needed)
+                .replace('{rank}', rank.next.name);
             } else {
               rankNext.innerText = "MAX";
               rankProgress.style.width = '100%';
-              rankMsg.innerText = "Du bist eine Legende!";
+              rankMsg.innerText = t('gamification.rank_max');
             }
             const svg = getRankBadgeSVG(rank.current.id);
             rankBadge.innerHTML = svg.replace('width="64"', 'width="100%"').replace('height="64"', 'height="100%"');

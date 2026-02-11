@@ -31,7 +31,12 @@ export default {
         app_reset: "Ripristino App (Emergenza)",
         reset_btn: "Davvero cancellare tutto e disconnettersi?",
         back_btn: "INDIETRO",
-        legal_link: "Info Legali"
+        legal_link: "Note legali & Impressum"
+    },
+    gamification: {
+        rank_progress: "Ancora {count} per {rank}!",
+        rank_max: "Sei una leggenda!",
+        legend: "Gradi & Distintivi"
     },
     history: {
         title: "Cronologia",

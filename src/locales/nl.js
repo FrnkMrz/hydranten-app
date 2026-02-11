@@ -30,7 +30,12 @@ export default {
         app_reset: "App Resetten (Noodgeval)",
         reset_btn: "Echt alles wissen en uitloggen?",
         back_btn: "Terug",
-        legal_link: "Juridische Info"
+        legal_link: "Juridische kennisgeving & Colofon"
+    },
+    gamification: {
+        rank_progress: "Nog {count} tot {rank}!",
+        rank_max: "Je bent een legende!",
+        legend: "Rangen & Badges"
     },
     history: {
         title: "Geschiedenis",

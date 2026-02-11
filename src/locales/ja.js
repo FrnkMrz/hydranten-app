@@ -24,14 +24,19 @@ export default {
     },
     settings: {
         title: "設定",
-        map_style: "地図スタイル",
+        map_style: "地図のスタイル",
         account: "OSM アカウント",
         connect_btn: "OSMに接続",
         disconnect_btn: "ログアウト",
         app_reset: "アプリのリセット",
         reset_btn: "リセットしてキャッシュをクリア",
         back_btn: "戻る",
-        legal_link: "法的情報"
+        legal_link: "法的通知とインプリント"
+    },
+    gamification: {
+        rank_progress: "{rank} まであと {count}!",
+        rank_max: "あなたは伝説です！",
+        legend: "ランクとバッジ"
     },
     history: {
         title: "履歴",

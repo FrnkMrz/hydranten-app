@@ -33,7 +33,13 @@ export default {
         app_reset: "App Zurücksetzen (Notfall)",
         reset_btn: "Wirklich alle Daten löschen und ausloggen",
         legal_link: "Rechtliche Hinweise & Impressum",
+        legal_link: "Rechtliche Hinweise & Impressum",
         map_style: "Kartenstil"
+    },
+    gamification: {
+        rank_progress: "Noch {count} bis zum {rank}!",
+        rank_max: "Du bist eine Legende!",
+        legend: "Dienstgrade & Abzeichen"
     },
     history: {
         title: "Verlauf",
