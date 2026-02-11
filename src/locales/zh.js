@@ -38,7 +38,8 @@ export default {
         rank_max: "你是个传奇！",
         legend: "等级与徽章",
         list_title: "所有等级",
-        from_hydrants: "从 {count} 个消防栓起"
+        from_hydrants: "从 {count} 个消防栓起",
+        level_title: "消防栓猎人等级"
     },
     history: {
         title: "历史记录",

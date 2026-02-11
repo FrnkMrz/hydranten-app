@@ -38,7 +38,8 @@ export default {
         rank_max: "Sei una leggenda!",
         legend: "Gradi & Distintivi",
         list_title: "Tutti i Gradi",
-        from_hydrants: "da {count} Idranti"
+        from_hydrants: "da {count} Idranti",
+        level_title: "Grado Cacciatore di Idranti"
     },
     history: {
         title: "Cronologia",

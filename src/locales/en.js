@@ -40,7 +40,8 @@ export default {
         rank_max: "You are a legend!",
         legend: "Ranks & Badges",
         list_title: "All Ranks",
-        from_hydrants: "from {count} Hydrants"
+        from_hydrants: "from {count} Hydrants",
+        level_title: "Hydrant Hunter Rank"
     },
     history: {
         title: "History",

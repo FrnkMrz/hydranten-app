@@ -38,7 +38,8 @@ export default {
         rank_max: "أنت أسطورة!",
         legend: "الرتب والشارات",
         list_title: "كل الرتب",
-        from_hydrants: "من {count} صنابير"
+        from_hydrants: "من {count} صنابير",
+        level_title: "رتبة صائد الصنابير"
     },
     history: {
         title: "السجل",

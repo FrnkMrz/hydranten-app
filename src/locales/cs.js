@@ -24,6 +24,10 @@ export default {
     },
     settings: {
         title: "Nastavení",
+        legend: "Hodnosti a odznaky",
+        list_title: "Všechny Hodnosti",
+        from_hydrants: "od {count} Hydrantů",
+        level_title: "Hodnost Lovce Hydrantů",
         map_style: "Styl mapy",
         account: "Účet OSM",
         connect_btn: "Připojit k OSM",

@@ -38,7 +38,8 @@ export default {
         rank_max: "당신은 전설입니다!",
         legend: "계급 및 배지",
         list_title: "모든 등급",
-        from_hydrants: "{count} 소화전부터"
+        from_hydrants: "{count} 소화전부터",
+        level_title: "소화전 사냥꾼 등급"
     },
     history: {
         title: "기록",

@@ -37,7 +37,8 @@ export default {
         rank_max: "Je bent een legende!",
         legend: "Rangen & Badges",
         list_title: "Alle Rangen",
-        from_hydrants: "vanaf {count} Hydranten"
+        from_hydrants: "vanaf {count} Hydranten",
+        level_title: "Hydranten Jager Rang"
     },
     history: {
         title: "Geschiedenis",

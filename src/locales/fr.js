@@ -38,7 +38,8 @@ export default {
         rank_max: "Tu es une légende !",
         legend: "Grades & Insignes",
         list_title: "Tous les grades",
-        from_hydrants: "à partir de {count} Hydrants"
+        from_hydrants: "à partir de {count} Hydrants",
+        level_title: "Rang Chasseur d'Hydrantes"
     },
     history: {
         title: "Historique",

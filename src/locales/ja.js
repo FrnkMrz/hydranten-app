@@ -38,7 +38,8 @@ export default {
         rank_max: "あなたは伝説です！",
         legend: "ランクとバッジ",
         list_title: "すべてのランク",
-        from_hydrants: "{count} 消火栓から"
+        from_hydrants: "{count} 消火栓から",
+        level_title: "消火栓ハンターランク"
     },
     history: {
         title: "履歴",

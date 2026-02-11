@@ -38,7 +38,8 @@ export default {
         rank_max: "Você é uma lenda!",
         legend: "Classificações e Insígnias",
         list_title: "Todas as Classificações",
-        from_hydrants: "de {count} Hidrantes"
+        from_hydrants: "de {count} Hidrantes",
+        level_title: "Classificação de Caçador de Hidrantes"
     },
     history: {
         title: "Histórico",

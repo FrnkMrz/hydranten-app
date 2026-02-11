@@ -82,7 +82,7 @@ export function renderSettingsView() {
 
          <!-- Rank / Gamification Section (Separate Box) -->
          <div id="gamification-container" class="hidden w-full max-w-sm mt-4 bg-gray-800/80 backdrop-blur-md p-6 rounded-3xl border border-gray-700 shadow-xl">
-              <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 text-center">Hydranten Jäger Level</h3>
+              <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 text-center">${t('gamification.level_title')}</h3>
               
               <div class="bg-gradient-to-br from-red-900/40 to-black p-6 rounded-3xl border border-red-500/30 relative overflow-hidden flex flex-col items-center">
                  <!-- Background Icon -->

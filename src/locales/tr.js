@@ -38,7 +38,8 @@ export default {
         rank_max: "Sen bir efsanesin!",
         legend: "Rütbeler ve Rozetler",
         list_title: "Tüm Rütbeler",
-        from_hydrants: "{count} Hidranttan itibaren"
+        from_hydrants: "{count} Hidranttan itibaren",
+        level_title: "Hidrant Avcısı Rütbesi"
     },
     history: {
         title: "Geçmiş",

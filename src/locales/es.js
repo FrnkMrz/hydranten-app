@@ -38,7 +38,8 @@ export default {
         rank_max: "¡Eres una leyenda!",
         legend: "Rangos e Insignias",
         list_title: "Todos los Rangos",
-        from_hydrants: "desde {count} Hidrantes"
+        from_hydrants: "desde {count} Hidrantes",
+        level_title: "Rango de Cazador de Hidrantes"
     },
     history: {
         title: "Historial",

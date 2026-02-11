@@ -56,7 +56,11 @@ export default {
         oops: "Ups!",
         back_to_map: "Powrót do mapy",
         gps_failed: "Nie można ustalić lokalizacji. Sprawdź ustawienia GPS.",
-        gps_unavailable: "GPS niedostępny. Wyświetlanie domyślnej mapy."
+        gps_unavailable: "GPS niedostępny. Wyświetlanie domyślnej mapy.",
+        legend: "Stopnie i Odznaki",
+        list_title: "Wszystkie Stopnie",
+        from_hydrants: "od {count} Hydrantów",
+        level_title: "Ranga Łowcy Hydrantów"
     },
     confirm: {
         title: "Potwierdź Dane",

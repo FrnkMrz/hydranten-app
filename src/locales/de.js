@@ -41,7 +41,8 @@ export default {
         rank_max: "Du bist eine Legende!",
         legend: "Dienstgrade & Abzeichen",
         list_title: "Alle Dienstgrade",
-        from_hydrants: "ab {count} Hydranten"
+        from_hydrants: "ab {count} Hydranten",
+        level_title: "Hydranten Jäger Rang"
     },
     history: {
         title: "Verlauf",

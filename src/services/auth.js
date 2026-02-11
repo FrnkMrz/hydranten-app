@@ -171,7 +171,19 @@ export async function checkLogin() {
             // Try to find image
             const img = user.querySelector('img');
             if (img && img.getAttribute('href')) {
-                localStorage.setItem('osm_user_img', img.getAttribute('href'));
+                let imgUrl = img.getAttribute('href');
+
+                // Fix: Ensure Absolute URL
+                if (imgUrl.startsWith('/')) {
+                    imgUrl = 'https://www.openstreetmap.org' + imgUrl;
+                }
+
+                // Fix: Enforce HTTPS to prevent Mixed Content blocking
+                if (imgUrl.startsWith('http://')) {
+                    imgUrl = imgUrl.replace('http://', 'https://');
+                }
+
+                localStorage.setItem('osm_user_img', imgUrl);
             } else {
                 localStorage.removeItem('osm_user_img');
             }
