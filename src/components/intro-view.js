@@ -320,10 +320,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 
    // Init Cached Position immediately
    let lastPos = getLastKnownPosition();
-   // Fix: Discard stale position (>15 min) to prevent "old position" confusion on startup
-   if (lastPos && (Date.now() - (lastPos.timestamp || 0) > 900000)) {
-      lastPos = null;
-   }
+   // Remove aggressive stale check - better to show old position than error
    const initialCenter = lastPos ? [lastPos.lat, lastPos.lng] : [48.137, 11.576];
    // Fix: Increase default zoom to 16 so that hydrate fetch (min 14) works even without GPS fix
    const initialZoom = lastPos ? 18 : 16;
@@ -479,18 +476,33 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       }; // End initMap function
 
       // EXECUTE: Try to get fresh position first
+      // Better strategy: If we have lastPos, use it immediately!
+      if (lastPos) {
+         initMap(lastPos.lat, lastPos.lng, 18);
+         updatePosition(lastPos); // Ensure state is synced
+      }
+
+      // Then try to refine it (background update)
       getPosition(true)
          .then(pos => {
-            // Success: Init map with fresh pos
-            initMap(pos.lat, pos.lng, 18);
+            // Success: Update map if not already done or just refine
+            if (!map) initMap(pos.lat, pos.lng, 18);
+            else {
+               // Update marker and view if accuracy is good
+               if (userMarker) userMarker.setLatLng([pos.lat, pos.lng]);
+               // Only pan if we were using default/old pos
+               // map.setView([pos.lat, pos.lng], 18); 
+            }
             updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
          })
          .catch(err => {
-            console.warn("Startup GPS failed, using fallback", err);
-            showToast(t('error.gps_unavailable'), true);
-            // Fallback: Last known or Default
-            if (lastPos) initMap(lastPos.lat, lastPos.lng, 18);
-            else initMap(51.1657, 10.4515, 6);
+            console.warn("Startup GPS update failed", err);
+            // Only show toast if we had NO position at all
+            if (!lastPos) {
+               showToast(t('error.gps_unavailable'), true);
+               // Fallback: Default Germany Center
+               initMap(51.1657, 10.4515, 6);
+            }
          });
    }
 
