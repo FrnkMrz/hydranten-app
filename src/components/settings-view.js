@@ -1,5 +1,6 @@
 import { auth, checkLogin } from '../services/auth.js';
 import { t } from '../services/i18n.js';
+import { getRank, fetchUserHydrantCount } from '../services/gamification.js';
 
 export function renderSettingsView() {
   // Check Login Status for Dynamic UI
@@ -80,6 +81,37 @@ export function renderSettingsView() {
             </h2>
             
             ${loginStatusHTML}
+            
+            <!-- Rank / Gamification Section -->
+            <div id="gamification-container" class="hidden w-full mt-6 mb-2 border-t border-gray-700 pt-6">
+                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Mein Dienstgrad</h3>
+                 
+                 <div class="bg-gradient-to-br from-red-900/40 to-black p-4 rounded-2xl border border-red-500/30 relative overflow-hidden">
+                    <!-- Background Icon -->
+                    <div class="absolute -right-4 -bottom-4 text-8xl opacity-10 pointer-events-none">🚒</div>
+                    
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="w-16 h-16 bg-red-600 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-red-400" id="rank-badge">
+                           🔥
+                        </div>
+                        <div class="text-left">
+                            <div class="text-xs text-red-300 font-bold" id="rank-abbr">FwA</div>
+                            <div class="text-lg font-bold text-white leading-tight" id="rank-name">Feuerwehranwärter</div>
+                        </div>
+                    </div>
+                    
+                    <div class="relative w-full h-3 bg-gray-800 rounded-full overflow-hidden mb-1">
+                        <div id="rank-progress" class="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-500 to-red-500 w-0 transition-all duration-1000"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-400 font-mono mt-1">
+                        <span id="rank-current-count">0</span>
+                        <span id="rank-next-count">10</span>
+                    </div>
+                    <p class="text-xs text-center mt-3 text-gray-300" id="rank-message">
+                       Noch 10 bis zum Feuerwehrmann!
+                    </p>
+                 </div>
+            </div>
 
          </div>
          
@@ -228,7 +260,57 @@ export function initSettingsView(element, onBack, onHistory) {
 
   // Init Check
   if (auth.authenticated()) {
-    checkLogin().then(name => updateUI(name || "Eingeloggt"));
+    checkLogin().then(name => {
+      updateUI(name || "Eingeloggt");
+
+      // Fetch & Show Gamification
+      if (name && !name.startsWith("Error")) {
+        // Background fetch for stats
+        const gameContainer = element.querySelector('#gamification-container');
+        const rankBadge = element.querySelector('#rank-badge');
+        const rankAbbr = element.querySelector('#rank-abbr');
+        const rankName = element.querySelector('#rank-name');
+        const rankProgress = element.querySelector('#rank-progress');
+        const rankCurrent = element.querySelector('#rank-current-count');
+        const rankNext = element.querySelector('#rank-next-count');
+        const rankMsg = element.querySelector('#rank-message');
+
+        if (gameContainer) {
+          gameContainer.classList.remove('hidden');
+          // Use cached first if available for instant UI
+          // Then fetch update
+
+          fetchUserHydrantCount(name).then(count => {
+            const rank = getRank(count);
+
+            // Update UI
+            rankAbbr.innerText = rank.current.abbr;
+            rankName.innerText = rank.current.name;
+            rankCurrent.innerText = count;
+
+            if (rank.next) {
+              rankNext.innerText = rank.next.min;
+              const pct = Math.min(100, Math.max(0, rank.progress * 100));
+              rankProgress.style.width = `${pct}%`;
+              rankMsg.innerText = `Noch ${rank.needed} bis zum ${rank.next.name}!`;
+            } else {
+              // Max Rank
+              rankNext.innerText = "MAX";
+              rankProgress.style.width = '100%';
+              rankMsg.innerText = "Du bist eine Legende!";
+            }
+
+            // Simple Badge logic based on rank index or just generic
+            // Ideally we'd have icons. For now, text/emoji is fine.
+            // Maybe color coding?
+            if (count >= 1000) rankBadge.style.backgroundColor = '#FFD700'; // Gold
+            else if (count >= 200) rankBadge.style.backgroundColor = '#C0C0C0'; // Silver
+            else rankBadge.style.backgroundColor = '#DC2626'; // Red
+
+          }).catch(err => console.error("Stats Error", err));
+        }
+      }
+    });
   } else {
     updateUI(null);
   }

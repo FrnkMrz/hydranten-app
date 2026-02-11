@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { t } from '../services/i18n.js';
+import { determineHydrantType, prepareHydrantTags } from '../services/hydrant-logic.js';
 
 // Fix Leaflet Icons
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -462,7 +463,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
     const checkChanges = () => {
       if (!editMode || !initialData) return;
 
-      const currentType = typeInput ? typeInput.value : 'pillar';
+      const currentType = typeInput ? typeInput.value : '';
       const currentPos = posInput ? posInput.value : '';
       const currentDiameter = diameterInput ? diameterInput.value : '';
       const currentRef = refInput ? refInput.value : '';
@@ -698,11 +699,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       if (editMode && initialData && initialData.tags) {
         const nodeTags = initialData.tags;
         // Type
-        let typeVal = 'pillar';
-        if (nodeTags['emergency'] === 'water_tank') typeVal = 'cistern';
-        else if (nodeTags['emergency'] === 'suction_point') typeVal = 'suction_point';
-        else if (nodeTags['fire_hydrant:type'] === 'dry_hydrant') typeVal = 'dry_hydrant';
-        else if (nodeTags['fire_hydrant:type']) typeVal = nodeTags['fire_hydrant:type'];
+        const typeVal = determineHydrantType(nodeTags) || ''; // Use empty string if undefined (no selection)
 
         updateGrid(typeVal);
 
@@ -741,7 +738,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           // else unknown
         }
       } else {
-        updateGrid('pillar'); // Default
+        updateGrid('pillar'); // Default for NEW hydrants is still Pillar
       }
     }
 
@@ -940,84 +937,21 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           return;
         }
 
-        const selectedType = typeInput ? typeInput.value : 'pillar';
+        const selectedType = typeInput ? typeInput.value : '';
         const selectedPos = posInput ? posInput.value : '';
 
-        // Start with initial tags if editing (Merge Strategy)
-        const tags = (editMode && initialData) ? { ...initialData.tags } : {};
-
-        // Overwrite/Set specific app fields
-        if (selectedType === 'cistern') {
-          tags['emergency'] = 'water_tank';
-          // Clear fire_hydrant keys if switching to cistern? Maybe safer to leave them if they existed?
-          // Let's overwrite type to be sure.
-          tags['fire_hydrant:type'] = null; // or remove? undefined
-          delete tags['fire_hydrant:type'];
-
-          if (volumeInput && volumeInput.value) {
-            let val = volumeInput.value.trim();
-            if (/^\d+$/.test(val)) val += " m3";
-            tags['water_tank:volume'] = val;
-          }
-          tags['fire_hydrant:position'] = selectedPos;
-
-        } else if (selectedType === 'dry_hydrant') {
-          tags['emergency'] = 'fire_hydrant';
-          tags['fire_hydrant:type'] = 'dry_hydrant';
-          tags['fire_hydrant:position'] = selectedPos;
-          delete tags['water_tank:volume']; // Cleanup collision
-        }
-        else if (selectedType === 'suction_point') {
-          tags['emergency'] = 'suction_point';
-          tags['fire_hydrant:position'] = selectedPos;
-          delete tags['fire_hydrant:type'];
-          delete tags['water_tank:volume'];
-          delete tags['ref'];
-          delete tags['fire_hydrant:diameter'];
-        }
-        else {
-          tags['emergency'] = 'fire_hydrant';
-          tags['fire_hydrant:type'] = selectedType;
-          tags['fire_hydrant:position'] = selectedPos;
-          delete tags['water_tank:volume'];
-
-          // Sign Logic
-          if (selectedType === 'underground' && signInput) {
-            const signVal = signInput.value;
-            // If NO -> explicit tags
-            if (signVal === 'no') {
-              tags['fire_hydrant:diameter:signed'] = 'no';
-              tags['ref:signed'] = 'no';
-            }
-            else if (signVal === 'yes') {
-              // Explicit Yes
-              tags['fire_hydrant:diameter:signed'] = 'yes';
-              if (tags['ref:signed'] === 'no') delete tags['ref:signed']; // Remove conflict
-            } else {
-              // Unknown -> Remove tags if they exist (Reset to default)
-              delete tags['fire_hydrant:diameter:signed'];
-              delete tags['ref:signed'];
-            }
-          }
-        }
-
-        if (diameterInput && diameterInput.value) tags['fire_hydrant:diameter'] = diameterInput.value;
-        const ref = element.querySelector('#hydrant-ref');
-        if (ref && ref.value) tags['ref'] = ref.value;
-
-        const note = element.querySelector('#hydrant-note');
-        if (note && note.value) tags['note'] = note.value; // Prefer note over description?
-
-        // Water Source
-        if (sourceInput) {
-          if (sourceInput.value) {
-            tags['water_source'] = sourceInput.value;
-          } else {
-            // If set to default (empty), remove check? 
-            // Only remove if it was set before? 
-            if (editMode && initialData.tags['water_source']) delete tags['water_source'];
-          }
-        }
+        // Prepare Tags using Service
+        const tags = prepareHydrantTags(
+          (editMode && initialData) ? initialData.tags : {},
+          selectedType,
+          selectedPos,
+          diameterInput ? diameterInput.value : null,
+          refInput ? refInput.value : null,
+          noteInput ? noteInput.value : null,
+          sourceInput ? sourceInput.value : null,
+          volumeInput ? volumeInput.value : null,
+          signInput ? signInput.value : 'unknown'
+        );
 
         onSubmit({
           ...location,
