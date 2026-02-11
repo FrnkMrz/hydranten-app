@@ -85,31 +85,32 @@ export function renderSettingsView() {
             
             <!-- Rank / Gamification Section -->
             <div id="gamification-container" class="hidden w-full mt-6 mb-2 border-t border-gray-700 pt-6">
-                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Mein Hydranten Jäger Level</h3>
+                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 text-center">Hydranten Jäger Level</h3>
                  
-                 <div class="bg-gradient-to-br from-red-900/40 to-black p-4 rounded-2xl border border-red-500/30 relative overflow-hidden">
+                 <div class="bg-gradient-to-br from-red-900/40 to-black p-6 rounded-3xl border border-red-500/30 relative overflow-hidden flex flex-col items-center">
                     <!-- Background Icon -->
-                    <div class="absolute -right-4 -bottom-4 text-8xl opacity-10 pointer-events-none">🚒</div>
+                    <div class="absolute -right-4 -bottom-4 text-9xl opacity-10 pointer-events-none">🚒</div>
                     
-                    <div class="flex items-center gap-4 mb-3">
-                        <div class="w-16 h-16 bg-red-600 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-red-400" id="rank-badge">
-                           🔥
-                        </div>
-                        <div class="text-left">
-                            <div class="text-xs text-red-300 font-bold" id="rank-abbr">FwA</div>
-                            <div class="text-lg font-bold text-white leading-tight" id="rank-name">Feuerwehranwärter</div>
-                        </div>
+                    <!-- Badge (Larger & Centered) -->
+                    <div class="w-32 h-32 mb-4 bg-transparent flex items-center justify-center filter drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" id="rank-badge">
+                       <!-- SVG inserted here -->
+                    </div>
+
+                    <!-- Rank Name -->
+                    <div class="text-2xl font-bold text-white mb-6 text-center tracking-wide" id="rank-name">Feuerwehranwärter</div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="relative w-full h-4 bg-gray-800 rounded-full overflow-hidden mb-2 border border-gray-700">
+                        <div id="rank-progress" class="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-500 via-red-500 to-red-600 w-0 transition-all duration-1000 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
                     </div>
                     
-                    <div class="relative w-full h-3 bg-gray-800 rounded-full overflow-hidden mb-1">
-                        <div id="rank-progress" class="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-500 to-red-500 w-0 transition-all duration-1000"></div>
-                    </div>
-                    <div class="flex justify-between text-xs text-gray-400 font-mono mt-1">
+                    <div class="flex justify-between w-full text-xs text-gray-400 font-mono px-1">
                         <span id="rank-current-count">0</span>
                         <span id="rank-next-count">10</span>
                     </div>
-                    <p class="text-xs text-center mt-3 text-gray-300" id="rank-message">
-                       Noch 10 bis zum Feuerwehrmann!
+                    
+                    <p class="text-sm text-center mt-4 text-gray-300 font-medium" id="rank-message">
+                       Noch 10 bis zum nächsten Level!
                     </p>
                  </div>
             </div>
@@ -269,7 +270,6 @@ export function initSettingsView(element, onBack, onHistory) {
         // Background fetch for stats
         const gameContainer = element.querySelector('#gamification-container');
         const rankBadge = element.querySelector('#rank-badge');
-        const rankAbbr = element.querySelector('#rank-abbr');
         const rankName = element.querySelector('#rank-name');
         const rankProgress = element.querySelector('#rank-progress');
         const rankCurrent = element.querySelector('#rank-current-count');
@@ -285,7 +285,6 @@ export function initSettingsView(element, onBack, onHistory) {
             const rank = getRank(count);
 
             // Update UI
-            rankAbbr.innerText = rank.current.abbr;
             rankName.innerText = rank.current.name;
             rankCurrent.innerText = count;
 
@@ -304,9 +303,8 @@ export function initSettingsView(element, onBack, onHistory) {
             // Badge Logic (SVG)
             const svg = getRankBadgeSVG(rank.current.id);
             rankBadge.innerHTML = svg;
-            rankBadge.className = "w-16 h-16 flex items-center justify-center shadow-lg transform scale-125 transition-transform hover:scale-150";
-            rankBadge.style.backgroundColor = 'transparent';
-            rankBadge.style.border = 'none';
+            // Scale SVG to fit container
+            rankBadge.innerHTML = svg.replace('width="64"', 'width="100%"').replace('height="64"', 'height="100%"');
 
           }).catch(err => console.error("Stats Error", err));
         }
