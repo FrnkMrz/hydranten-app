@@ -65,8 +65,8 @@ Die App übernimmt viel "Tagging-Arbeit" im Hintergrund:
 ---
 
 ## 🌍 Verfügbaren Sprachen
-Die App ist vollständig lokalisiert (14 Sprachen):
-🇩🇪 🇺🇸 🇵🇱 🇨🇿 🇫🇷 🇳🇱 🇪🇸 🇵🇹 🇭🇷 🇮🇹 🇯🇵 🇰🇷 🇨🇳 🇹🇷
+Die App ist vollständig lokalisiert (15 Sprachen):
+🇩🇪 🇺🇸 🇵🇱 🇨🇿 🇫🇷 🇳🇱 🇪🇸 🇵🇹 🇭🇷 🇮🇹 🇯🇵 🇰🇷 🇨🇳 🇹🇷 🇸🇦
 
 ---
 
