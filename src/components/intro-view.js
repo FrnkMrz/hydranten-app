@@ -56,55 +56,56 @@ export function renderIntroView() {
    return `
     <div class="h-full w-full bg-black text-white flex flex-col relative overflow-hidden">
       
-      <!-- Top 35% Map (Increased for better visibility) -->
-      <div class="w-full h-[35%] shrink-0 relative z-0">
+      <!-- Map - Fills remaining space (flex-grow) -->
+      <div class="w-full flex-grow min-h-[30%] relative z-0">
           <div id="intro-map" class="w-full h-full"></div>
           
           <!-- LOCATE ME BUTTON -->
-          <button id="locate-me-btn" class="absolute bottom-4 right-4 z-[401] bg-blue-600/90 text-white p-3 rounded-full shadow-lg shadow-blue-900/40 border border-white/20 active:scale-95 hover:bg-blue-500 transition" aria-label="Locate Me">
+          <button id="locate-me-btn" class="absolute bottom-6 right-4 z-[401] bg-blue-600/90 text-white p-3 rounded-full shadow-lg shadow-blue-900/40 border border-white/20 active:scale-95 hover:bg-blue-500 transition" aria-label="Locate Me">
             <svg class="w-6 h-6 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           </button>
 
           <!-- Gradient Overlay -->
-          <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black to-transparent pointer-events-none"></div>
+          <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none"></div>
       </div>
 
-      <!-- Content (Bottom 65%) - Better Vertical Distribution -->
-      <div class="flex-grow flex flex-col z-10 w-full max-w-md mx-auto px-6 overflow-y-auto pb-4 justify-evenly">
+      <!-- Bottom Sheet Content - Auto Height, Stacked -->
+      <div class="w-full shrink-0 z-10 bg-black flex flex-col items-center px-6 pb-8 pt-2 rounded-t-3xl -mt-6 relative shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
          
+         <!-- Drag Handle / Visual Indicator -->
+         <div class="w-12 h-1.5 bg-gray-800 rounded-full mb-6"></div>
+
          <!-- Hero Title -->
-         <div class="text-center mt-2 mb-4 shrink-0">
+         <div class="text-center mb-6 w-full">
              <h1 class="text-4xl font-extrabold text-white mb-2 tracking-tight drop-shadow-xl">
                 Hydranten <span class="text-red-500">Jäger</span>
              </h1>
              ${lang !== 'de' ? `<p class="text-sm text-gray-400 font-medium tracking-wide uppercase opacity-80 mt-1">${t('intro.title_pre')} ${t('intro.title_post')}</p>` : ''}
          </div>
 
-         <!-- Instructions Card - Larger Text -->
-         <div class="w-full bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 space-y-4 text-base text-gray-300 shadow-xl shrink-0">
+         <!-- Instructions Card -->
+         <div class="w-full max-w-md bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 space-y-4 text-base text-gray-300 shadow-xl mb-6">
              <div class="flex items-center gap-4">
-                <span class="text-2xl bg-white/10 p-2 rounded-lg">📏</span> <p class="leading-tight"><span class="text-white font-bold">${t('intro.step1_bold')}</span> ${t('intro.step1').replace(t('intro.step1_bold'), '')}</p>
+                <span class="text-2xl bg-white/10 p-2 rounded-lg">📏</span> <p class="leading-snug"><span class="text-white font-bold text-lg">${t('intro.step1_bold')}</span><br>${t('intro.step1').replace(t('intro.step1_bold'), '')}</p>
              </div>
              <div class="flex items-center gap-4">
-                <span class="text-2xl bg-white/10 p-2 rounded-lg">📸</span> <p class="leading-tight"><span class="text-white font-bold">${t('intro.step2_bold')}</span> ${t('intro.step2').replace(t('intro.step2_bold'), '')}</p>
+                <span class="text-2xl bg-white/10 p-2 rounded-lg">📸</span> <p class="leading-snug"><span class="text-white font-bold text-lg">${t('intro.step2_bold')}</span><br>${t('intro.step2').replace(t('intro.step2_bold'), '')}</p>
              </div>
              <div class="flex items-center gap-4">
-                <span class="text-2xl bg-white/10 p-2 rounded-lg">✏️</span> <p class="leading-tight"><span class="text-white font-bold">${t('intro.step3_bold')}</span> ${t('intro.step3').replace(t('intro.step3_bold'), '')}</p>
+                <span class="text-2xl bg-white/10 p-2 rounded-lg">✏️</span> <p class="leading-snug"><span class="text-white font-bold text-lg">${t('intro.step3_bold')}</span><br>${t('intro.step3').replace(t('intro.step3_bold'), '')}</p>
              </div>
              <div class="flex items-center gap-4">
-                <span class="text-2xl bg-white/10 p-2 rounded-lg">☁️</span> <p class="leading-tight"><span class="text-white font-bold">${t('intro.step4_bold')}</span> ${t('intro.step4').replace(t('intro.step4_bold'), '')}</p>
+                <span class="text-2xl bg-white/10 p-2 rounded-lg">☁️</span> <p class="leading-snug"><span class="text-white font-bold text-lg">${t('intro.step4_bold')}</span><br>${t('intro.step4').replace(t('intro.step4_bold'), '')}</p>
              </div>
          </div>
-      </div>
 
-      <!-- Footer Action - Reduced Bottom Padding -->
-      <div class="h-auto shrink-0 z-10 w-full max-w-md mx-auto flex flex-col justify-end px-6 pb-8 pt-4 bg-gradient-to-t from-black via-black to-transparent">
-          <button id="start-btn" class="w-full py-5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-2xl font-bold text-xl shadow-xl shadow-red-900/30 active:scale-95 transition-all flex items-center justify-center gap-2 mb-4">
+         <!-- Start Button -->
+         <button id="start-btn" class="w-full max-w-md py-5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-2xl font-bold text-xl shadow-xl shadow-red-900/30 active:scale-95 transition-all flex items-center justify-center gap-2 mb-6">
              ${t('intro.start_btn')}
-          </button>
+         </button>
           
-          <div class="flex items-center gap-3">
-              <!-- Language Flag -->
+         <!-- Footer Actions -->
+         <div class="flex items-center gap-3 w-full max-w-md">
               <button id="lang-btn" class="w-14 h-12 shrink-0 rounded-xl bg-white/5 text-3xl hover:bg-white/10 transition flex items-center justify-center border border-white/10" aria-label="${t('intro.lang_btn_aria') || 'Language / Sprache'}">
                 🇩🇪
               </button>
@@ -116,13 +117,13 @@ export function renderIntroView() {
               <button id="intro-info-btn" class="w-12 h-12 shrink-0 rounded-xl bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition flex items-center justify-center border border-white/10" aria-label="Information & Legal">
                 <span class="font-serif italic font-bold text-xl" aria-hidden="true">i</span>
               </button>
-          </div>
+         </div>
           
-          <div class="mt-2 text-center pb-safe">
-             <a href="https://www.openstreetmap.org/copyright" target="_blank" class="text-[10px] text-gray-600 hover:text-gray-400 transition no-underline block py-1">
+         <div class="mt-4 text-center">
+             <a href="https://www.openstreetmap.org/copyright" target="_blank" class="text-[10px] text-gray-600 hover:text-gray-400 transition no-underline block">
                 © OpenStreetMap contributors
              </a>
-          </div>
+         </div>
       </div>
     </div>
    `;
