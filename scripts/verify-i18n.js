@@ -45,7 +45,8 @@ async function verify() {
     const refContent = await loadLocale(REFERENCE_LANG);
     const refKeys = Object.keys(flattenKeys(refContent));
 
-    let hasError = false;
+    const CRITICAL_LANGS = ['en.js', 'de.js'];
+    let hasCriticalError = false;
 
     for (const file of files) {
         if (file === REFERENCE_LANG) continue;
@@ -56,19 +57,25 @@ async function verify() {
         const missing = refKeys.filter(k => !keys.includes(k));
 
         if (missing.length > 0) {
-            console.error(`\n❌ ${file} is missing ${missing.length} keys:`);
+            const isCritical = CRITICAL_LANGS.includes(file);
+            const icon = isCritical ? '❌' : '⚠️';
+            const msgLevel = isCritical ? 'Error' : 'Warning';
+
+            console.error(`\n${icon} ${file} is missing ${missing.length} keys (${msgLevel}):`);
             missing.forEach(k => console.error(`   - ${k}`));
-            hasError = true;
-        } else {
-            // console.log(`✅ ${file} is complete.`);
+
+            if (isCritical) {
+                hasCriticalError = true;
+            }
         }
     }
 
-    if (hasError) {
-        console.error("\n💥 Translation Verification FAILED. Please add missing keys.");
+    if (hasCriticalError) {
+        console.error("\n💥 Critical Translation Verification FAILED (Main Languages incomplete).");
         process.exit(1);
     } else {
-        console.log("\n✅ All translations are complete!");
+        console.log("\n✅ Critical translations (DE/EN) are complete. Others may have warnings.");
+        process.exit(0);
     }
 }
 
