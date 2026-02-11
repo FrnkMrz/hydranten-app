@@ -133,7 +133,7 @@ export function renderSettingsView() {
   `;
 }
 
-export function initSettingsView(element, onBack, onHistory) {
+export function initSettingsView(element, onBack, onHistory, onShowRankList) {
   element.querySelector('#back-btn').onclick = onBack;
 
   const loginBtn = element.querySelector('#login-btn');
@@ -305,6 +305,12 @@ export function initSettingsView(element, onBack, onHistory) {
             rankBadge.innerHTML = svg;
             // Scale SVG to fit container
             rankBadge.innerHTML = svg.replace('width="64"', 'width="100%"').replace('height="64"', 'height="100%"');
+
+            // Make Clickable
+            if (onShowRankList && gameContainer) {
+              gameContainer.style.cursor = 'pointer';
+              gameContainer.onclick = () => onShowRankList(count);
+            }
 
           }).catch(err => console.error("Stats Error", err));
         }

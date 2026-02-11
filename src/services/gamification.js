@@ -3,7 +3,7 @@
  * Ranks based on Bavarian Fire Brigade (Freiwillige Feuerwehr Bayern)
  */
 
-const RANKS = [
+export const RANKS = [
     { id: 'fwa', name: 'Feuerwehranwärter', min: 0, abbr: 'FwA' },
     { id: 'fm', name: 'Feuerwehrmann', min: 10, abbr: 'FM' },
     { id: 'ofm', name: 'Oberfeuerwehrmann', min: 50, abbr: 'OFM' },

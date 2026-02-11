@@ -4,6 +4,7 @@ import { renderConfirmView, initConfirmView } from './components/confirm-view.js
 import { renderSettingsView, initSettingsView } from './components/settings-view.js';
 import { renderIntroView, initIntroView } from './components/intro-view.js';
 import { renderHistoryView, initHistoryView } from './components/history-view.js';
+import { renderRankListView, initRankListView } from './components/rank-list-view.js';
 import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition, startTracking, getLastKnownPosition } from './services/geo.js';
 import { auth } from './services/auth.js';
 import { fetchNodeData, updateHydrant, deleteHydrant } from './services/osm.js';
@@ -281,12 +282,19 @@ function showHistory() {
   initHistoryView(app, () => showSettings());
 }
 
+function showRankList(count) {
+  state.view = 'rank-list';
+  app.innerHTML = renderRankListView();
+  initRankListView(app, () => showSettings(), count);
+}
+
 function showSettings() {
   state.view = 'settings';
   app.innerHTML = renderSettingsView();
   initSettingsView(app,
     () => showIntro(), // onBack
-    () => showHistory() // onHistory
+    () => showHistory(), // onHistory
+    (count) => showRankList(count) // onShowRankList
   );
 }
 
