@@ -132,10 +132,16 @@ export async function getPosition(forceFresh = false) {
         };
 
         const error = (err) => {
-            console.warn("High Accuracy GPS failed:", err);
+            console.warn(`GPS Error (Code ${err.code}):`, err.message);
 
-            // If High Accuracy fails, try Low Accuracy (WiFi/Cell)
-            // This is crucial for indoors or when GPS signal is weak
+            // 1 = PERMISSION_DENIED
+            // If denied, we cannot retry. Fail immediately.
+            if (err.code === 1) {
+                reject(new Error("GPS Permission denied"));
+                return;
+            }
+
+            // If Timeout (3) or Unavailable (2), we try fallback
             console.log("Retrying with Low Accuracy...");
             navigator.geolocation.getCurrentPosition(
                 success,
@@ -150,9 +156,9 @@ export async function getPosition(forceFresh = false) {
                     }
                 },
                 {
-                    enableHighAccuracy: false, // Low accuracy
-                    timeout: 10000,
-                    maximumAge: Infinity // Accept any cached OS position
+                    enableHighAccuracy: false, // Low accuracy (WiFi/Cell)
+                    timeout: 20000, // 20s for fallback
+                    maximumAge: Infinity
                 }
             );
         };
@@ -163,7 +169,7 @@ export async function getPosition(forceFresh = false) {
             error,
             {
                 enableHighAccuracy: true,
-                timeout: 5000, // Short timeout for High Acc to fail fast
+                timeout: 15000, // 15s (Give user time to click Allow on new domain)
                 maximumAge: 0
             }
         );
