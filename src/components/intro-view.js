@@ -29,8 +29,18 @@ export function renderIntroView() {
    try {
       const token = JSON.parse(localStorage.getItem('osm-auth') || '{}');
       if (token.access_token) {
-         const name = localStorage.getItem('osm_user_name') || t('intro.login_connected');
+         let name = localStorage.getItem('osm_user_name') || t('intro.login_connected');
+
+         // Security: Escape HTML special chars to prevent XSS from usernames
+         name = name.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
          const img = localStorage.getItem('osm_user_img');
+         // We trust img URL as it is validated by browser when setting src, 
+         // and CSP restricts sources.
 
          if (img) {
             // Show Avatar

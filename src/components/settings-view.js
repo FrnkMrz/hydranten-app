@@ -258,7 +258,14 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
   const updateUI = (username) => {
     if (username) {
       statusDiv.classList.remove('hidden');
-      userDisplay.innerText = username.startsWith("Error") ? username : username;
+
+      // Sanitization
+      let diffName = username;
+      if (!diffName.startsWith("Error")) {
+        diffName = diffName.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+      }
+
+      userDisplay.innerText = diffName;
       userDisplay.className = username.startsWith("Error") ? "text-xs font-mono text-red-400 break-words" : "text-xl font-bold text-green-400";
 
       const img = localStorage.getItem('osm_user_img');
