@@ -311,7 +311,7 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
         const rankMsg = element.querySelector('#rank-message');
 
         if (gameContainer) {
-          gameContainer.classList.remove('hidden');
+          // gameContainer.classList.remove('hidden'); // MOVED INSIDE
           fetchUserHydrantCount(name).then(count => {
             const rank = getRank(count);
             rankName.innerText = rank.current.name;
@@ -332,6 +332,10 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
             }
             const svg = getRankBadgeSVG(rank.current.id);
             rankBadge.innerHTML = svg.replace('width="64"', 'width="100%"').replace('height="64"', 'height="100%"');
+
+            // Show Container NOW
+            gameContainer.classList.remove('hidden');
+
             if (onShowRankList && gameContainer) {
               gameContainer.style.cursor = 'pointer';
               gameContainer.onclick = () => onShowRankList(count);
