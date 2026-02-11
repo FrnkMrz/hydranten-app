@@ -27,8 +27,8 @@ export default {
         account: "OSM Account",
         connect_btn: "Verbinden met OSM",
         disconnect_btn: "Afmelden",
-        app_reset: "App Resetten",
-        reset_btn: "Reset & Cache Wissen",
+        app_reset: "App Resetten (Noodgeval)",
+        reset_btn: "Echt alles wissen en uitloggen?",
         back_btn: "Terug",
         legal_link: "Juridische Info"
     },

@@ -28,7 +28,9 @@ export default {
         account: "Compte OSM",
         connect_btn: "Se connecter avec OSM",
         disconnect_btn: "Déconnexion",
-        back_btn: "Retour"
+        back_btn: "Retour",
+        app_reset: "Réinitialiser l'App (Urgence)",
+        reset_btn: "Vraiment tout effacer et se déconnecter ?"
     },
     history: {
         title: "Historique",

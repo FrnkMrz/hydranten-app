@@ -26,12 +26,8 @@ export function renderSettingsView() {
             </button>
             
             <div id="logout-btn" class="flex gap-2 w-full mt-4 hidden transition">
-               <button id="real-logout-btn" class="flex-1 py-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold">
+               <button id="real-logout-btn" class="w-full py-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold">
                   ${t('settings.disconnect_btn')}
-               </button>
-               <button id="history-btn" class="flex-1 py-4 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-xl font-bold flex items-center justify-center gap-2">
-                  <span>📜</span>
-                  <span>${t('history.btn_label')}</span>
                </button>
             </div>
   `;
@@ -118,7 +114,7 @@ export function renderSettingsView() {
          
          <!-- Force Reset Button -->
          <button id="reset-btn" class="w-full max-w-sm py-3 bg-red-900/10 text-red-600 rounded-xl font-bold mt-8 border border-red-500/10 hover:bg-red-900/20 transition text-sm">
-             ⚠️ ${t('settings.app_reset')}
+             ${t('settings.app_reset')}
          </button>
       </div>
 
@@ -139,7 +135,7 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
   // Note: logout-btn is now a container div
   const logoutContainer = element.querySelector('#logout-btn');
   const logoutBtn = element.querySelector('#real-logout-btn');
-  const historyBtn = element.querySelector('#history-btn');
+  // historyBtn removed
   const resetBtn = element.querySelector('#reset-btn');
   const statusDiv = element.querySelector('#auth-status');
   const userDisplay = element.querySelector('#user-display');
@@ -352,9 +348,7 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
 
 
 
-  if (historyBtn && onHistory) {
-    historyBtn.onclick = onHistory;
-  }
+
 
 
 }

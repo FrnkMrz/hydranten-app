@@ -28,8 +28,8 @@ export default {
         account: "Account OSM",
         connect_btn: "Connetti a OSM",
         disconnect_btn: "Disconnetti",
-        app_reset: "Ripristino App",
-        reset_btn: "Resetta e Pulisci Cache",
+        app_reset: "Ripristino App (Emergenza)",
+        reset_btn: "Davvero cancellare tutto e disconnettersi?",
         back_btn: "INDIETRO",
         legal_link: "Info Legali"
     },
