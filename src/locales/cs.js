@@ -24,10 +24,7 @@ export default {
     },
     settings: {
         title: "Nastavení",
-        legend: "Hodnosti a odznaky",
-        list_title: "Všechny Hodnosti",
-        from_hydrants: "od {count} Hydrantů",
-        level_title: "Hodnost Lovce Hydrantů",
+        title: "Nastavení",
         map_style: "Styl mapy",
         account: "Účet OSM",
         connect_btn: "Připojit k OSM",
@@ -36,6 +33,14 @@ export default {
         reset_btn: "Resetovat a Vymazat Cache",
         back_btn: "ZPĚT",
         legal_link: "Právní Info"
+    },
+    gamification: {
+        rank_progress: "Už jen {count} do {rank}!",
+        rank_max: "Jsi legenda!",
+        legend: "Hodnosti a odznaky",
+        list_title: "Všechny Hodnosti",
+        from_hydrants: "od {count} Hydrantů",
+        level_title: "Hodnost Lovce Hydrantů"
     },
     history: {
         title: "Historie",
