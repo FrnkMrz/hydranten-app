@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "npm test && vite build",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "npm run verify:i18n && vitest run",
     "test:watch": "vitest",
     "verify:i18n": "node scripts/verify-i18n.js"
   },

@@ -20,6 +20,7 @@ export default {
         info_license: "Licentie & Code",
         disclaimer_text: "Niet voor noodgevallen. Geen garantie.\nStart impliceert toestemming voor gegevensgebruik.",
         info_github: "Bekijk op GitHub",
+        lang_btn_aria: "Taal / Language"
     },
     settings: {
         title: "Instellingen",
@@ -65,7 +66,8 @@ export default {
         gps_unavailable: "GPS niet beschikbaar. Standaardkaart wordt getoond."
     },
     confirm: {
-        title: "Gegevens Bevestigen",
+        title: "Gegevens controleren",
+        title_edit: "Hydrant bewerken",
         delete_confirm: "Hydrant werkelijk verwijderen?",
         delete_confirm_cistern: "Really delete cistern? This cannot be undone.",
         delete_confirm_suction: "Really delete suction point? This cannot be undone.",
@@ -111,8 +113,6 @@ export default {
         sign_options: {
             yes: "Ja",
             no: "Nee",
-            yes: "Ja",
-            no: "Nee",
             unknown: "Onbekend"
         },
         colors: {
@@ -132,7 +132,8 @@ export default {
             sidewalk: "Stoep",
             street: "Straat",
             green: "Groenstrook",
-            parking: "Parkeerplaats"
+            parking: "Parkeerplaats",
+            none: "Geen"
         }
     }
 };
