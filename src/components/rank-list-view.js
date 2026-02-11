@@ -56,7 +56,7 @@ export function initRankListView(element, onBack, currentHydrantCount = 0) {
                 <div class="flex-grow">
                     <div class="flex justify-between items-center">
                         <h3 class="font-bold text-lg ${isCurrent ? 'text-white' : 'text-gray-300'}">${rank.name}</h3>
-                        ${isCurrent ? '<span class="text-xs font-bold text-red-400 border border-red-400 px-2 py-0.5 rounded-full">AKTUELL</span>' : ''}
+                        ${isCurrent ? '' : ''}
                     </div>
                     <p class="text-sm text-gray-400 font-mono">ab ${rank.min} Hydranten</p>
                 </div>

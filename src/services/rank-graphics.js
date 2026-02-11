@@ -18,9 +18,14 @@ export function getRankBadgeSVG(rankId) {
 
     let stripes = '';
 
-    const addStripe = (color, index) => {
-        const y = startY - (index * (stripeHeight + stripeGap));
-        stripes += `<rect x="10" y="${y}" width="44" height="${stripeHeight}" fill="${color}" stroke="none"/>`;
+    // Colors
+    const RED = '#dc2626';
+    const SILVER = '#d1d5db'; // Light Gray/Silver
+    const GOLD = '#fbbf24';
+
+    const addStripe = (color, index, height = stripeHeight) => {
+        const y = startY - (index * (height + stripeGap));
+        stripes += `<rect x="10" y="${y}" width="44" height="${height}" fill="${color}" stroke="none"/>`;
     };
 
     switch (rankId) {
@@ -31,59 +36,101 @@ export function getRankBadgeSVG(rankId) {
 
         // MANNSCHAFT (Red)
         case 'fm':
-            addStripe('#dc2626', 0); // 1 Red
+            addStripe(RED, 0); // 1 Red
             break;
         case 'ofm':
-            addStripe('#dc2626', 0);
-            addStripe('#dc2626', 1); // 2 Red
+            addStripe(RED, 0);
+            addStripe(RED, 1); // 2 Red
             break;
         case 'hfm':
-            addStripe('#dc2626', 0);
-            addStripe('#dc2626', 1);
-            addStripe('#dc2626', 2); // 3 Red
+            addStripe(RED, 0);
+            addStripe(RED, 1);
+            addStripe(RED, 2); // 3 Red
             break;
 
-        // FÜHRUNG (Silver) -> Löschmeister
+        // FÜHRUNG (Silver/Red Mix)
+        // LM: 1 Silver, 2 Red (Silver is top?) No, usually standard ranks build up.
+        // Bavarian Fire Brigade: 
+        // LM: 1 Silver stripe
+        // OLM: 1 Silver stripe + 1 Red (or similar)?
+        // User Request:
+        // LM: 1 SILVER 2 ROT
+        // OLM: 2 SILBER 1 ROT
+        // HLM: 3 SILBER
+
         case 'lm':
-            addStripe('#c0c0c0', 0); // 1 Silver
+            // ORDER: Bottom to Top? Usually insignias are bottom-up or top-down. 
+            // Assuming index 0 is bottom.
+            // Let's stack them.
+            // 1 Silver, 2 Red. 
+            addStripe(SILVER, 0);
+            addStripe(RED, 1);
+            addStripe(RED, 2);
             break;
         case 'olm':
-            addStripe('#c0c0c0', 0);
-            addStripe('#c0c0c0', 1); // 2 Silver
+            // 2 Silver, 1 Red
+            addStripe(SILVER, 0);
+            addStripe(SILVER, 1);
+            addStripe(RED, 2);
             break;
         case 'hlm':
-            addStripe('#c0c0c0', 0);
-            addStripe('#c0c0c0', 1);
-            addStripe('#c0c0c0', 2); // 3 Silver
+            // 3 Silver
+            addStripe(SILVER, 0);
+            addStripe(SILVER, 1);
+            addStripe(SILVER, 2);
             break;
 
-        // FÜHRUNG (Gold) -> Brandmeister
+        // BRANDMEISTER (Silver Broad/Thin Mixed)
+        // BM: 1 Silver Broad, 2 Silver Thin (? User said: 1 Silber breit 2 silber dünn)
+        // OBM: 2 silber breit 1 silber dünn
+        // HBM: 3 silber breit
         case 'bm':
-            addStripe('#fbbf24', 0); // 1 Gold
+            // Broad at bottom? Or Top?
+            // Let's put Broad at bottom (index 0)
+            addStripe(SILVER, 0, 8); // Broad
+            addStripe(SILVER, 1.2);   // Thin
+            addStripe(SILVER, 2.2);   // Thin
             break;
         case 'obm':
-            addStripe('#fbbf24', 0);
-            addStripe('#fbbf24', 1); // 2 Gold
+            addStripe(SILVER, 0, 8); // Broad
+            addStripe(SILVER, 1.2, 8); // Broad
+            addStripe(SILVER, 2.4);   // Thin
             break;
         case 'hbm':
-            addStripe('#fbbf24', 0);
-            addStripe('#fbbf24', 1);
-            addStripe('#fbbf24', 2); // 3 Gold
+            addStripe(SILVER, 0, 8);
+            addStripe(SILVER, 1.2, 8);
+            addStripe(SILVER, 2.4, 8);
             break;
 
-        // KREISBRANDRAT (Special)
+        // KREIS-EBENE (Gold)
+        // Kommandant 10k: 1 Gold
+        // KBM 25k: 2 Gold
+        // KBI 50k: 3 Gold
+        // KBR 100k: 4 Gold
+        case 'kdt':
+            addStripe(GOLD, 0, 8);
+            break;
+        case 'kbm':
+            addStripe(GOLD, 0, 8);
+            addStripe(GOLD, 1.2, 8);
+            break;
+        case 'kbi':
+            addStripe(GOLD, 0, 8);
+            addStripe(GOLD, 1.2, 8);
+            addStripe(GOLD, 2.4, 8);
+            break;
         case 'kbr':
-            // Gold Frame + Wreath/Star mock
-            // Thick gold box
-            stripes += `<rect x="14" y="8" width="36" height="48" fill="none" stroke="#fbbf24" stroke-width="4"/>`;
-            stripes += `<circle cx="32" cy="32" r="8" fill="#fbbf24"/>`;
+            addStripe(GOLD, 0, 8);
+            addStripe(GOLD, 1.2, 8);
+            addStripe(GOLD, 2.4, 8);
+            addStripe(GOLD, 3.6, 8);
             break;
 
         default:
             stripes += `<text x="32" y="36" font-family="sans-serif" font-size="20" fill="#333" text-anchor="middle">?</text>`;
     }
 
-    // Specular Highlight (Glass effect)
+    // Specular Highlight ({Glass effect}) {
     const highlight = `<path d="M10 4 L54 4 L54 20 Q32 25 10 20 Z" fill="white" opacity="0.1"/>`;
 
     return `
