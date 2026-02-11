@@ -200,7 +200,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                  <h3 class="text-xl font-bold text-white mb-4">${t('intro.info_legal')}</h3>
                  
                  <div class="space-y-4 text-sm text-gray-300">
-                     <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v1.3.1)</p>
+                     <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v1.4.0)</p>
                      
                      <!-- Disclaimer Moved Here -->
                      <div class="bg-red-900/20 border border-red-500/30 p-3 rounded-xl text-red-200 text-xs mb-4">
