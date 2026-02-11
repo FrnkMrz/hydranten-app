@@ -310,91 +310,36 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
       if (!cached || (name && name !== cached)) renderUserLogic(name);
     });
 
-    // Swallow the old block by commenting it out or just ending here and letting the rest be dead code / or replacing it all? 
-    // I need to replace the whole block to avoid duplicate code.
-    // Let's try matching the HEAD again.
-
-    // Fetch & Show Gamification
-    if (name && !name.startsWith("Error")) {
-      // Background fetch for stats
-      const gameContainer = element.querySelector('#gamification-container');
-      const rankBadge = element.querySelector('#rank-badge');
-      const rankName = element.querySelector('#rank-name');
-      const rankProgress = element.querySelector('#rank-progress');
-      const rankCurrent = element.querySelector('#rank-current-count');
-      const rankNext = element.querySelector('#rank-next-count');
-      const rankMsg = element.querySelector('#rank-message');
-
-      if (gameContainer) {
-        gameContainer.classList.remove('hidden');
-        // Use cached first if available for instant UI
-        // Then fetch update
-
-        fetchUserHydrantCount(name).then(count => {
-          const rank = getRank(count);
-
-          // Update UI
-          rankName.innerText = rank.current.name;
-          rankCurrent.innerText = count;
-
-          if (rank.next) {
-            rankNext.innerText = rank.next.min;
-            const pct = Math.min(100, Math.max(0, rank.progress * 100));
-            rankProgress.style.width = `${pct}%`;
-            rankMsg.innerText = `Noch ${rank.needed} bis zum ${rank.next.name}!`;
-          } else {
-            // Max Rank
-            rankNext.innerText = "MAX";
-            rankProgress.style.width = '100%';
-            rankMsg.innerText = "Du bist eine Legende!";
-          }
-
-          // Badge Logic (SVG)
-          const svg = getRankBadgeSVG(rank.current.id);
-          rankBadge.innerHTML = svg;
-          // Scale SVG to fit container
-          rankBadge.innerHTML = svg.replace('width="64"', 'width="100%"').replace('height="64"', 'height="100%"');
-
-          // Make Clickable
-          if (onShowRankList && gameContainer) {
-            gameContainer.style.cursor = 'pointer';
-            gameContainer.onclick = () => onShowRankList(count);
-          }
-
-        }).catch(err => console.error("Stats Error", err));
-      }
-    }
-  });
-} else {
-  updateUI(null);
-}
-
-// LOGIN HANDLER: Use Custom Auth
-loginBtn.onclick = () => {
-  log("Starting Login...");
-  auth.login().catch(err => {
-    log("Login Start Error: " + err);
-    alert("Login Fehler: " + err);
-  });
-};
-
-logoutBtn.onclick = () => {
-  auth.logout();
-  localStorage.removeItem('osm_user_img');
-  updateUI(null);
-  alert(t('settings.disconnect_btn') + "!");
-};
-
-if (historyBtn && onHistory) {
-  historyBtn.onclick = onHistory;
-}
-
-resetBtn.onclick = () => {
-  if (confirm(t('settings.reset_btn') + "?")) {
-    auth.logout();
-    localStorage.removeItem('osm_pkce_verifier');
-    localStorage.removeItem('osm_user_img');
-    window.location.reload();
+  } else {
+    updateUI(null);
   }
-};
+
+  // LOGIN HANDLER: Use Custom Auth
+  loginBtn.onclick = () => {
+    log("Starting Login...");
+    auth.login().catch(err => {
+      log("Login Start Error: " + err);
+      alert("Login Fehler: " + err);
+    });
+  };
+
+  logoutBtn.onclick = () => {
+    auth.logout();
+    localStorage.removeItem('osm_user_img');
+    updateUI(null);
+    alert(t('settings.disconnect_btn') + "!");
+  };
+
+  if (historyBtn && onHistory) {
+    historyBtn.onclick = onHistory;
+  }
+
+  resetBtn.onclick = () => {
+    if (confirm(t('settings.reset_btn') + "?")) {
+      auth.logout();
+      localStorage.removeItem('osm_pkce_verifier');
+      localStorage.removeItem('osm_user_img');
+      window.location.reload();
+    }
+  };
 }
