@@ -25,6 +25,12 @@ Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 *   **Overpass Failover**: Automatische Umschaltung auf Backup-Server (DE, Kumi, Mail.ru), falls die API überlastet ist.
 *   **Karten-Vielfalt**: Wähle zwischen **Standard**, **Satellit** und **Topo** Karten.
 
+### 🏆 Gamification & Ranks
+*   **Aufsteigen**: Sammle Punkte für jeden erfassten Hydranten.
+*   **Dienstgrade**: Arbeite dich vom *Feuerwehranwärter* bis zum *Kreisbrandrat* (KBR) hoch.
+*   **Insignien**: Bewundere deine Schulterklappen (originalgetreue bayerische Feuerwehr-Abzeichen) in den Einstellungen.
+*   **Bestenliste**: Vergleiche dich mit deinen eigenen Zielen (Level-System).
+
 ---
 
 ## 🗺️ Unterstützte Objekttypen

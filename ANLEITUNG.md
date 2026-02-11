@@ -52,6 +52,16 @@ Der Hydrant ist nun in der OpenStreetMap-Datenbank eingetragen und bald auf alle
 
 ---
 
+## 4. Dein Dienstgrad 🏆
+
+Für jeden eingetragenen Hydranten sammelst du Erfahrung!
+*   Gehe in die **Einstellungen** ⚙️.
+*   Dort siehst du deinen aktuellen **Rang** (basierend auf der Anzahl deiner Edits in OSM) und dein Abzeichen.
+*   Klicke auf die Rang-Box, um zu sehen, wie viele Hydranten noch zum nächsten Dienstgrad fehlen (z.B. vom *Löschmeister* zum *Brandmeister*).
+*   **Ziel**: Schaffst du es bis zum *Kreisbrandrat* (4 goldene Streifen)? 🚒✨
+
+---
+
 ## Probleme & Hilfe
 
 **GPS ist ungenau?**
