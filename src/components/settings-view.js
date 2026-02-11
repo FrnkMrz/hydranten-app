@@ -82,39 +82,38 @@ export function renderSettingsView() {
             </h2>
             
             ${loginStatusHTML}
-            
-            <!-- Rank / Gamification Section -->
-            <div id="gamification-container" class="hidden w-full mt-6 mb-2 border-t border-gray-700 pt-6">
-                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 text-center">Hydranten Jäger Level</h3>
+         </div>
+
+         <!-- Rank / Gamification Section (Separate Box) -->
+         <div id="gamification-container" class="hidden w-full max-w-sm mt-4 bg-gray-800/80 backdrop-blur-md p-6 rounded-3xl border border-gray-700 shadow-xl">
+              <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 text-center">Hydranten Jäger Level</h3>
+              
+              <div class="bg-gradient-to-br from-red-900/40 to-black p-6 rounded-3xl border border-red-500/30 relative overflow-hidden flex flex-col items-center">
+                 <!-- Background Icon -->
+                 <div class="absolute -right-4 -bottom-4 text-9xl opacity-10 pointer-events-none">🚒</div>
                  
-                 <div class="bg-gradient-to-br from-red-900/40 to-black p-6 rounded-3xl border border-red-500/30 relative overflow-hidden flex flex-col items-center">
-                    <!-- Background Icon -->
-                    <div class="absolute -right-4 -bottom-4 text-9xl opacity-10 pointer-events-none">🚒</div>
-                    
-                    <!-- Badge (Larger & Centered) -->
-                    <div class="w-32 h-32 mb-4 bg-transparent flex items-center justify-center filter drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" id="rank-badge">
-                       <!-- SVG inserted here -->
-                    </div>
-
-                    <!-- Rank Name -->
-                    <div class="text-2xl font-bold text-white mb-6 text-center tracking-wide" id="rank-name">Feuerwehranwärter</div>
-                    
-                    <!-- Progress Bar -->
-                    <div class="relative w-full h-4 bg-gray-800 rounded-full overflow-hidden mb-2 border border-gray-700">
-                        <div id="rank-progress" class="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-500 via-red-500 to-red-600 w-0 transition-all duration-1000 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
-                    </div>
-                    
-                    <div class="flex justify-between w-full text-xs text-gray-400 font-mono px-1">
-                        <span id="rank-current-count">0</span>
-                        <span id="rank-next-count">10</span>
-                    </div>
-                    
-                    <p class="text-sm text-center mt-4 text-gray-300 font-medium" id="rank-message">
-                       Noch 10 bis zum nächsten Level!
-                    </p>
+                 <!-- Badge (Larger & Centered) -->
+                 <div class="w-32 h-32 mb-4 bg-transparent flex items-center justify-center filter drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" id="rank-badge">
+                    <!-- SVG inserted here -->
                  </div>
-            </div>
 
+                 <!-- Rank Name -->
+                 <div class="text-2xl font-bold text-white mb-6 text-center tracking-wide" id="rank-name">Feuerwehranwärter</div>
+                 
+                 <!-- Progress Bar -->
+                 <div class="relative w-full h-4 bg-gray-800 rounded-full overflow-hidden mb-2 border border-gray-700">
+                     <div id="rank-progress" class="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-500 via-red-500 to-red-600 w-0 transition-all duration-1000 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
+                 </div>
+                 
+                 <div class="flex justify-between w-full text-xs text-gray-400 font-mono px-1">
+                     <span id="rank-current-count">0</span>
+                     <span id="rank-next-count">10</span>
+                 </div>
+                 
+                 <p class="text-sm text-center mt-4 text-gray-300 font-medium" id="rank-message">
+                    Noch 10 bis zum nächsten Level!
+                 </p>
+              </div>
          </div>
          
          <!-- Force Reset Button -->
@@ -262,12 +261,11 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
 
   // Init Check
   if (auth.authenticated()) {
-    checkLogin().then(name => {
+    const renderUserLogic = (name) => {
       updateUI(name || "Eingeloggt");
 
       // Fetch & Show Gamification
       if (name && !name.startsWith("Error")) {
-        // Background fetch for stats
         const gameContainer = element.querySelector('#gamification-container');
         const rankBadge = element.querySelector('#rank-badge');
         const rankName = element.querySelector('#rank-name');
@@ -278,74 +276,125 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
 
         if (gameContainer) {
           gameContainer.classList.remove('hidden');
-          // Use cached first if available for instant UI
-          // Then fetch update
-
           fetchUserHydrantCount(name).then(count => {
             const rank = getRank(count);
-
-            // Update UI
             rankName.innerText = rank.current.name;
             rankCurrent.innerText = count;
-
             if (rank.next) {
               rankNext.innerText = rank.next.min;
               const pct = Math.min(100, Math.max(0, rank.progress * 100));
               rankProgress.style.width = `${pct}%`;
               rankMsg.innerText = `Noch ${rank.needed} bis zum ${rank.next.name}!`;
             } else {
-              // Max Rank
               rankNext.innerText = "MAX";
               rankProgress.style.width = '100%';
               rankMsg.innerText = "Du bist eine Legende!";
             }
-
-            // Badge Logic (SVG)
             const svg = getRankBadgeSVG(rank.current.id);
-            rankBadge.innerHTML = svg;
-            // Scale SVG to fit container
             rankBadge.innerHTML = svg.replace('width="64"', 'width="100%"').replace('height="64"', 'height="100%"');
-
-            // Make Clickable
             if (onShowRankList && gameContainer) {
               gameContainer.style.cursor = 'pointer';
               gameContainer.onclick = () => onShowRankList(count);
             }
-
-          }).catch(err => console.error("Stats Error", err));
+          }).catch(console.error);
         }
       }
+    };
+
+    // 1. Cache
+    const cached = localStorage.getItem('osm_user_name');
+    if (cached) renderUserLogic(cached);
+
+    // 2. Network
+    checkLogin().then(name => {
+      if (!cached || (name && name !== cached)) renderUserLogic(name);
     });
-  } else {
-    updateUI(null);
-  }
 
-  // LOGIN HANDLER: Use Custom Auth
-  loginBtn.onclick = () => {
-    log("Starting Login...");
-    auth.login().catch(err => {
-      log("Login Start Error: " + err);
-      alert("Login Fehler: " + err);
-    });
-  };
+    // Swallow the old block by commenting it out or just ending here and letting the rest be dead code / or replacing it all? 
+    // I need to replace the whole block to avoid duplicate code.
+    // Let's try matching the HEAD again.
 
-  logoutBtn.onclick = () => {
-    auth.logout();
-    localStorage.removeItem('osm_user_img');
-    updateUI(null);
-    alert(t('settings.disconnect_btn') + "!");
-  };
+    // Fetch & Show Gamification
+    if (name && !name.startsWith("Error")) {
+      // Background fetch for stats
+      const gameContainer = element.querySelector('#gamification-container');
+      const rankBadge = element.querySelector('#rank-badge');
+      const rankName = element.querySelector('#rank-name');
+      const rankProgress = element.querySelector('#rank-progress');
+      const rankCurrent = element.querySelector('#rank-current-count');
+      const rankNext = element.querySelector('#rank-next-count');
+      const rankMsg = element.querySelector('#rank-message');
 
-  if (historyBtn && onHistory) {
-    historyBtn.onclick = onHistory;
-  }
+      if (gameContainer) {
+        gameContainer.classList.remove('hidden');
+        // Use cached first if available for instant UI
+        // Then fetch update
 
-  resetBtn.onclick = () => {
-    if (confirm(t('settings.reset_btn') + "?")) {
-      auth.logout();
-      localStorage.removeItem('osm_pkce_verifier');
-      localStorage.removeItem('osm_user_img');
-      window.location.reload();
+        fetchUserHydrantCount(name).then(count => {
+          const rank = getRank(count);
+
+          // Update UI
+          rankName.innerText = rank.current.name;
+          rankCurrent.innerText = count;
+
+          if (rank.next) {
+            rankNext.innerText = rank.next.min;
+            const pct = Math.min(100, Math.max(0, rank.progress * 100));
+            rankProgress.style.width = `${pct}%`;
+            rankMsg.innerText = `Noch ${rank.needed} bis zum ${rank.next.name}!`;
+          } else {
+            // Max Rank
+            rankNext.innerText = "MAX";
+            rankProgress.style.width = '100%';
+            rankMsg.innerText = "Du bist eine Legende!";
+          }
+
+          // Badge Logic (SVG)
+          const svg = getRankBadgeSVG(rank.current.id);
+          rankBadge.innerHTML = svg;
+          // Scale SVG to fit container
+          rankBadge.innerHTML = svg.replace('width="64"', 'width="100%"').replace('height="64"', 'height="100%"');
+
+          // Make Clickable
+          if (onShowRankList && gameContainer) {
+            gameContainer.style.cursor = 'pointer';
+            gameContainer.onclick = () => onShowRankList(count);
+          }
+
+        }).catch(err => console.error("Stats Error", err));
+      }
     }
-  };
+  });
+} else {
+  updateUI(null);
+}
+
+// LOGIN HANDLER: Use Custom Auth
+loginBtn.onclick = () => {
+  log("Starting Login...");
+  auth.login().catch(err => {
+    log("Login Start Error: " + err);
+    alert("Login Fehler: " + err);
+  });
+};
+
+logoutBtn.onclick = () => {
+  auth.logout();
+  localStorage.removeItem('osm_user_img');
+  updateUI(null);
+  alert(t('settings.disconnect_btn') + "!");
+};
+
+if (historyBtn && onHistory) {
+  historyBtn.onclick = onHistory;
+}
+
+resetBtn.onclick = () => {
+  if (confirm(t('settings.reset_btn') + "?")) {
+    auth.logout();
+    localStorage.removeItem('osm_pkce_verifier');
+    localStorage.removeItem('osm_user_img');
+    window.location.reload();
+  }
+};
 }
