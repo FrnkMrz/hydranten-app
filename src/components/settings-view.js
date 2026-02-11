@@ -1,6 +1,7 @@
 import { auth, checkLogin } from '../services/auth.js';
 import { t } from '../services/i18n.js';
 import { getRank, fetchUserHydrantCount } from '../services/gamification.js';
+import { getRankBadgeSVG } from '../services/rank-graphics.js';
 
 export function renderSettingsView() {
   // Check Login Status for Dynamic UI
@@ -300,12 +301,12 @@ export function initSettingsView(element, onBack, onHistory) {
               rankMsg.innerText = "Du bist eine Legende!";
             }
 
-            // Simple Badge logic based on rank index or just generic
-            // Ideally we'd have icons. For now, text/emoji is fine.
-            // Maybe color coding?
-            if (count >= 1000) rankBadge.style.backgroundColor = '#FFD700'; // Gold
-            else if (count >= 200) rankBadge.style.backgroundColor = '#C0C0C0'; // Silver
-            else rankBadge.style.backgroundColor = '#DC2626'; // Red
+            // Badge Logic (SVG)
+            const svg = getRankBadgeSVG(rank.current.id);
+            rankBadge.innerHTML = svg;
+            rankBadge.className = "w-16 h-16 flex items-center justify-center shadow-lg transform scale-125 transition-transform hover:scale-150";
+            rankBadge.style.backgroundColor = 'transparent';
+            rankBadge.style.border = 'none';
 
           }).catch(err => console.error("Stats Error", err));
         }
