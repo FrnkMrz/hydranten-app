@@ -39,7 +39,9 @@ export default {
     gamification: {
         rank_progress: "Noch {count} bis zum {rank}!",
         rank_max: "Du bist eine Legende!",
-        legend: "Dienstgrade & Abzeichen"
+        legend: "Dienstgrade & Abzeichen",
+        list_title: "Alle Dienstgrade",
+        from_hydrants: "ab {count} Hydranten"
     },
     history: {
         title: "Verlauf",

@@ -35,7 +35,9 @@ export default {
     gamification: {
         rank_progress: "Nog {count} tot {rank}!",
         rank_max: "Je bent een legende!",
-        legend: "Rangen & Badges"
+        legend: "Rangen & Badges",
+        list_title: "Alle Rangen",
+        from_hydrants: "vanaf {count} Hydranten"
     },
     history: {
         title: "Geschiedenis",

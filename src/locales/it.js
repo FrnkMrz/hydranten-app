@@ -36,7 +36,9 @@ export default {
     gamification: {
         rank_progress: "Ancora {count} per {rank}!",
         rank_max: "Sei una leggenda!",
-        legend: "Gradi & Distintivi"
+        legend: "Gradi & Distintivi",
+        list_title: "Tutti i Gradi",
+        from_hydrants: "da {count} Idranti"
     },
     history: {
         title: "Cronologia",

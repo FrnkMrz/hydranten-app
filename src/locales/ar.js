@@ -36,7 +36,9 @@ export default {
     gamification: {
         rank_progress: "باقي {count} للوصول لـ {rank}!",
         rank_max: "أنت أسطورة!",
-        legend: "الرتب والشارات"
+        legend: "الرتب والشارات",
+        list_title: "كل الرتب",
+        from_hydrants: "من {count} صنابير"
     },
     history: {
         title: "السجل",

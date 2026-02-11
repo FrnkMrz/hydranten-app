@@ -36,7 +36,9 @@ export default {
     gamification: {
         rank_progress: "距离 {rank} 还有 {count} 个!",
         rank_max: "你是个传奇！",
-        legend: "等级与徽章"
+        legend: "等级与徽章",
+        list_title: "所有等级",
+        from_hydrants: "从 {count} 个消防栓起"
     },
     history: {
         title: "历史记录",

@@ -36,7 +36,9 @@ export default {
     gamification: {
         rank_progress: "{rank} 까지 {count} 남음!",
         rank_max: "당신은 전설입니다!",
-        legend: "계급 및 배지"
+        legend: "계급 및 배지",
+        list_title: "모든 등급",
+        from_hydrants: "{count} 소화전부터"
     },
     history: {
         title: "기록",

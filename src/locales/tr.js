@@ -36,7 +36,9 @@ export default {
     gamification: {
         rank_progress: "{rank} rütbesine {count} kaldı!",
         rank_max: "Sen bir efsanesin!",
-        legend: "Rütbeler ve Rozetler"
+        legend: "Rütbeler ve Rozetler",
+        list_title: "Tüm Rütbeler",
+        from_hydrants: "{count} Hidranttan itibaren"
     },
     history: {
         title: "Geçmiş",

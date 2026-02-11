@@ -13,7 +13,7 @@ export function renderRankListView() {
             <button id="rank-list-back-btn" class="p-3 bg-gray-800 rounded-xl hover:bg-gray-700 transition">
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
             </button>
-            <h1 class="text-2xl font-bold">Alle Dienstgrade</h1>
+            <h1 class="text-2xl font-bold">${t('gamification.list_title')}</h1>
             <div class="w-12"></div> <!-- Spacer -->
         </div>
 
@@ -58,7 +58,7 @@ export function initRankListView(element, onBack, currentHydrantCount = 0) {
                         <h3 class="font-bold text-lg ${isCurrent ? 'text-white' : 'text-gray-300'}">${rank.name}</h3>
                         ${isCurrent ? '' : ''}
                     </div>
-                    <p class="text-sm text-gray-400 font-mono">ab ${rank.min} Hydranten</p>
+                    <p class="text-sm text-gray-400 font-mono">${t('gamification.from_hydrants').replace('{count}', rank.min)}</p>
                 </div>
             </div>
         `;

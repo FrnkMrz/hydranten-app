@@ -36,7 +36,9 @@ export default {
     gamification: {
         rank_progress: "{rank} まであと {count}!",
         rank_max: "あなたは伝説です！",
-        legend: "ランクとバッジ"
+        legend: "ランクとバッジ",
+        list_title: "すべてのランク",
+        from_hydrants: "{count} 消火栓から"
     },
     history: {
         title: "履歴",

@@ -36,7 +36,9 @@ export default {
     gamification: {
         rank_progress: "¡{count} más para alcanzar {rank}!",
         rank_max: "¡Eres una leyenda!",
-        legend: "Rangos e Insignias"
+        legend: "Rangos e Insignias",
+        list_title: "Todos los Rangos",
+        from_hydrants: "desde {count} Hidrantes"
     },
     history: {
         title: "Historial",
