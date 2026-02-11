@@ -253,7 +253,10 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          'hr': '🇭🇷', 'it': '🇮🇹', 'ja': '🇯🇵', 'ko': '🇰🇷', 'zh': '🇨🇳', 'tr': '🇹🇷', 'ar': '🇸🇦'
       };
 
-      langBtn.innerText = flags[lang] || '🌐';
+      // Use innerHTML to ensure emojis render correctly on all devices
+      const flagIcon = flags[lang] || '🌐';
+      // Force system-ui / emoji fonts
+      langBtn.innerHTML = `<span style="font-family: 'Apple Color Emoji','Segoe UI Emoji', system-ui; font-size: 1.5rem; line-height: 1;">${flagIcon}</span>`;
 
       langBtn.onclick = () => {
          const modal = document.createElement('div');
