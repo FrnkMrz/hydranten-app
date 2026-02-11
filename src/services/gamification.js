@@ -14,7 +14,10 @@ export const RANKS = [
     { id: 'bm', name: 'Brandmeister', min: 1000, abbr: 'BM' },
     { id: 'obm', name: 'Oberbrandmeister', min: 2500, abbr: 'OBM' },
     { id: 'hbm', name: 'Hauptbrandmeister', min: 5000, abbr: 'HBM' },
-    { id: 'kbr', name: 'Kreisbrandrat', min: 10000, abbr: 'KBR' }
+    { id: 'kdt', name: 'Kommandant', min: 10000, abbr: 'Kdt' },
+    { id: 'kbm', name: 'Kreisbrandmeister', min: 25000, abbr: 'KBM' },
+    { id: 'kbi', name: 'Kreisbrandinspektor', min: 50000, abbr: 'KBI' },
+    { id: 'kbr', name: 'Kreisbrandrat', min: 100000, abbr: 'KBR' }
 ];
 
 export function getRank(count) {
