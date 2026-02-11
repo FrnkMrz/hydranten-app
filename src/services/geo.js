@@ -91,13 +91,28 @@ export function startTracking() {
 }
 
 export function updatePosition(pos) {
-    lastPosition = {
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-        accuracy: pos.coords.accuracy,
-        heading: pos.coords.heading,
-        timestamp: Date.now()
-    };
+    if (pos.coords) {
+        // Raw GeolocationPosition
+        lastPosition = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            accuracy: pos.coords.accuracy,
+            heading: pos.coords.heading,
+            timestamp: Date.now()
+        };
+    } else if (pos.lat !== undefined && pos.lng !== undefined) {
+        // Already processed object
+        lastPosition = {
+            lat: pos.lat,
+            lng: pos.lng,
+            accuracy: pos.accuracy || 0,
+            heading: pos.heading || null,
+            timestamp: Date.now()
+        };
+    } else {
+        console.warn("Invalid position object passed to updatePosition", pos);
+        return;
+    }
     localStorage.setItem('last_known_pos', JSON.stringify(lastPosition));
 }
 
