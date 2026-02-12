@@ -45,6 +45,7 @@ export const auth = {
 
     // 1. Start Login (Redirects)
     async login() {
+        console.log("[Auth] Starting Login Flow...");
         const verifier = generateRandomString(128);
         const challenge = await generateChallenge(verifier);
 
@@ -58,6 +59,7 @@ export const auth = {
         const scope = 'read_prefs write_api';
         const url = `https://www.openstreetmap.org/oauth2/authorize?response_type=code&client_id=${this.options.client_id}&redirect_uri=${encodeURIComponent(this.options.redirect_uri)}&scope=${encodeURIComponent(scope)}&code_challenge=${challenge}&code_challenge_method=S256&state=${state}`;
 
+        console.log("[Auth] Redirecting to:", url);
         window.location.href = url;
     },
 

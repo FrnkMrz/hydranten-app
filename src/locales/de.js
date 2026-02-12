@@ -33,7 +33,6 @@ export default {
         app_reset: "App Zurücksetzen (Notfall)",
         reset_btn: "Wirklich alle Daten löschen und ausloggen",
         legal_link: "Rechtliche Hinweise & Impressum",
-        legal_link: "Rechtliche Hinweise & Impressum",
         map_style: "Kartenstil",
         history_btn: "Verlauf"
     },
