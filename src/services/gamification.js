@@ -65,7 +65,11 @@ export async function fetchUserHydrantCount(username) {
     // Fetch from Overpass
     console.log("Fetching hydrant count from Overpass for:", username);
     const query = `[out:json][timeout:25];
-    node(user:"${username}")["emergency"="fire_hydrant"];
+    (
+      node(user:"${username}")["emergency"="fire_hydrant"];
+      node(user:"${username}")["emergency"="suction_point"];
+      node(user:"${username}")["emergency"="water_tank"];
+    );
     out count;`;
 
     try {
