@@ -27,7 +27,7 @@ export function renderSettingsView() {
             
             <div id="logout-btn" class="grid grid-cols-2 gap-2 w-full mt-4 hidden transition">
                <button id="history-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-bold shadow-lg border border-gray-700 flex items-center justify-center gap-2">
-                  <span>📜</span> ${t('settings.history_btn')}
+                  ${t('settings.history_btn')}
                </button>
                <button id="real-logout-btn" class="w-full py-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold">
                   ${t('settings.disconnect_btn')}
