@@ -25,7 +25,10 @@ export function renderSettingsView() {
                <span>${t('settings.connect_btn')}</span>
             </button>
             
-            <div id="logout-btn" class="flex gap-2 w-full mt-4 hidden transition">
+            <div id="logout-btn" class="grid grid-cols-2 gap-2 w-full mt-4 hidden transition">
+               <button id="history-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-bold shadow-lg border border-gray-700 flex items-center justify-center gap-2">
+                  <span>📜</span> ${t('settings.history_btn')}
+               </button>
                <button id="real-logout-btn" class="w-full py-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold">
                   ${t('settings.disconnect_btn')}
                </button>
@@ -135,7 +138,7 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
   // Note: logout-btn is now a container div
   const logoutContainer = element.querySelector('#logout-btn');
   const logoutBtn = element.querySelector('#real-logout-btn');
-  // historyBtn removed
+  const historyBtn = element.querySelector('#history-btn');
   const resetBtn = element.querySelector('#reset-btn');
   const statusDiv = element.querySelector('#auth-status');
   const userDisplay = element.querySelector('#user-display');
@@ -147,6 +150,10 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
   };
 
   // --- EVENT LISTENERS (Define FIRST to ensure they are attached) ---
+
+  if (historyBtn) {
+    historyBtn.onclick = onHistory;
+  }
 
   // LOGIN HANDLER: Use Custom Auth
   if (loginBtn) {
