@@ -31,7 +31,8 @@ export default {
         app_reset: "앱 초기화",
         reset_btn: "초기화 및 캐시 삭제",
         back_btn: "뒤로",
-        legal_link: "법적 고지 및 임프린트"
+        legal_link: "법적 고지 및 임프린트",
+        history_btn: "기록"
     },
     gamification: {
         rank_progress: "{rank} 까지 {count} 남음!",

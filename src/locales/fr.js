@@ -25,6 +25,7 @@ export default {
     settings: {
         title: "Paramètres",
         legal_link: "Mentions légales & Mentions",
+        history_btn: "Historique",
         map_style: "Style de carte",
         account: "Compte OSM",
         connect_btn: "Se connecter avec OSM",

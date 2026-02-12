@@ -31,7 +31,8 @@ export default {
         app_reset: "Reset Aplikacji",
         reset_btn: "Resetuj i Wyczyść Cache",
         back_btn: "Wstecz",
-        legal_link: "Info Prawne"
+        legal_link: "Info Prawne",
+        history_btn: "Historia"
     },
     history: {
         title: "Historia",

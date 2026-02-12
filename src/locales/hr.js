@@ -31,7 +31,8 @@ export default {
         app_reset: "Resetiranje aplikacije",
         reset_btn: "Resetiraj i očisti predmemoriju",
         back_btn: "NATRAG",
-        legal_link: "Pravne informacije"
+        legal_link: "Pravne informacije",
+        history_btn: "Povijest"
     },
     gamification: {
         rank_progress: "Još {count} do {rank}!",

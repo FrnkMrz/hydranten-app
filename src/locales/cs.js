@@ -32,7 +32,8 @@ export default {
         app_reset: "Reset Aplikace",
         reset_btn: "Resetovat a Vymazat Cache",
         back_btn: "ZPĚT",
-        legal_link: "Právní Info"
+        legal_link: "Právní Info",
+        history_btn: "Historie"
     },
     gamification: {
         rank_progress: "Už jen {count} do {rank}!",

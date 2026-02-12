@@ -31,7 +31,8 @@ export default {
         app_reset: "重置应用",
         reset_btn: "重置并清除缓存",
         back_btn: "返回",
-        legal_link: "法律声明和版本说明"
+        legal_link: "法律声明和版本说明",
+        history_btn: "历史"
     },
     gamification: {
         rank_progress: "距离 {rank} 还有 {count} 个!",

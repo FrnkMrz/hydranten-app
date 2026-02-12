@@ -31,7 +31,8 @@ export default {
         app_reset: "إعادة تعيين التطبيق",
         reset_btn: "إعادة تعيين ومسح الذاكرة المؤقتة",
         back_btn: "رجوع",
-        legal_link: "الحواشي القانونية"
+        legal_link: "الحواشي القانونية",
+        history_btn: "السجل"
     },
     gamification: {
         rank_progress: "باقي {count} للوصول لـ {rank}!",

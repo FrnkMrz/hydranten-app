@@ -31,7 +31,8 @@ export default {
         app_reset: "Reiniciar App",
         reset_btn: "Reiniciar e Limpar Cache",
         back_btn: "Voltar",
-        legal_link: "Aviso Legal & Expediente"
+        legal_link: "Aviso Legal & Expediente",
+        history_btn: "Histórico"
     },
     gamification: {
         rank_progress: "Mais {count} para {rank}!",

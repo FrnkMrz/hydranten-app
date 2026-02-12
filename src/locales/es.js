@@ -25,6 +25,7 @@ export default {
     settings: {
         title: "Configuración",
         legal_link: "Aviso legal e Impresión",
+        history_btn: "Historial",
         map_style: "Estilo de mapa",
         account: "Cuenta OSM",
         connect_btn: "Conectar con OSM",

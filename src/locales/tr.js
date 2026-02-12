@@ -31,7 +31,8 @@ export default {
         app_reset: "Uygulama Sıfırlama",
         reset_btn: "Sıfırla ve Önbelleği Temizle",
         back_btn: "GERİ",
-        legal_link: "Yasal Uyarı & Künye"
+        legal_link: "Yasal Uyarı & Künye",
+        history_btn: "Geçmiş"
     },
     gamification: {
         rank_progress: "{rank} rütbesine {count} kaldı!",

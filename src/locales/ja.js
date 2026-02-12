@@ -31,7 +31,8 @@ export default {
         app_reset: "アプリのリセット",
         reset_btn: "リセットしてキャッシュをクリア",
         back_btn: "戻る",
-        legal_link: "法的通知とインプリント"
+        legal_link: "法的通知とインプリント",
+        history_btn: "履歴"
     },
     gamification: {
         rank_progress: "{rank} まであと {count}!",
