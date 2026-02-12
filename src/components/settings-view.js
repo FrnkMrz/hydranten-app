@@ -281,6 +281,10 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
 
       if (img && avatarContainer && avatarImg) {
         avatarImg.src = img;
+        avatarImg.onerror = () => {
+          console.warn("Avatar load failed");
+          avatarContainer.classList.add('hidden');
+        };
         avatarContainer.classList.remove('hidden');
       } else if (avatarContainer) {
         avatarContainer.classList.add('hidden');

@@ -27,13 +27,12 @@ export default {
         account: "OSM Account",
         connect_btn: "Connect with OSM",
         disconnect_btn: "Disconnect",
-        connect_btn: "Connect with OSM",
-        disconnect_btn: "Disconnect",
         back_btn: "Back",
         app_reset: "Reset App (Emergency)",
         reset_btn: "Really delete all data and logout?",
         legal_link: "Legal & Imprint",
-        map_style: "Map Style"
+        map_style: "Map Style",
+        history_btn: "History"
     },
     gamification: {
         rank_progress: "{count} more to reach {rank}!",
@@ -132,7 +131,6 @@ export default {
             no: "No",
             unknown: "Unknown"
         },
-        // color_label removed
         number_label: "NUMBER / REF",
         number_placeholder: "e.g. 1234",
         notes_label: "NOTE",

@@ -34,7 +34,8 @@ export default {
         reset_btn: "Wirklich alle Daten löschen und ausloggen",
         legal_link: "Rechtliche Hinweise & Impressum",
         legal_link: "Rechtliche Hinweise & Impressum",
-        map_style: "Kartenstil"
+        map_style: "Kartenstil",
+        history_btn: "Verlauf"
     },
     gamification: {
         rank_progress: "Noch {count} bis zum {rank}!",
