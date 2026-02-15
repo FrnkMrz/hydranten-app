@@ -4,7 +4,7 @@ import { t } from '../services/i18n.js';
 
 export function renderHistoryView() {
   return `
-    <div class="h-full w-full bg-slate-900 text-white flex flex-col p-6 animate-fade-in relative overflow-hidden">
+    <div class="h-full w-full bg-slate-900 text-white flex flex-col p-6 pt-safe animate-fade-in relative overflow-hidden">
       <!-- Header -->
       <div class="flex items-center justify-between mb-8 z-10">
         <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">

@@ -36,7 +36,7 @@ export function renderSettingsView() {
   `;
 
   return `
-    <div class="h-full w-full bg-slate-900 text-white flex flex-col p-6 animate-fade-in relative overflow-hidden">
+    <div class="h-full w-full bg-slate-900 text-white flex flex-col p-6 pt-safe animate-fade-in relative overflow-hidden">
       <!-- Background Decorative -->
       <div class="absolute -top-20 -right-20 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
