@@ -7,11 +7,11 @@ export function renderCameraView() {
       <video id="camera-feed" autoplay playsinline muted class="w-full h-full object-cover transform scale-100"></video>
       
       <!-- Top Bar: Back & GPS Status -->
-      <div class="absolute top-0 w-full p-4 z-50 flex justify-between items-start pointer-events-none">
-         <button id="back-to-intro-btn" class="pointer-events-auto bg-black/40 backdrop-blur-md p-3 rounded-full text-white border border-white/10 active:scale-95 transition-transform" aria-label="${t('camera.back_btn_aria') || 'Zurück'}">
+      <div class="absolute w-full px-4 z-50 flex justify-between items-start pointer-events-none" style="top: calc(0.75rem + env(safe-area-inset-top, 20px));">
+         <button id="back-to-intro-btn" class="pointer-events-auto bg-black/40 backdrop-blur-md p-4 rounded-full text-white border border-white/10 active:scale-95 transition-transform" aria-label="${t('camera.back_btn_aria') || 'Zurück'}">
              <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
          </button>
-         <div class="bg-black/40 backdrop-blur text-xs px-3 py-1 rounded-full text-white border border-white/10 flex flex-col items-end">
+         <div class="bg-black/40 backdrop-blur text-xs px-3 py-1 rounded-full text-white border border-white/10 flex flex-col items-end mt-1">
             <span id="gps-status" class="font-mono text-green-400">GPS: --</span>
             <span id="compass-status" class="font-mono text-yellow-400">KOMPASS: --</span>
          </div>

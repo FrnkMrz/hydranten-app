@@ -31,14 +31,14 @@ export function renderConfirmView() {
         </div>
 
         <!-- Back Button (Floating) - Ensuring correct z-index -->
-        <div class="absolute left-4 z-50" style="top: calc(1.5rem + env(safe-area-inset-top, 20px));">
+        <div class="absolute left-4 z-50" style="top: calc(0.75rem + env(safe-area-inset-top, 20px));">
            <button id="retake-btn" class="bg-black/40 backdrop-blur-md p-4 rounded-full text-white hover:bg-black/60 transition shadow-lg border border-white/10" aria-label="${t('confirm.back_btn_aria') || 'Back to Camera'}">
               <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
            </button>
         </div>
 
         <!-- Accuracy Pill & Retry -->
-        <div class="absolute right-4 z-50 flex flex-col items-end gap-2" style="top: calc(1.5rem + env(safe-area-inset-top, 20px));">
+        <div class="absolute right-4 z-50 flex flex-col items-end gap-2" style="top: calc(0.75rem + env(safe-area-inset-top, 20px));">
            <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white/90 border border-white/10 shadow-lg" id="geo-status-pill">
               GPS: ...
            </div>
