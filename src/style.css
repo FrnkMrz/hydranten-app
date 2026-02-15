@@ -90,6 +90,7 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 
+/* Increased to avoid status bar overlap */
 .top-safe-4 {
-  top: calc(1rem + env(safe-area-inset-top, 0px));
+  top: calc(3rem + env(safe-area-inset-top, 30px));
 }

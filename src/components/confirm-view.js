@@ -200,9 +200,6 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
     // Edit Mode Enhancements
     if (editMode) {
-      const titleEl = element.querySelector('#confirm-title');
-      if (titleEl) titleEl.textContent = t('confirm.title_edit') || "Hydrant bearbeiten";
-
       // Show Delete Section
       const delSection = element.querySelector('#delete-section');
       if (delSection) delSection.classList.remove('hidden');
