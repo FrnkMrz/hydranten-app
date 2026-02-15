@@ -501,7 +501,8 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                // Update marker and view if accuracy is good
                if (userMarker) userMarker.setLatLng([pos.lat, pos.lng]);
                // Only pan if we were using default/old pos
-               // map.setView([pos.lat, pos.lng], 18); 
+               // Only pan if we were using default/old pos
+               map.setView([pos.lat, pos.lng], 18);
             }
             updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
          })
