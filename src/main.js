@@ -141,8 +141,9 @@ async function showCamera() {
 // New: Edit Mode Handler
 function handleEdit(nodeId) {
   if (!auth.authenticated()) {
-    alert(t('messages.please_login'));
-    showSettings();
+    import('./components/overlay.js').then(({ showMessageOverlay }) => {
+      showMessageOverlay(app, t('general.error'), t('messages.please_login'), 'error', () => showSettings());
+    });
     return;
   }
 
@@ -324,7 +325,9 @@ function showConfirm() {
         console.log("Main: Switching back to Camera...");
         showCamera().catch(err => {
           console.error("Main: Failed to show Camera", err);
-          alert(t('messages.camera_error').replace('{error}', err.message));
+          import('./components/overlay.js').then(({ showMessageOverlay }) => {
+            showMessageOverlay(app, t('general.error'), t('messages.camera_error').replace('{error}', err.message), 'error');
+          });
         });
       },
       retryGPS: async () => {
@@ -333,7 +336,9 @@ function showConfirm() {
           const l = await getPosition();
           return { lat: l.lat, lng: l.lng, accuracy: l.accuracy };
         } catch (e) {
-          alert(t('messages.gps_update_failed').replace('{error}', e.message));
+          import('./components/overlay.js').then(({ showMessageOverlay }) => {
+            showMessageOverlay(app, t('general.error'), t('messages.gps_update_failed').replace('{error}', e.message), 'error');
+          });
           return null;
         }
       }

@@ -160,3 +160,61 @@ function escapeHtml(text) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+/**
+ * Shows a simple message overlay (Info/Error)
+ * @param {HTMLElement} parentElement 
+ * @param {string} title 
+ * @param {string} message 
+ * @param {string} type - 'info', 'error', 'success'
+ * @param {Function} onClose 
+ */
+export function showMessageOverlay(parentElement, title, message, type = 'info', onClose = null) {
+    const overlay = document.createElement('div');
+    overlay.className = "absolute inset-0 bg-black/80 z-[100] flex items-center justify-center p-6 animate-fade-in backdrop-blur-sm";
+
+    parentElement.appendChild(overlay);
+
+    let icon = 'ℹ️';
+    let titleColor = 'text-white';
+    let borderColor = 'border-gray-700';
+
+    if (type === 'error') {
+        icon = '❌';
+        titleColor = 'text-red-500';
+        borderColor = 'border-red-500/50';
+    } else if (type === 'success') {
+        icon = '✅';
+        titleColor = 'text-green-500';
+        borderColor = 'border-green-500/50';
+    }
+
+    const content = `
+        <div class="flex flex-col w-full max-w-sm bg-gray-900 border ${borderColor} rounded-2xl p-6 shadow-2xl transition-all duration-300 transform scale-100">
+            <h2 class="text-xl font-bold ${titleColor} mb-4 flex items-center justify-center gap-2">
+                <span class="text-2xl">${icon}</span>
+                <span>${escapeHtml(title)}</span>
+            </h2>
+            
+            <div class="text-gray-300 text-center mb-6 text-sm leading-relaxed">
+                ${escapeHtml(message)}
+            </div>
+
+            <button id="msg-overlay-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition border border-white/10 active:scale-95">
+                ${t('general.close') || 'Schließen'}
+            </button>
+        </div>
+    `;
+
+    overlay.innerHTML = content;
+
+    const closeObj = () => {
+        overlay.classList.add('opacity-0');
+        setTimeout(() => {
+            overlay.remove();
+            if (onClose) onClose();
+        }, 200);
+    };
+
+    const btn = overlay.querySelector('#msg-overlay-close-btn');
+    if (btn) btn.onclick = closeObj;
+}

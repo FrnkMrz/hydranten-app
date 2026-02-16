@@ -733,7 +733,10 @@ function updateHydrants(map, onEdit) {
                         onEdit(node.id); // Trigger Edit Mode
                      } else {
                         console.error("onEdit is MISSING in click handler!");
-                        alert("Interner Fehler: Edit-Funktion fehlt.");
+                        import('../components/overlay.js').then(({ showMessageOverlay }) => {
+                           const app = document.getElementById('app');
+                           showMessageOverlay(app, "Error", "Interner Fehler: Edit-Funktion fehlt.", 'error');
+                        });
                      }
                      // Reset style handled by re-render usually, but let's be nice
                      // m.setStyle({ fillColor: RED, radius: 8, weight: 2 });

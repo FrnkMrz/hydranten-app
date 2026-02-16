@@ -54,7 +54,9 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         if (onRetake && typeof onRetake.back === 'function') {
           onRetake.back();
         } else {
-          alert("Fehler: Zurück-Funktion nicht verfügbar.");
+          import('../components/overlay.js').then(({ showMessageOverlay }) => {
+            showMessageOverlay(element, t('general.error'), "Fehler: Zurück-Funktion nicht verfügbar.", 'error');
+          });
         }
       });
     }
@@ -135,6 +137,8 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
   } catch (err) {
     console.error("FATAL ConfirmView Error", err);
-    alert("UI Error: " + err.message);
+    import('../components/overlay.js').then(({ showMessageOverlay }) => {
+      showMessageOverlay(element, "UI Error", err.message, 'error');
+    });
   }
 }

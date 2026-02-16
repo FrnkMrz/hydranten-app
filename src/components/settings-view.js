@@ -162,7 +162,9 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
       log("Starting Login...");
       auth.login().catch(err => {
         log("Login Start Error: " + err);
-        alert("Login Fehler: " + err);
+        import('../components/overlay.js').then(({ showMessageOverlay }) => {
+          showMessageOverlay(element, t('general.error'), "Login Fehler: " + err, 'error');
+        });
       });
     };
   }
@@ -172,7 +174,9 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
       auth.logout();
       localStorage.removeItem('osm_user_img');
       updateUI(null);
-      alert(t('settings.disconnect_btn') + "!");
+      import('../components/overlay.js').then(({ showMessageOverlay }) => {
+        showMessageOverlay(element, t('general.success'), t('settings.disconnect_btn') + "!", 'success', () => renderSettingsView());
+      });
     };
   }
 
