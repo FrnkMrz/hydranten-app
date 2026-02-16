@@ -8,6 +8,7 @@ const c = {
 };
 
 import { getAuthHeader } from './auth.js';
+import { USER_AGENT, CREATED_BY } from '../version.js';
 
 // XML Escaping Helper
 function escapeXml(str) {
@@ -76,7 +77,7 @@ async function getLocationName(lat, lng, log) {
     try {
         const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
             headers: {
-                'User-Agent': 'Hydranten-Jaeger-App/1.3.0'
+                'User-Agent': USER_AGENT
             }
         });
         if (nomRes.ok) {
@@ -125,7 +126,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
         const changesetXml = `
 <osm>
   <changeset>
-    <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
+    <tag k="created_by" v="${escapeXml(CREATED_BY)}"/>
     <tag k="comment" v="${escapeXml(`Adding ${getTypeName(finalTags)} in ${locationStr} via Hydranten Jäger`)}"/>
     <tag k="locale" v="de"/>
   </changeset>
@@ -274,7 +275,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
     const changesetXml = `
 <osm>
   <changeset>
-    <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
+    <tag k="created_by" v="${escapeXml(CREATED_BY)}"/>
     <tag k="comment" v="${escapeXml(`Updating ${getTypeName(finalTags)} #${id} in ${locationStr} via Hydranten Jäger`)}"/>
     <tag k="locale" v="de"/>
   </changeset>
@@ -354,7 +355,7 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
     const changesetXml = `
 <osm>
   <changeset>
-    <tag k="created_by" v="Hydranten Jäger v1.3.0"/>
+    <tag k="created_by" v="${escapeXml(CREATED_BY)}"/>
     <tag k="comment" v="${escapeXml(`Deleting ${typeName} #${id} in ${locationStr} via Hydranten Jäger`)}"/>
     <tag k="locale" v="de"/>
   </changeset>

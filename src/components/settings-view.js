@@ -1,5 +1,6 @@
 import { auth, checkLogin } from '../services/auth.js';
 import { t } from '../services/i18n.js';
+import { APP_VERSION, APP_NAME } from '../version.js';
 import { getRank, fetchUserHydrantCount } from '../services/gamification.js';
 import { getRankBadgeSVG } from '../services/rank-graphics.js';
 
@@ -125,7 +126,7 @@ export function renderSettingsView() {
          <button id="back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
             ${t('settings.back_btn')}
          </button>
-         <p class="text-center text-[10px] text-gray-600 mt-4">Version 1.4.0 (Stable) • Hydranten Jäger</p>
+         <p class="text-center text-[10px] text-gray-600 mt-4">Version ${APP_VERSION} (Stable) • ${APP_NAME}</p>
       </div>
     </div>
   `;
@@ -196,7 +197,7 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
                 <h3 class="text-xl font-bold text-white mb-4">${t('intro.info_legal')}</h3>
                 
                 <div class="space-y-4 text-sm text-gray-300">
-                    <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v1.4.0)</p>
+                    <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v${APP_VERSION})</p>
                     
                     <div class="border-l-2 border-gray-600 pl-3 py-1">
                         <h4 class="font-bold text-white mb-1">${t('intro.info_impressum')}</h4>
