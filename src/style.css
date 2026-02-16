@@ -94,3 +94,7 @@ body {
 .top-safe-4 {
   top: calc(3rem + env(safe-area-inset-top, 30px));
 }
+
+.bottom-safe-6 {
+  bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
+}
