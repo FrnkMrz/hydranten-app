@@ -214,10 +214,12 @@ function handleEdit(nodeId) {
 
         renderStatus();
         promiseAction(addLog)
+        renderStatus();
+        promiseAction(addLog)
           .then(res => {
             renderStatus(res);
             // Play Success Sound
-            import('../services/audio.js').then(({ playSuccessSound }) => playSuccessSound());
+            import('./services/audio.js').then(({ playSuccessSound }) => playSuccessSound());
           })
           .catch(err => renderStatus(null, err));
       };
