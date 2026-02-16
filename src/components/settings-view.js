@@ -78,7 +78,7 @@ export function renderSettingsView() {
 
          <div class="bg-gray-800/80 backdrop-blur-md p-8 rounded-3xl border border-gray-700 shadow-xl w-full max-w-sm" id="login-container">
             <h2 class="text-xl font-bold mb-6 flex items-center justify-center gap-2">
-               OpenStreetMap Login
+               ${t('intro.login_osm')}
             </h2>
             
             ${loginStatusHTML}
@@ -163,7 +163,7 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
       auth.login().catch(err => {
         log("Login Start Error: " + err);
         import('../components/overlay.js').then(({ showMessageOverlay }) => {
-          showMessageOverlay(element, t('general.error'), "Login Fehler: " + err, 'error');
+          showMessageOverlay(element, t('general.error'), `${t('general.error')} (Login): ${err}`, 'error');
         });
       });
     };
@@ -205,7 +205,7 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
                     
                     <div class="border-l-2 border-gray-600 pl-3 py-1">
                         <h4 class="font-bold text-white mb-1">${t('intro.info_impressum')}</h4>
-                        <p class="text-xs text-gray-400 mb-1">Angaben gemäß § 5 TMG:</p>
+                        <p class="text-xs text-gray-400 mb-1">${t('legal.tmg_header')}</p>
                         <p>Frank März</p>
                         <p>Kersbacher Weg 3</p>
                         <p>91220 Schnaittach</p>
