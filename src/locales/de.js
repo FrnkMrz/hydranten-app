@@ -138,5 +138,37 @@ export default {
         number_placeholder: "z.B. 1234",
         notes_label: "NOTIZ",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "Lade...",
+        error: "Fehler",
+        success: "Erfolg",
+        close: "Schließen",
+        done: "Fertig",
+        cancel: "Abbrechen",
+        save: "Speichern",
+        delete: "Löschen",
+        back: "Zurück",
+        retry: "Erneut versuchen"
+    },
+    messages: {
+        locating_position: "Ermittle Position...",
+        please_login: "Bitte melde dich an, um Hydranten zu bearbeiten.",
+        loading_hydrant: "Lade Hydrant #{id}...",
+        saving_data: "Speichere...",
+        deleting_data: "Lösche...",
+        internal_error_reload: "Interner Fehler: Funktion nicht verfügbar. Bitte neu laden.",
+        camera_error: "Kamera-Fehler: {error}",
+        gps_update_failed: "GPS Update fehlgeschlagen: {error}",
+        no_osm_credentials: "Keine OSM-Zugangsdaten gefunden. Bitte melde dich zuerst an.",
+        to_settings: "Zu den Einstellungen",
+        uploading: "Lade hoch...",
+        upload_successful: "Upload Erfolgreich!",
+        upload_wait: "Lade hoch... ⏳",
+        node_id: "Node ID",
+        changeset: "Changeset",
+        upload_failed: "Upload Fehlgeschlagen",
+        verifying_login: "Verifiziere Login...",
+        back_to_start: "Zurück zum Start"
     }
 };

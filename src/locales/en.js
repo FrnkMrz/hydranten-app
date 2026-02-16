@@ -135,5 +135,37 @@ export default {
         number_placeholder: "e.g. 1234",
         notes_label: "NOTE",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "Loading...",
+        error: "Error",
+        success: "Success",
+        close: "Close",
+        done: "Done",
+        cancel: "Cancel",
+        save: "Save",
+        delete: "Delete",
+        back: "Back",
+        retry: "Retry"
+    },
+    messages: {
+        locating_position: "Locating position...",
+        please_login: "Please log in to edit hydrants.",
+        loading_hydrant: "Loading Hydrant #{id}...",
+        saving_data: "Saving...",
+        deleting_data: "Deleting...",
+        internal_error_reload: "Internal error: Function not available. Be please reload.",
+        camera_error: "Camera Error: {error}",
+        gps_update_failed: "GPS Update failed: {error}",
+        no_osm_credentials: "No OSM credentials found. Please log in first.",
+        to_settings: "To Settings",
+        uploading: "Uploading...",
+        upload_successful: "Upload Successful!",
+        upload_wait: "Uploading... ⏳",
+        node_id: "Node ID",
+        changeset: "Changeset",
+        upload_failed: "Upload Failed",
+        verifying_login: "Verifying Login...",
+        back_to_start: "Back to Start"
     }
 };

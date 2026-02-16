@@ -89,7 +89,7 @@ async function showCamera() {
       // Loading State UI
       app.innerHTML += `<div class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 text-white animate-fade-in">
        <div class="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-       <span class="font-bold">Ermittle Position...</span>
+       <span class="font-bold">${t('messages.locating_position')}</span>
     </div>`;
 
       let loc = null;
@@ -141,7 +141,7 @@ async function showCamera() {
 // New: Edit Mode Handler
 function handleEdit(nodeId) {
   if (!auth.authenticated()) {
-    alert("Bitte melde dich an, um Hydranten zu bearbeiten.");
+    alert(t('messages.please_login'));
     showSettings();
     return;
   }
@@ -152,7 +152,7 @@ function handleEdit(nodeId) {
   app.innerHTML = `
       <div class="h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-4">
           <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p class="font-bold">Lade Hydrant #${escapeHtml(nodeId)}...</p>
+          <p class="font-bold">${t('messages.loading_hydrant').replace('{id}', escapeHtml(nodeId))}</p>
       </div>
    `;
 
@@ -178,7 +178,7 @@ function handleEdit(nodeId) {
           let content = `
                    <div class="flex flex-col w-full max-w-sm bg-gray-900 border ${error ? 'border-red-500' : 'border-gray-700'} rounded-2xl p-6 shadow-2xl">
                       <h2 class="text-xl font-bold ${error ? 'text-red-500' : 'text-white'} mb-4 flex items-center justify-center gap-2">
-                         ${error ? '❌ Fehler' : (result ? 'Erfolg! ✅' : title + '... ⏳')}
+                         ${error ? '❌ ' + t('general.error') : (result ? t('general.success') + '! ✅' : title + '... ⏳')}
                       </h2>
                       <div class="space-y-1 mb-6 max-h-40 overflow-y-auto custom-scrollbar">
                          ${linesHtml}
@@ -190,11 +190,11 @@ function handleEdit(nodeId) {
                         <div class="bg-red-900/20 text-red-200 p-3 rounded-lg text-xs font-mono mb-4 break-words">
                            ${escapeHtml(error.message || String(error))}
                         </div>
-                        <button id="overlay-close-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition">Schließen</button>
+                        <button id="overlay-close-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition">${t('general.close')}</button>
                     `;
           } else if (result) {
             content += `
-                        <button id="overlay-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">Fertig</button>
+                        <button id="overlay-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">${t('general.done')}</button>
                      `;
           } else {
             content += `<div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>`;
@@ -231,16 +231,16 @@ function handleEdit(nodeId) {
         (data) => {
           // OnSubmit (Save)
           // Use local updateHydrant reference
-          showOverlay("Speichere", (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log));
+          showOverlay(t('messages.saving_data').replace('...', ''), (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log));
         },
         true, // editMode
         nodeData, // initialData
         (id, version) => {
           // OnDelete
           if (deleteHydrant) {
-            showOverlay("Lösche", (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log));
+            showOverlay(t('messages.deleting_data').replace('...', ''), (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log));
           } else {
-            alert("Interner Fehler: Lösch-Funktion nicht verfügbar. Bitte neu laden.");
+            alert(t('messages.internal_error_reload'));
             console.error("deleteHydrant missing");
           }
         }
@@ -311,7 +311,7 @@ function showConfirm() {
         console.log("Main: Switching back to Camera...");
         showCamera().catch(err => {
           console.error("Main: Failed to show Camera", err);
-          alert("Kamera-Fehler: " + err.message);
+          alert(t('messages.camera_error').replace('{error}', err.message));
         });
       },
       retryGPS: async () => {
@@ -320,7 +320,7 @@ function showConfirm() {
           const l = await getPosition();
           return { lat: l.lat, lng: l.lng, accuracy: l.accuracy };
         } catch (e) {
-          alert("GPS Update fehlgeschlagen: " + e.message);
+          alert(t('messages.gps_update_failed').replace('{error}', e.message));
           return null;
         }
       }
@@ -339,14 +339,14 @@ function showConfirm() {
               <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-red-900/40">
                  <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
               </div>
-              <h2 class="text-2xl font-bold text-white mb-2">Fehler!</h2>
-              <p class="text-gray-400 mb-6 text-sm">Keine OSM-Zugangsdaten gefunden. Bitte melde dich zuerst an.</p>
+              <h2 class="text-2xl font-bold text-white mb-2">${t('general.error')}!</h2>
+              <p class="text-gray-400 mb-6 text-sm">${t('messages.no_osm_credentials')}</p>
               
               <button id="error-settings-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white font-bold transition">
-                 Zu den Einstellungen
+                 ${t('messages.to_settings')}
               </button>
               <button id="error-close-btn" class="mt-4 text-sm text-gray-400 hover:text-white transition">
-                 Abbrechen
+                 ${t('general.cancel')}
               </button>
            </div>
         `;
@@ -358,7 +358,7 @@ function showConfirm() {
       }
 
       const btn = document.getElementById('submit-img-btn');
-      btn.innerHTML = `<span>Lade hoch...</span>`;
+      btn.innerHTML = `<span>${t('messages.uploading')}</span>`;
       btn.disabled = true;
 
       // Real Upload Logic
@@ -375,7 +375,7 @@ function showConfirm() {
         let content = `
            <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
               <h2 class="text-xl font-bold text-white mb-4 flex items-center justify-center gap-2">
-                 ${result ? 'Upload Erfolgreich!' : 'Lade hoch... ⏳'}
+                 ${result ? t('messages.upload_successful') : t('messages.upload_wait')}
               </h2>
               <div class="space-y-1 mb-6 max-h-40 overflow-y-auto">
                  ${linesHtml}
@@ -386,16 +386,16 @@ function showConfirm() {
           content += `
                <div class="w-full bg-gray-800 rounded-lg p-3 mb-4 text-left space-y-2 border border-green-500/30">
                   <div class="flex justify-between text-xs">
-                       <span class="text-gray-400">Node ID</span>
+                       <span class="text-gray-400">${t('messages.node_id')}</span>
                        <span class="text-white font-mono font-bold">#${result.id}</span>
                   </div>
                    <div class="flex justify-between text-xs">
-                       <span class="text-gray-400">Changeset</span>
+                       <span class="text-gray-400">${t('messages.changeset')}</span>
                        <span class="text-white font-mono">#${result.changeset}</span>
                   </div>
                </div>
                <button id="success-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">
-                 Fertig
+                 ${t('general.done')}
                </button>
             `;
         } else {
@@ -431,7 +431,7 @@ function showConfirm() {
             let content = `
                    <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-red-500/50 rounded-2xl p-6 shadow-2xl">
                       <h2 class="text-xl font-bold text-red-500 mb-4 flex items-center justify-center gap-2">
-                         ❌ Upload Fehlgeschlagen
+                         ❌ ${t('messages.upload_failed')}
                       </h2>
                       <div class="space-y-1 mb-6 max-h-40 overflow-y-auto">
                          ${logs.map(line => `<div class="text-sm font-mono text-gray-400 border-l-2 border-red-900 pl-3 py-1 text-left">${escapeHtml(line)}</div>`).join('')}
@@ -442,14 +442,14 @@ function showConfirm() {
                       </div>
 
                       <button id="error-overlay-close" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition">
-                         Schließen
+                         ${t('general.close')}
                       </button>
                    </div>
                 `;
             overlay.innerHTML = content;
             document.getElementById('error-overlay-close').onclick = () => {
               overlay.remove();
-              btn.innerHTML = `<span>Erneut versuchen</span>`;
+              btn.innerHTML = `<span>${t('general.retry')}</span>`;
               btn.disabled = false;
             };
           });
@@ -469,7 +469,7 @@ if (location.search.includes('code=')) {
     // Loading
     app.innerHTML = `<div class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white animate-fade-in">
        <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-       <h2 class="text-xl font-bold">Verifiziere Login...</h2>
+       <h2 class="text-xl font-bold">${t('messages.verifying_login')}</h2>
        <div class="text-left max-w-sm w-full px-6 mt-4">
           <div id="pkce-log" class="text-xs font-mono text-green-400 bg-black/40 p-3 rounded h-32 overflow-auto">INIT...</div>
        </div>
@@ -501,7 +501,7 @@ if (location.search.includes('code=')) {
         log("ERROR: " + err.message);
 
         const div = document.createElement('div');
-        div.innerHTML = `<button onclick="showIntro(); window.history.replaceState({}, document.title, window.location.pathname);" class="w-full mt-4 py-3 bg-red-600 hover:bg-red-700 rounded-xl font-bold">Zurück zum Start</button>`;
+        div.innerHTML = `<button onclick="showIntro(); window.history.replaceState({}, document.title, window.location.pathname);" class="w-full mt-4 py-3 bg-red-600 hover:bg-red-700 rounded-xl font-bold">${t('messages.back_to_start')}</button>`;
         app.querySelector('.text-left').appendChild(div);
       });
   } else {
