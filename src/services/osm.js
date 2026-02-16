@@ -7,107 +7,17 @@ const c = {
     err: (t) => `<span class="text-red-500 font-bold">❌ ${t}</span>`
 };
 
-import { getAuthHeader } from './auth.js';
+import { getAuthHeaderAsync } from './auth.js';
 import { USER_AGENT, CREATED_BY } from '../version.js';
 
-// XML Escaping Helper
-function escapeXml(str) {
-    if (str === null || str === undefined) return "";
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&apos;');
-}
+// ... (existing code)
+
+// Helper for Colorful Logs
+// ... (existing helper code)
 
 /**
- * Helper to determine object type name for comments
+// ... (existing code)
  */
-function getTypeName(tags) {
-    if (tags['emergency'] === 'water_tank') return 'Cistern';
-    if (tags['emergency'] === 'suction_point') return 'Suction Point';
-    return 'Hydrant';
-}
-
-/**
- * Normalize tags before sending to OSM
- * Enforces rules like: cistern -> water_tank, street -> lane, etc.
- */
-function normalizeTags(tags) {
-    const t = { ...tags }; // Copy
-
-    // 1. Cistern Handling
-    // If it was marked internally as cistern (we might track this via a temp tag or infer from emergency=water_tank)
-    // But confirm-view sets emergency=water_tank directly now. 
-    // Just ensure if type is cistern (legacy?), we map it.
-    if (t['fire_hydrant:type'] === 'cistern') {
-        t['emergency'] = 'water_tank';
-        delete t['fire_hydrant:type'];
-    }
-
-    // 2. Suction Point
-    if (t['emergency'] === 'suction_point') {
-        // Ensure regular hydrant tags don't conflict if they exist
-        delete t['fire_hydrant:type'];
-        // Suction points might have diameter, keeping it is fine.
-    }
-
-    // 3. Position Mapping: street -> lane
-    if (t['fire_hydrant:position'] === 'street') {
-        t['fire_hydrant:position'] = 'lane';
-    }
-
-    // 4. Underground Sign Logic Cleanup
-    // If signed=no tags are present, ensure they are correct strings
-    if (t['fire_hydrant:diameter:signed'] === 'no') {
-        t['ref:signed'] = 'no'; // Enforce consistency
-    }
-
-    return t;
-}
-
-/**
- * Reverse Geocoding Helper
- */
-async function getLocationName(lat, lng, log) {
-    log(c.info("Ermittle Standort-Namen (Nominatim)..."));
-    let locationStr = "Unbekannt";
-
-    try {
-        const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
-            headers: {
-                'User-Agent': USER_AGENT
-            }
-        });
-        if (nomRes.ok) {
-            const nomData = await nomRes.json();
-            const a = nomData.address || {};
-
-            // Try to build: "91234 Schnaittach, Hauptstraße"
-            const zip = a.postcode || "";
-            const city = a.city || a.town || a.village || a.municipality || "Ort";
-            const street = a.road || a.pedestrian || a.footway || a.path || "";
-
-            if (street && zip) {
-                locationStr = `${zip} ${city}, ${street}`;
-            } else if (zip) {
-                locationStr = `${zip} ${city}`;
-            } else if (street) {
-                locationStr = `${city}, ${street}`;
-            } else {
-                locationStr = city;
-            }
-
-            log(c.success(`Standort: ${locationStr} (${nomData.display_name})`));
-        } else {
-            log(c.err("Nominatim Fehler: " + nomRes.status));
-        }
-    } catch (e) {
-        log(c.err("Nominatim Exception: " + e.message));
-    }
-    return locationStr;
-}
 
 export async function createHydrant(data, authHeader, log = console.log) {
     try {
@@ -136,10 +46,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
 
         const csRes = await fetch('https://api.openstreetmap.org/api/0.6/changeset/create', {
             method: 'PUT',
-            headers: getAuthHeader(), // Use helper from auth.js path? No, we need it passed or imported.
-            // Wait, main.js calls this. It does NOT pass authHeader. 
-            // It passes empty object as second arg?
-            // Let's import getAuthHeader here to be safe and ignore the passed arg if empty.
+            headers: await getAuthHeaderAsync(),
             body: changesetXml
         });
 
@@ -168,7 +75,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
 
         const nodeRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/create`, {
             method: 'PUT',
-            headers: getAuthHeader(),
+            headers: await getAuthHeaderAsync(),
             body: nodeXml
         });
 
@@ -181,7 +88,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
         log(c.req(`PUT /changeset/${changesetId}/close`));
         await fetch(`https://api.openstreetmap.org/api/0.6/changeset/${changesetId}/close`, {
             method: 'PUT',
-            headers: getAuthHeader()
+            headers: await getAuthHeaderAsync()
         });
         log(c.success(`Changeset Closed`));
 
@@ -286,7 +193,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
     // Changeset
     const csRes = await fetch('https://api.openstreetmap.org/api/0.6/changeset/create', {
         method: 'PUT',
-        headers: getAuthHeader(),
+        headers: await getAuthHeaderAsync(),
         body: changesetXml
     });
 
@@ -313,7 +220,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
         // 3. Update Node
         const nodeRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/${id}`, {
             method: 'PUT',
-            headers: getAuthHeader(),
+            headers: await getAuthHeaderAsync(),
             body: nodeXml
         });
 
@@ -332,7 +239,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
         // 4. Always Try to Close Changeset
         await fetch(`https://api.openstreetmap.org/api/0.6/changeset/${changesetId}/close`, {
             method: 'PUT',
-            headers: getAuthHeader()
+            headers: await getAuthHeaderAsync()
         });
         log(c.info(`Changeset Closed`));
     }
@@ -366,7 +273,7 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
     // 1. Open Changeset
     const csRes = await fetch('https://api.openstreetmap.org/api/0.6/changeset/create', {
         method: 'PUT',
-        headers: getAuthHeader(),
+        headers: await getAuthHeaderAsync(),
         body: changesetXml
     });
 
@@ -387,7 +294,7 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
 
         const delRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/${id}`, {
             method: 'DELETE',
-            headers: getAuthHeader(),
+            headers: await getAuthHeaderAsync(),
             body: nodeXml
         });
 
@@ -414,7 +321,7 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
     } finally {
         await fetch(`https://api.openstreetmap.org/api/0.6/changeset/${changesetId}/close`, {
             method: 'PUT',
-            headers: getAuthHeader()
+            headers: await getAuthHeaderAsync()
         });
         log(c.info(`Changeset Closed`));
     }

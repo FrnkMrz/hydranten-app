@@ -57,7 +57,8 @@ export const auth = {
         const state = generateRandomString(16);
         localStorage.setItem('osm_auth_state', state);
 
-        const scope = 'read_prefs write_api';
+        // FIX: Add offline_access to get refresh token
+        const scope = 'read_prefs write_api offline_access';
         const url = `https://www.openstreetmap.org/oauth2/authorize?response_type=code&client_id=${this.options.client_id}&redirect_uri=${encodeURIComponent(this.options.redirect_uri)}&scope=${encodeURIComponent(scope)}&code_challenge=${challenge}&code_challenge_method=S256&state=${state}`;
 
         console.log("[Auth] Redirecting to:", url);
@@ -105,7 +106,13 @@ export const auth = {
 
         const data = await res.json();
 
-        // Save Token
+        // Calculate Expiration
+        // OSM returns expires_in (seconds)
+        if (data.expires_in) {
+            data.expires_at = Date.now() + (data.expires_in * 1000);
+        }
+
+        // Save Token Data
         localStorage.setItem('osm-auth', JSON.stringify(data));
 
         // Cleanup Security Items
@@ -115,9 +122,92 @@ export const auth = {
         return data.access_token;
     },
 
-    // 3. Get Auth Header
+    // Refresh Token Logic
+    async refreshToken() {
+        console.log("[Auth] Attempting Token Refresh...");
+        try {
+            const data = JSON.parse(localStorage.getItem('osm-auth'));
+            if (!data || !data.refresh_token) {
+                throw new Error("No refresh token available");
+            }
+
+            const bodyParams = new URLSearchParams({
+                grant_type: 'refresh_token',
+                refresh_token: data.refresh_token,
+                client_id: this.options.client_id,
+                // scope is optional/implied
+            });
+
+            const res = await fetch('https://www.openstreetmap.org/oauth2/token', {
+                method: 'POST',
+                headers: {
+                    'User-Agent': USER_AGENT,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: bodyParams
+            });
+
+            if (!res.ok) {
+                const text = await res.text();
+                // If refresh fails (e.g. revoked), logout
+                if (res.status === 400 || res.status === 401) {
+                    this.logout();
+                }
+                throw new Error(`Token Refresh Failed (${res.status}): ${text}`);
+            }
+
+            const newData = await res.json();
+
+            // Merge new data (access_token, expires_in, maybe new refresh_token)
+            // If new refresh_token is missing, keep old one? OSM usually rotates them?
+            // "If the authorization server issues a new refresh token, the client must discard the old one."
+            // If not provided, we assume old one is valid (though RFC says it usually is provided).
+
+            const updatedData = { ...data, ...newData };
+
+            if (newData.expires_in) {
+                updatedData.expires_at = Date.now() + (newData.expires_in * 1000);
+            }
+
+            localStorage.setItem('osm-auth', JSON.stringify(updatedData));
+            console.log("[Auth] Token Refreshed Successfully!");
+            return updatedData.access_token;
+
+        } catch (e) {
+            console.error("[Auth] Refresh Error:", e);
+            throw e;
+        }
+    },
+
+    // 3. Get Auth Header (Async wrapper)
+    async ensureToken() {
+        let data = null;
+        try {
+            data = JSON.parse(localStorage.getItem('osm-auth'));
+        } catch (e) { }
+
+        if (!data || !data.access_token) return null;
+
+        // Check Expiration (Buffer 60s)
+        if (data.expires_at && Date.now() > (data.expires_at - 60000)) {
+            console.log("[Auth] Token expired or close to expiry. Refreshing...");
+            try {
+                return await this.refreshToken();
+            } catch (e) {
+                console.warn("[Auth] Refresh failed, returning null (user needs login)", e);
+                return null;
+            }
+        }
+
+        return data.access_token;
+    },
+
     authenticated() {
-        return !!this.getToken();
+        // Simple check if we Have a token (even if expired, we might be able to refresh)
+        // But for UI "Show Login Button", we should probably assume strictly valid?
+        // Actually, if we have a refresh token, we ARE authenticated in session terms.
+        const token = this.getToken();
+        return !!token;
     },
 
     getToken() {
@@ -130,11 +220,24 @@ export const auth = {
     logout() {
         localStorage.removeItem('osm-auth');
         localStorage.removeItem('osm_user_name');
+        localStorage.removeItem('osm_user_img');
     }
 };
 
-// Compat with existing code expecting getAuthHeader
+// Async Header Helper
+export async function getAuthHeaderAsync() {
+    const token = await auth.ensureToken();
+    return token ? {
+        'Authorization': `Bearer ${token}`,
+        'User-Agent': USER_AGENT
+    } : {
+        'User-Agent': USER_AGENT
+    };
+}
+
+// Deprecated Sync Helper (warns)
 export function getAuthHeader() {
+    console.warn("getAuthHeader() is deprecated. Use getAuthHeaderAsync() for auto-refresh support.");
     const token = auth.getToken();
     return token ? {
         'Authorization': `Bearer ${token}`,
@@ -155,8 +258,9 @@ export async function checkLogin() {
     const cached = localStorage.getItem('osm_user_name');
 
     try {
+        const header = await getAuthHeaderAsync();
         const res = await fetch('https://api.openstreetmap.org/api/0.6/user/details', {
-            headers: getAuthHeader()
+            headers: header
         });
         if (!res.ok) {
             // If token expired, maybe logout? For now just return err
