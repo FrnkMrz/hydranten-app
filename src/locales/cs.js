@@ -171,5 +171,47 @@ export default {
         upload_failed: "Nahrávání selhalo",
         verifying_login: "Ověřování...",
         back_to_start: "Zpět na start"
+    },
+    camera: {
+        permission: "Vyžadován přístup ke kameře",
+        retake: "Znovu",
+        use_photo: "Použít fotku",
+        back_btn_aria: "Zpět na kameru",
+        back_btn_label: "Zpět",
+        capture_btn_aria: "Vyfotit",
+        error_title: "Kamera nedostupná",
+        error_access: "Žádný přístup",
+        compass_label: "KOMPAS",
+        gps_searching: "GPS: Hledání..."
+    },
+    error: {
+        load_failed: "Načtení selhalo",
+        node_deleted: "Tento hydrant již neexistuje.",
+        oops: "Jejda!",
+        back_to_map: "Zpět na mapu",
+        gps_failed: "Polohu nelze určit. Zkontrolujte GPS.",
+        gps_unavailable: "GPS nedostupné. Zobrazena výchozí mapa.",
+        edit_function_missing: "Interní chyba: Chybí funkce úprav.",
+        network_error: "Načtení selhalo (Síť/API)",
+        back_unavailable: "Chyba: Funkce zpět nedostupná."
+    },
+    legal: {
+        important_header: "⚠️ DŮLEŽITÉ:",
+        tmg_header: "Právní informace:"
+    },
+    upload_log: {
+        locating_nominatim: "Zjišťování názvu místa (Nominatim)...",
+        unknown_location: "Neznámé",
+        location_fallback: "Místo",
+        nominatim_error: "Chyba Nominatim: {status}",
+        creating_changeset: "Vytváření sady změn...",
+        uploading_hydrant: "Nahrávání hydrantu...",
+        starting_update: "Zahájení aktualizace...",
+        update_conflict: "Konflikt! Někdo tento hydrant právě upravil.",
+        update_success: "Aktualizace úspěšná!",
+        deleting_node: "Mazání {type} #{id}...",
+        delete_conflict: "Konflikt! Mazání selhalo.",
+        already_deleted: "Již smazáno.",
+        delete_success: "Smazáno!"
     }
 };

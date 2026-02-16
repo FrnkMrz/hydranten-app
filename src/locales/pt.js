@@ -171,5 +171,47 @@ export default {
         upload_failed: "Envio falhou",
         verifying_login: "A verificar sessão...",
         back_to_start: "Voltar ao início"
+    },
+    camera: {
+        permission: "Acesso à câmara necessário",
+        retake: "Repetir",
+        use_photo: "Usar foto",
+        back_btn_aria: "Voltar à câmara",
+        back_btn_label: "Voltar",
+        capture_btn_aria: "Tirar foto",
+        error_title: "Câmara Indisponível",
+        error_access: "Sem acesso",
+        compass_label: "BÚSSOLA",
+        gps_searching: "GPS: A procurar..."
+    },
+    error: {
+        load_failed: "Falha ao carregar",
+        node_deleted: "Este hidrante já não existe.",
+        oops: "Ups!",
+        back_to_map: "Voltar ao mapa",
+        gps_failed: "Localização não determinada. Verifique GPS.",
+        gps_unavailable: "GPS indisponível. Mapa padrão.",
+        edit_function_missing: "Erro interno: Função de edição em falta.",
+        network_error: "Falha ao carregar (Rede/API)",
+        back_unavailable: "Erro: Função voltar indisponível."
+    },
+    legal: {
+        important_header: "⚠️ IMPORTANTE:",
+        tmg_header: "Informação legal:"
+    },
+    upload_log: {
+        locating_nominatim: "A determinar local (Nominatim)...",
+        unknown_location: "Desconhecido",
+        location_fallback: "Local",
+        nominatim_error: "Erro Nominatim: {status}",
+        creating_changeset: "A criar conjunto de alterações...",
+        uploading_hydrant: "A enviar hidrante...",
+        starting_update: "A iniciar atualização...",
+        update_conflict: "Conflito! Alguém editou este hidrante.",
+        update_success: "Atualização com sucesso!",
+        deleting_node: "A eliminar {type} #{id}...",
+        delete_conflict: "Conflito! Eliminação falhou.",
+        already_deleted: "Já eliminado.",
+        delete_success: "Eliminado!"
     }
 };

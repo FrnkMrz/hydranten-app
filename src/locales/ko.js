@@ -170,5 +170,47 @@ export default {
         upload_failed: "업로드 실패",
         verifying_login: "로그인 확인 중...",
         back_to_start: "시작으로 돌아가기"
+    },
+    camera: {
+        permission: "카메라 권한 필요",
+        retake: "재촬영",
+        use_photo: "사진 사용",
+        back_btn_aria: "카메라로 돌아가기",
+        back_btn_label: "뒤로",
+        capture_btn_aria: "사진 촬영",
+        error_title: "카메라 사용 불가",
+        error_access: "접근 권한 없음",
+        compass_label: "나침반",
+        gps_searching: "GPS: 검색 중..."
+    },
+    error: {
+        load_failed: "로드 실패",
+        node_deleted: "이 소화전은 더 이상 존재하지 않습니다.",
+        oops: "이런!",
+        back_to_map: "지도로 돌아가기",
+        gps_failed: "위치를 찾을 수 없습니다. GPS를 확인하세요.",
+        gps_unavailable: "GPS 사용 불가. 기본 지도 표시.",
+        edit_function_missing: "내부 오류: 편집 기능 누락.",
+        network_error: "로드 실패 (네트워크/API)",
+        back_unavailable: "오류: 뒤로 가기 불가."
+    },
+    legal: {
+        important_header: "⚠️ 중요:",
+        tmg_header: "법적 정보:"
+    },
+    upload_log: {
+        locating_nominatim: "위치 이름 확인 중 (Nominatim)...",
+        unknown_location: "알 수 없음",
+        location_fallback: "장소",
+        nominatim_error: "Nominatim 오류: {status}",
+        creating_changeset: "변경 세트 생성 중...",
+        uploading_hydrant: "소화전 업로드 중...",
+        starting_update: "업데이트 시작...",
+        update_conflict: "충돌! 누군가 방금 수정했습니다. 새로고침하세요.",
+        update_success: "업데이트 성공!",
+        deleting_node: "{type} #{id} 삭제 중...",
+        delete_conflict: "충돌! 삭제 실패.",
+        already_deleted: "이미 삭제됨.",
+        delete_success: "삭제됨!"
     }
 };

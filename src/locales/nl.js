@@ -168,5 +168,47 @@ export default {
         upload_failed: "Upload mislukt",
         verifying_login: "Login verifiëren...",
         back_to_start: "Terug naar start"
+    },
+    camera: {
+        permission: "Camera toegang vereist",
+        retake: "Opnieuw",
+        use_photo: "Gebruiken",
+        back_btn_aria: "Terug naar camera",
+        back_btn_label: "Terug",
+        capture_btn_aria: "Foto maken",
+        error_title: "Camera onbeschikbaar",
+        error_access: "Geen toegang",
+        compass_label: "KOMPAS",
+        gps_searching: "GPS: Zoeken..."
+    },
+    error: {
+        load_failed: "Laden mislukt",
+        node_deleted: "Deze hydrant bestaat niet meer.",
+        oops: "Oeps!",
+        back_to_map: "Terug naar kaart",
+        gps_failed: "Locatie onbepaald. Controleer GPS.",
+        gps_unavailable: "GPS onbeschikbaar. Standaardkaart.",
+        edit_function_missing: "Interne fout: Edit-functie mist.",
+        network_error: "Laden mislukt (Netwerk/API)",
+        back_unavailable: "Fout: Terug-functie onbeschikbaar."
+    },
+    legal: {
+        important_header: "⚠️ BELANGRIJK:",
+        tmg_header: "Juridische info:"
+    },
+    upload_log: {
+        locating_nominatim: "Locatienaam bepalen (Nominatim)...",
+        unknown_location: "Onbekend",
+        location_fallback: "Plaats",
+        nominatim_error: "Nominatim Fout: {status}",
+        creating_changeset: "Changeset maken...",
+        uploading_hydrant: "Hydrant uploaden...",
+        starting_update: "Update starten...",
+        update_conflict: "Conflict! Iemand bewerkt dit nu.",
+        update_success: "Update geslaagd!",
+        deleting_node: "Verwijderen {type} #{id}...",
+        delete_conflict: "Conflict! Verwijderen mislukt.",
+        already_deleted: "Al verwijderd.",
+        delete_success: "Verwijderd!"
     }
 };

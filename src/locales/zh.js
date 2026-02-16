@@ -170,5 +170,47 @@ export default {
         upload_failed: "上传失败",
         verifying_login: "验证登录...",
         back_to_start: "返回开始"
+    },
+    camera: {
+        permission: "需要相机权限",
+        retake: "重拍",
+        use_photo: "使用照片",
+        back_btn_aria: "返回相机",
+        back_btn_label: "返回",
+        capture_btn_aria: "拍照",
+        error_title: "相机不可用",
+        error_access: "无法访问",
+        compass_label: "指南针",
+        gps_searching: "GPS: 搜索中..."
+    },
+    error: {
+        load_failed: "加载失败",
+        node_deleted: "此消火栓已不存在。",
+        oops: "糟糕！",
+        back_to_map: "返回地图",
+        gps_failed: "无法确定位置。请检查GPS。",
+        gps_unavailable: "GPS不可用。显示默认地图。",
+        edit_function_missing: "内部错误：缺少编辑功能。",
+        network_error: "加载失败（网络/API）",
+        back_unavailable: "错误：无法返回。"
+    },
+    legal: {
+        important_header: "⚠️ 重要：",
+        tmg_header: "法律信息："
+    },
+    upload_log: {
+        locating_nominatim: "正在确定位置名称 (Nominatim)...",
+        unknown_location: "未知",
+        location_fallback: "地点",
+        nominatim_error: "Nominatim 错误：{status}",
+        creating_changeset: "正在创建变更集...",
+        uploading_hydrant: "正在上传消火栓...",
+        starting_update: "开始更新...",
+        update_conflict: "冲突！有人刚刚编辑了此消火栓。",
+        update_success: "更新成功！",
+        deleting_node: "正在删除 {type} #{id}...",
+        delete_conflict: "冲突！删除失败。",
+        already_deleted: "已删除。",
+        delete_success: "已删除！"
     }
 };

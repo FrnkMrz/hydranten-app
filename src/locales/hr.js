@@ -170,5 +170,47 @@ export default {
         upload_failed: "Slanje neuspješno",
         verifying_login: "Provjera prijave...",
         back_to_start: "Natrag na početak"
+    },
+    camera: {
+        permission: "Potreban pristup kameri",
+        retake: "Ponovi",
+        use_photo: "Koristi sliku",
+        back_btn_aria: "Natrag na kameru",
+        back_btn_label: "Natrag",
+        capture_btn_aria: "Slikaj",
+        error_title: "Kamera nedostupna",
+        error_access: "Nema pristupa",
+        compass_label: "KOMPAS",
+        gps_searching: "GPS: Traženje..."
+    },
+    error: {
+        load_failed: "Učitavanje neuspješno",
+        node_deleted: "Ovaj hidrant više ne postoji.",
+        oops: "Ups!",
+        back_to_map: "Natrag na kartu",
+        gps_failed: "Lokacija nije utvrđena. Provjerite GPS.",
+        gps_unavailable: "GPS nedostupan. Prikazana zadana karta.",
+        edit_function_missing: "Interna greška: Nema funkcije uređivanja.",
+        network_error: "Greška mreže/API",
+        back_unavailable: "Greška: Funkcija natrag nedostupna."
+    },
+    legal: {
+        important_header: "⚠️ VAŽNO:",
+        tmg_header: "Pravne informacije:"
+    },
+    upload_log: {
+        locating_nominatim: "Određivanje lokacije (Nominatim)...",
+        unknown_location: "Nepoznato",
+        location_fallback: "Mjesto",
+        nominatim_error: "Nominatim Greška: {status}",
+        creating_changeset: "Stvaranje promjene...",
+        uploading_hydrant: "Slanje hidranta...",
+        starting_update: "Pokretanje ažuriranja...",
+        update_conflict: "Sukob! Netko je upravo uredio ovaj hidrant.",
+        update_success: "Ažuriranje uspješno!",
+        deleting_node: "Brisanje {type} #{id}...",
+        delete_conflict: "Sukob! Brisanje neuspješno.",
+        already_deleted: "Već obrisano.",
+        delete_success: "Obrisano!"
     }
 };

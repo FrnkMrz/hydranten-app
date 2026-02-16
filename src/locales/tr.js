@@ -172,5 +172,47 @@ export default {
         upload_failed: "Yükleme Başarısız",
         verifying_login: "Giriş doğrulanıyor...",
         back_to_start: "Başa Dön"
+    },
+    camera: {
+        permission: "Kamera izni gerekli",
+        retake: "Yeniden Çek",
+        use_photo: "Kullan",
+        back_btn_aria: "Kameraya Dön",
+        back_btn_label: "Geri",
+        capture_btn_aria: "Fotoğraf Çek",
+        error_title: "Kamera Kullanılamıyor",
+        error_access: "Erişim Yok",
+        compass_label: "PUSULA",
+        gps_searching: "GPS: Aranıyor..."
+    },
+    error: {
+        load_failed: "Yükleme Başarısız",
+        node_deleted: "Bu hidrat artık mevcut değil.",
+        oops: "Hata!",
+        back_to_map: "Haritaya Dön",
+        gps_failed: "Konum belirlenemedi. GPS'i kontrol edin.",
+        gps_unavailable: "GPS yok. Varsayılan harita.",
+        edit_function_missing: "Dahili Hata: Düzenleme fonksiyonu eksik.",
+        network_error: "Yükleme Hatası (Ağ/API)",
+        back_unavailable: "Hata: Geri fonksiyonu yok."
+    },
+    legal: {
+        important_header: "⚠️ ÖNEMLİ:",
+        tmg_header: "Yasal Bilgi:"
+    },
+    upload_log: {
+        locating_nominatim: "Konum adı belirleniyor (Nominatim)...",
+        unknown_location: "Bilinmiyor",
+        location_fallback: "Yer",
+        nominatim_error: "Nominatim Hatası: {status}",
+        creating_changeset: "Değişiklik Seti Oluşturuluyor...",
+        uploading_hydrant: "Hidrant Yükleniyor...",
+        starting_update: "Güncelleme Başlıyor...",
+        update_conflict: "Çakışma! Biri az önce düzenledi.",
+        update_success: "Güncelleme Başarılı!",
+        deleting_node: "{type} #{id} Siliniyor...",
+        delete_conflict: "Çakışma! Silme başarısız.",
+        already_deleted: "Zaten silindi.",
+        delete_success: "Silindi!"
     }
 };

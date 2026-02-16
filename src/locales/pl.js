@@ -178,5 +178,47 @@ export default {
         upload_failed: "Przesyłanie nieudane",
         verifying_login: "Weryfikacja logowania...",
         back_to_start: "Powrót do startu"
+    },
+    camera: {
+        permission: "Wymagany Dostęp do Kamery",
+        retake: "Powtórz",
+        use_photo: "Użyj Zdjęcia",
+        back_btn_aria: "Powrót do kamery",
+        back_btn_label: "Wstecz",
+        capture_btn_aria: "Zrób zdjęcie",
+        error_title: "Kamera Niedostępna",
+        error_access: "Brak Dostępu",
+        compass_label: "KOMPAS",
+        gps_searching: "GPS: Szukanie..."
+    },
+    error: {
+        load_failed: "Błąd Ładowania",
+        node_deleted: "Ten hydrant już nie istnieje.",
+        oops: "Ups!",
+        back_to_map: "Powrót do Mapy",
+        gps_failed: "Nie można ustalić lokalizacji. Sprawdź GPS.",
+        gps_unavailable: "GPS niedostępny. Mapa domyślna.",
+        edit_function_missing: "Błąd Wewnętrzny: Brak edycji.",
+        network_error: "Błąd Sieci/API",
+        back_unavailable: "Błąd: Wstecz niedostępne."
+    },
+    legal: {
+        important_header: "⚠️ WAŻNE:",
+        tmg_header: "Informacje Prawne:"
+    },
+    upload_log: {
+        locating_nominatim: "Ustalanie lokalizacji (Nominatim)...",
+        unknown_location: "Nieznana",
+        location_fallback: "Miejsce",
+        nominatim_error: "Błąd Nominatim: {status}",
+        creating_changeset: "Tworzenie Changeset...",
+        uploading_hydrant: "Wysyłanie Hydrantu...",
+        starting_update: "Rozpoczynanie Aktualizacji...",
+        update_conflict: "Konflikt! Ktoś edytował ten hydrant.",
+        update_success: "Aktualizacja Udana!",
+        deleting_node: "Usuwanie {type} #{id}...",
+        delete_conflict: "Konflikt! Usuwanie nieudane.",
+        already_deleted: "Już usunięto.",
+        delete_success: "Usunięto!"
     }
 };

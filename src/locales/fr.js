@@ -172,5 +172,47 @@ export default {
         upload_failed: "Échec de l'envoi",
         verifying_login: "Vérification de la connexion...",
         back_to_start: "Retour au début"
+    },
+    camera: {
+        permission: "Accès caméra requis",
+        retake: "Reprendre",
+        use_photo: "Utiliser",
+        back_btn_aria: "Retour caméra",
+        back_btn_label: "Retour",
+        capture_btn_aria: "Prendre photo",
+        error_title: "Caméra indisponible",
+        error_access: "Pas d'accès",
+        compass_label: "BOUSSOLE",
+        gps_searching: "GPS : Recherche..."
+    },
+    error: {
+        load_failed: "Échec du chargement",
+        node_deleted: "Cette borne n'existe plus.",
+        oops: "Oups !",
+        back_to_map: "Retour carte",
+        gps_failed: "Localisation impossible. Vérifiez le GPS.",
+        gps_unavailable: "GPS indisponible. Carte par défaut.",
+        edit_function_missing: "Erreur interne : Fonction d'édition manquante.",
+        network_error: "Échec chgt (Réseau/API)",
+        back_unavailable: "Erreur : Retour indisponible."
+    },
+    legal: {
+        important_header: "⚠️ IMPORTANT :",
+        tmg_header: "Mentions légales :"
+    },
+    upload_log: {
+        locating_nominatim: "Recherche du lieu (Nominatim)...",
+        unknown_location: "Inconnu",
+        location_fallback: "Lieu",
+        nominatim_error: "Erreur Nominatim : {status}",
+        creating_changeset: "Création changeset...",
+        uploading_hydrant: "Envoi borne...",
+        starting_update: "Mise à jour...",
+        update_conflict: "Conflit ! Édition concurrente.",
+        update_success: "Mise à jour réussie !",
+        deleting_node: "Suppression {type} #{id}...",
+        delete_conflict: "Conflit ! Suppression échouée.",
+        already_deleted: "Déjà supprimé.",
+        delete_success: "Supprimé !"
     }
 };

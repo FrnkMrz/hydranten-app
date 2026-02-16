@@ -170,5 +170,47 @@ export default {
         upload_failed: "アップロード失敗",
         verifying_login: "ログイン確認中...",
         back_to_start: "スタートに戻る"
+    },
+    camera: {
+        permission: "カメラへのアクセスが必要です",
+        retake: "撮り直す",
+        use_photo: "写真を使用",
+        back_btn_aria: "カメラに戻る",
+        back_btn_label: "戻る",
+        capture_btn_aria: "写真を撮る",
+        error_title: "カメラ利用不可",
+        error_access: "アクセス権なし",
+        compass_label: "コンパス",
+        gps_searching: "GPS: 検索中..."
+    },
+    error: {
+        load_failed: "読み込み失敗",
+        node_deleted: "この消火栓は存在しません。",
+        oops: "おっと！",
+        back_to_map: "地図に戻る",
+        gps_failed: "位置情報を取得できません。GPSを確認してください。",
+        gps_unavailable: "GPS利用不可。デフォルト地図を表示。",
+        edit_function_missing: "内部エラー：編集機能が見つかりません。",
+        network_error: "読み込み失敗（通信/API）",
+        back_unavailable: "エラー：戻る機能が利用できません。"
+    },
+    legal: {
+        important_header: "⚠️ 重要：",
+        tmg_header: "法的情報："
+    },
+    upload_log: {
+        locating_nominatim: "場所名を特定中（Nominatim）...",
+        unknown_location: "不明",
+        location_fallback: "場所",
+        nominatim_error: "Nominatim エラー: {status}",
+        creating_changeset: "変更セットを作成中...",
+        uploading_hydrant: "消火栓をアップロード中...",
+        starting_update: "更新を開始...",
+        update_conflict: "競合！誰かが編集しました。リロードしてください。",
+        update_success: "更新成功！",
+        deleting_node: "{type} #{id} を削除中...",
+        delete_conflict: "競合！削除失敗。",
+        already_deleted: "既に削除済み。",
+        delete_success: "削除しました！"
     }
 };

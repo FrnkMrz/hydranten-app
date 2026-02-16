@@ -167,5 +167,47 @@ export default {
         upload_failed: "فشل الرفع",
         verifying_login: "التحقق من الدخول...",
         back_to_start: "العودة للبداية"
+    },
+    camera: {
+        permission: "يجب السماح للكاميرا",
+        retake: "إعادة",
+        use_photo: "استخدام",
+        back_btn_aria: "عودة للكاميرا",
+        back_btn_label: "رجوع",
+        capture_btn_aria: "التقاط صورة",
+        error_title: "الكاميرا غير متاحة",
+        error_access: "لا يوجد وصول",
+        compass_label: "بوصلة",
+        gps_searching: "GPS: جارٍ البحث..."
+    },
+    error: {
+        load_failed: "فشل التحميل",
+        node_deleted: "هذا الصنبور لم يعد موجوداً.",
+        oops: "عفواً!",
+        back_to_map: "عودة للخريطة",
+        gps_failed: "تعذر تحديد الموقع. تحقق من GPS.",
+        gps_unavailable: "GPS غير متاح. الخريطة الافتراضية.",
+        edit_function_missing: "خطأ داخلي: ميزة التعديل مفقودة.",
+        network_error: "فشل التحميل (شبكة/API)",
+        back_unavailable: "خطأ: الرجوع غير متاح."
+    },
+    legal: {
+        important_header: "⚠️ هام:",
+        tmg_header: "معلومات قانونية:"
+    },
+    upload_log: {
+        locating_nominatim: "تحديد اسم الموقع (Nominatim)...",
+        unknown_location: "غير معروف",
+        location_fallback: "مكان",
+        nominatim_error: "خطأ Nominatim: {status}",
+        creating_changeset: "إنشاء مجموعة تغييرات...",
+        uploading_hydrant: "جاري رفع الصنبور...",
+        starting_update: "بدء التحديث...",
+        update_conflict: "تضارب! قام شخص ما بالتعديل للتو.",
+        update_success: "تم التحديث بنجاح!",
+        deleting_node: "جاري حذف {type} #{id}...",
+        delete_conflict: "تضارب! فشل الحذف.",
+        already_deleted: "تم الحذف بالفعل.",
+        delete_success: "تم الحذف!"
     }
 };

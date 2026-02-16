@@ -170,5 +170,47 @@ export default {
         upload_failed: "Caricamento fallito",
         verifying_login: "Verifica accesso...",
         back_to_start: "Torna all'inizio"
+    },
+    camera: {
+        permission: "Accesso fotocamera richiesto",
+        retake: "Riprova",
+        use_photo: "Usa foto",
+        back_btn_aria: "Torna alla fotocamera",
+        back_btn_label: "Indietro",
+        capture_btn_aria: "Scatta foto",
+        error_title: "Fotocamera non disponibile",
+        error_access: "Nessun accesso",
+        compass_label: "BUSSOLA",
+        gps_searching: "GPS: Ricerca..."
+    },
+    error: {
+        load_failed: "Caricamento fallito",
+        node_deleted: "Questo idrante non esiste più.",
+        oops: "Ops!",
+        back_to_map: "Torna alla mappa",
+        gps_failed: "Posizione non determinata. Controlla GPS.",
+        gps_unavailable: "GPS non disponibile. Mappa predefinita.",
+        edit_function_missing: "Errore interno: Funzione modifica mancante.",
+        network_error: "Caricamento fallito (Rete/API)",
+        back_unavailable: "Errore: Indietro non disponibile."
+    },
+    legal: {
+        important_header: "⚠️ IMPORTANTE:",
+        tmg_header: "Note legali:"
+    },
+    upload_log: {
+        locating_nominatim: "Ricerca luogo (Nominatim)...",
+        unknown_location: "Sconosciuto",
+        location_fallback: "Luogo",
+        nominatim_error: "Errore Nominatim: {status}",
+        creating_changeset: "Creazione changeset...",
+        uploading_hydrant: "Caricamento idrante...",
+        starting_update: "Avvio aggiornamento...",
+        update_conflict: "Conflitto! Modifica concorrente.",
+        update_success: "Aggiornamento riuscito!",
+        deleting_node: "Eliminazione {type} #{id}...",
+        delete_conflict: "Conflitto! Eliminazione fallita.",
+        already_deleted: "Già eliminato.",
+        delete_success: "Eliminato!"
     }
 };

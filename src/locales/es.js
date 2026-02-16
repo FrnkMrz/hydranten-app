@@ -172,5 +172,47 @@ export default {
         upload_failed: "Fallo de subida",
         verifying_login: "Verificando...",
         back_to_start: "Volver al inicio"
+    },
+    camera: {
+        permission: "Cámara requerida",
+        retake: "Repetir",
+        use_photo: "Usar foto",
+        back_btn_aria: "Volver a cámara",
+        back_btn_label: "Volver",
+        capture_btn_aria: "Tomar foto",
+        error_title: "Cámara no disponible",
+        error_access: "Sin acceso",
+        compass_label: "BRÚJULA",
+        gps_searching: "GPS: Buscando..."
+    },
+    error: {
+        load_failed: "Error de carga",
+        node_deleted: "Este hidrante ya no existe.",
+        oops: "¡Vaya!",
+        back_to_map: "Volver al mapa",
+        gps_failed: "Ubicación no encontrada. Verifique GPS.",
+        gps_unavailable: "GPS no disponible. Mapa por defecto.",
+        edit_function_missing: "Error interno: Falta función de edición.",
+        network_error: "Error de carga (Red/API)",
+        back_unavailable: "Error: Función volver no disponible."
+    },
+    legal: {
+        important_header: "⚠️ IMPORTANTE:",
+        tmg_header: "Información legal:"
+    },
+    upload_log: {
+        locating_nominatim: "Buscando ubicación (Nominatim)...",
+        unknown_location: "Desconocido",
+        location_fallback: "Lugar",
+        nominatim_error: "Error Nominatim: {status}",
+        creating_changeset: "Creando conjunto de cambios...",
+        uploading_hydrant: "Subiendo hidrante...",
+        starting_update: "Iniciando actualización...",
+        update_conflict: "¡Conflicto! Edición concurrente.",
+        update_success: "¡Actualización exitosa!",
+        deleting_node: "Eliminando {type} #{id}...",
+        delete_conflict: "¡Conflicto! Eliminación fallida.",
+        already_deleted: "Ya eliminado.",
+        delete_success: "¡Eliminado!"
     }
 };
