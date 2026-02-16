@@ -1,5 +1,4 @@
 // Helper for Colorful Logs
-// Helper for Colorful Logs
 const c = {
     req: (t) => `<span class="text-blue-400 font-bold">${t}</span>`,
     res: (t) => `<span class="text-purple-400 font-bold">${t}</span>`,
@@ -11,14 +10,97 @@ const c = {
 import { getAuthHeaderAsync } from './auth.js';
 import { USER_AGENT, CREATED_BY } from '../version.js';
 
-// ... (existing code)
-
-// Helper for Colorful Logs
-// ... (existing helper code)
+// XML Escaping Helper
+function escapeXml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+}
 
 /**
-// ... (existing code)
+ * Helper to determine object type name for comments
  */
+function getTypeName(tags) {
+    if (tags['emergency'] === 'water_tank') return 'Cistern';
+    if (tags['emergency'] === 'suction_point') return 'Suction Point';
+    return 'Hydrant';
+}
+
+/**
+ * Normalize tags before sending to OSM
+ * Enforces rules like: cistern -> water_tank, street -> lane, etc.
+ */
+function normalizeTags(tags) {
+    const t = { ...tags }; // Copy
+
+    // 1. Cistern Handling
+    if (t['fire_hydrant:type'] === 'cistern') {
+        t['emergency'] = 'water_tank';
+        delete t['fire_hydrant:type'];
+    }
+
+    // 2. Suction Point
+    if (t['emergency'] === 'suction_point') {
+        delete t['fire_hydrant:type'];
+    }
+
+    // 3. Position Mapping: street -> lane
+    if (t['fire_hydrant:position'] === 'street') {
+        t['fire_hydrant:position'] = 'lane';
+    }
+
+    // 4. Underground Sign Logic Cleanup
+    if (t['fire_hydrant:diameter:signed'] === 'no') {
+        t['ref:signed'] = 'no';
+    }
+
+    return t;
+}
+
+/**
+ * Reverse Geocoding Helper
+ */
+async function getLocationName(lat, lng, log) {
+    log(c.info("Ermittle Standort-Namen (Nominatim)..."));
+    let locationStr = "Unbekannt";
+
+    try {
+        const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
+            headers: {
+                'User-Agent': USER_AGENT
+            }
+        });
+        if (nomRes.ok) {
+            const nomData = await nomRes.json();
+            const a = nomData.address || {};
+
+            const zip = a.postcode || "";
+            const city = a.city || a.town || a.village || a.municipality || "Ort";
+            const street = a.road || a.pedestrian || a.footway || a.path || "";
+
+            if (street && zip) {
+                locationStr = `${zip} ${city}, ${street}`;
+            } else if (zip) {
+                locationStr = `${zip} ${city}`;
+            } else if (street) {
+                locationStr = `${city}, ${street}`;
+            } else {
+                locationStr = city;
+            }
+
+            log(c.success(`Standort: ${locationStr} (${nomData.display_name})`));
+        } else {
+            log(c.err("Nominatim Fehler: " + nomRes.status));
+        }
+    } catch (e) {
+        log(c.err("Nominatim Exception: " + e.message));
+    }
+    return locationStr;
+}
 
 export async function createHydrant(data, authHeader, log = console.log) {
     try {
