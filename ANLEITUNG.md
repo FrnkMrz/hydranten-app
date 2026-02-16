@@ -1,4 +1,4 @@
-# 🚒 Hydranten Jäger - Anleitung (v1.4.0)
+# 🚒 Hydranten Jäger - Anleitung (v1.4.1)
 
 **🌐 Live App:** [https://hydrantenjaeger.de](https://hydrantenjaeger.de)
 
@@ -21,7 +21,7 @@ Bevor du Daten hochladen kannst, musst du die App mit deinem OSM-Konto verknüpf
 5.  Melde dich dort an und klicke auf **"Erlauben"** (Authorize).
 6.  Die App springt automatisch zurück und zeigt jetzt deinen Benutzernamen grün an. ✅
 
-> **Hinweis:** Dein Login bleibt auf diesem Gerät gespeichert, bis du dich wieder abmeldest.
+> **Hinweis:** Dein Login bleibt auf diesem Gerät gespeichert und wird automatisch erneuert (Token-Refresh), so dass du dich nicht erneut anmelden musst.
 > **Sprache & Karte:** Du kannst die Sprache (Flagge) und den **Kartenstil** (Standard, Satellit, Topo) in den Einstellungen ändern.
 
 ## 3. Hydranten eintragen
@@ -30,7 +30,7 @@ So erfasst du einen neuen Hydranten in 4 Schritten:
 
 ### Schritt 1: Starten 🚀
 *   Klicke auf der Startseite auf den großen Button **"STARTEN"**.
-*   **Karte**: Du kannst die Karte auf der Startseite jetzt auch verschieben (ca. 200m Umkreis), um dich besser zu orientieren.
+*   **Karte**: Du kannst die Karte auf der Startseite verschieben (ca. 200m Umkreis), um dich besser zu orientieren.
 *   **Wichtig (iPhone):** Erlaube den Zugriff auf **Standort** und (falls gefragt) **Bewegungssensoren** (für den Kompass).
 
 ### Schritt 2: Foto & Position 📸
@@ -41,6 +41,7 @@ So erfasst du einen neuen Hydranten in 4 Schritten:
 ### Schritt 3: Daten prüfen & ergänzen 📝
 Du siehst nun die Bestätigungs-Ansicht:
 *   **Karte**: Prüfe, ob der blaue Marker stimmt. Du kannst ihn mit dem Finger verschieben!
+*   **Fullscreen-Karte** 🗺️: Tippe auf den **Vergrößern-Button** unten links für eine größere Kartenansicht. So kannst du den Marker noch präziser platzieren.
 *   **Typ**: Wähle den Hydranten-Typ (z.B. Überflur 📮 oder Unterflur 🕳️).
 *   **Lage**: Wo steht er? (Gehweg, Straße, Grünfläche).
 *   **Details** (Optional): Durchmesser, Farbe oder Nummer eintragen.
@@ -54,7 +55,17 @@ Der Hydrant ist nun in der OpenStreetMap-Datenbank eingetragen und bald auf alle
 
 ---
 
-## 4. Dein Dienstgrad 🏆
+## 4. Hydranten bearbeiten ✏️
+
+Du kannst vorhandene Hydranten auf der Karte antippen und bearbeiten:
+
+*   **Daten ändern**: Typ, Lage, Durchmesser, Farbe oder Nummer aktualisieren.
+*   **Position verschieben**: Tippe auf die Karte, um den Marker an die richtige Stelle zu setzen (**Tap-to-Move**). Gesperrte Punkte (🔒 Teil von Gebäuden/Wegen) können nicht verschoben werden.
+*   **Löschen**: Falsch eingetragene Hydranten können gelöscht werden (Button "Löschen").
+
+---
+
+## 5. Dein Dienstgrad 🏆
 
 Für jeden eingetragenen Hydranten sammelst du Erfahrung!
 *   Gehe in die **Einstellungen** ⚙️.
@@ -70,4 +81,7 @@ Für jeden eingetragenen Hydranten sammelst du Erfahrung!
 Die App merkt sich deine letzte Position. Wenn das GPS "hängt", gehe kurz in deine Karten-App (Google/Apple Maps), um das GPS "aufzuwecken", und kehre dann zurück.
 
 **Upload schlägt fehl?**
-Prüfe deine Internetverbindung. Wenn ein Fehler "401 Unauthorized" kommt, gehe in die Einstellungen und melde dich neu an.
+Prüfe deine Internetverbindung. Falls ein Fehler "401 Unauthorized" kommt, gehe in die Einstellungen und melde dich neu an. Die App versucht den Token automatisch zu erneuern, aber in seltenen Fällen kann ein manuelles Re-Login nötig sein.
+
+**App reagiert nicht?**
+In den **Einstellungen** gibt es den Button **"Resetiraj i očisti predmemoriju"** / **"Resetieren & Cache leeren"** — damit wird die App komplett zurückgesetzt.
