@@ -76,6 +76,22 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
         if (editMode && typeof checkChanges === 'function') checkChanges();
     });
 
+    // Tap to Move (Easy positioning)
+    map.on('click', function (e) {
+        // Only allow if editable (or confirm view always allows adjustment?)
+        // Confirm view allows adjustment too.
+        if (isLocked) return;
+
+        marker.setLatLng(e.latlng);
+
+        // Update State
+        location.lat = e.latlng.lat;
+        location.lng = e.latlng.lng;
+
+        if (statusPill) statusPill.innerText = editMode ? t('confirm.position_moved') : `📍 ${t('confirm.position_moved') || 'Verschoben'}`;
+        if (editMode && typeof checkChanges === 'function') checkChanges();
+    });
+
     const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
     if (statusPill && !statusPill.innerText.includes('Verschoben')) {
         statusPill.innerText = editMode ? t('confirm.fixed_map') : `GPS: ±${accuracy}m`;
