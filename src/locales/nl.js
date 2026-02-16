@@ -136,5 +136,37 @@ export default {
             parking: "Parkeerplaats",
             none: "Geen"
         }
+    },
+    general: {
+        loading: "Laden...",
+        error: "Fout",
+        success: "Succes",
+        close: "Sluiten",
+        done: "Klaar",
+        cancel: "Annuleren",
+        save: "Opslaan",
+        delete: "Verwijderen",
+        back: "Terug",
+        retry: "Opnieuw"
+    },
+    messages: {
+        locating_position: "Locatie bepalen...",
+        please_login: "Log in om te bewerken.",
+        loading_hydrant: "Hydrant #{id} laden...",
+        saving_data: "Opslaan...",
+        deleting_data: "Verwijderen...",
+        internal_error_reload: "Interne fout. Herlaad de pagina.",
+        camera_error: "Camerafout: {error}",
+        gps_update_failed: "GPS-fout: {error}",
+        no_osm_credentials: "Geen OSM-gegevens. Log in.",
+        to_settings: "Naar instellingen",
+        uploading: "Uploaden...",
+        upload_successful: "Upload geslaagd!",
+        upload_wait: "Uploaden... ⏳",
+        node_id: "Node ID",
+        changeset: "Wijzigingenset",
+        upload_failed: "Upload mislukt",
+        verifying_login: "Login verifiëren...",
+        back_to_start: "Terug naar start"
     }
 };

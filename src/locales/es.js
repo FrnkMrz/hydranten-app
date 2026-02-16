@@ -140,5 +140,37 @@ export default {
         number_placeholder: "ej. 1234",
         notes_label: "NOTA",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "Cargando...",
+        error: "Error",
+        success: "Éxito",
+        close: "Cerrar",
+        done: "Hecho",
+        cancel: "Cancelar",
+        save: "Guardar",
+        delete: "Eliminar",
+        back: "Atrás",
+        retry: "Reintentar"
+    },
+    messages: {
+        locating_position: "Localizando...",
+        please_login: "Inicia sesión para editar.",
+        loading_hydrant: "Cargando hidrante #{id}...",
+        saving_data: "Guardando...",
+        deleting_data: "Eliminando...",
+        internal_error_reload: "Error interno. Por favor recarga.",
+        camera_error: "Error de cámara: {error}",
+        gps_update_failed: "Fallo GPS: {error}",
+        no_osm_credentials: "Sin credenciales OSM. Inicia sesión.",
+        to_settings: "Ajustes",
+        uploading: "Subiendo...",
+        upload_successful: "¡Subida exitosa!",
+        upload_wait: "Subiendo... ⏳",
+        node_id: "ID Nodo",
+        changeset: "Changeset",
+        upload_failed: "Fallo de subida",
+        verifying_login: "Verificando...",
+        back_to_start: "Volver al inicio"
     }
 };

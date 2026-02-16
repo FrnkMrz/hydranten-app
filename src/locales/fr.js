@@ -140,5 +140,37 @@ export default {
         number_placeholder: "ex. 1234",
         notes_label: "NOTE",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "Chargement...",
+        error: "Erreur",
+        success: "Succès",
+        close: "Fermer",
+        done: "Terminé",
+        cancel: "Annuler",
+        save: "Enregistrer",
+        delete: "Supprimer",
+        back: "Retour",
+        retry: "Réessayer"
+    },
+    messages: {
+        locating_position: "Localisation...",
+        please_login: "Veuillez vous connecter pour modifier les informations.",
+        loading_hydrant: "Chargement de la borne #{id}...",
+        saving_data: "Enregistrement...",
+        deleting_data: "Suppression...",
+        internal_error_reload: "Erreur interne : Fonction indisponible. Veuillez recharger la page.",
+        camera_error: "Erreur caméra : {error}",
+        gps_update_failed: "Échec de la mise à jour GPS : {error}",
+        no_osm_credentials: "Aucun identifiant OSM trouvé. Veuillez vous connecter d'abord.",
+        to_settings: "Vers les paramètres",
+        uploading: "Envoi en cours...",
+        upload_successful: "Envoi réussi !",
+        upload_wait: "Envoi en cours... ⏳",
+        node_id: "ID Nœud",
+        changeset: "Groupe de modifications",
+        upload_failed: "Échec de l'envoi",
+        verifying_login: "Vérification de la connexion...",
+        back_to_start: "Retour au début"
     }
 };

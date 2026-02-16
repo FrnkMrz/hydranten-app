@@ -138,5 +138,37 @@ export default {
         number_placeholder: "es. 1234",
         notes_label: "NOTA",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "Caricamento...",
+        error: "Errore",
+        success: "Successo",
+        close: "Chiudi",
+        done: "Fatto",
+        cancel: "Annulla",
+        save: "Salva",
+        delete: "Elimina",
+        back: "Indietro",
+        retry: "Riprova"
+    },
+    messages: {
+        locating_position: "Localizzazione...",
+        please_login: "Accedi per modificare.",
+        loading_hydrant: "Caricamento idrante #{id}...",
+        saving_data: "Salvataggio...",
+        deleting_data: "Eliminazione...",
+        internal_error_reload: "Errore interno. Ricarica.",
+        camera_error: "Errore fotocamera: {error}",
+        gps_update_failed: "Errore GPS: {error}",
+        no_osm_credentials: "Nessuna credenziale OSM. Accedi.",
+        to_settings: "Impostazioni",
+        uploading: "Caricamento...",
+        upload_successful: "Caricamento riuscito!",
+        upload_wait: "Caricamento... ⏳",
+        node_id: "ID Nodo",
+        changeset: "Changeset",
+        upload_failed: "Caricamento fallito",
+        verifying_login: "Verifica accesso...",
+        back_to_start: "Torna all'inizio"
     }
 };

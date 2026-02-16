@@ -146,5 +146,37 @@ export default {
         number_placeholder: "np. 1234",
         notes_label: "NOTATKA",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "Ładowanie...",
+        error: "Błąd",
+        success: "Sukces",
+        close: "Zamknij",
+        done: "Gotowe",
+        cancel: "Anuluj",
+        save: "Zapisz",
+        delete: "Usuń",
+        back: "Wstecz",
+        retry: "Ponów"
+    },
+    messages: {
+        locating_position: "Ustalanie lokalizacji...",
+        please_login: "Zaloguj się, aby edytować.",
+        loading_hydrant: "Ładowanie hydrantu #{id}...",
+        saving_data: "Zapisywanie...",
+        deleting_data: "Usuwanie...",
+        internal_error_reload: "Błąd wewnętrzny. Odśwież.",
+        camera_error: "Błąd kamery: {error}",
+        gps_update_failed: "Błąd GPS: {error}",
+        no_osm_credentials: "Brak danych OSM. Zaloguj się.",
+        to_settings: "Ustawienia",
+        uploading: "Przesyłanie...",
+        upload_successful: "Przesłano pomyślnie!",
+        upload_wait: "Przesyłanie... ⏳",
+        node_id: "ID Węzła",
+        changeset: "Zestaw zmian",
+        upload_failed: "Przesyłanie nieudane",
+        verifying_login: "Weryfikacja logowania...",
+        back_to_start: "Powrót do startu"
     }
 };

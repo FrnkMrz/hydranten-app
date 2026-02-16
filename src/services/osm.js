@@ -1,10 +1,11 @@
 // Helper for Colorful Logs
+// Helper for Colorful Logs
 const c = {
-    req: (t) => `<span class="text-blue-400 font-bold">➡ ${t}</span>`,
-    res: (t) => `<span class="text-purple-400 font-bold">⬅ ${t}</span>`,
-    info: (t) => `<span class="text-yellow-400">ℹ️ ${t}</span>`,
-    success: (t) => `<span class="text-green-400 font-bold">✅ ${t}</span>`,
-    err: (t) => `<span class="text-red-500 font-bold">❌ ${t}</span>`
+    req: (t) => `<span class="text-blue-400 font-bold">${t}</span>`,
+    res: (t) => `<span class="text-purple-400 font-bold">${t}</span>`,
+    info: (t) => `<span class="text-yellow-400">${t}</span>`,
+    success: (t) => `<span class="text-green-400 font-bold">${t}</span>`,
+    err: (t) => `<span class="text-red-500 font-bold">${t}</span>`
 };
 
 import { getAuthHeaderAsync } from './auth.js';

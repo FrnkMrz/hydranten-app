@@ -139,5 +139,37 @@ export default {
             parking: "Estacionamento",
             none: "Nenhum"
         },
+    },
+    general: {
+        loading: "A carregar...",
+        error: "Erro",
+        success: "Sucesso",
+        close: "Fechar",
+        done: "Feito",
+        cancel: "Cancelar",
+        save: "Guardar",
+        delete: "Eliminar",
+        back: "Voltar",
+        retry: "Tentar de novo"
+    },
+    messages: {
+        locating_position: "A localizar...",
+        please_login: "Inicie sessão para editar.",
+        loading_hydrant: "A carregar hidrante #{id}...",
+        saving_data: "A guardar...",
+        deleting_data: "A eliminar...",
+        internal_error_reload: "Erro interno. Recarregue.",
+        camera_error: "Erro da câmara: {error}",
+        gps_update_failed: "Falha de GPS: {error}",
+        no_osm_credentials: "Sem credenciais OSM. Inicie sessão.",
+        to_settings: "Definições",
+        uploading: "A enviar...",
+        upload_successful: "Envio com sucesso!",
+        upload_wait: "A enviar... ⏳",
+        node_id: "ID do Nó",
+        changeset: "Conjunto de alterações",
+        upload_failed: "Envio falhou",
+        verifying_login: "A verificar sessão...",
+        back_to_start: "Voltar ao início"
     }
 };

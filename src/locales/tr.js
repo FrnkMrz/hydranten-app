@@ -140,5 +140,37 @@ export default {
         number_placeholder: "örn. 1234",
         notes_label: "NOT",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "Yükleniyor...",
+        error: "Hata",
+        success: "Başarılı",
+        close: "Kapat",
+        done: "Tamam",
+        cancel: "İptal",
+        save: "Kaydet",
+        delete: "Sil",
+        back: "Geri",
+        retry: "Tekrar Dene"
+    },
+    messages: {
+        locating_position: "Konum belirleniyor...",
+        please_login: "Düzenlemek için giriş yapın.",
+        loading_hydrant: "Hidrant #{id} yükleniyor...",
+        saving_data: "Kaydediliyor...",
+        deleting_data: "Siliniyor...",
+        internal_error_reload: "Dahili hata. Lütfen yenileyin.",
+        camera_error: "Kamera Hatası: {error}",
+        gps_update_failed: "GPS Hatası: {error}",
+        no_osm_credentials: "OSM kimlik bilgisi yok. Giriş yapın.",
+        to_settings: "Ayarlar",
+        uploading: "Yükleniyor...",
+        upload_successful: "Yükleme Başarılı!",
+        upload_wait: "Yükleniyor... ⏳",
+        node_id: "Düğüm ID",
+        changeset: "Değişiklik Seti",
+        upload_failed: "Yükleme Başarısız",
+        verifying_login: "Giriş doğrulanıyor...",
+        back_to_start: "Başa Dön"
     }
 };

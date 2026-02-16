@@ -135,5 +135,37 @@ export default {
         number_placeholder: "مثال 1234",
         notes_label: "ملاحظات",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "جار التحميل...",
+        error: "خطأ",
+        success: "نجاح",
+        close: "إغلاق",
+        done: "تم",
+        cancel: "إلغاء",
+        save: "حفظ",
+        delete: "حذف",
+        back: "رجوع",
+        retry: "إعادة المحاولة"
+    },
+    messages: {
+        locating_position: "تحديد الموقع...",
+        please_login: "يرجى تسجيل الدخول للتحرير.",
+        loading_hydrant: "تحميل صنبور #{id}...",
+        saving_data: "جار الحفظ...",
+        deleting_data: "جار الحذف...",
+        internal_error_reload: "خطأ داخلي. يرجى إعادة التحميل.",
+        camera_error: "خطأ في الكاميرا: {error}",
+        gps_update_failed: "فشل تحديث GPS: {error}",
+        no_osm_credentials: "لا توجد بيانات دخول OSM.",
+        to_settings: "الإعدادات",
+        uploading: "جار الرفع...",
+        upload_successful: "تم الرفع بنجاح!",
+        upload_wait: "جار الرفع... ⏳",
+        node_id: "معرف العقدة",
+        changeset: "مجموعة التغييرات",
+        upload_failed: "فشل الرفع",
+        verifying_login: "التحقق من الدخول...",
+        back_to_start: "العودة للبداية"
     }
 };

@@ -138,5 +138,37 @@ export default {
         number_placeholder: "npr. 1234",
         notes_label: "BILJEŠKA",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "Učitavanje...",
+        error: "Greška",
+        success: "Uspjeh",
+        close: "Zatvori",
+        done: "Gotovo",
+        cancel: "Odustani",
+        save: "Spremi",
+        delete: "Obriši",
+        back: "Natrag",
+        retry: "Pokušaj ponovo"
+    },
+    messages: {
+        locating_position: "Lociranje...",
+        please_login: "Prijavite se za uređivanje.",
+        loading_hydrant: "Učitavanje hidranta #{id}...",
+        saving_data: "Spremanje...",
+        deleting_data: "Brisanje...",
+        internal_error_reload: "Interna greška. Ponovno učitajte.",
+        camera_error: "Greška kamere: {error}",
+        gps_update_failed: "GPS greška: {error}",
+        no_osm_credentials: "Nema OSM podataka. Prijavite se.",
+        to_settings: "Postavke",
+        uploading: "Slanje...",
+        upload_successful: "Slanje uspješno!",
+        upload_wait: "Slanje... ⏳",
+        node_id: "ID Čvora",
+        changeset: "Promjena",
+        upload_failed: "Slanje neuspješno",
+        verifying_login: "Provjera prijave...",
+        back_to_start: "Natrag na početak"
     }
 };

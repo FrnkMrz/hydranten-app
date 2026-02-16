@@ -139,5 +139,37 @@ export default {
             parking: "Parkoviště",
             none: "Žádné"
         }
+    },
+    general: {
+        loading: "Načítání...",
+        error: "Chyba",
+        success: "Úspěch",
+        close: "Zavřít",
+        done: "Hotovo",
+        cancel: "Zrušit",
+        save: "Uložit",
+        delete: "Smazat",
+        back: "Zpět",
+        retry: "Zkusit znovu"
+    },
+    messages: {
+        locating_position: "Hledám pozici...",
+        please_login: "Pro úpravy se prosím přihlaste.",
+        loading_hydrant: "Načítám hydrant v.{id}...",
+        saving_data: "Ukládám...",
+        deleting_data: "Mažu...",
+        internal_error_reload: "Interní chyba. Obnovte stránku.",
+        camera_error: "Chyba kamery: {error}",
+        gps_update_failed: "Chyba GPS: {error}",
+        no_osm_credentials: "Chybí OSM přihlášení.",
+        to_settings: "Nastavení",
+        uploading: "Nahrávám...",
+        upload_successful: "Nahráno úspěšně!",
+        upload_wait: "Nahrávám... ⏳",
+        node_id: "ID Uzlu",
+        changeset: "Sada změn",
+        upload_failed: "Nahrávání selhalo",
+        verifying_login: "Ověřování...",
+        back_to_start: "Zpět na start"
     }
 };

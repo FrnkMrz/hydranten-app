@@ -138,5 +138,37 @@ export default {
         number_placeholder: "例: 1234",
         notes_label: "メモ",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "読み込み中...",
+        error: "エラー",
+        success: "成功",
+        close: "閉じる",
+        done: "完了",
+        cancel: "キャンセル",
+        save: "保存",
+        delete: "削除",
+        back: "戻る",
+        retry: "再試行"
+    },
+    messages: {
+        locating_position: "位置を特定中...",
+        please_login: "編集するにはログインしてください。",
+        loading_hydrant: "消火栓 #{id} を読み込み中...",
+        saving_data: "保存中...",
+        deleting_data: "削除中...",
+        internal_error_reload: "内部エラー。リロードしてください。",
+        camera_error: "カメラエラー: {error}",
+        gps_update_failed: "GPSエラー: {error}",
+        no_osm_credentials: "OSM認証情報がありません。ログインしてください。",
+        to_settings: "設定へ",
+        uploading: "アップロード中...",
+        upload_successful: "アップロード成功！",
+        upload_wait: "アップロード中... ⏳",
+        node_id: "ノードID",
+        changeset: "変更セット",
+        upload_failed: "アップロード失敗",
+        verifying_login: "ログイン確認中...",
+        back_to_start: "スタートに戻る"
     }
 };

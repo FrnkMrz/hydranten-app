@@ -138,5 +138,37 @@ export default {
         number_placeholder: "예: 1234",
         notes_label: "메모",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "로딩 중...",
+        error: "오류",
+        success: "성공",
+        close: "닫기",
+        done: "완료",
+        cancel: "취소",
+        save: "저장",
+        delete: "삭제",
+        back: "뒤로",
+        retry: "재시도"
+    },
+    messages: {
+        locating_position: "위치 찾는 중...",
+        please_login: "편집하려면 로그인하세요.",
+        loading_hydrant: "소화전 #{id} 로딩 중...",
+        saving_data: "저장 중...",
+        deleting_data: "삭제 중...",
+        internal_error_reload: "내부 오류. 새로고침하세요.",
+        camera_error: "카메라 오류: {error}",
+        gps_update_failed: "GPS 오류: {error}",
+        no_osm_credentials: "OSM 자격 증명이 없습니다. 로그인하세요.",
+        to_settings: "설정으로",
+        uploading: "업로드 중...",
+        upload_successful: "업로드 성공!",
+        upload_wait: "업로드 중... ⏳",
+        node_id: "노드 ID",
+        changeset: "변경 세트",
+        upload_failed: "업로드 실패",
+        verifying_login: "로그인 확인 중...",
+        back_to_start: "시작으로 돌아가기"
     }
 };

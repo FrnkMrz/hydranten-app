@@ -138,5 +138,37 @@ export default {
         number_placeholder: "例如 1234",
         notes_label: "备注",
         notes_placeholder: "..."
+    },
+    general: {
+        loading: "加载中...",
+        error: "错误",
+        success: "成功",
+        close: "关闭",
+        done: "完成",
+        cancel: "取消",
+        save: "保存",
+        delete: "删除",
+        back: "返回",
+        retry: "重试"
+    },
+    messages: {
+        locating_position: "定位中...",
+        please_login: "请登录以编辑。",
+        loading_hydrant: "加载消火栓 #{id}...",
+        saving_data: "保存中...",
+        deleting_data: "删除中...",
+        internal_error_reload: "内部错误。请刷新。",
+        camera_error: "相机错误: {error}",
+        gps_update_failed: "GPS错误: {error}",
+        no_osm_credentials: "无OSM凭证。请先登录。",
+        to_settings: "前往设置",
+        uploading: "上传中...",
+        upload_successful: "上传成功！",
+        upload_wait: "上传中... ⏳",
+        node_id: "节点ID",
+        changeset: "变更集",
+        upload_failed: "上传失败",
+        verifying_login: "验证登录...",
+        back_to_start: "返回开始"
     }
 };
