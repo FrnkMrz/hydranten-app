@@ -678,7 +678,10 @@ function updateHydrants(map, onEdit) {
          const totalHydrants = filteredElements.length;
          if (totalHydrants > 0) {
             const editBtn = document.querySelector('#edit-mode-btn');
-            if (editBtn) editBtn.classList.remove('hidden');
+            const closeFsBtn = document.querySelector('#close-fullscreen-btn');
+            const isFullscreen = closeFsBtn && !closeFsBtn.classList.contains('hidden');
+
+            if (editBtn && !isFullscreen) editBtn.classList.remove('hidden');
          }
 
          // console.log(`Fetched ${elements.length}, Deleted ${elements.length - filteredElements.length + injectedCount}, Injected ${injectedCount} locals. Showing ${filteredElements.length}`);
