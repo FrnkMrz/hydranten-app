@@ -9,6 +9,7 @@ const c = {
 
 import { getAuthHeaderAsync } from './auth.js';
 import { USER_AGENT, CREATED_BY } from '../version.js';
+import { t } from './i18n.js';
 
 // XML Escaping Helper
 function escapeXml(str) {
@@ -65,8 +66,8 @@ function normalizeTags(tags) {
  * Reverse Geocoding Helper
  */
 async function getLocationName(lat, lng, log) {
-    log(c.info("Ermittle Standort-Namen (Nominatim)..."));
-    let locationStr = "Unbekannt";
+    log(c.info(t('upload_log.locating_nominatim')));
+    let locationStr = t('upload_log.unknown_location');
 
     try {
         const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
@@ -79,7 +80,7 @@ async function getLocationName(lat, lng, log) {
             const a = nomData.address || {};
 
             const zip = a.postcode || "";
-            const city = a.city || a.town || a.village || a.municipality || "Ort";
+            const city = a.city || a.town || a.village || a.municipality || t('upload_log.location_fallback');
             const street = a.road || a.pedestrian || a.footway || a.path || "";
 
             if (street && zip) {
@@ -94,7 +95,7 @@ async function getLocationName(lat, lng, log) {
 
             log(c.success(`Standort: ${locationStr} (${nomData.display_name})`));
         } else {
-            log(c.err("Nominatim Fehler: " + nomRes.status));
+            log(c.err(t('upload_log.nominatim_error').replace('{status}', nomRes.status)));
         }
     } catch (e) {
         log(c.err("Nominatim Exception: " + e.message));
@@ -114,7 +115,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
 
 
         // 2. Create Changeset
-        log(c.info("Erstelle Changeset..."));
+        log(c.info(t('upload_log.creating_changeset')));
 
         const changesetXml = `
 <osm>
@@ -139,7 +140,7 @@ export async function createHydrant(data, authHeader, log = console.log) {
 
 
         // 3. Create Node
-        log(c.info("Lade Hydranten hoch..."));
+        log(c.info(t('upload_log.uploading_hydrant')));
 
         let tagsXml = '';
         for (const [k, v] of Object.entries(finalTags)) {
@@ -255,7 +256,7 @@ export async function fetchNodeData(id) {
  */
 export async function updateHydrant(id, version, tags, lat, lng, log = console.log) {
     // 1. Create Changeset
-    log(c.info("Starte Update-Prozess..."));
+    log(c.info(t('upload_log.starting_update')));
 
     const finalTags = normalizeTags(tags);
 
@@ -309,12 +310,12 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
 
         if (!nodeRes.ok) {
             const errorText = await nodeRes.text();
-            if (nodeRes.status === 409) throw new Error("Konflikt! Jemand hat den Hydranten gerade bearbeitet. Bitte neu laden.");
+            if (nodeRes.status === 409) throw new Error(t('upload_log.update_conflict'));
             throw new Error(`Update Failed: ${nodeRes.status} ${errorText}`);
         }
 
         const newVersion = await nodeRes.text(); // Returns new version number
-        log(c.success(`Update Erfolgreich! (v${newVersion})`));
+        log(c.success(t('upload_log.update_success').replace('{version}', newVersion)));
 
         return { id, version: newVersion, changeset: changesetId };
 
@@ -337,7 +338,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
  */
 export async function deleteHydrant(id, version, lat, lng, tags = {}, log = console.log) {
     const typeName = getTypeName(tags);
-    log(c.info(`Lösche ${typeName} #${id}...`));
+    log(c.info(t('upload_log.deleting_node').replace('{type}', typeName).replace('{id}', id)));
 
     // Get Location
     const locationStr = await getLocationName(lat, lng, log);
@@ -382,13 +383,13 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
         });
 
         if (!delRes.ok) {
-            if (delRes.status === 409) throw new Error("Konflikt! Löschen fehlgeschlagen (Version mismatch?).");
-            if (delRes.status === 410) throw new Error("Bereits gelöscht.");
+            if (delRes.status === 409) throw new Error(t('upload_log.delete_conflict'));
+            if (delRes.status === 410) throw new Error(t('upload_log.already_deleted'));
             throw new Error(`Delete Failed: ${delRes.status} ${await delRes.text()}`);
         }
 
         const newVersion = await delRes.text();
-        log(c.success(`Gelöscht! (v${newVersion})`));
+        log(c.success(t('upload_log.delete_success') + ` (v${newVersion})`));
 
         // Optimistic UI: Remember deleted ID locally to hide it from map until Overpass catches up
         try {
@@ -409,5 +410,3 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
         log(c.info(`Changeset Closed`));
     }
 }
-
-// End of OSM Service

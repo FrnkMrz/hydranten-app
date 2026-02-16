@@ -52,19 +52,46 @@ export default {
         back_btn: "Back"
     },
     camera: {
-        permission: "Camera Access Required",
+        permission: "Camera access required",
         retake: "Retake",
         use_photo: "Use Photo",
-        back_btn_aria: "Back to Home",
-        capture_btn_aria: "Take Photo"
+        back_btn_aria: "Back to Camera",
+        back_btn_label: "Back",
+        capture_btn_aria: "Take Photo",
+        error_title: "Camera Unavailable",
+        error_access: "No Access",
+        compass_label: "COMPASS",
+        gps_searching: "GPS: Searching..."
     },
     error: {
-        load_failed: "Error loading",
-        node_deleted: "This hydrant no longer exists (data deleted).",
+        load_failed: "Load Failed",
+        node_deleted: "This hydrant no longer exists.",
         oops: "Oops!",
         back_to_map: "Back to Map",
-        gps_failed: "Location could not be determined. Check GPS settings.",
-        gps_unavailable: "GPS not available. Showing default map."
+        gps_failed: "Location could not be determined. Please check GPS settings.",
+        gps_unavailable: "GPS unavailable. Default map shown.",
+        edit_function_missing: "Internal Error: Edit function missing.",
+        network_error: "Load Failed (Network/API)",
+        back_unavailable: "Error: Back function unavailable."
+    },
+    legal: {
+        important_header: "⚠️ IMPORTANT:",
+        tmg_header: "Legal Information:"
+    },
+    upload_log: {
+        locating_nominatim: "Determining location name (Nominatim)...",
+        unknown_location: "Unknown",
+        location_fallback: "Place",
+        nominatim_error: "Nominatim Error: {status}",
+        creating_changeset: "Creating Changeset...",
+        uploading_hydrant: "Uploading Hydrant...",
+        starting_update: "Starting Update Process...",
+        update_conflict: "Conflict! Someone just edited this hydrant. Please reload.",
+        update_success: "Update Successful!",
+        deleting_node: "Deleting {type} #{id}...",
+        delete_conflict: "Conflict! Delete failed (Version mismatch?).",
+        already_deleted: "Already deleted.",
+        delete_success: "Deleted!"
     },
     confirm: {
         title: "Confirm Data",

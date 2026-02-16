@@ -52,17 +52,31 @@ console.log(`i18n: Language detected: ${currentLang}, RTL: ${currentLang === 'ar
  */
 export function t(key) {
     const keys = key.split('.');
-    let value = translations;
 
+    // 1. Try current language
+    let value = translations;
+    let found = true;
     for (const k of keys) {
-        if (value && value[k]) {
+        if (value && value[k] !== undefined) {
             value = value[k];
         } else {
-            console.warn(`i18n: Missing translation for ${key} in ${currentLang}`);
+            found = false;
+            break;
+        }
+    }
+    if (found) return value;
+
+    // 2. Fallback to English
+    let fallback = en;
+    for (const k of keys) {
+        if (fallback && fallback[k] !== undefined) {
+            fallback = fallback[k];
+        } else {
+            console.warn(`i18n: Missing translation for ${key} in ${currentLang} & EN`);
             return key;
         }
     }
-    return value;
+    return fallback;
 }
 
 export const lang = currentLang;

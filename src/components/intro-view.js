@@ -273,13 +273,13 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                      
                      <!-- Disclaimer Moved Here -->
                      <div class="bg-red-900/20 border border-red-500/30 p-3 rounded-xl text-red-200 text-xs mb-4">
-                         <strong>⚠️ WICHTIG:</strong><br>
+                         <strong>${t('legal.important_header')}</strong><br>
                          ${t('intro.disclaimer_text')}
                      </div>
                     
                     <div class="border-l-2 border-gray-600 pl-3 py-1">
                         <h4 class="font-bold text-white mb-1">${t('intro.info_impressum')}</h4>
-                        <p class="text-xs text-gray-400 mb-1">Angaben gemäß § 5 TMG:</p>
+                        <p class="text-xs text-gray-400 mb-1">${t('legal.tmg_header')}</p>
                         <p>Frank März</p>
                         <p>Kersbacher Weg 3</p>
                         <p>91220 Schnaittach</p>
@@ -408,7 +408,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    let userMarker = null; // Re-introduced
 
    if (mapContainer && !map) {
-      mapContainer.innerHTML = '<div class="flex h-full w-full items-center justify-center bg-gray-900 z-50 relative"><svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="ml-3 text-white font-medium">Standort wird ermittelt...</span></div>';
+      mapContainer.innerHTML = `<div class="flex h-full w-full items-center justify-center bg-gray-900 z-50 relative"><svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="ml-3 text-white font-medium">${t('general.loading')}</span></div>`;
 
       // Toast Helper
       const showToast = (msg, isError = false) => {
@@ -735,7 +735,7 @@ function updateHydrants(map, onEdit) {
                         console.error("onEdit is MISSING in click handler!");
                         import('../components/overlay.js').then(({ showMessageOverlay }) => {
                            const app = document.getElementById('app');
-                           showMessageOverlay(app, "Error", "Interner Fehler: Edit-Funktion fehlt.", 'error');
+                           showMessageOverlay(app, "Error", t('error.edit_function_missing'), 'error');
                         });
                      }
                      // Reset style handled by re-render usually, but let's be nice
@@ -754,7 +754,7 @@ function updateHydrants(map, onEdit) {
          if (mapContainer && mapContainer.parentNode) {
             const toast = document.createElement('div');
             toast.className = "absolute top-4 left-1/2 -translate-x-1/2 bg-red-600/90 backdrop-blur text-white px-4 py-2 rounded-full shadow-lg text-xs font-bold z-50 animate-fade-in pointer-events-none";
-            toast.innerText = "Laden fehlgeschlagen (Netzwerk/API)";
+            toast.innerText = t("error.network_error");
             mapContainer.parentNode.appendChild(toast);
             setTimeout(() => {
                toast.classList.add('opacity-0', 'transition-opacity', 'duration-500');

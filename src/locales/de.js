@@ -56,17 +56,44 @@ export default {
     camera: {
         permission: "Kamerazugriff erforderlich",
         retake: "Wiederholen",
-        use_photo: "Foto nutzen",
-        back_btn_aria: "Zurück zur Startseite",
-        capture_btn_aria: "Foto aufnehmen"
+        use_photo: "Nutzen",
+        back_btn_aria: "Zurück zur Kamera",
+        back_btn_label: "Zurück",
+        capture_btn_aria: "Foto aufnehmen",
+        error_title: "Kamera nicht verfügbar",
+        error_access: "Kein Zugriff",
+        compass_label: "KOMPASS",
+        gps_searching: "GPS: Suche..."
     },
     error: {
-        load_failed: "Fehler beim Laden",
-        node_deleted: "Dieser Hydrant existiert nicht mehr (wurde gelöscht).",
+        load_failed: "Laden fehlgeschlagen",
+        node_deleted: "Dieser Hydrant existiert nicht mehr.",
         oops: "Hoppla!",
         back_to_map: "Zurück zur Karte",
-        gps_failed: "Standort konnte nicht ermittelt werden. Überprüfe deine GPS-Einstellungen.",
-        gps_unavailable: "GPS nicht verfügbar. Zeige Standard-Karte."
+        gps_failed: "Standort konnte nicht ermittelt werden. Bitte GPS aktivieren.",
+        gps_unavailable: "GPS nicht verfügbar. Fallback-Karte wird angezeigt.",
+        edit_function_missing: "Interner Fehler: Edit-Funktion fehlt.",
+        network_error: "Laden fehlgeschlagen (Netzwerk/API)",
+        back_unavailable: "Fehler: Zurück-Funktion nicht verfügbar."
+    },
+    legal: {
+        important_header: "⚠️ WICHTIG:",
+        tmg_header: "Angaben gemäß § 5 TMG:"
+    },
+    upload_log: {
+        locating_nominatim: "Ermittle Standort-Namen (Nominatim)...",
+        unknown_location: "Unbekannt",
+        location_fallback: "Ort",
+        nominatim_error: "Nominatim Fehler: {status}",
+        creating_changeset: "Erstelle Changeset...",
+        uploading_hydrant: "Lade Hydranten hoch...",
+        starting_update: "Starte Update-Prozess...",
+        update_conflict: "Konflikt! Jemand hat den Hydranten gerade bearbeitet. Bitte neu laden.",
+        update_success: "Update Erfolgreich!",
+        deleting_node: "Lösche {type} #{id}...",
+        delete_conflict: "Konflikt! Löschen fehlgeschlagen (Version mismatch?).",
+        already_deleted: "Bereits gelöscht.",
+        delete_success: "Gelöscht!"
     },
     confirm: {
         title: "Daten prüfen",

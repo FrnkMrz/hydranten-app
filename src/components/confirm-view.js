@@ -55,7 +55,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           onRetake.back();
         } else {
           import('../components/overlay.js').then(({ showMessageOverlay }) => {
-            showMessageOverlay(element, t('general.error'), "Fehler: Zurück-Funktion nicht verfügbar.", 'error');
+            showMessageOverlay(element, t('general.error'), t('error.back_unavailable'), 'error');
           });
         }
       });
