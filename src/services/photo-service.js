@@ -1,4 +1,5 @@
 import piexif from 'piexifjs';
+import { USER_AGENT } from '../version.js';
 
 /**
  * Convert decimal degrees to GPS rational format (DMS - Degrees/Minutes/Seconds)
@@ -113,7 +114,7 @@ export async function generateFilename(location, tags = {}) {
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.lat}&lon=${location.lng}&zoom=18&addressdetails=1`,
             {
                 headers: {
-                    'User-Agent': 'Hydranten-Jaeger-App/1.3.3'
+                    'User-Agent': USER_AGENT
                 }
             }
         );
