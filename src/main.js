@@ -230,15 +230,28 @@ function handleEdit(nodeId) {
         { back: () => { showIntro(); } }, // OnBack (Cancel) -> Intro
         (data) => {
           // OnSubmit (Save)
-          // Use local updateHydrant reference
-          showOverlay(t('messages.saving_data').replace('...', ''), (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log));
+          import('./components/overlay.js').then(({ showProcessOverlay }) => {
+            showProcessOverlay(
+              app,
+              t('messages.saving_data'),
+              (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log),
+              { onClose: () => showIntro() }
+            );
+          });
         },
         true, // editMode
         nodeData, // initialData
         (id, version) => {
           // OnDelete
           if (deleteHydrant) {
-            showOverlay(t('messages.deleting_data').replace('...', ''), (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log));
+            import('./components/overlay.js').then(({ showProcessOverlay }) => {
+              showProcessOverlay(
+                app,
+                t('messages.deleting_data'),
+                (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log),
+                { onClose: () => showIntro() }
+              );
+            });
           } else {
             alert(t('messages.internal_error_reload'));
             console.error("deleteHydrant missing");
@@ -248,7 +261,7 @@ function handleEdit(nodeId) {
     })
     .catch(err => {
       console.error("Load Failed:", err);
-
+      // ... (Error handling code remains same)
       let msg = t('error.load_failed') + ": " + err.message;
       let autoClose = false;
 
@@ -358,101 +371,32 @@ function showConfirm() {
       }
 
       const btn = document.getElementById('submit-img-btn');
-      btn.innerHTML = `<span>${t('messages.uploading')}</span>`;
-      btn.disabled = true;
+      if (btn) {
+        btn.innerHTML = `<span>${t('messages.uploading')}</span>`;
+        btn.disabled = true;
+      }
 
-      // Real Upload Logic
-      // Create Overlay Immediately
-      const overlay = document.createElement('div');
-      overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/95 animate-fade-in px-6 text-center backdrop-blur-sm";
-      app.appendChild(overlay);
-
-      const renderOverlay = (statusLines, result = null) => {
-        const linesHtml = statusLines.map(line =>
-          `<div class="text-sm font-mono text-gray-400 border-l-2 border-gray-700 pl-3 py-1 text-left">${line}</div>`
-        ).join('');
-
-        let content = `
-           <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl">
-              <h2 class="text-xl font-bold text-white mb-4 flex items-center justify-center gap-2">
-                 ${result ? t('messages.upload_successful') : t('messages.upload_wait')}
-              </h2>
-              <div class="space-y-1 mb-6 max-h-40 overflow-y-auto">
-                 ${linesHtml}
-              </div>
-         `;
-
-        if (result) {
-          content += `
-               <div class="w-full bg-gray-800 rounded-lg p-3 mb-4 text-left space-y-2 border border-green-500/30">
-                  <div class="flex justify-between text-xs">
-                       <span class="text-gray-400">${t('messages.node_id')}</span>
-                       <span class="text-white font-mono font-bold">#${result.id}</span>
-                  </div>
-                   <div class="flex justify-between text-xs">
-                       <span class="text-gray-400">${t('messages.changeset')}</span>
-                       <span class="text-white font-mono">#${result.changeset}</span>
-                  </div>
-               </div>
-               <button id="success-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">
-                 ${t('general.done')}
-               </button>
-            `;
-        } else {
-          content += `
-               <div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-             `;
-        }
-        content += `</div>`;
-        overlay.innerHTML = content;
-
-        if (result) {
-          document.getElementById('success-close-btn').onclick = () => showIntro();
-          // setTimeout(() => showIntro(), 6000); // Removed auto-close
-        }
-      };
-
-      const logs = [];
-      const addLog = (msg) => {
-        logs.push(msg);
-        renderOverlay(logs);
-      };
-
+      // Real Upload Logic -> Use new Overlay
       import('./services/osm.js').then(({ createHydrant }) => {
-        createHydrant(data, {}, addLog)
-          .then((result) => {
-            renderOverlay(logs, result);
-            // Play Success Sound
-            import('./services/audio.js').then(({ playSuccessSound }) => playSuccessSound());
-          })
-          .catch(err => {
-            console.error("Upload Failed", err);
-
-            let content = `
-                   <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-red-500/50 rounded-2xl p-6 shadow-2xl">
-                      <h2 class="text-xl font-bold text-red-500 mb-4 flex items-center justify-center gap-2">
-                         ❌ ${t('messages.upload_failed')}
-                      </h2>
-                      <div class="space-y-1 mb-6 max-h-40 overflow-y-auto">
-                         ${logs.map(line => `<div class="text-sm font-mono text-gray-400 border-l-2 border-red-900 pl-3 py-1 text-left">${escapeHtml(line)}</div>`).join('')}
-                      </div>
-                      
-                      <div class="bg-red-900/20 text-red-200 p-3 rounded-lg text-xs font-mono mb-4 break-words custom-scrollbar overflow-auto max-h-32">
-                         ${escapeHtml(err.message || String(err))}
-                      </div>
-
-                      <button id="error-overlay-close" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition">
-                         ${t('general.close')}
-                      </button>
-                   </div>
-                `;
-            overlay.innerHTML = content;
-            document.getElementById('error-overlay-close').onclick = () => {
-              overlay.remove();
-              btn.innerHTML = `<span>${t('general.retry')}</span>`;
-              btn.disabled = false;
-            };
-          });
+        import('./components/overlay.js').then(({ showProcessOverlay }) => {
+          showProcessOverlay(
+            app,
+            t('messages.upload_wait'),
+            (log) => createHydrant(data, {}, log),
+            {
+              onClose: (result) => {
+                if (result) showIntro(); // Success -> Intro
+                else {
+                  // Error -> Re-enable button
+                  if (btn) {
+                    btn.innerHTML = `<span>${t('general.retry')}</span>`;
+                    btn.disabled = false;
+                  }
+                }
+              }
+            }
+          );
+        });
       });
     }
   );

@@ -1,7 +1,7 @@
 import { t } from '../../services/i18n.js';
 
 export function renderConfirmView() {
-    return `
+   return `
     <div class="h-full w-full bg-slate-900 text-white flex flex-col animate-fade-in pb-safe">
       <!-- Top: Map (Compact Hero 25%) -->
       <div class="relative w-full h-[25vh] bg-gray-800 shrink-0">
@@ -27,6 +27,11 @@ export function renderConfirmView() {
            <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white/90 border border-white/10 shadow-lg" id="geo-status-pill">
               GPS: ...
            </div>
+           
+           <button id="map-expand-btn" class="bg-black/40 backdrop-blur-md p-2 rounded-full text-white hover:bg-black/60 transition shadow-lg border border-white/10" aria-label="${t('confirm.expand_map_aria') || 'Karte vergrößern'}">
+              <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+           </button>
+
            <button id="gps-retry-btn" class="bg-blue-600/80 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-white shadow-lg active:scale-95 transition hidden" aria-label="${t('confirm.retry_gps_aria') || 'Retry GPS'}">
               🔄 GPS neu laden
            </button>
