@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hydranten-app-v5-beta';
+const CACHE_NAME = 'hydranten-app-v1.4.0';
 const ASSETS = [
     './',
     './index.html',

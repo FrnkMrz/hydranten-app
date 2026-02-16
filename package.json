@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm test && vite build",
+    "build": "npm run verify:version && npm test && vite build",
     "preview": "vite preview",
     "test": "npm run verify:i18n && vitest run",
     "test:watch": "vitest",
-    "verify:i18n": "node scripts/verify-i18n.js"
+    "verify:i18n": "node scripts/verify-i18n.js",
+    "verify:version": "node scripts/update-sw-version.js"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
