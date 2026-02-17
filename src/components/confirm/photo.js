@@ -41,7 +41,7 @@ export function initPhoto(element, imageBlob, location, editMode) {
             const saveBtn = zoomOverlay?.querySelector('#zoom-save-btn');
             if (saveBtn) {
                 saveBtn.disabled = true;
-                saveBtn.innerText = t('general.saving') || "Speichere...";
+                saveBtn.innerText = t('general.saving');
                 saveBtn.classList.add('opacity-50');
             }
 
@@ -72,8 +72,8 @@ export function initPhoto(element, imageBlob, location, editMode) {
                 if (navigator.canShare({ files: [file] })) {
                     await navigator.share({
                         files: [file],
-                        title: 'Hydrant Foto',
-                        text: 'Hydrant aufgenommen mit Hydranten Jäger'
+                        title: t('confirm.share_title') || 'Hydrant Foto',
+                        text: t('confirm.share_text') || 'Hydrant aufgenommen mit Hydranten Jäger'
                     });
 
                     // Success - close immediately
@@ -112,7 +112,7 @@ export function initPhoto(element, imageBlob, location, editMode) {
             const saveBtn = zoomOverlay?.querySelector('#zoom-save-btn');
             if (saveBtn) {
                 saveBtn.disabled = false;
-                saveBtn.innerText = "Fehler - Nochmal?";
+                saveBtn.innerText = t('general.error') + " - " + t('general.retry');
                 saveBtn.classList.remove('opacity-50');
             }
         }
@@ -127,10 +127,10 @@ export function initPhoto(element, imageBlob, location, editMode) {
           <img src="${blobUrl}" class="max-w-[90vw] max-h-[70vh] rounded-lg shadow-2xl object-contain mb-6" alt="${t('confirm.preview_alt') || 'Hydrant Photo'}" />
           <div class="flex gap-4">
             <button id="zoom-back-btn" class="px-8 py-3 bg-gray-700/80 backdrop-blur text-white rounded-xl font-semibold hover:bg-gray-600/80 active:scale-95 transition">
-              ${t('confirm.cancel_btn') || 'Zurück'}
+              ${t('confirm.cancel_btn')}
             </button>
             <button id="zoom-save-btn" class="px-8 py-3 bg-green-600/90 backdrop-blur text-white rounded-xl font-semibold hover:bg-green-500/90 active:scale-95 transition">
-              ${t('confirm.save_btn') || 'Speichern'}
+              ${t('confirm.save_btn')}
             </button>
           </div>
         `;

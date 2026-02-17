@@ -24,6 +24,13 @@ export const CONSTANTS = {
     TOAST_DURATION_MS: 4000,
     DEBOUNCE_WAIT_MS: 1000,
 
+    // Photo / Canvas
+    CANVAS_WIDTH: 640,
+    CANVAS_HEIGHT: 480,
+
+    // Geo Calc
+    OFFSET_DISTANCE_M: 3,
+
     // Colors (Tailwind references)
     COLOR_HYDRANT_RED: '#DC2626',
     COLOR_SUCTION_BLUE: '#2563EB',

@@ -78,10 +78,10 @@ async function showCamera() {
       // Mock capture if blob is null (from fallback button)
       if (!blob) {
         const canvas = document.createElement('canvas');
-        canvas.width = 640; canvas.height = 480;
+        canvas.width = CONSTANTS.CANVAS_WIDTH; canvas.height = CONSTANTS.CANVAS_HEIGHT;
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = '#ef4444'; // Red for hydrant
-        ctx.fillRect(0, 0, 640, 480);
+        ctx.fillRect(0, 0, CONSTANTS.CANVAS_WIDTH, CONSTANTS.CANVAS_HEIGHT);
         blob = await new Promise(r => canvas.toBlob(r));
       }
 
@@ -115,7 +115,7 @@ async function showCamera() {
       // Now we have a loc (flat object)
       try {
         const heading = loc.heading || getCurrentHeading() || 0;
-        const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, 3, heading);
+        const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, CONSTANTS.OFFSET_DISTANCE_M, heading);
 
         state.location = {
           lat: finalLoc.lat,
@@ -255,7 +255,9 @@ function handleEdit(nodeId) {
               );
             });
           } else {
-            alert(t('messages.internal_error_reload'));
+            import('./components/overlay.js').then(({ showMessageOverlay }) => {
+              showMessageOverlay(app, t('general.error'), t('messages.internal_error_reload'), 'error');
+            });
             console.error("deleteHydrant missing");
           }
         }

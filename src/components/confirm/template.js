@@ -11,7 +11,7 @@ export function renderConfirmView() {
 
         <!-- OVERLAY: Photo (Thumbnail - Smaller) -->
         <div class="absolute bottom-4 right-4 w-20 h-28 rounded-xl border-2 border-white/30 shadow-2xl overflow-hidden bg-black z-50 transition transform origin-bottom-right hover:scale-[2.5] active:scale-[2.5] cursor-pointer group">
-            <img id="preview-img" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" alt="${t('confirm.preview_alt') || 'Hydrant Preview'}" />
+            <img id="preview-img" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" alt="${t('confirm.preview_alt')}" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
         </div>
 
@@ -38,7 +38,7 @@ export function renderConfirmView() {
 
         <!-- Expand Button (Bottom Left) -->
         <div class="absolute bottom-4 left-4 z-50">
-           <button id="map-expand-btn" class="bg-black/40 backdrop-blur-md p-3 rounded-full text-white hover:bg-black/60 transition shadow-lg border border-white/10" aria-label="${t('confirm.expand_map_aria') || 'Karte vergrößern'}">
+                       <button id="map-expand-btn" class="bg-black/40 backdrop-blur-md p-3 rounded-full text-white hover:bg-black/60 transition shadow-lg border border-white/10" aria-label="${t('confirm.expand_map_aria')}">
               <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
            </button>
         </div>
@@ -48,7 +48,7 @@ export function renderConfirmView() {
       <div class="flex-grow overflow-y-auto px-4 pt-6 pb-48 space-y-8 bg-slate-900">
          
          <div class="relative mb-4 flex items-center justify-center gap-3">
-            <h2 id="confirm-title" class="text-2xl font-bold text-white">${t('confirm.title') || 'Neuer Hydrant'}</h2>
+            <h2 id="confirm-title" class="text-2xl font-bold text-white">${t('confirm.title')}</h2>
             
             <!-- Delete Button Container (injected via JS if edit mode) -->
             <!-- Delete Button Container REMOVED from header -->
@@ -137,10 +137,10 @@ export function renderConfirmView() {
 
                <!-- Water Source (NEW) -->
                <div>
-                  <label for="hydrant-water-source" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.water_source_label') || "Wasserquelle"}</label>
+                  <label for="hydrant-water-source" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.water_source_label')}</label>
                    <div class="relative">
                       <select id="hydrant-water-source" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none appearance-none">
-                        <option value="">${t('confirm.water_source_default') || "Leitungsnetz (Standard)"}</option>
+                        <option value="">${t('confirm.water_source_default')}</option>
                         <option value="main">Leitungsnetz</option>
                         <option value="groundwater">Grundwasser</option>
                         <option value="pond">Teich</option>

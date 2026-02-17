@@ -50,7 +50,7 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
                    ${escapeHtml(error.message || String(error))}
                 </div>
                 <button id="overlay-close-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition shadow-lg shadow-red-900/20 active:scale-95">
-                    ${t('general.close') || 'Schließen'}
+                    ${t('general.close')}
                 </button>
             `;
         } else if (result) {
@@ -73,7 +73,7 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
 
             content += `
                 <button id="overlay-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition border border-white/10 active:scale-95">
-                    ${t('general.done') || 'Fertig'}
+                    ${t('general.done')}
                 </button>
             `;
         } else {
@@ -146,8 +146,8 @@ function getHeaderIcon(result, error) {
 }
 
 function getHeaderText(title, result, error) {
-    if (error) return t('general.error') || 'Fehler';
-    if (result) return t('general.success') + '!' || 'Erfolg!';
+    if (error) return t('general.error');
+    if (result) return t('general.success') + '!';
     return title + '...';
 }
 
@@ -200,7 +200,7 @@ export function showMessageOverlay(parentElement, title, message, type = 'info',
             </div>
 
             <button id="msg-overlay-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition border border-white/10 active:scale-95">
-                ${t('general.close') || 'Schließen'}
+                ${t('general.close')}
             </button>
         </div>
     `;

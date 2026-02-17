@@ -74,7 +74,7 @@ export const auth = {
 
         if (serverState && localState && serverState !== localState) {
             console.error("State Mismatch!", { server: serverState, local: localState });
-            throw new Error("Security Alert: State mismatch! Möglicher CSRF Angriff.");
+            throw new Error("Security Alert: State mismatch! Possible CSRF Attack.");
         }
 
         // Verifier aus Storage holen
