@@ -84,6 +84,13 @@ describe('Auth Service', () => {
         await expect(auth.exchangeCode('code')).rejects.toThrow('Security Alert');
     });
 
+    it('rejects missing oauth state (fail-closed)', async () => {
+        localStorage.setItem('osm_auth_state', 'state-A');
+        window.location.search = `?code=code`; // Missing state param
+
+        await expect(auth.exchangeCode('code')).rejects.toThrow('Security Alert');
+    });
+
     it('checkLogin returns null on error', async () => {
         // Mock authenticated check to true
         localStorage.setItem('osm-auth', JSON.stringify({ access_token: 'abc' }));
