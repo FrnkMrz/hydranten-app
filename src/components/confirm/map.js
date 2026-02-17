@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { t } from '../../services/i18n.js';
+import { CONSTANTS } from '../../constants.js';
 
 // Fix Leaflet Icons
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -18,7 +19,7 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
     const mapContainer = element.querySelector('#map');
     if (!mapContainer) return;
 
-    const center = [location.lat || 48.137, location.lng || 11.576]; // Safe Access
+    const center = [location.lat || CONSTANTS.DEFAULT_LAT, location.lng || CONSTANTS.DEFAULT_LNG]; // Safe Access
 
     const map = L.map(mapContainer, {
         zoomControl: false,
@@ -28,11 +29,13 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
         scrollWheelZoom: true,
         boxZoom: false,
         keyboard: false
-    }).setView(center, 19);
+    }).setView(center, CONSTANTS.DEFAULT_ZOOM + 1); // 19
 
     // Max Bounds (approx +/- 0.002 degrees ~ 200 meters)
     // This prevents the user from "losing" the hydrant
-    const BOUND_OFFSET = 0.002;
+    const BOUND_OFFSET = CONSTANTS.OVERPASS_BOUND_PAD * 0.004; // Approx 0.002
+    // Actually best to stick to 0.002 as explicit small constraint for this view
+    // const BOUND_OFFSET = 0.002;
     map.setMaxBounds([
         [center[0] - BOUND_OFFSET, center[1] - BOUND_OFFSET], // SouthWest
         [center[0] + BOUND_OFFSET, center[1] + BOUND_OFFSET]  // NorthEast

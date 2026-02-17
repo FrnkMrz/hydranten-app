@@ -1,4 +1,5 @@
 // src/services/overpass.js
+import { CONSTANTS } from '../constants.js';
 
 // Liste bekannter, stabiler Overpass-Instanzen
 const SERVERS = [
@@ -18,7 +19,7 @@ async function fetchWithFallback(query, attempt = 0) {
     const server = SERVERS[attempt];
     // Timeout etwas reduziert pro Request für schnelleren Wechsel
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000);
+    const timeoutId = setTimeout(() => controller.abort(), 25000); // Global fetch timeout
 
     try {
         // console.log(`Versuche Server ${attempt + 1}/${SERVERS.length}: ${server}`);

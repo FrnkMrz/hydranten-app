@@ -9,6 +9,7 @@ import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition, s
 import { auth } from './services/auth.js';
 import { fetchNodeData, updateHydrant, deleteHydrant } from './services/osm.js';
 import { t } from './services/i18n.js';
+import { CONSTANTS } from './constants.js';
 
 // Security Helper
 function escapeHtml(text) {
@@ -97,7 +98,7 @@ async function showCamera() {
         // Try fresh position (3s timeout)
         loc = await Promise.race([
           getPosition(),
-          new Promise((_, r) => setTimeout(() => r(new Error('Timeout')), 3000))
+          new Promise((_, r) => setTimeout(() => r(new Error('Timeout')), CONSTANTS.GPS_TIMEOUT_MS))
         ]);
         // loc is { lat, lng, accuracy, heading } from geo.js
       } catch (e) {
@@ -107,7 +108,7 @@ async function showCamera() {
           loc = { ...last }; // lat, lng, accuracy, heading
         } else {
           // Absolute Fallback (Munich)
-          loc = { lat: 48.137, lng: 11.576, accuracy: 999, heading: 0 };
+          loc = { lat: CONSTANTS.DEFAULT_LAT, lng: CONSTANTS.DEFAULT_LNG, accuracy: 999, heading: 0 };
         }
       }
 
@@ -126,7 +127,7 @@ async function showCamera() {
         showConfirm();
       } catch (err) {
         console.error("Calculation Error", err);
-        state.location = { lat: 48.137, lng: 11.576, accuracy: 999 };
+        state.location = { lat: CONSTANTS.DEFAULT_LAT, lng: CONSTANTS.DEFAULT_LNG, accuracy: 999 };
         showConfirm();
       }
     });
@@ -387,7 +388,7 @@ function showConfirm() {
           showProcessOverlay(
             app,
             t('messages.upload_wait'),
-            (log) => createHydrant(data, {}, log),
+            (log) => createHydrant(data, log),
             {
               onClose: (result) => {
                 if (result) showIntro(); // Success -> Intro

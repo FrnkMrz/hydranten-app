@@ -89,6 +89,12 @@ Die App ist vollständig lokalisiert (15 Sprachen):
 
 ## 📋 Changelog
 
+### v1.4.1 (17.02.2026) - Refactoring & Testing
+*   **Refactoring**: `createHydrant` Function Clean-up (toter Parameter entfernt).
+*   **Refactoring**: `checkLogin` Error-Handling verbessert (keine "Error: 401" Namen mehr).
+*   **Refactoring**: Magic Numbers in `constants.js` ausgelagert.
+*   **Tests**: Unit-Tests für `auth`, `osm` und `overpass` Services hinzugefügt (Vitest).
+
 ### v1.4.1 (16.02.2026)
 *   **i18n**: Hardcodierte Strings in `main.js` durch `t()` Übersetzungsfunktionen ersetzt.
 *   **i18n**: Fehlende Übersetzungen für `general` und `messages` Sektionen in 13 Sprachen ergänzt.

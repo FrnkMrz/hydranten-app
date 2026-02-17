@@ -1,4 +1,5 @@
 import * as Geolib from 'geolib';
+import { CONSTANTS } from '../constants.js';
 
 // State for Compass
 let currentHeading = null;
@@ -84,8 +85,8 @@ export function startTracking() {
         },
         {
             enableHighAccuracy: true,
-            maximumAge: 10000,
-            timeout: 20000
+            maximumAge: CONSTANTS.GPS_MAX_AGE_MS,
+            timeout: 20000 // Watcher timeout slightly longer
         }
     );
 }
@@ -122,7 +123,7 @@ export function getLastKnownPosition() {
 
 export async function getPosition(forceFresh = false) {
     // Return cached position if fresh (< 20s old) and not forced
-    if (!forceFresh && lastPosition && (Date.now() - lastPosition.timestamp < 20000)) {
+    if (!forceFresh && lastPosition && (Date.now() - lastPosition.timestamp < (CONSTANTS.GPS_MAX_AGE_MS * 2))) {
         return lastPosition;
     }
 

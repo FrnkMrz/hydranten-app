@@ -103,7 +103,7 @@ async function getLocationName(lat, lng, log) {
     return locationStr;
 }
 
-export async function createHydrant(data, authHeader, log = console.log) {
+export async function createHydrant(data, log = console.log) {
     try {
         const { lat, lng, tags } = data;
 

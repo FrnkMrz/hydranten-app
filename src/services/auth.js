@@ -264,7 +264,9 @@ export async function checkLogin() {
         });
         if (!res.ok) {
             // If token expired, maybe logout? For now just return err
-            return "Error: " + res.status;
+            // If token expired, maybe logout? For now return null to indicate no valid user
+            console.error("User Details Fetch Failed:", res.status);
+            return null;
         }
         const text = await res.text();
         const parser = new DOMParser();
@@ -298,10 +300,11 @@ export async function checkLogin() {
 
             return name;
         }
-        return "XML Error";
+        return null;
     } catch (e) {
         // If offline but cached, return cached
         if (cached) return cached;
-        return "Error: " + e.message;
+        console.error("Check Login Error:", e);
+        return null;
     }
 }
