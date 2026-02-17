@@ -129,7 +129,7 @@ export function renderIntroView() {
          </div>
           
          <div class="mt-4 text-center">
-             <a href="https://www.openstreetmap.org/copyright" target="_blank" class="text-[10px] text-gray-600 hover:text-gray-400 transition no-underline block">
+             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-[10px] text-gray-600 hover:text-gray-400 transition no-underline block">
                 © OpenStreetMap contributors
              </a>
          </div>
@@ -295,7 +295,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 
                      <div>
                          <h4 class="font-bold text-white">${t('intro.info_license')}</h4>
-                         <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" class="text-blue-400 hover:text-blue-300 underline">© OpenStreetMap contributors</a>.</p>
+                         <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">© OpenStreetMap contributors</a>.</p>
                          <p>Code: MIT License</p>
                          
                          <p class="mt-3 text-xs font-bold text-gray-400">Map Tiles:</p>
@@ -305,7 +305,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                             Topo: Map style: © OpenTopoMap (CC-BY-SA)
                          </p>
 
-                         <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" class="text-blue-400 hover:text-blue-300 underline mt-2 block">
+                         <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline mt-2 block">
                              📂 ${t('intro.info_github')}
                          </a>
                      </div>

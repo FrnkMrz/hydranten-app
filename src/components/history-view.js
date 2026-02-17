@@ -72,7 +72,12 @@ async function loadHistory(container) {
     }
 
     const itemsHtml = changesets.map(cs => {
-      const id = cs.getAttribute('id');
+      let id = cs.getAttribute('id');
+      // Security: Validate ID is numeric to prevent injection
+      if (!/^\d+$/.test(id)) {
+        console.warn("Skipping invalid changeset ID:", id);
+        return ''; // Skip invalid items
+      }
       const date = new Date(cs.getAttribute('created_at')).toLocaleString();
       let comment = '(Kein Kommentar)';
       let createdBy = '';
@@ -88,7 +93,7 @@ async function loadHistory(container) {
       return `
                 <div class="p-4 rounded-xl border ${bgClass} text-sm">
                     <div class="flex justify-between mb-1">
-                        <a href="https://www.openstreetmap.org/changeset/${id}" target="_blank" class="font-bold text-blue-400 hover:text-blue-300 underline underline-offset-2">#${id} ↗</a>
+                        <a href="https://www.openstreetmap.org/changeset/${id}" target="_blank" rel="noopener noreferrer" class="font-bold text-blue-400 hover:text-blue-300 underline underline-offset-2">#${id} ↗</a>
                         <span class="text-gray-500 text-xs">${date}</span>
                     </div>
                     <div class="text-gray-200 break-words mb-2">

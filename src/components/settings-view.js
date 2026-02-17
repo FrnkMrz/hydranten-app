@@ -223,9 +223,9 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
 
                     <div>
                         <h4 class="font-bold text-white">${t('intro.info_license')}</h4>
-                        <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" class="text-blue-400 hover:text-blue-300 underline">© OpenStreetMap contributors</a>.</p>
+                        <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">© OpenStreetMap contributors</a>.</p>
                         <p>Code: MIT License</p>
-                        <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" class="text-blue-400 hover:text-blue-300 underline mt-1 block">
+                        <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline mt-1 block">
                             📂 ${t('intro.info_github')}
                         </a>
                     </div>
