@@ -9,10 +9,12 @@
     "preview": "vite preview",
     "test": "npm run verify:i18n && vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "verify:i18n": "node scripts/verify-i18n.js",
     "verify:version": "node scripts/update-sw-version.js"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@testing-library/dom": "^10.4.1",
     "autoprefixer": "^10.4.24",
