@@ -5,8 +5,8 @@
 Eine moderne, mobil-optimierte Progressive Web App (PWA) zum blitzschnellen Erfassen und Pflegen von Hydranten in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
-> **Status**: Version 1.4.1 (Stable Release)
-> *Features: Failover-System, Edit-Mode, Smart-Tags, Token-Refresh, Dark Mode, Map Layers.*
+> **Status**: Version 1.5.0 (Stable Release)
+> *Features: Security Hardened, Failover-System, Edit-Mode, Smart-Tags, Token-Refresh.*
 
 ## ✨ Features
 
@@ -25,6 +25,7 @@ Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 *   **Client-Side Only**: Kein Backend-Server. Deine Daten bleiben bei dir.
 *   **OAuth 2.0 (PKCE)**: Sicherer Login via OpenStreetMap ohne Passwort-Weitergabe.
 *   **Token-Refresh**: Automatische Erneuerung des OAuth-Tokens, damit du nicht erneut einloggen musst.
+*   **Secure Validation**: Strikte Validierung aller externen Inputs (XSS-Schutz) und sichere Links.
 *   **Overpass Failover**: Automatische Umschaltung auf Backup-Server (DE, Kumi, Mail.ru), falls die API überlastet ist.
 *   **Karten-Vielfalt**: Wähle zwischen **Standard**, **Satellit** und **Topo** Karten.
 
@@ -70,13 +71,14 @@ Die App übernimmt viel "Tagging-Arbeit" im Hintergrund:
 
 ---
 
-## 🏗️ Architektur (v1.4.1)
+## 🏗️ Architektur (v1.5.0)
 
 Die Codebasis ist modular aufgebaut:
 
 *   **Modulare Komponenten**: `confirm-view` ist in `template`, `map`, `form` und `photo` Module aufgeteilt.
 *   **Shared Overlay**: Wiederverwendbare Overlay-Komponente für Nachrichten und Fehleranzeigen (ersetzt native `alert()`).
 *   **i18n-System**: Alle UI-Strings sind externalisiert und über `t()` Funktion abrufbar.
+*   **Security First**: Umfassende XSS-Prävention, strikte CSP und OAuth-Härtung.
 *   **Automatisierte Versionierung**: Build-Script synchronisiert Version zwischen `package.json`, App und Service Worker.
 
 ---
@@ -89,7 +91,14 @@ Die App ist vollständig lokalisiert (15 Sprachen):
 
 ## 📋 Changelog
 
-### v1.4.1 (17.02.2026) - Refactoring & Testing
+### v1.5.0 (17.02.2026) - Security Hardened
+*   **Security**: DOM-XSS Findings (P1) behoben (Output Encoding in History & Intro).
+*   **Security**: OAuth State Validation (P2) auf "Fail-Closed" gehärtet.
+*   **Security**: Content Security Policy (P3) verschärft (kein `unsafe-inline` für Scripts).
+*   **Security**: Changeset-IDs validiert & externe Links (`noopener`) abgesichert.
+*   **Feature**: `escapeHTML` Utility für zentralen Schutz.
+
+### v1.4.1 (16.02.2026) - Refactoring & Testing
 *   **Refactoring**: `createHydrant` Function Clean-up (toter Parameter entfernt).
 *   **Refactoring**: `checkLogin` Error-Handling verbessert (keine "Error: 401" Namen mehr).
 *   **Refactoring**: Magic Numbers in `constants.js` ausgelagert.
