@@ -74,7 +74,7 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
         location.lat = position.lat;
         location.lng = position.lng;
         // Re-render pill text correctly
-        if (statusPill) statusPill.innerText = editMode ? t('confirm.position_moved') : `📍 ${t('confirm.position_moved') || 'Verschoben'}`;
+        // if (statusPill) statusPill.innerText = editMode ? t('confirm.position_moved') : `📍 ${t('confirm.position_moved') || 'Verschoben'}`;
 
         if (editMode && typeof checkChanges === 'function') checkChanges();
     });
@@ -91,13 +91,13 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
         location.lat = e.latlng.lat;
         location.lng = e.latlng.lng;
 
-        if (statusPill) statusPill.innerText = editMode ? t('confirm.position_moved') : `📍 ${t('confirm.position_moved') || 'Verschoben'}`;
+        // if (statusPill) statusPill.innerText = editMode ? t('confirm.position_moved') : `📍 ${t('confirm.position_moved') || 'Verschoben'}`;
         if (editMode && typeof checkChanges === 'function') checkChanges();
     });
 
     const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
     if (statusPill && !statusPill.innerText.includes('Verschoben')) {
-        statusPill.innerText = editMode ? t('confirm.fixed_map') : `GPS: ±${accuracy}m`;
+        // statusPill.innerText = editMode ? t('confirm.fixed_map') : `GPS: ±${accuracy}m`;
     }
 
     // Retry Button Logic
@@ -124,7 +124,7 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
                     map.setView([newLoc.lat, newLoc.lng], 19);
                     marker.setLatLng([newLoc.lat, newLoc.lng]);
 
-                    if (statusPill) statusPill.innerText = `GPS: ±${Math.round(newLoc.accuracy)}m`;
+                    // if (statusPill) statusPill.innerText = `GPS: ±${Math.round(newLoc.accuracy)}m`;
                     retryBtn.innerText = t('general.success') || "Geladen!";
                     setTimeout(() => retryBtn.classList.add('hidden'), 1500);
                 } else {

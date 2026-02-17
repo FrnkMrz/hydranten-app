@@ -24,9 +24,12 @@ export function renderConfirmView() {
 
         <!-- Accuracy Pill & Retry -->
         <div class="absolute right-4 z-50 flex flex-col items-end gap-2" style="top: calc(0.75rem + env(safe-area-inset-top, 20px));">
+           <!-- Accuracy Pill Removed -->
+           <!--
            <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white/90 border border-white/10 shadow-lg" id="geo-status-pill">
               GPS: ...
            </div>
+           -->
            
            <button id="gps-retry-btn" class="bg-blue-600/80 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-white shadow-lg active:scale-95 transition hidden" aria-label="${t('confirm.retry_gps_aria') || 'Retry GPS'}">
               🔄 GPS neu laden
