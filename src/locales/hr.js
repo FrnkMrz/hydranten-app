@@ -106,7 +106,11 @@ export default {
             wall: "Zidni",
             suction: "Usisno mjesto",
             cistern: "Cisterna / Spremnik",
-            dry_hydrant: "Suhi hidrant"
+            dry_hydrant: "Suhi hidrant",
+
+
+
+
         },
         locations: {
             sidewalk: "Nogostup",
@@ -138,6 +142,11 @@ export default {
         number_placeholder: "npr. 1234",
         notes_label: "BILJEŠKA",
         notes_placeholder: "..."
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "Učitavanje...",
@@ -149,7 +158,8 @@ export default {
         save: "Spremi",
         delete: "Obriši",
         back: "Natrag",
-        retry: "Pokušaj ponovo"
+        retry: "Pokušaj ponovo",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "Lociranje...",

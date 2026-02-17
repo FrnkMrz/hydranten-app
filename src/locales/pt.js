@@ -107,7 +107,11 @@ export default {
             suction: "Ponto de Sucção",
             cistern: "Cisterna",
             dry_hydrant: "Coluna seca",
-            none: "Nenhum"
+            none: "Nenhum",
+
+
+
+
         },
         diameter_label: "DIÂMETRO / TAMANHO",
         diameter_none: "Não especificado",
@@ -139,6 +143,10 @@ export default {
             parking: "Estacionamento",
             none: "Nenhum"
         },
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "A carregar...",
@@ -150,7 +158,8 @@ export default {
         save: "Guardar",
         delete: "Eliminar",
         back: "Voltar",
-        retry: "Tentar de novo"
+        retry: "Tentar de novo",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "A localizar...",

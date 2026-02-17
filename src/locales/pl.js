@@ -114,7 +114,11 @@ export default {
             // I will use standard fire fighting terms.
             dry_hydrant: "Suchy pion",
             cistern: "Zbiornik ppoż.",
-            suction: "Punkt czerpania"
+            suction: "Punkt czerpania",
+
+
+
+
         },
         locations: {
             sidewalk: "Chodnik",
@@ -146,6 +150,11 @@ export default {
         number_placeholder: "np. 1234",
         notes_label: "NOTATKA",
         notes_placeholder: "..."
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "Ładowanie...",
@@ -157,7 +166,8 @@ export default {
         save: "Zapisz",
         delete: "Usuń",
         back: "Wstecz",
-        retry: "Ponów"
+        retry: "Ponów",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "Ustalanie lokalizacji...",

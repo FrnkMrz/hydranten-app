@@ -107,7 +107,11 @@ export default {
             wall: "Nástěnný",
             suction: "Sací místo",
             cistern: "Cisterna",
-            dry_hydrant: "Suchovod"
+            dry_hydrant: "Suchovod",
+
+
+
+
         },
         diameter_label: "PRŮMĚR / VELIKOST",
         diameter_none: "Neuvedeno",
@@ -139,6 +143,11 @@ export default {
             parking: "Parkoviště",
             none: "Žádné"
         }
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "Načítání...",
@@ -150,7 +159,8 @@ export default {
         save: "Uložit",
         delete: "Smazat",
         back: "Zpět",
-        retry: "Zkusit znovu"
+        retry: "Zkusit znovu",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "Hledám pozici...",

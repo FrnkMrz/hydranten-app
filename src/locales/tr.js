@@ -108,7 +108,11 @@ export default {
             wall: "Duvar",
             suction: "Emme Noktası",
             cistern: "Sarnıç",
-            dry_hydrant: "Kuru Hidrant"
+            dry_hydrant: "Kuru Hidrant",
+
+
+
+
         },
         locations: {
             sidewalk: "Kaldırım",
@@ -140,6 +144,11 @@ export default {
         number_placeholder: "örn. 1234",
         notes_label: "NOT",
         notes_placeholder: "..."
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "Yükleniyor...",
@@ -151,7 +160,8 @@ export default {
         save: "Kaydet",
         delete: "Sil",
         back: "Geri",
-        retry: "Tekrar Dene"
+        retry: "Tekrar Dene",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "Konum belirleniyor...",

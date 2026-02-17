@@ -134,7 +134,9 @@ export default {
             wall: "Wandhydrant",
             suction: "Saugstelle",
             cistern: "Zisterne",
-            dry_hydrant: "Trockenhydrant"
+            dry_hydrant: "Trockenhydrant",
+
+
         },
         locations: {
             sidewalk: "Gehweg",
@@ -153,6 +155,8 @@ export default {
             white: "Weiß"
         },
         diameter_label: "DURCHMESSER / GRÖSSE",
+
+
         diameter_none: "Nicht angegeben",
         sign_label: "Hinweisschild für Unterflurhydrant",
         sign_options: {
@@ -165,6 +169,11 @@ export default {
         number_placeholder: "z.B. 1234",
         notes_label: "NOTIZ",
         notes_placeholder: "..."
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant aufgenommen mit Hydranten Jäger",
+        diameter_placeholder: "z.B. 80, 100",
+        volume_placeholder: "z.B. 100"
     },
     general: {
         loading: "Lade...",
@@ -176,7 +185,8 @@ export default {
         save: "Speichern",
         delete: "Löschen",
         back: "Zurück",
-        retry: "Erneut versuchen"
+        retry: "Erneut versuchen",
+        saving: "Speichere..."
     },
     messages: {
         locating_position: "Ermittle Position...",

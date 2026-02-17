@@ -105,7 +105,11 @@ export default {
             wall: "جداري",
             suction: "نقطة شفط",
             cistern: "خزان",
-            dry_hydrant: "صنبور جاف"
+            dry_hydrant: "صنبور جاف",
+
+
+
+
         },
         locations: {
             sidewalk: "رصيف",
@@ -135,6 +139,11 @@ export default {
         number_placeholder: "مثال 1234",
         notes_label: "ملاحظات",
         notes_placeholder: "..."
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "جار التحميل...",
@@ -146,7 +155,8 @@ export default {
         save: "حفظ",
         delete: "حذف",
         back: "رجوع",
-        retry: "إعادة المحاولة"
+        retry: "إعادة المحاولة",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "تحديد الموقع...",

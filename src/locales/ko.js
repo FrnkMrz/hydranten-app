@@ -106,7 +106,11 @@ export default {
             wall: "벽면형",
             suction: "흡수관",
             cistern: "저수조",
-            dry_hydrant: "건식 소화전"
+            dry_hydrant: "건식 소화전",
+
+
+
+
         },
         locations: {
             sidewalk: "보도",
@@ -138,6 +142,11 @@ export default {
         number_placeholder: "예: 1234",
         notes_label: "메모",
         notes_placeholder: "..."
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "로딩 중...",
@@ -149,7 +158,8 @@ export default {
         save: "저장",
         delete: "삭제",
         back: "뒤로",
-        retry: "재시도"
+        retry: "재시도",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "위치 찾는 중...",

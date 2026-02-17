@@ -108,7 +108,11 @@ export default {
             wall: "Mural",
             suction: "Point d'aspiration",
             cistern: "Citerne",
-            dry_hydrant: "Colonne sèche"
+            dry_hydrant: "Colonne sèche",
+
+
+
+
         },
         locations: {
             sidewalk: "Trottoir",
@@ -140,6 +144,11 @@ export default {
         number_placeholder: "ex. 1234",
         notes_label: "NOTE",
         notes_placeholder: "..."
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "Chargement...",
@@ -151,7 +160,8 @@ export default {
         save: "Enregistrer",
         delete: "Supprimer",
         back: "Retour",
-        retry: "Réessayer"
+        retry: "Réessayer",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "Localisation...",

@@ -31,7 +31,7 @@ export function renderConfirmView() {
            </div>
            -->
            
-           <button id="gps-retry-btn" class="bg-blue-600/80 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-white shadow-lg active:scale-95 transition hidden" aria-label="${t('confirm.retry_gps_aria') || 'Retry GPS'}">
+           <button id="gps-retry-btn" class="bg-blue-600/80 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-white shadow-lg active:scale-95 transition hidden" aria-label="${t('confirm.retry_gps_aria')}">
               🔄 GPS neu laden
            </button>
         </div>
@@ -71,16 +71,16 @@ export function renderConfirmView() {
              
              <!-- SIGN Container (Moved here for proximity) -->
              <div id="sign-container" class="hidden mt-2 border-t border-gray-800 pt-2 animate-fade-in">
-                 <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.sign_label') || 'Hinweisschild'}</label>
+                 <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.sign_label')}</label>
                  <div class="grid grid-cols-3 gap-2 bg-gray-800/50 p-1 rounded-xl">
                      <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="yes">
-                        ✅ ${t('confirm.sign_options.yes') || 'Ja'}
+                        ✅ ${t('confirm.sign_options.yes')}
                      </button>
                      <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="no">
-                        ❌ ${t('confirm.sign_options.no') || 'Nein'}
+                        ❌ ${t('confirm.sign_options.no')}
                      </button>
                      <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="unknown">
-                        ❓ ${t('confirm.sign_options.unknown') || 'Unbekannt'}
+                        ❓ ${t('confirm.sign_options.unknown')}
                      </button>
                  </div>
                  <input type="hidden" id="hydrant-sign" value="unknown">
@@ -94,7 +94,7 @@ export function renderConfirmView() {
              <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">${t('confirm.position_label')}</h3>
              <div class="grid grid-cols-5 gap-2 bg-gray-800/50 p-1 rounded-xl">
                  <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="">
-                    🚫 ${t('confirm.locations.none') || 'Keine'}
+                    🚫 ${t('confirm.locations.none')}
                  </button>
                 <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="sidewalk">
                    🚶 ${t('confirm.locations.sidewalk')}
@@ -119,12 +119,12 @@ export function renderConfirmView() {
              <div id="diameter-container">
                  <label for="hydrant-diameter" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.diameter_label')}</label>
                  <!-- Using type="tel" to trigger numeric keypad on mobile but avoid spinner arrows -->
-                 <input type="tel" inputmode="numeric" pattern="[0-9]*" id="hydrant-diameter" placeholder="z.B. 80, 100" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none appearance-none">
+                  <input type="tel" inputmode="numeric" pattern="[0-9]*" id="hydrant-diameter" placeholder="${t('confirm.diameter_placeholder')}" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none appearance-none">
              </div>
 
             <div id="volume-container" class="hidden">
                 <label for="hydrant-volume" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen (m³)</label>
-                <input type="text" id="hydrant-volume" placeholder="z.B. 100" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                <input type="text" id="hydrant-volume" placeholder="${t('confirm.volume_placeholder')}" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
             </div>
 
             <div class="space-y-4">
@@ -141,12 +141,12 @@ export function renderConfirmView() {
                    <div class="relative">
                       <select id="hydrant-water-source" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none appearance-none">
                         <option value="">${t('confirm.water_source_default')}</option>
-                        <option value="main">Leitungsnetz</option>
-                        <option value="groundwater">Grundwasser</option>
-                        <option value="pond">Teich</option>
-                        <option value="lake">See</option>
-                        <option value="river">Fluss</option>
-                        <option value="reservoir">Speicher/Becken</option>
+                        <option value="main">${t('confirm.water_source_main')}</option>
+                        <option value="groundwater">${t('confirm.water_source_groundwater')}</option>
+                        <option value="pond">${t('confirm.water_source_pond')}</option>
+                        <option value="lake">${t('confirm.water_source_lake')}</option>
+                        <option value="river">${t('confirm.water_source_river')}</option>
+                        <option value="reservoir">${t('confirm.water_source_reservoir')}</option>
                       </select>
                       <!-- Custom Arrow -->
                       <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">

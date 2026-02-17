@@ -106,7 +106,11 @@ export default {
             suction: "Zuigpunt",
             cistern: "Cisterne / Tank",
             dry_hydrant: "Droge blusleiding",
-            none: "Geen"
+            none: "Geen",
+
+
+
+
         },
         diameter_label: "DIAMETER / GROOTTE",
         diameter_none: "Niet gespecificeerd",
@@ -136,6 +140,11 @@ export default {
             parking: "Parkeerplaats",
             none: "Geen"
         }
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "Laden...",
@@ -147,7 +156,8 @@ export default {
         save: "Opslaan",
         delete: "Verwijderen",
         back: "Terug",
-        retry: "Opnieuw"
+        retry: "Opnieuw",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "Locatie bepalen...",

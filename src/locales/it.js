@@ -106,7 +106,11 @@ export default {
             wall: "Muro",
             suction: "Punto di aspirazione",
             cistern: "Cisterna / Serbatoio",
-            dry_hydrant: "Idrante Secco"
+            dry_hydrant: "Idrante Secco",
+
+
+
+
         },
         locations: {
             sidewalk: "Marciapiede",
@@ -138,6 +142,11 @@ export default {
         number_placeholder: "es. 1234",
         notes_label: "NOTA",
         notes_placeholder: "..."
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "Caricamento...",
@@ -149,7 +158,8 @@ export default {
         save: "Salva",
         delete: "Elimina",
         back: "Indietro",
-        retry: "Riprova"
+        retry: "Riprova",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "Localizzazione...",

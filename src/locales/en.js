@@ -132,7 +132,9 @@ export default {
             wall: "Wall Hydrant",
             suction: "Suction Point",
             cistern: "Cistern / Tank",
-            dry_hydrant: "Dry Hydrant"
+            dry_hydrant: "Dry Hydrant",
+
+
         },
         locations: {
             sidewalk: "Sidewalk",
@@ -151,6 +153,8 @@ export default {
             white: "White"
         },
         diameter_label: "DIAMETER / SIZE",
+
+
         diameter_none: "Not specified",
         sign_label: "Underground Hydrant Sign",
         sign_options: {
@@ -162,6 +166,11 @@ export default {
         number_placeholder: "e.g. 1234",
         notes_label: "NOTE",
         notes_placeholder: "..."
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "Loading...",
@@ -173,7 +182,8 @@ export default {
         save: "Save",
         delete: "Delete",
         back: "Back",
-        retry: "Retry"
+        retry: "Retry",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "Locating position...",

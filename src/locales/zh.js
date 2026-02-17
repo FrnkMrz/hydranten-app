@@ -106,7 +106,11 @@ export default {
             wall: "墙式",
             suction: "吸水口",
             cistern: "蓄水池",
-            dry_hydrant: "干式消火栓"
+            dry_hydrant: "干式消火栓",
+
+
+
+
         },
         locations: {
             sidewalk: "人行道",
@@ -138,6 +142,11 @@ export default {
         number_placeholder: "例如 1234",
         notes_label: "备注",
         notes_placeholder: "..."
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "加载中...",
@@ -149,7 +158,8 @@ export default {
         save: "保存",
         delete: "删除",
         back: "返回",
-        retry: "重试"
+        retry: "重试",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "定位中...",

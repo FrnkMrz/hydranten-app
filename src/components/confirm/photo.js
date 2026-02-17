@@ -72,8 +72,8 @@ export function initPhoto(element, imageBlob, location, editMode) {
                 if (navigator.canShare({ files: [file] })) {
                     await navigator.share({
                         files: [file],
-                        title: t('confirm.share_title') || 'Hydrant Foto',
-                        text: t('confirm.share_text') || 'Hydrant aufgenommen mit Hydranten Jäger'
+                        title: t('confirm.share_title'),
+                        text: t('confirm.share_text')
                     });
 
                     // Success - close immediately
@@ -124,7 +124,7 @@ export function initPhoto(element, imageBlob, location, editMode) {
         zoomOverlay = document.createElement('div');
         zoomOverlay.className = 'fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 animate-fade-in';
         zoomOverlay.innerHTML = `
-          <img src="${blobUrl}" class="max-w-[90vw] max-h-[70vh] rounded-lg shadow-2xl object-contain mb-6" alt="${t('confirm.preview_alt') || 'Hydrant Photo'}" />
+          <img src="${blobUrl}" class="max-w-[90vw] max-h-[70vh] rounded-lg shadow-2xl object-contain mb-6" alt="${t('confirm.preview_alt')}" />
           <div class="flex gap-4">
             <button id="zoom-back-btn" class="px-8 py-3 bg-gray-700/80 backdrop-blur text-white rounded-xl font-semibold hover:bg-gray-600/80 active:scale-95 transition">
               ${t('confirm.cancel_btn')}

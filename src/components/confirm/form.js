@@ -128,11 +128,11 @@ export function initFormLogic(element, location, editMode, initialData) {
         // Update UI
         if (submitBtn) {
             if (hasChanges) {
-                submitBtn.innerHTML = `<span>☁️ ${t('confirm.update_btn') || 'Update OSM'}</span>`;
+                submitBtn.innerHTML = `<span>☁️ ${t('confirm.update_btn')}</span>`;
                 submitBtn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
                 submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
             } else {
-                submitBtn.innerHTML = `<span>${t('confirm.back_btn_label') || "Zurück"}</span>`;
+                submitBtn.innerHTML = `<span>${t('confirm.back_btn_label')}</span>`;
                 submitBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
                 submitBtn.classList.add('bg-gray-700', 'hover:bg-gray-600');
             }
@@ -183,17 +183,17 @@ export function initFormLogic(element, location, editMode, initialData) {
 
         // Water Source Options
         if (sourceInput) {
-            let options = [{ value: "", label: t('confirm.water_source_default') || "Keine Angabe" }];
+            let options = [{ value: "", label: t('confirm.water_source_default') }];
 
             if (val === 'cistern') {
-                options.push({ value: "reservoir", label: t('confirm.water_source_reservoir') || "Speicher/Becken" });
+                options.push({ value: "reservoir", label: t('confirm.water_source_reservoir') });
             } else if (val === 'suction_point') {
-                options.push({ value: "groundwater", label: t('confirm.water_source_groundwater') || "Grundwasser" });
-                options.push({ value: "pond", label: t('confirm.water_source_pond') || "Teich" });
-                options.push({ value: "lake", label: t('confirm.water_source_lake') || "See" });
-                options.push({ value: "river", label: t('confirm.water_source_river') || "Fluss" });
+                options.push({ value: "groundwater", label: t('confirm.water_source_groundwater') });
+                options.push({ value: "pond", label: t('confirm.water_source_pond') });
+                options.push({ value: "lake", label: t('confirm.water_source_lake') });
+                options.push({ value: "river", label: t('confirm.water_source_river') });
             } else {
-                options.push({ value: "main", label: t('confirm.water_source_main') || "Leitungsnetz" });
+                options.push({ value: "main", label: t('confirm.water_source_main') });
             }
 
             const currentVal = sourceInput.value;

@@ -106,7 +106,11 @@ export default {
             wall: "壁面",
             suction: "採水口",
             cistern: "貯水槽",
-            dry_hydrant: "連結送水管"
+            dry_hydrant: "連結送水管",
+
+
+
+
         },
         locations: {
             sidewalk: "歩道",
@@ -138,6 +142,11 @@ export default {
         number_placeholder: "例: 1234",
         notes_label: "メモ",
         notes_placeholder: "..."
+    ,
+        share_title: "Hydranten Jäger",
+        share_text: "Hydrant captured with Hydranten Jäger",
+        diameter_placeholder: "e.g. 80, 100",
+        volume_placeholder: "e.g. 100"
     },
     general: {
         loading: "読み込み中...",
@@ -149,7 +158,8 @@ export default {
         save: "保存",
         delete: "削除",
         back: "戻る",
-        retry: "再試行"
+        retry: "再試行",
+        saving: "Saving..."
     },
     messages: {
         locating_position: "位置を特定中...",
