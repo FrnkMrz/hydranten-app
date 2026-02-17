@@ -1,6 +1,7 @@
 // src/components/history-view.js
 import { auth, checkLogin } from '../services/auth.js';
 import { t } from '../services/i18n.js';
+import { escapeHTML } from '../utils/security.js';
 
 export function renderHistoryView() {
   return `
@@ -91,10 +92,10 @@ async function loadHistory(container) {
                         <span class="text-gray-500 text-xs">${date}</span>
                     </div>
                     <div class="text-gray-200 break-words mb-2">
-                        ${comment}
+                        ${escapeHTML(comment)}
                     </div>
                     <div class="text-xs text-gray-600 font-mono truncate">
-                        ${createdBy}
+                        ${escapeHTML(createdBy)}
                     </div>
                 </div>
             `;

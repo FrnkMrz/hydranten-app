@@ -19,7 +19,7 @@ global.localStorage = localStorageMock;
 
 // Mock Window properties (location)
 delete window.location;
-window.location = { href: '', origin: 'http://localhost', pathname: '/' };
+window.location = { href: '', origin: 'http://localhost', pathname: '/', search: '' };
 Object.defineProperty(window, 'crypto', {
     value: {
         getRandomValues: (arr) => arr.fill(1),
@@ -31,15 +31,23 @@ describe('Auth Service', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         localStorage.clear();
+        window.location.search = '';
     });
 
     it('generates login URL and redirects', async () => {
         await auth.login();
         expect(localStorage.setItem).toHaveBeenCalledWith('osm_pkce_verifier', expect.any(String));
+        // Also checks that state is set
+        expect(localStorage.setItem).toHaveBeenCalledWith('osm_auth_state', expect.any(String));
         expect(window.location.href).toContain('openstreetmap.org/oauth2/authorize');
     });
 
     it('exchanges code for token successfully', async () => {
+        // Setup State
+        const STATE = 'valid-state';
+        localStorage.setItem('osm_auth_state', STATE);
+        window.location.search = `?code=test-code&state=${STATE}`;
+
         // Setup Mock Response
         fetch.mockResolvedValueOnce({
             ok: true,
@@ -53,7 +61,12 @@ describe('Auth Service', () => {
         expect(localStorage.setItem).toHaveBeenCalledWith('osm-auth', expect.stringContaining('test-token'));
     });
 
-    it('handles token exchange failure', async () => {
+    it('handles token exchange failure (server error)', async () => {
+        // Setup State
+        const STATE = 'valid-state';
+        localStorage.setItem('osm_auth_state', STATE);
+        window.location.search = `?code=bad-code&state=${STATE}`;
+
         fetch.mockResolvedValueOnce({
             ok: false,
             status: 400,
@@ -64,15 +77,26 @@ describe('Auth Service', () => {
         await expect(auth.exchangeCode('bad-code')).rejects.toThrow('Token Exchange Failed (400)');
     });
 
+    it('handles state mismatch', async () => {
+        localStorage.setItem('osm_auth_state', 'state-A');
+        window.location.search = `?code=code&state=state-B`; // Mismatch
+
+        await expect(auth.exchangeCode('code')).rejects.toThrow('Security Alert');
+    });
+
     it('checkLogin returns null on error', async () => {
         // Mock authenticated check to true
         localStorage.setItem('osm-auth', JSON.stringify({ access_token: 'abc' }));
 
-        // Mock User Details fetch failing
-        fetch.mockResolvedValueOnce({ ok: false, status: 500 });
+        // Mock User Details fetch failing (make sure text() exists even if logic doesn't call it on 500, but better safe)
+        fetch.mockResolvedValueOnce({
+            ok: false,
+            status: 500,
+            text: async () => "Error"
+        });
 
         const result = await checkLogin();
-        expect(result).toBeNull(); // Should be null, not "Error: 500"
+        expect(result).toBeNull();
     });
 
     it('checkLogin parses user details correctly', async () => {

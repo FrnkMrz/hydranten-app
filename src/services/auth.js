@@ -72,9 +72,10 @@ export const auth = {
         const serverState = params.get('state');
         const localState = localStorage.getItem('osm_auth_state');
 
-        if (serverState && localState && serverState !== localState) {
-            console.error("State Mismatch!", { server: serverState, local: localState });
-            throw new Error("Security Alert: State mismatch! Possible CSRF Attack.");
+        // Fail-Closed: State MUST be present and match
+        if (!serverState || !localState || serverState !== localState) {
+            console.error("State Validation Failed!", { server: serverState, local: localState });
+            throw new Error("Security Alert: OAuth State mismatch or missing! Possible CSRF Attack.");
         }
 
         // Verifier aus Storage holen

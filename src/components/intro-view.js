@@ -20,6 +20,7 @@ const visibleHydrants = new Set();
 let hydrantLayer = null;
 
 import { t, lang, setLanguage } from '../services/i18n.js';
+import { escapeHTML } from '../utils/security.js';
 import { APP_VERSION } from '../version.js';
 
 export function renderIntroView() {
@@ -33,11 +34,8 @@ export function renderIntroView() {
          let name = localStorage.getItem('osm_user_name') || t('intro.login_connected');
 
          // Security: Escape HTML special chars to prevent XSS from usernames
-         name = name.replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+         // Security: Escape HTML special chars to prevent XSS from usernames
+         name = escapeHTML(name);
 
          const img = localStorage.getItem('osm_user_img');
          // We trust img URL as it is validated by browser when setting src, 
@@ -45,7 +43,7 @@ export function renderIntroView() {
 
          if (img) {
             // Show Avatar
-            loginText = `<img src="${img}" class="w-6 h-6 rounded-full border border-green-400" alt="${name}"> <span class="truncate max-w-[100px]">${name}</span>`;
+            loginText = `<img src="${escapeHTML(img)}" class="w-6 h-6 rounded-full border border-green-400" alt="${name}"> <span class="truncate max-w-[100px]">${name}</span>`;
          } else {
             loginText = `✅ ${name}`;
          }
