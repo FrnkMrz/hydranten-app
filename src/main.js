@@ -5,7 +5,7 @@ import { renderSettingsView, initSettingsView } from './components/settings-view
 import { renderIntroView, initIntroView } from './components/intro-view.js';
 import { renderHistoryView, initHistoryView } from './components/history-view.js';
 import { renderRankListView, initRankListView } from './components/rank-list-view.js';
-import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition, startTracking, getLastKnownPosition } from './services/geo.js';
+import { getPosition, getCurrentHeading, calculateOffsetPosition, getLastKnownPosition } from './services/geo.js';
 import { auth } from './services/auth.js';
 import { updateHydrant } from './services/osm.js';
 import { t } from './services/i18n.js';
@@ -24,8 +24,9 @@ function escapeHtml(text) {
 
 // Init Compass & GPS Tracking early
 // Init Compass & GPS Tracking (Moved to Start/Camera)
-// initCompass();
-// startTracking();
+import { initCompass, stopCompass, startTracking, stopTracking } from './services/geo.js';
+// initCompass(); // Managed per view now
+// startTracking() is now managed per view
 
 const app = document.querySelector('#app');
 
@@ -60,7 +61,23 @@ function switchView(viewName, renderFn, initFn) {
   }
 }
 
+// Global Visibility Handler to save battery
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopTracking();
+    stopCompass();
+  } else {
+    // Resume tracking only if we are in a view that needs it
+    if (state.view === 'camera' || state.view === 'confirm') {
+      startTracking();
+      initCompass();
+    }
+  }
+});
+
 function showIntro() {
+  stopTracking(); // Save Battery
+  stopCompass();
   switchView('intro', renderIntroView, () =>
     initIntroView(app,
       () => showCamera(),
@@ -71,6 +88,8 @@ function showIntro() {
 }
 
 async function showCamera() {
+  startTracking(); // Need High Accuracy
+  initCompass();
   // Manual switch because async init is special
   if (currentCleanup) { currentCleanup(); currentCleanup = null; }
   state.view = 'camera';
@@ -155,6 +174,9 @@ async function showCamera() {
 
 // New: Edit Mode Handler (Delegated)
 function handleEdit(nodeId) {
+  stopTracking(); // Not needed for edit? Actually maybe yes for distance to target?
+  stopCompass();
+  // But let's save battery for now as we edit a fixed node.
   import('./controllers/edit-controller.js').then(({ handleEdit }) => {
     handleEdit(nodeId, app, {
       showSettings: () => showSettings(),
@@ -167,18 +189,24 @@ function handleEdit(nodeId) {
 
 
 function showHistory() {
+  stopTracking();
+  stopCompass();
   state.view = 'history';
   app.innerHTML = renderHistoryView();
   initHistoryView(app, () => showSettings());
 }
 
 function showRankList(count) {
+  stopTracking();
+  stopCompass();
   state.view = 'rank-list';
   app.innerHTML = renderRankListView();
   initRankListView(app, () => showSettings(), count);
 }
 
 function showSettings() {
+  stopTracking();
+  stopCompass();
   state.view = 'settings';
   app.innerHTML = renderSettingsView();
   initSettingsView(app,
@@ -189,6 +217,8 @@ function showSettings() {
 }
 
 function showConfirm() {
+  startTracking(); // Keep tracking for updates
+  initCompass();
   state.view = 'confirm';
   app.innerHTML = renderConfirmView();
   initConfirmView(app, state.capturedBlob, state.location,

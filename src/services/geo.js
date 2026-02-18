@@ -4,13 +4,18 @@ import { CONSTANTS } from '../constants.js';
 // State for Compass
 let currentHeading = null;
 
+// Compass Handlers Reference
+let compassHandler = null;
+let compassHandlerFallback = null;
+
 // Initialize Compass Listener
 export function initCompass() {
+    if (compassHandler) return; // Already active
+
     if (window.DeviceOrientationEvent) {
-        window.addEventListener('deviceorientationabsolute', (event) => {
+        compassHandler = (event) => {
             // Android/Chrome support 'deviceorientationabsolute'
             // Low Pass Filter (Smoothing)
-            // alpha = 0.1 (Heavy smoothing), 1.0 (No smoothing)
             const alpha = 0.15;
             let rawHeading = 0;
 
@@ -33,17 +38,35 @@ export function initCompass() {
                 if (currentHeading < 0) currentHeading += 360;
                 if (currentHeading >= 360) currentHeading -= 360;
             }
-        });
+        };
 
-        // Fallback for standard event (often relative, but better than nothing)
-        window.addEventListener('deviceorientation', (event) => {
+        compassHandlerFallback = (event) => {
             if (event.webkitCompassHeading) {
                 currentHeading = event.webkitCompassHeading;
             } else if (!currentHeading && event.alpha) {
                 // Only use relative alpha if absolute failed
                 currentHeading = 360 - event.alpha;
             }
-        });
+        };
+
+        window.addEventListener('deviceorientationabsolute', compassHandler);
+        // Fallback for standard event
+        window.addEventListener('deviceorientation', compassHandlerFallback);
+        console.log("Compass Tracking started.");
+    }
+}
+
+export function stopCompass() {
+    if (window.DeviceOrientationEvent) {
+        if (compassHandler) {
+            window.removeEventListener('deviceorientationabsolute', compassHandler);
+            compassHandler = null;
+        }
+        if (compassHandlerFallback) {
+            window.removeEventListener('deviceorientation', compassHandlerFallback);
+            compassHandlerFallback = null;
+        }
+        console.log("Compass Tracking stopped (Battery saved).");
     }
 }
 
@@ -89,6 +112,15 @@ export function startTracking() {
             timeout: 20000 // Watcher timeout slightly longer
         }
     );
+    console.log("GPS Tracking started.");
+}
+
+export function stopTracking() {
+    if (watcherId) {
+        navigator.geolocation.clearWatch(watcherId);
+        watcherId = null;
+        console.log("GPS Tracking stopped (Battery saved).");
+    }
 }
 
 export function updatePosition(pos) {
