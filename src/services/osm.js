@@ -410,3 +410,40 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
         log(c.info(`Changeset Closed`));
     }
 }
+
+/**
+ * Fetch latest changesets for a user
+ * @param {string} username 
+ * @returns {Promise<Array>} List of changeset objects
+ */
+export async function fetchUserChangesets(username) {
+    const url = `https://api.openstreetmap.org/api/0.6/changesets?display_name=${encodeURIComponent(username)}&limit=10&closed=true`;
+    console.log("[OSM] Fetching History:", url);
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`API Error: ${res.status}`);
+
+    const text = await res.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, "text/xml");
+    const changesets = Array.from(xml.querySelectorAll('changeset'));
+
+    return changesets.map(cs => {
+        const id = cs.getAttribute('id');
+        const createdAt = cs.getAttribute('created_at');
+        let comment = '';
+        let createdBy = '';
+
+        cs.querySelectorAll('tag').forEach(t => {
+            if (t.getAttribute('k') === 'comment') comment = t.getAttribute('v');
+            if (t.getAttribute('k') === 'created_by') createdBy = t.getAttribute('v');
+        });
+
+        return {
+            id,
+            createdAt,
+            comment,
+            createdBy
+        };
+    });
+}

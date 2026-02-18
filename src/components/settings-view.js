@@ -1,8 +1,8 @@
 import { auth, checkLogin } from '../services/auth.js';
 import { t } from '../services/i18n.js';
 import { APP_VERSION, APP_NAME } from '../version.js';
-import { getRank, fetchUserHydrantCount } from '../services/gamification.js';
-import { getRankBadgeSVG } from '../services/rank-graphics.js';
+import { initMapStyleControls } from '../controllers/map-style-controller.js';
+import { initGamificationWidget } from '../controllers/gamification-controller.js';
 
 export function renderSettingsView() {
   // Check Login Status for Dynamic UI
@@ -136,7 +136,6 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
   element.querySelector('#back-btn').onclick = onBack;
 
   const loginBtn = element.querySelector('#login-btn');
-  // Note: logout-btn is now a container div
   const logoutContainer = element.querySelector('#logout-btn');
   const logoutBtn = element.querySelector('#real-logout-btn');
   const historyBtn = element.querySelector('#history-btn');
@@ -150,13 +149,17 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
     console.log("[Settings]", msg);
   };
 
-  // --- EVENT LISTENERS (Define FIRST to ensure they are attached) ---
+  // --- CONTROLLER INIT ---
+  // 1. Map Style Logic (Extracted)
+  initMapStyleControls(element);
+
+  // --- EVENT LISTENERS ---
 
   if (historyBtn) {
     historyBtn.onclick = onHistory;
   }
 
-  // LOGIN HANDLER: Use Custom Auth
+  // LOGIN HANDLER
   if (loginBtn) {
     loginBtn.onclick = () => {
       log("Starting Login...");
@@ -186,7 +189,7 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
         showConfirmOverlay(
           element,
           t('settings.app_reset'),
-          t('settings.reset_btn') + "? " + t('messages.no_undo'), // Add warning text if available or just reuse title
+          t('settings.reset_btn') + "? " + t('messages.no_undo'), // warning text
           () => {
             // Yes
             auth.logout();
@@ -249,34 +252,6 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
     };
   }
 
-  // Map Style Logic
-  const mapStyleBtns = element.querySelectorAll('.map-style-btn');
-  const updateMapStyleUI = () => {
-    const currentStyle = localStorage.getItem('map_style') || 'osm';
-    mapStyleBtns.forEach(btn => {
-      if (btn.dataset.style === currentStyle) {
-        btn.classList.add('bg-blue-600/30', 'border-blue-400', 'shadow-lg');
-        btn.classList.remove('bg-white/5', 'border-white/10');
-      } else {
-        btn.classList.remove('bg-blue-600/30', 'border-blue-400', 'shadow-lg');
-        btn.classList.add('bg-white/5', 'border-white/10');
-      }
-    });
-  };
-
-  mapStyleBtns.forEach(btn => {
-    btn.onclick = () => {
-      const style = btn.dataset.style;
-      try {
-        localStorage.setItem('map_style', style);
-      } catch (e) { console.warn("Storage Full", e); }
-      updateMapStyleUI();
-      // Optional: Show toast feedback
-      // But visual active state is usually enough
-    };
-  });
-  updateMapStyleUI(); // Init State
-
   const updateUI = (username) => {
     if (username) {
       statusDiv.classList.remove('hidden');
@@ -326,49 +301,8 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
     const renderUserLogic = (name) => {
       updateUI(name || "Eingeloggt");
 
-      // Fetch & Show Gamification
-      if (name && !name.startsWith("Error")) {
-        const gameContainer = element.querySelector('#gamification-container');
-        const rankBadge = element.querySelector('#rank-badge');
-        const rankName = element.querySelector('#rank-name');
-        const rankProgress = element.querySelector('#rank-progress');
-        const rankCurrent = element.querySelector('#rank-current-count');
-        const rankNext = element.querySelector('#rank-next-count');
-        const rankMsg = element.querySelector('#rank-message');
-
-        if (gameContainer) {
-          // gameContainer.classList.remove('hidden'); // MOVED INSIDE
-          fetchUserHydrantCount(name).then(count => {
-            const rank = getRank(count);
-            rankName.innerText = rank.current.name;
-            rankCurrent.innerText = count;
-            if (rank.next) {
-              rankNext.innerText = rank.next.min;
-              const pct = Math.min(100, Math.max(0, rank.progress * 100));
-              rankProgress.style.width = `${pct}%`;
-              // Localized message: "Noch {count} bis zum {rank}!"
-              // We pass the German Rank Name as a variable, so it stays German in all languages.
-              rankMsg.innerText = t('gamification.rank_progress')
-                .replace('{count}', rank.needed)
-                .replace('{rank}', rank.next.name);
-            } else {
-              rankNext.innerText = "MAX";
-              rankProgress.style.width = '100%';
-              rankMsg.innerText = t('gamification.rank_max');
-            }
-            const svg = getRankBadgeSVG(rank.current.id);
-            rankBadge.innerHTML = svg.replace('width="64"', 'width="100%"').replace('height="64"', 'height="100%"');
-
-            // Show Container NOW
-            gameContainer.classList.remove('hidden');
-
-            if (onShowRankList && gameContainer) {
-              gameContainer.style.cursor = 'pointer';
-              gameContainer.onclick = () => onShowRankList(count);
-            }
-          }).catch(console.error);
-        }
-      }
+      // 2. Gamification Logic (Extracted)
+      initGamificationWidget(element, name, onShowRankList);
     };
 
     // 1. Cache
@@ -384,12 +318,13 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
   } else {
     updateUI(null);
   }
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+

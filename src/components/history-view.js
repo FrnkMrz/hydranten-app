@@ -1,5 +1,5 @@
-// src/components/history-view.js
 import { auth, checkLogin } from '../services/auth.js';
+import { fetchUserChangesets } from '../services/osm.js';
 import { t } from '../services/i18n.js';
 import { escapeHTML } from '../utils/security.js';
 
@@ -53,18 +53,8 @@ async function loadHistory(container) {
       return;
     }
 
-    // Fetch Changesets (Local Implementation to avoid touching osm.js)
-    const url = `https://api.openstreetmap.org/api/0.6/changesets?display_name=${encodeURIComponent(username)}&limit=10&closed=true`;
-    console.log("[History] Fetching:", url);
-
-    const res = await fetch(url); // Public data, auth header not strictly needed for reading public changesets usually
-
-    if (!res.ok) throw new Error(`API Error: ${res.status}`);
-
-    const text = await res.text();
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, "text/xml");
-    const changesets = Array.from(xml.querySelectorAll('changeset'));
+    // Fetch from Service
+    const changesets = await fetchUserChangesets(username);
 
     if (changesets.length === 0) {
       container.innerHTML = `<div class="text-gray-500 text-center">${t('history.no_data')}</div>`;
@@ -72,35 +62,28 @@ async function loadHistory(container) {
     }
 
     const itemsHtml = changesets.map(cs => {
-      let id = cs.getAttribute('id');
-      // Security: Validate ID is numeric to prevent injection
-      if (!/^\d+$/.test(id)) {
-        console.warn("Skipping invalid changeset ID:", id);
-        return ''; // Skip invalid items
+      // Security: Validate ID is numeric
+      if (!/^\d+$/.test(cs.id)) {
+        console.warn("Skipping invalid changeset ID:", cs.id);
+        return '';
       }
-      const date = new Date(cs.getAttribute('created_at')).toLocaleString();
-      let comment = '(Kein Kommentar)';
-      let createdBy = '';
 
-      cs.querySelectorAll('tag').forEach(t => {
-        if (t.getAttribute('k') === 'comment') comment = t.getAttribute('v');
-        if (t.getAttribute('k') === 'created_by') createdBy = t.getAttribute('v');
-      });
-
-      const isMyApp = createdBy.includes('Hydranten');
+      const date = new Date(cs.createdAt).toLocaleString();
+      const comment = cs.comment || '(Kein Kommentar)';
+      const isMyApp = (cs.createdBy || '').includes('Hydranten');
       const bgClass = isMyApp ? 'bg-blue-900/20 border-blue-500/30' : 'bg-gray-800/50 border-gray-700';
 
       return `
                 <div class="p-4 rounded-xl border ${bgClass} text-sm">
                     <div class="flex justify-between mb-1">
-                        <a href="https://www.openstreetmap.org/changeset/${id}" target="_blank" rel="noopener noreferrer" class="font-bold text-blue-400 hover:text-blue-300 underline underline-offset-2">#${id} ↗</a>
+                        <a href="https://www.openstreetmap.org/changeset/${cs.id}" target="_blank" rel="noopener noreferrer" class="font-bold text-blue-400 hover:text-blue-300 underline underline-offset-2">#${cs.id} ↗</a>
                         <span class="text-gray-500 text-xs">${date}</span>
                     </div>
                     <div class="text-gray-200 break-words mb-2">
                         ${escapeHTML(comment)}
                     </div>
                     <div class="text-xs text-gray-600 font-mono truncate">
-                        ${escapeHTML(createdBy)}
+                        ${escapeHTML(cs.createdBy || '')}
                     </div>
                 </div>
             `;
@@ -113,3 +96,4 @@ async function loadHistory(container) {
     container.innerHTML = `<div class="text-red-400 text-center p-4">${t('history.error')}<br>${err.message}</div>`;
   }
 }
+
