@@ -7,7 +7,7 @@ import { renderHistoryView, initHistoryView } from './components/history-view.js
 import { renderRankListView, initRankListView } from './components/rank-list-view.js';
 import { getPosition, initCompass, getCurrentHeading, calculateOffsetPosition, startTracking, getLastKnownPosition } from './services/geo.js';
 import { auth } from './services/auth.js';
-import { fetchNodeData, updateHydrant, deleteHydrant } from './services/osm.js';
+import { updateHydrant } from './services/osm.js';
 import { t } from './services/i18n.js';
 import { CONSTANTS } from './constants.js';
 
@@ -149,186 +149,14 @@ async function showCamera() {
   }
 }
 
-// New: Edit Mode Handler
+// New: Edit Mode Handler (Delegated)
 function handleEdit(nodeId) {
-  if (!auth.authenticated()) {
-    import('./components/overlay.js').then(({ showMessageOverlay }) => {
-      showMessageOverlay(app, t('general.error'), t('messages.please_login'), 'error', () => showSettings());
+  import('./controllers/edit-controller.js').then(({ handleEdit }) => {
+    handleEdit(nodeId, app, {
+      showSettings: () => showSettings(),
+      showIntro: () => showIntro()
     });
-    return;
-  }
-
-  console.log("Edit Mode requested for Node:", nodeId);
-
-  // Simple Loading Visual
-  // Simple Loading Visual
-  app.innerHTML = '';
-  const container = document.createElement('div');
-  container.className = "h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-4";
-
-  const spinner = document.createElement('div');
-  spinner.className = "w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin";
-
-  const msg = document.createElement('p');
-  msg.className = "font-bold";
-  msg.textContent = t('messages.loading_hydrant').replace('{id}', nodeId);
-
-  container.append(spinner, msg);
-  app.appendChild(container);
-
-  // Safety check (Imports should be available)
-  if (!fetchNodeData) console.error("Missing fetchNodeData import");
-  if (!deleteHydrant) console.error("Missing deleteHydrant import");
-
-  fetchNodeData(nodeId)
-    .then(nodeData => {
-      // console.log("Loaded Node Data:", nodeData);
-      // Switch to Confirm View in Edit Mode
-      app.innerHTML = renderConfirmView();
-
-      // Helper for Overlay (Duplicated to avoid scope issues)
-      const showOverlay = (title, promiseAction) => {
-        const overlay = document.createElement('div');
-        overlay.className = "absolute inset-0 bg-black/90 z-50 flex items-center justify-center p-6 animate-fade-in";
-        app.appendChild(overlay);
-
-        const logs = [];
-        const renderStatus = (result = null, error = null) => {
-          const linesHtml = logs.map(line => `<div class="text-sm font-mono text-gray-400 border-l-2 border-gray-700 pl-3 py-1 text-left">${escapeHtml(line)}</div>`).join('');
-          let content = `
-                   <div class="flex flex-col w-full max-w-sm bg-gray-900 border ${error ? 'border-red-500' : 'border-gray-700'} rounded-2xl p-6 shadow-2xl">
-                      <h2 class="text-xl font-bold ${error ? 'text-red-500' : 'text-white'} mb-4 flex items-center justify-center gap-2">
-                         ${error ? '❌ ' + t('general.error') : (result ? t('general.success') + '! ✅' : title + '... ⏳')}
-                      </h2>
-                      <div class="space-y-1 mb-6 max-h-40 overflow-y-auto custom-scrollbar">
-                         ${linesHtml}
-                      </div>
-                `;
-
-          if (error) {
-            content += `
-                        <div class="bg-red-900/20 text-red-200 p-3 rounded-lg text-xs font-mono mb-4 break-words">
-                           ${escapeHtml(error.message || String(error))}
-                        </div>
-                        <button id="overlay-close-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition">${t('general.close')}</button>
-                    `;
-          } else if (result) {
-            content += `
-                        <button id="overlay-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition">${t('general.done')}</button>
-                     `;
-          } else {
-            content += `<div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>`;
-          }
-          content += `</div>`;
-          overlay.innerHTML = content;
-
-          if (document.getElementById('overlay-close-btn')) {
-            document.getElementById('overlay-close-btn').onclick = () => {
-              overlay.remove();
-              if (!error) showIntro();
-            };
-          }
-        };
-
-        const addLog = (msg) => { logs.push(msg); renderStatus(); };
-
-        renderStatus();
-        promiseAction(addLog)
-          .then(res => {
-            renderStatus(res);
-            // Play Success Sound
-            import('./services/audio.js').then(({ playSuccessSound }) => playSuccessSound());
-          })
-          .catch(err => renderStatus(null, err));
-      };
-
-      // Init Confirm View with Edit Mode = true
-      initConfirmView(
-        app,
-        null, // No Photo Blob
-        { lat: nodeData.lat, lng: nodeData.lng, accuracy: 0 }, // Location
-        { back: () => { showIntro(); } }, // OnBack (Cancel) -> Intro
-        (data) => {
-          // OnSubmit (Save)
-          import('./components/overlay.js').then(({ showProcessOverlay }) => {
-            showProcessOverlay(
-              app,
-              t('messages.saving_data'),
-              (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log),
-              { onClose: () => showIntro() }
-            );
-          });
-        },
-        true, // editMode
-        nodeData, // initialData
-        (id, version) => {
-          // OnDelete
-          if (deleteHydrant) {
-            import('./components/overlay.js').then(({ showProcessOverlay }) => {
-              showProcessOverlay(
-                app,
-                t('messages.deleting_data'),
-                (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log),
-                { onClose: () => showIntro() }
-              );
-            });
-          } else {
-            import('./components/overlay.js').then(({ showMessageOverlay }) => {
-              showMessageOverlay(app, t('general.error'), t('messages.internal_error_reload'), 'error');
-            });
-            console.error("deleteHydrant missing");
-          }
-        }
-      );
-    })
-    .catch(err => {
-      console.error("Load Failed:", err);
-      // ... (Error handling code remains same)
-      let msg = t('error.load_failed') + ": " + err.message;
-      let autoClose = false;
-
-      if (err.message === "NODE_DELETED") {
-        msg = t('error.node_deleted');
-        autoClose = true;
-      }
-
-      // Update Loading Screen with Error
-      // Update Loading Screen with Error
-      app.innerHTML = '';
-      const container = document.createElement('div');
-      container.className = "h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-6 p-8 text-center animate-fade-in";
-
-      const icon = document.createElement('div');
-      icon.className = "text-6xl";
-      icon.textContent = "⚠️";
-
-      const title = document.createElement('h2');
-      title.className = "text-2xl font-bold text-red-500";
-      title.textContent = t('error.oops');
-
-      const message = document.createElement('p');
-      message.className = "text-lg text-gray-300";
-      message.textContent = msg;
-
-      const btnContainer = document.createElement('div');
-      btnContainer.className = "w-full max-w-xs mt-4";
-
-      const btn = document.createElement('button');
-      btn.id = "error-back-btn";
-      btn.className = "w-full py-4 bg-gray-800 hover:bg-gray-700 rounded-xl font-bold transition";
-      btn.textContent = t('error.back_to_map');
-
-      btnContainer.appendChild(btn);
-      container.append(icon, title, message, btnContainer);
-      app.appendChild(container);
-
-      document.getElementById('error-back-btn').onclick = () => showIntro();
-
-      if (autoClose) {
-        setTimeout(() => showIntro(), 2500);
-      }
-    });
-
+  });
 }
 
 
@@ -448,75 +276,10 @@ function showConfirm() {
 }
 
 // Init App / Auth Check (Custom PKCE)
-if (location.search.includes('code=')) {
-  const params = new URLSearchParams(location.search);
-  const code = params.get('code');
-  if (code) {
-    console.log("PKCE Auth Callback detected!");
-    const app = document.querySelector('#app');
-
-    // Loading
-    // Loading
-    app.innerHTML = '';
-    const container = document.createElement('div');
-    container.className = "absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white animate-fade-in";
-
-    const spinner = document.createElement('div');
-    spinner.className = "w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4";
-
-    const title = document.createElement('h2');
-    title.className = "text-xl font-bold";
-    title.textContent = t('messages.verifying_login');
-
-    const logContainer = document.createElement('div');
-    logContainer.className = "text-left max-w-sm w-full px-6 mt-4";
-
-    const logDiv = document.createElement('div');
-    logDiv.id = "pkce-log";
-    logDiv.className = "text-xs font-mono text-green-400 bg-black/40 p-3 rounded h-32 overflow-auto";
-    logDiv.textContent = "INIT...";
-
-    logContainer.appendChild(logDiv);
-    container.append(spinner, title, logContainer);
-    app.appendChild(container);
-
-    const log = (msg) => {
-      const line = document.createElement('div');
-      line.textContent = "> " + msg;
-      logDiv.appendChild(line);
-      logDiv.scrollTop = logDiv.scrollHeight;
-    };
-
-    log("Got Code: " + code.substring(0, 5) + "...");
-
-    // Debug Verifier in Storage
-    const verifier = localStorage.getItem('osm_pkce_verifier');
-    log("Verifier in Storage: " + (verifier ? "YES (" + verifier.length + " chars)" : "NO (!!!)"));
-
-    auth.exchangeCode(code)
-      .then(accessToken => {
-        log("SUCCESS! Token: " + accessToken.substring(0, 10) + "...");
-        log("Redirecting...");
-        setTimeout(() => {
-          window.history.replaceState({}, document.title, window.location.pathname);
-          showSettings();
-        }, 1000);
-      })
-      .catch(err => {
-        console.error("PKCE Error:", err);
-        log("ERROR: " + err.message);
-
-        const div = document.createElement('div');
-        div.innerHTML = `<button onclick="showIntro(); window.history.replaceState({}, document.title, window.location.pathname);" class="w-full mt-4 py-3 bg-red-600 hover:bg-red-700 rounded-xl font-bold">${t('messages.back_to_start')}</button>`;
-        app.querySelector('.text-left').appendChild(div);
-      });
-  } else {
-    showIntro();
-  }
-} else {
-  // Clear Hash if present from prev attempts
-  if (location.hash.includes('access_token=')) {
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-  showIntro();
-}
+// Init App / Auth Check (Custom PKCE)
+import('./controllers/auth-controller.js').then(({ handleAuthCallback }) => {
+  handleAuthCallback(location.search, location.hash, app, {
+    showSettings: () => showSettings(),
+    showIntro: () => showIntro()
+  });
+});
