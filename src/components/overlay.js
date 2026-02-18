@@ -218,3 +218,57 @@ export function showMessageOverlay(parentElement, title, message, type = 'info',
     const btn = overlay.querySelector('#msg-overlay-close-btn');
     if (btn) btn.onclick = closeObj;
 }
+
+/**
+ * Shows a confirmation overlay (Yes/No)
+ * @param {HTMLElement} parentElement 
+ * @param {string} title 
+ * @param {string} message 
+ * @param {Function} onConfirm 
+ * @param {Function} onCancel 
+ */
+export function showConfirmOverlay(parentElement, title, message, onConfirm, onCancel = null) {
+    const overlay = document.createElement('div');
+    overlay.className = "absolute inset-0 bg-black/90 z-[100] flex items-center justify-center p-6 animate-fade-in backdrop-blur-sm";
+
+    parentElement.appendChild(overlay);
+
+    const content = `
+        <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl transition-all duration-300 transform scale-100">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center justify-center gap-2">
+                <span class="text-2xl">⚠️</span>
+                <span>${escapeHtml(title)}</span>
+            </h2>
+            
+            <div class="text-gray-300 text-center mb-8 text-sm leading-relaxed">
+                ${escapeHtml(message)}
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <button id="confirm-no-btn" class="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition border border-gray-600 active:scale-95">
+                    ${t('general.cancel')}
+                </button>
+                <button id="confirm-yes-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition shadow-lg shadow-red-900/20 active:scale-95">
+                    ${t('general.ok') || 'OK'}
+                </button>
+            </div>
+        </div>
+    `;
+
+    overlay.innerHTML = content;
+
+    const close = () => {
+        overlay.classList.add('opacity-0');
+        setTimeout(() => overlay.remove(), 200);
+    };
+
+    overlay.querySelector('#confirm-no-btn').onclick = () => {
+        close();
+        if (onCancel) onCancel();
+    };
+
+    overlay.querySelector('#confirm-yes-btn').onclick = () => {
+        close();
+        if (onConfirm) onConfirm();
+    };
+}

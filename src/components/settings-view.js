@@ -182,12 +182,20 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
 
   if (resetBtn) {
     resetBtn.onclick = () => {
-      if (confirm(t('settings.reset_btn') + "?")) {
-        auth.logout();
-        localStorage.removeItem('osm_pkce_verifier');
-        localStorage.removeItem('osm_user_img');
-        window.location.reload();
-      }
+      import('../components/overlay.js').then(({ showConfirmOverlay }) => {
+        showConfirmOverlay(
+          element,
+          t('settings.app_reset'),
+          t('settings.reset_btn') + "? " + t('messages.no_undo'), // Add warning text if available or just reuse title
+          () => {
+            // Yes
+            auth.logout();
+            localStorage.removeItem('osm_pkce_verifier');
+            localStorage.removeItem('osm_user_img');
+            window.location.reload();
+          }
+        );
+      });
     };
   }
 
