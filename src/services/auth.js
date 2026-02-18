@@ -57,8 +57,8 @@ export const auth = {
         const state = generateRandomString(16);
         localStorage.setItem('osm_auth_state', state);
 
-        // FIX: Add offline_access to get refresh token
-        const scope = 'read_prefs write_api offline_access';
+        // FIX: offline_access removed as it caused "Invalid Scope" for some users
+        const scope = 'read_prefs write_api';
         const url = `https://www.openstreetmap.org/oauth2/authorize?response_type=code&client_id=${this.options.client_id}&redirect_uri=${encodeURIComponent(this.options.redirect_uri)}&scope=${encodeURIComponent(scope)}&code_challenge=${challenge}&code_challenge_method=S256&state=${state}`;
 
         console.log("[Auth] Redirecting to:", url);
