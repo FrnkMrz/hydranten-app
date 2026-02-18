@@ -129,7 +129,7 @@ export async function initCamera(element, onBack, onCapture) {
   };
 
   // Hook cleanup into Back buttons
-  const originalOnBack = backBtn.onclick; // Should be null or onBack
+  // const originalOnBack = backBtn.onclick; // Should be null or onBack
   backBtn.onclick = () => { cleanup(); if (onBack) onBack(); };
   if (errorBackBtn) errorBackBtn.onclick = () => { cleanup(); if (onBack) onBack(); };
 

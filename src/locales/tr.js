@@ -51,24 +51,8 @@ export default {
         not_logged_in: "Giriş Yapılmadı.",
         back_btn: "Geri"
     },
-    camera: {
-        permission: "Kamera Erişimi Gerekli",
-        retake: "Yeniden Çek",
-        use_photo: "Fotoğrafı Kullan",
-        back_btn_aria: "Kameraya Dön",
-        back_btn_label: "Geri",
-        capture_btn_aria: "Fotoğraf Çek"
-    },
-    error: {
-        load_failed: "Yükleme Hatası",
-        node_deleted: "Bu hidrant artık mevcut değil.",
-        oops: "Hoppala!",
-        back_to_map: "Haritaya Dön",
-        gps_failed: "Konum belirlenemedi. GPS ayarlarını kontrol edin.",
-        gps_unavailable: "GPS kullanılamıyor. Varsayılan harita gösteriliyor.",
-        gps_failed: "Konum belirlenemedi. GPS ayarlarını kontrol edin.",
-        gps_unavailable: "GPS kullanılamıyor. Varsayılan harita gösteriliyor."
-    },
+
+
     confirm: {
         title: "Veriyi Onayla",
         title_edit: "Hidrantı Düzenle",
@@ -127,8 +111,7 @@ export default {
         sign_options: {
             yes: "Evet",
             no: "Hayır",
-            yes: "Evet",
-            no: "Hayır",
+
             unknown: "Bilinmiyor"
         },
         colors: {
@@ -144,7 +127,7 @@ export default {
         number_placeholder: "örn. 1234",
         notes_label: "NOT",
         notes_placeholder: "..."
-    ,
+        ,
         share_title: "Hydranten Jäger",
         share_text: "Hydrant captured with Hydranten Jäger",
         diameter_placeholder: "e.g. 80, 100",

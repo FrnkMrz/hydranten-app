@@ -56,8 +56,8 @@ export const auth = {
         try {
             localStorage.setItem('osm_pkce_verifier', verifier);
             localStorage.setItem('osm_auth_state', state);
-        } catch (e) {
-            console.error("LocalStorage Limit Reached?", e);
+        } catch (_e) {
+            console.error("LocalStorage Limit Reached?", _e);
             alert("Fehler: Speicher voll. Bitte Cookies/Daten löschen.");
             return;
         }
@@ -121,8 +121,8 @@ export const auth = {
         // Save Token Data
         try {
             localStorage.setItem('osm-auth', JSON.stringify(data));
-        } catch (e) {
-            console.error("Failed to save token:", e);
+        } catch (_e) {
+            console.error("Failed to save token:", _e);
         }
 
         // Cleanup Security Items
@@ -181,8 +181,8 @@ export const auth = {
 
             try {
                 localStorage.setItem('osm-auth', JSON.stringify(updatedData));
-            } catch (e) {
-                console.error("Failed to save refreshed token:", e);
+            } catch (_e) {
+                console.error("Failed to save refreshed token:", _e);
             }
             console.log("[Auth] Token Refreshed Successfully!");
             return updatedData.access_token;
@@ -198,7 +198,7 @@ export const auth = {
         let data = null;
         try {
             data = JSON.parse(localStorage.getItem('osm-auth'));
-        } catch (e) { }
+        } catch (_e) { /* ignore */ }
 
         if (!data || !data.access_token) return null;
 
@@ -207,8 +207,8 @@ export const auth = {
             console.log("[Auth] Token expired or close to expiry. Refreshing...");
             try {
                 return await this.refreshToken();
-            } catch (e) {
-                console.warn("[Auth] Refresh failed, returning null (user needs login)", e);
+            } catch (_e) {
+                console.error("[Auth] Refresh failed, returning null (user needs login)", _e);
                 return null;
             }
         }
@@ -228,7 +228,7 @@ export const auth = {
         try {
             const data = JSON.parse(localStorage.getItem('osm-auth'));
             return data ? data.access_token : null;
-        } catch (e) { return null; }
+        } catch (_e) { return null; }
     },
 
     logout() {
@@ -291,7 +291,7 @@ export async function checkLogin() {
             const name = user.getAttribute('display_name');
             try {
                 localStorage.setItem('osm_user_name', name);
-            } catch (e) { console.warn("Storage Full", e); }
+            } catch (_e) { console.warn("Storage Full", _e); }
 
             // Try to find image
             const img = user.querySelector('img');
@@ -310,7 +310,7 @@ export async function checkLogin() {
                     }
                     try {
                         localStorage.setItem('osm_user_img', imgUrl);
-                    } catch (e) { console.warn("Storage Full", e); }
+                    } catch (_e) { console.warn("Storage Full", _e); }
                 }
             } else {
                 localStorage.removeItem('osm_user_img');

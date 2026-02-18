@@ -51,24 +51,8 @@ export default {
         not_logged_in: "Non connecté.",
         back_btn: "Retour"
     },
-    camera: {
-        permission: "Accès Caméra Requis",
-        retake: "Reprendre",
-        use_photo: "Utiliser Photo",
-        back_btn_aria: "Retour à la caméra",
-        back_btn_label: "Retour",
-        cancel_btn: "Annuler",
-        retry_gps_aria: "Réessayer la recherche GPS",
-        capture_btn_aria: "Prendre une photo"
-    },
-    error: {
-        load_failed: "Erreur de chargement",
-        node_deleted: "Cette borne n'existe plus.",
-        oops: "Oups !",
-        back_to_map: "Retour à la carte",
-        gps_failed: "Localisation impossible. Vérifiez les paramètres GPS.",
-        gps_unavailable: "GPS non disponible. Affichage de la carte par défaut."
-    },
+
+
     confirm: {
         title: "Vérifier les données",
         title_edit: "Modifier la borne",
@@ -127,8 +111,7 @@ export default {
         sign_options: {
             yes: "Oui",
             no: "Non",
-            yes: "Oui",
-            no: "Non",
+
             unknown: "Inconnu"
         },
         colors: {
@@ -144,7 +127,7 @@ export default {
         number_placeholder: "ex. 1234",
         notes_label: "NOTE",
         notes_placeholder: "..."
-    ,
+        ,
         share_title: "Hydranten Jäger",
         share_text: "Hydrant captured with Hydranten Jäger",
         diameter_placeholder: "e.g. 80, 100",

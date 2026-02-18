@@ -51,22 +51,8 @@ export default {
         not_logged_in: "Não conectado.",
         back_btn: "Voltar"
     },
-    camera: {
-        permission: "Acesso à Câmera Necessário",
-        retake: "Retirar",
-        use_photo: "Usar Foto",
-        back_btn_aria: "Voltar para Câmera",
-        back_btn_label: "Voltar",
-        capture_btn_aria: "Tirar Foto"
-    },
-    error: {
-        load_failed: "Erro ao carregar",
-        node_deleted: "Este hidrante não existe mais.",
-        oops: "Ops!",
-        back_to_map: "Voltar ao Mapa",
-        gps_failed: "Não foi possível determinar a localização. Verifique as configurações de GPS.",
-        gps_unavailable: "GPS indisponível. Mostrando mapa padrão."
-    },
+
+
     confirm: {
         title: "Confirmar Dados",
         title_edit: "Editar Hidrante",
@@ -119,8 +105,7 @@ export default {
         sign_options: {
             yes: "Sim",
             no: "Não",
-            yes: "Sim",
-            no: "Não",
+
             unknown: "Desconhecido"
         },
         colors: {

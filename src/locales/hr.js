@@ -51,22 +51,8 @@ export default {
         not_logged_in: "Niste prijavljeni.",
         back_btn: "Natrag"
     },
-    camera: {
-        permission: "Potreban pristup kameri",
-        retake: "Ponovi",
-        use_photo: "Koristi sliku",
-        back_btn_aria: "Povratak na kameru",
-        back_btn_label: "Natrag",
-        capture_btn_aria: "Uslikaj"
-    },
-    error: {
-        load_failed: "Greška pri učitavanju",
-        node_deleted: "Ovaj hidrant više ne postoji.",
-        oops: "Ups!",
-        back_to_map: "Povratak na kartu",
-        gps_failed: "Lokacija se ne može odrediti. Provjerite GPS postavke.",
-        gps_unavailable: "GPS nije dostupan. Prikazuje se zadana karta."
-    },
+
+
     confirm: {
         title: "Potvrdi podatke",
         title_edit: "Uredi hidrant",
@@ -125,8 +111,7 @@ export default {
         sign_options: {
             yes: "Da",
             no: "Ne",
-            yes: "Da",
-            no: "Ne",
+
             unknown: "Nepoznato"
         },
         colors: {
@@ -142,7 +127,7 @@ export default {
         number_placeholder: "npr. 1234",
         notes_label: "BILJEŠKA",
         notes_placeholder: "..."
-    ,
+        ,
         share_title: "Hydranten Jäger",
         share_text: "Hydrant captured with Hydranten Jäger",
         diameter_placeholder: "e.g. 80, 100",

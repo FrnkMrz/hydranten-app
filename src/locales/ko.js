@@ -51,22 +51,8 @@ export default {
         not_logged_in: "로그인되지 않음.",
         back_btn: "뒤로"
     },
-    camera: {
-        permission: "카메라 액세스 필요",
-        retake: "재촬영",
-        use_photo: "사진 사용",
-        back_btn_aria: "카메라로 돌아가기",
-        back_btn_label: "뒤로",
-        capture_btn_aria: "사진 촬영"
-    },
-    error: {
-        load_failed: "로딩 오류",
-        node_deleted: "이 소화전은 더 이상 존재하지 않습니다.",
-        oops: "이런!",
-        back_to_map: "지도로 돌아가기",
-        gps_failed: "위치를 확인할 수 없습니다. GPS 설정을 확인하세요.",
-        gps_unavailable: "GPS를 사용할 수 없습니다. 기본 지도를 표시합니다."
-    },
+
+
     confirm: {
         title: "데이터 확인",
         title_edit: "소화전 편집",
@@ -125,8 +111,7 @@ export default {
         sign_options: {
             yes: "예",
             no: "아니요",
-            yes: "예",
-            no: "아니요",
+
             unknown: "알 수 없음"
         },
         colors: {
@@ -142,7 +127,7 @@ export default {
         number_placeholder: "예: 1234",
         notes_label: "메모",
         notes_placeholder: "..."
-    ,
+        ,
         share_title: "Hydranten Jäger",
         share_text: "Hydrant captured with Hydranten Jäger",
         diameter_placeholder: "e.g. 80, 100",

@@ -51,21 +51,8 @@ export default {
         not_logged_in: "Niet ingelogd.",
         back_btn: "Terug"
     },
-    camera: {
-        permission: "Cameratoegang Vereist",
-        retake: "Opnieuw",
-        use_photo: "Gebruik Foto",
-        back_btn_aria: "Terug naar home",
-        capture_btn_aria: "Foto maken"
-    },
-    error: {
-        load_failed: "Fout bij laden",
-        node_deleted: "Deze hydrant bestaat niet meer (verwijderd).",
-        oops: "Oeps!",
-        back_to_map: "Terug naar kaart",
-        gps_failed: "Locatie kon niet worden bepaald. Controleer GPS-instellingen.",
-        gps_unavailable: "GPS niet beschikbaar. Standaardkaart wordt getoond."
-    },
+
+
     confirm: {
         title: "Gegevens controleren",
         title_edit: "Hydrant bewerken",
@@ -140,7 +127,7 @@ export default {
             parking: "Parkeerplaats",
             none: "Geen"
         }
-    ,
+        ,
         share_title: "Hydranten Jäger",
         share_text: "Hydrant captured with Hydranten Jäger",
         diameter_placeholder: "e.g. 80, 100",

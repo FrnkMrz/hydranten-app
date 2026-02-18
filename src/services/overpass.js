@@ -1,5 +1,5 @@
 // src/services/overpass.js
-import { CONSTANTS } from '../constants.js';
+
 
 // Liste bekannter, stabiler Overpass-Instanzen
 const SERVERS = [
@@ -46,7 +46,7 @@ async function fetchWithFallback(query, attempt = 0) {
 
         return await response.json();
 
-    } catch (err) {
+    } catch (_err) {
         clearTimeout(timeoutId);
         // console.warn(`Server ${server} fehlgeschlagen:`, err.message);
         // Rekursiver Aufruf des nächsten Servers
@@ -71,30 +71,27 @@ export const overpass = {
             out skel;
         `;
 
-        try {
-            const data = await fetchWithFallback(query);
-            const elements = data.elements || [];
 
-            // Post-Processing wie gehabt
-            const nodes = [];
-            const lockedNodeIds = new Set();
+        const data = await fetchWithFallback(query);
+        const elements = data.elements || [];
 
-            elements.forEach(el => {
-                if (el.type === 'node') {
-                    nodes.push(el);
-                } else if (el.type === 'way' && el.nodes) {
-                    el.nodes.forEach(nid => lockedNodeIds.add(nid));
-                }
-            });
+        // Post-Processing wie gehabt
+        const nodes = [];
+        const lockedNodeIds = new Set();
 
-            return nodes.map(node => {
-                if (lockedNodeIds.has(node.id)) node._isPartOfWay = true;
-                return node;
-            });
+        elements.forEach(el => {
+            if (el.type === 'node') {
+                nodes.push(el);
+            } else if (el.type === 'way' && el.nodes) {
+                el.nodes.forEach(nid => lockedNodeIds.add(nid));
+            }
+        });
 
-        } catch (err) {
-            // console.error("Overpass Totalausfall:", err);
-            throw err; // WICHTIG: Fehler werfen, damit UI Toast erscheint!
-        }
+        return nodes.map(node => {
+            if (lockedNodeIds.has(node.id)) node._isPartOfWay = true;
+            return node;
+        });
+
+
     }
 };

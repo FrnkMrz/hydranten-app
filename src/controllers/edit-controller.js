@@ -3,15 +3,7 @@ import { fetchNodeData, updateHydrant, deleteHydrant } from '../services/osm.js'
 import { renderConfirmView, initConfirmView } from '../components/confirm-view.js';
 import { t } from '../services/i18n.js';
 
-function escapeHtml(text) {
-    if (text === null || text === undefined) return '';
-    return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+
 
 export function handleEdit(nodeId, app, callbacks) {
     const { showSettings, showIntro } = callbacks;

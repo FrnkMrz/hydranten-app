@@ -50,7 +50,7 @@ export function renderIntroView() {
 
          loginClass = "text-green-400 hover:text-green-300 font-bold";
       }
-   } catch (e) { }
+   } catch (_e) { /* ignore */ }
 
    return `
     <div class="h-full w-full bg-black text-white flex flex-col relative overflow-hidden">
@@ -158,7 +158,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       // ... existing start logic ...
       btn.onclick = () => {
          // UI Feedback
-         const originalText = btn.innerHTML;
+         // const originalText = btn.innerHTML;
          btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ' + btn.innerText;
          btn.classList.add('opacity-75', 'cursor-wait', 'pointer-events-none');
 
@@ -393,14 +393,14 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    // Live GPS Update & Map
    const mapContainer = element.querySelector('#intro-map');
    let map = null;
-   let marker = null;
+//    let marker = null;
 
    // Init Cached Position immediately
    let lastPos = getLastKnownPosition();
    // Remove aggressive stale check - better to show old position than error
-   const initialCenter = lastPos ? [lastPos.lat, lastPos.lng] : [48.137, 11.576];
+//    const initialCenter = lastPos ? [lastPos.lat, lastPos.lng] : [48.137, 11.576];
    // Fix: Increase default zoom to 16 so that hydrate fetch (min 14) works even without GPS fix
-   const initialZoom = lastPos ? 18 : 16;
+//    const initialZoom = lastPos ? 18 : 16;
 
    // Keep track of marker globally within this scope (closure) for updates
    let userMarker = null; // Re-introduced
@@ -589,7 +589,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 }
 
 // Extracted GPS start logic
-function startMapGps(map, onLocationFound, onEdit) {
+function startMapGps(map, onLocationFound, _onEdit) {
    if (!navigator.geolocation) return;
 
    // BOUND_OFFSET ~ 200m
@@ -649,14 +649,14 @@ function updateHydrants(map, onEdit) {
                localStorage.setItem('created_hydrants', JSON.stringify(validCreated));
                localCreated = validCreated;
             }
-         } catch (e) { }
+         } catch (_e) { /* ignore */ }
 
          // 1. Filter out deleted
          let filteredElements = elements.filter(node => !localDeleted.includes(String(node.id)));
 
          // 2. Inject local/newly created hydrants (if not already present)
          const existingIds = new Set(filteredElements.map(n => String(n.id)));
-         let injectedCount = 0;
+         // let injectedCount = 0;
 
          localCreated.forEach(localNode => {
             // Check bounds (roughly) to only add if in view? 
@@ -667,7 +667,7 @@ function updateHydrants(map, onEdit) {
                if (!localDeleted.includes(String(localNode.id))) {
                   if (!existingIds.has(String(localNode.id))) {
                      filteredElements.push(localNode);
-                     injectedCount++;
+                     // injectedCount++;
                   }
                }
             }

@@ -43,30 +43,9 @@ export default {
         not_logged_in: "Nie zalogowany.",
         back_btn: "Wstecz"
     },
-    camera: {
-        permission: "Wymagany Dostęp do Kamery",
-        retake: "Powtórz",
-        use_photo: "Użyj Zdjęcia",
-        back_btn_aria: "Wróć do strony głównej",
-        back_btn_label: "Wstecz",
-        capture_btn_aria: "Zrób zdjęcie"
-    },
-    error: {
-        load_failed: "Błąd ładowania",
-        node_deleted: "Ten hydrant już nie istnieje.",
-        oops: "Ups!",
-        back_to_map: "Powrót do mapy",
-        gps_failed: "Nie można ustalić lokalizacji. Sprawdź ustawienia GPS.",
-        gps_unavailable: "GPS niedostępny. Wyświetlanie domyślnej mapy."
-    },
-    gamification: {
-        rank_progress: "Jeszcze {count} do rangi {rank}!",
-        rank_max: "Jesteś legendą!",
-        legend: "Stopnie i Odznaki",
-        list_title: "Wszystkie Stopnie",
-        from_hydrants: "od {count} Hydrantów",
-        level_title: "Ranga Łowcy Hydrantów"
-    },
+
+
+
     confirm: {
         title: "Potwierdź Dane",
         title_edit: "Edytuj Hydrant",
@@ -112,9 +91,7 @@ export default {
             // "Zisterne" -> "Cysterna" or "Zbiornik przeciwpożarowy".
             // "Saugstelle" -> "Punkt czerpania wody".
             // I will use standard fire fighting terms.
-            dry_hydrant: "Suchy pion",
-            cistern: "Zbiornik ppoż.",
-            suction: "Punkt czerpania",
+
 
 
 
@@ -133,8 +110,7 @@ export default {
         sign_options: {
             yes: "Tak",
             no: "Nie",
-            yes: "Tak",
-            no: "Nie",
+
             unknown: "Nieznane"
         },
         colors: {
@@ -150,7 +126,7 @@ export default {
         number_placeholder: "np. 1234",
         notes_label: "NOTATKA",
         notes_placeholder: "..."
-    ,
+        ,
         share_title: "Hydranten Jäger",
         share_text: "Hydrant captured with Hydranten Jäger",
         diameter_placeholder: "e.g. 80, 100",

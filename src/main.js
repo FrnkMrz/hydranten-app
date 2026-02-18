@@ -7,20 +7,11 @@ import { renderHistoryView, initHistoryView } from './components/history-view.js
 import { renderRankListView, initRankListView } from './components/rank-list-view.js';
 import { getPosition, getCurrentHeading, calculateOffsetPosition, getLastKnownPosition } from './services/geo.js';
 import { auth } from './services/auth.js';
-import { updateHydrant } from './services/osm.js';
+
 import { t } from './services/i18n.js';
 import { CONSTANTS } from './constants.js';
 
-// Security Helper
-function escapeHtml(text) {
-  if (text === null || text === undefined) return '';
-  return String(text)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
+
 
 // Init Compass & GPS Tracking early
 // Init Compass & GPS Tracking (Moved to Start/Camera)
@@ -122,7 +113,7 @@ async function showCamera() {
       overlay.append(spinner, text);
       app.appendChild(overlay);
 
-      let loc = null;
+      let loc;
       try {
         // Try fresh position (3s timeout)
         loc = await Promise.race([

@@ -51,22 +51,8 @@ export default {
         not_logged_in: "未登录。",
         back_btn: "返回"
     },
-    camera: {
-        permission: "需要相机权限",
-        retake: "重拍",
-        use_photo: "使用照片",
-        back_btn_aria: "返回相机",
-        back_btn_label: "返回",
-        capture_btn_aria: "拍照"
-    },
-    error: {
-        load_failed: "加载错误",
-        node_deleted: "此消防栓已不存在。",
-        oops: "哎呀！",
-        back_to_map: "返回地图",
-        gps_failed: "无法确定位置。请检查GPS设置。",
-        gps_unavailable: "GPS不可用。显示默认地图。"
-    },
+
+
     confirm: {
         title: "确认数据",
         title_edit: "编辑消防栓",
@@ -125,8 +111,7 @@ export default {
         sign_options: {
             yes: "是",
             no: "否",
-            yes: "是",
-            no: "否",
+
             unknown: "未知"
         },
         colors: {
@@ -142,7 +127,7 @@ export default {
         number_placeholder: "例如 1234",
         notes_label: "备注",
         notes_placeholder: "..."
-    ,
+        ,
         share_title: "Hydranten Jäger",
         share_text: "Hydrant captured with Hydranten Jäger",
         diameter_placeholder: "e.g. 80, 100",

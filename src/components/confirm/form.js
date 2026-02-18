@@ -89,7 +89,7 @@ export function initFormLogic(element, location, editMode, initialData) {
         const getTag = (k) => initialData.tags[k] || '';
 
         // Compare Tags
-        let typeChanged = false;
+        let typeChanged;
         if (currentType === 'cistern') {
             typeChanged = (getTag('emergency') !== 'water_tank');
         } else if (currentType === 'dry_hydrant') {
@@ -107,7 +107,7 @@ export function initFormLogic(element, location, editMode, initialData) {
         const sourceChanged = (originalSource !== (currentSource || ''));
 
         // Sign check logic
-        let signChanged = false;
+        let signChanged;
         const originalSign = getTag('fire_hydrant:diameter:signed');
 
         if (currentSign === 'no') {

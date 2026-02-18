@@ -69,7 +69,7 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
     const marker = L.marker(center, { draggable: true, autoPan: true }).addTo(map);
     const statusPill = document.querySelector('#geo-status-pill');
 
-    marker.on('dragend', function (event) {
+    marker.on('dragend', function () {
         const position = marker.getLatLng();
         location.lat = position.lat;
         location.lng = position.lng;
@@ -95,7 +95,7 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
         if (editMode && typeof checkChanges === 'function') checkChanges();
     });
 
-    const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
+    // const accuracy = location.accuracy ? Math.round(location.accuracy) : '?';
     if (statusPill && !statusPill.innerText.includes('Verschoben')) {
         // statusPill.innerText = editMode ? t('confirm.fixed_map') : `GPS: ±${accuracy}m`;
     }

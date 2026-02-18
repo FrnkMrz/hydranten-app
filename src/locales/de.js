@@ -27,8 +27,7 @@ export default {
         account: "OSM Konto",
         connect_btn: "Verbinden mit OSM",
         disconnect_btn: "Abmelden",
-        connect_btn: "Verbinden mit OSM",
-        disconnect_btn: "Abmelden",
+
         back_btn: "Zurück",
         app_reset: "App Zurücksetzen (Notfall)",
         reset_btn: "Wirklich alle Daten löschen und ausloggen",
@@ -169,7 +168,7 @@ export default {
         number_placeholder: "z.B. 1234",
         notes_label: "NOTIZ",
         notes_placeholder: "..."
-    ,
+        ,
         share_title: "Hydranten Jäger",
         share_text: "Hydrant aufgenommen mit Hydranten Jäger",
         diameter_placeholder: "z.B. 80, 100",

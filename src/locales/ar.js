@@ -51,21 +51,8 @@ export default {
         not_logged_in: "غير مسجل الدخول.",
         back_btn: "رجوع"
     },
-    camera: {
-        permission: "إذن الكاميرا مطلوب",
-        retake: "إعادة",
-        use_photo: "استخدام الصورة",
-        back_btn_aria: "العودة للبداية",
-        capture_btn_aria: "التقاط صورة"
-    },
-    error: {
-        load_failed: "فشل التحميل",
-        node_deleted: "هذا الصنبور لم يعد موجودًا (تم حذفه).",
-        oops: "عفواً!",
-        back_to_map: "العودة للخريطة",
-        gps_failed: "لم يتم تحديد الموقع. تحقق من إعدادات GPS.",
-        gps_unavailable: "GPS غير متاح. عرض الخريطة الافتراضية."
-    },
+
+
     confirm: {
         title: "بيانات الصنبور",
         title_edit: "تعديل الصنبور",
@@ -139,7 +126,7 @@ export default {
         number_placeholder: "مثال 1234",
         notes_label: "ملاحظات",
         notes_placeholder: "..."
-    ,
+        ,
         share_title: "Hydranten Jäger",
         share_text: "Hydrant captured with Hydranten Jäger",
         diameter_placeholder: "e.g. 80, 100",

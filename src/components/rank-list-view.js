@@ -34,7 +34,7 @@ export function initRankListView(element, onBack, currentHydrantCount = 0) {
     const currentRank = getRank(currentHydrantCount).current;
 
     // Render List
-    container.innerHTML = RANKS.map((rank, index) => {
+    container.innerHTML = RANKS.map((rank, _index) => {
         const isUnlocked = currentHydrantCount >= rank.min; // Reached
         const isCurrent = currentRank.id === rank.id;
 

@@ -10,13 +10,17 @@
     "test": "npm run verify:i18n && vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "verify:i18n": "node scripts/verify-i18n.js"
+    "verify:i18n": "node scripts/verify-i18n.js",
+    "lint": "eslint src/"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@testing-library/dom": "^10.4.1",
     "autoprefixer": "^10.4.24",
+    "eslint": "^10.0.0",
+    "globals": "^17.3.0",
     "jsdom": "^28.0.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",

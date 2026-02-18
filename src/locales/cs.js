@@ -24,7 +24,7 @@ export default {
     },
     settings: {
         title: "Nastavení",
-        title: "Nastavení",
+
         map_style: "Styl mapy",
         account: "Účet OSM",
         connect_btn: "Připojit k OSM",
@@ -52,22 +52,8 @@ export default {
         not_logged_in: "Nepřihlášen.",
         back_btn: "Zpět"
     },
-    camera: {
-        permission: "Vyžadován Přístup ke Kameře",
-        retake: "Znovu",
-        use_photo: "Použít Fotku",
-        back_btn_aria: "Zpět na kameru",
-        back_btn_label: "Zpět",
-        capture_btn_aria: "Vyfotit"
-    },
-    error: {
-        load_failed: "Chyba načítání",
-        node_deleted: "Tento hydrant již neexistuje.",
-        oops: "Jejda!",
-        back_to_map: "Zpět na mapu",
-        gps_failed: "Polohu nelze určit. Zkontrolujte nastavení GPS.",
-        gps_unavailable: "GPS není k dispozici. Zobrazuje se výchozí mapa."
-    },
+
+
     confirm: {
         title: "Potvrdit Data",
         title_edit: "Upravit hydrant",
@@ -117,8 +103,7 @@ export default {
         diameter_none: "Neuvedeno",
         sign_label: "Značka Podzemního Hydrantu",
         sign_options: {
-            yes: "Ano",
-            no: "Ne",
+
             yes: "Ano",
             no: "Ne",
             unknown: "Neznámé"
@@ -143,7 +128,7 @@ export default {
             parking: "Parkoviště",
             none: "Žádné"
         }
-    ,
+        ,
         share_title: "Hydranten Jäger",
         share_text: "Hydrant captured with Hydranten Jäger",
         diameter_placeholder: "e.g. 80, 100",

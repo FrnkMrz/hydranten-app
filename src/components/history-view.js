@@ -1,4 +1,4 @@
-import { auth, checkLogin } from '../services/auth.js';
+import { checkLogin } from '../services/auth.js';
 import { fetchUserChangesets } from '../services/osm.js';
 import { t } from '../services/i18n.js';
 import { escapeHTML } from '../utils/security.js';

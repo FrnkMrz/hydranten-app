@@ -51,22 +51,8 @@ export default {
         not_logged_in: "Non connesso.",
         back_btn: "Indietro"
     },
-    camera: {
-        permission: "Accesso alla fotocamera richiesto",
-        retake: "Riprova",
-        use_photo: "Usa Foto",
-        back_btn_aria: "Torna alla Fotocamera",
-        back_btn_label: "Indietro",
-        capture_btn_aria: "Scatta Foto"
-    },
-    error: {
-        load_failed: "Errore di caricamento",
-        node_deleted: "Questo idrante non esiste più.",
-        oops: "Ops!",
-        back_to_map: "Torna alla Mappa",
-        gps_failed: "Impossibile determinare la posizione. Controlla le impostazioni GPS.",
-        gps_unavailable: "GPS non disponibile. Visualizzazione mappa predefinita."
-    },
+
+
     confirm: {
         title: "Conferma Dati",
         title_edit: "Modifica Idrante",
@@ -125,8 +111,7 @@ export default {
         sign_options: {
             yes: "Sì",
             no: "No",
-            yes: "Sì",
-            no: "No",
+
             unknown: "Sconosciuto"
         },
         colors: {
@@ -142,7 +127,7 @@ export default {
         number_placeholder: "es. 1234",
         notes_label: "NOTA",
         notes_placeholder: "..."
-    ,
+        ,
         share_title: "Hydranten Jäger",
         share_text: "Hydrant captured with Hydranten Jäger",
         diameter_placeholder: "e.g. 80, 100",

@@ -51,22 +51,8 @@ export default {
         not_logged_in: "ログインしていません。",
         back_btn: "戻る"
     },
-    camera: {
-        permission: "カメラへのアクセスが必要です",
-        retake: "撮り直す",
-        use_photo: "写真を使用",
-        back_btn_aria: "カメラに戻る",
-        back_btn_label: "戻る",
-        capture_btn_aria: "写真を撮る"
-    },
-    error: {
-        load_failed: "読み込みエラー",
-        node_deleted: "この消火栓はもう存在しません。",
-        oops: "おっと！",
-        back_to_map: "地図に戻る",
-        gps_failed: "位置を特定できませんでした。GPS設定を確認してください。",
-        gps_unavailable: "GPSが利用できません。デフォルトの地図を表示します。"
-    },
+
+
     confirm: {
         title: "データを確認",
         title_edit: "消火栓を編集",
@@ -125,8 +111,7 @@ export default {
         sign_options: {
             yes: "はい",
             no: "いいえ",
-            yes: "はい",
-            no: "いいえ",
+
             unknown: "不明"
         },
         colors: {

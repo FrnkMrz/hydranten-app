@@ -43,7 +43,7 @@ export async function addExifGpsData(imageBlob, lat, lng) {
         let exifObj = {};
         try {
             exifObj = piexif.load(dataUrl);
-        } catch (e) {
+        } catch (_e) {
             // No EXIF data present, start fresh
             console.log('No existing EXIF data, creating new structure');
             exifObj = { "0th": {}, "Exif": {}, "GPS": {}, "Interop": {}, "1st": {}, "thumbnail": null };

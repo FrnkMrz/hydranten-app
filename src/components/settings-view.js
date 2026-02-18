@@ -293,7 +293,7 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
     try {
       const raw = localStorage.getItem('osm-auth');
       log("Token in Storage: " + (raw ? "YES" : "NO"));
-    } catch (e) { }
+    } catch (_e) { /* ignore */ }
   };
 
   // Init Check
