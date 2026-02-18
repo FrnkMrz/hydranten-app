@@ -1,12 +1,20 @@
-# 🚒 Hydranten Jäger APP (v1.5.0)
+# 🚒 Hydranten Jäger APP (v1.5.1)
 
 **🌐 Live App:** [https://hydrantenjaeger.de](https://hydrantenjaeger.de)
 
 Eine moderne, mobil-optimierte Progressive Web App (PWA) zum blitzschnellen Erfassen und Pflegen von Hydranten in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
-> **Status**: Version 1.5.0 (Stable Release)
+> **Status**: Version 1.5.1 (Stable Release)
 > *Features: Security Hardened, Failover-System, Edit-Mode, Smart-Tags, Token-Refresh, CI/CD.*
+
+## 📋 Changelog
+
+### v1.5.1 (18.02.2026) - Code Quality & Docs
+*   **CI/CD**: Vollständige Pipeline für Linting, Tests und Build-Checks integriert.
+*   **Documentation**: Technische Architektur und Tech-Stack detailliert in README dokumentiert.
+*   **Code Quality**: Bereinigung aller Linting-Fehler (Unused Vars, Duplikate) für eine saubere Codebasis.
+*   **Optimization**: Entfernung von totem Code.
 
 ---
 
