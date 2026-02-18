@@ -21,7 +21,7 @@ export function renderCameraView() {
       <!-- <button id="debug-btn" ... hidden ...></button> -->
 
       <!-- Controls (Padded for Safari Bottom Bar) -->
-      <div class="absolute bottom-0 left-0 right-0 p-8 pb-32 flex flex-col justify-center items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10">
+      <div class="absolute bottom-0 left-0 right-0 p-8 flex flex-col justify-center items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" style="padding-bottom: calc(8rem + env(safe-area-inset-bottom, 20px));">
         <!-- Compass Heading Display -->
         <div class="mb-6 px-4 py-2 bg-black/40 backdrop-blur rounded-full text-white text-sm font-mono border border-white/20">
            🧭 <span id="compass-heading">0</span>°

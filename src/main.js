@@ -49,6 +49,10 @@ function switchView(viewName, renderFn, initFn) {
   state.view = viewName;
   app.innerHTML = renderFn();
 
+  // Accessibility: Focus Management
+  app.setAttribute('tabindex', '-1');
+  app.focus();
+
   // Init new view and store cleanup (if any)
   const cleanup = initFn();
   if (typeof cleanup === 'function') {

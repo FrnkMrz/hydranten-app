@@ -259,7 +259,9 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
   mapStyleBtns.forEach(btn => {
     btn.onclick = () => {
       const style = btn.dataset.style;
-      localStorage.setItem('map_style', style);
+      try {
+        localStorage.setItem('map_style', style);
+      } catch (e) { console.warn("Storage Full", e); }
       updateMapStyleUI();
       // Optional: Show toast feedback
       // But visual active state is usually enough

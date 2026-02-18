@@ -51,11 +51,16 @@ export const auth = {
         const challenge = await generateChallenge(verifier);
 
         // SECURITY: Verifier lokal speichern, NICHT in den State packen!
-        localStorage.setItem('osm_pkce_verifier', verifier);
-
         // State nur noch für CSRF nutzen
         const state = generateRandomString(16);
-        localStorage.setItem('osm_auth_state', state);
+        try {
+            localStorage.setItem('osm_pkce_verifier', verifier);
+            localStorage.setItem('osm_auth_state', state);
+        } catch (e) {
+            console.error("LocalStorage Limit Reached?", e);
+            alert("Fehler: Speicher voll. Bitte Cookies/Daten löschen.");
+            return;
+        }
 
         // FIX: offline_access removed as it caused "Invalid Scope" for some users
         const scope = 'read_prefs write_api';
@@ -114,7 +119,11 @@ export const auth = {
         }
 
         // Save Token Data
-        localStorage.setItem('osm-auth', JSON.stringify(data));
+        try {
+            localStorage.setItem('osm-auth', JSON.stringify(data));
+        } catch (e) {
+            console.error("Failed to save token:", e);
+        }
 
         // Cleanup Security Items
         localStorage.removeItem('osm_pkce_verifier');
@@ -170,7 +179,11 @@ export const auth = {
                 updatedData.expires_at = Date.now() + (newData.expires_in * 1000);
             }
 
-            localStorage.setItem('osm-auth', JSON.stringify(updatedData));
+            try {
+                localStorage.setItem('osm-auth', JSON.stringify(updatedData));
+            } catch (e) {
+                console.error("Failed to save refreshed token:", e);
+            }
             console.log("[Auth] Token Refreshed Successfully!");
             return updatedData.access_token;
 
@@ -276,7 +289,9 @@ export async function checkLogin() {
 
         if (user) {
             const name = user.getAttribute('display_name');
-            localStorage.setItem('osm_user_name', name);
+            try {
+                localStorage.setItem('osm_user_name', name);
+            } catch (e) { console.warn("Storage Full", e); }
 
             // Try to find image
             const img = user.querySelector('img');
@@ -293,7 +308,9 @@ export async function checkLogin() {
                     if (imgUrl.startsWith('http://')) {
                         imgUrl = imgUrl.replace('http://', 'https://');
                     }
-                    localStorage.setItem('osm_user_img', imgUrl);
+                    try {
+                        localStorage.setItem('osm_user_img', imgUrl);
+                    } catch (e) { console.warn("Storage Full", e); }
                 }
             } else {
                 localStorage.removeItem('osm_user_img');

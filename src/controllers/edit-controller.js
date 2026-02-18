@@ -44,7 +44,15 @@ export function handleEdit(nodeId, app, callbacks) {
     if (!fetchNodeData) console.error("Missing fetchNodeData import");
     if (!deleteHydrant) console.error("Missing deleteHydrant import");
 
-    fetchNodeData(nodeId)
+    // Network Timeout Logic (10s)
+    const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Network Timeout')), 10000)
+    );
+
+    Promise.race([
+        fetchNodeData(nodeId),
+        timeoutPromise
+    ])
         .then(nodeData => {
             // console.log("Loaded Node Data:", nodeData);
             // Switch to Confirm View in Edit Mode
