@@ -88,8 +88,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
     // SUBMIT BUTTON
     const submitBtn = element.querySelector('#submit-img-btn');
-    // SUBMIT BUTTON
-    const submitBtn = element.querySelector('#submit-img-btn');
+
     if (submitBtn) {
       if (editMode) {
         submitBtn.innerHTML = `<span>💾 ${t('confirm.save_btn') || 'Speichern'}</span>`;
