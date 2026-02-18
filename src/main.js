@@ -88,10 +88,16 @@ async function showCamera() {
       state.capturedBlob = blob;
 
       // Loading State UI
-      app.innerHTML += `<div class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 text-white animate-fade-in">
-       <div class="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-       <span class="font-bold">${t('messages.locating_position')}</span>
-    </div>`;
+      // Loading State UI
+      const overlay = document.createElement('div');
+      overlay.className = "absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 text-white animate-fade-in";
+      const spinner = document.createElement('div');
+      spinner.className = "w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mb-4";
+      const text = document.createElement('span');
+      text.className = "font-bold";
+      text.textContent = t('messages.locating_position');
+      overlay.append(spinner, text);
+      app.appendChild(overlay);
 
       let loc = null;
       try {
@@ -151,12 +157,20 @@ function handleEdit(nodeId) {
   console.log("Edit Mode requested for Node:", nodeId);
 
   // Simple Loading Visual
-  app.innerHTML = `
-      <div class="h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-4">
-          <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p class="font-bold">${t('messages.loading_hydrant').replace('{id}', escapeHtml(nodeId))}</p>
-      </div>
-   `;
+  // Simple Loading Visual
+  app.innerHTML = '';
+  const container = document.createElement('div');
+  container.className = "h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-4";
+
+  const spinner = document.createElement('div');
+  spinner.className = "w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin";
+
+  const msg = document.createElement('p');
+  msg.className = "font-bold";
+  msg.textContent = t('messages.loading_hydrant').replace('{id}', nodeId);
+
+  container.append(spinner, msg);
+  app.appendChild(container);
 
   // Safety check (Imports should be available)
   if (!fetchNodeData) console.error("Missing fetchNodeData import");
@@ -275,16 +289,34 @@ function handleEdit(nodeId) {
       }
 
       // Update Loading Screen with Error
-      app.innerHTML = `
-            <div class="h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-6 p-8 text-center animate-fade-in">
-                <div class="text-6xl">⚠️</div>
-                <h2 class="text-2xl font-bold text-red-500">${t('error.oops')}</h2>
-                <p class="text-lg text-gray-300">${msg}</p>
-                <div class="w-full max-w-xs mt-4">
-                     <button id="error-back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 rounded-xl font-bold transition">${t('error.back_to_map')}</button>
-                </div>
-            </div>
-        `;
+      // Update Loading Screen with Error
+      app.innerHTML = '';
+      const container = document.createElement('div');
+      container.className = "h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-6 p-8 text-center animate-fade-in";
+
+      const icon = document.createElement('div');
+      icon.className = "text-6xl";
+      icon.textContent = "⚠️";
+
+      const title = document.createElement('h2');
+      title.className = "text-2xl font-bold text-red-500";
+      title.textContent = t('error.oops');
+
+      const message = document.createElement('p');
+      message.className = "text-lg text-gray-300";
+      message.textContent = msg;
+
+      const btnContainer = document.createElement('div');
+      btnContainer.className = "w-full max-w-xs mt-4";
+
+      const btn = document.createElement('button');
+      btn.id = "error-back-btn";
+      btn.className = "w-full py-4 bg-gray-800 hover:bg-gray-700 rounded-xl font-bold transition";
+      btn.textContent = t('error.back_to_map');
+
+      btnContainer.appendChild(btn);
+      container.append(icon, title, message, btnContainer);
+      app.appendChild(container);
 
       document.getElementById('error-back-btn').onclick = () => showIntro();
 
@@ -419,17 +451,34 @@ if (location.search.includes('code=')) {
     const app = document.querySelector('#app');
 
     // Loading
-    app.innerHTML = `<div class="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white animate-fade-in">
-       <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-       <h2 class="text-xl font-bold">${t('messages.verifying_login')}</h2>
-       <div class="text-left max-w-sm w-full px-6 mt-4">
-          <div id="pkce-log" class="text-xs font-mono text-green-400 bg-black/40 p-3 rounded h-32 overflow-auto">INIT...</div>
-       </div>
-      </div>`;
+    // Loading
+    app.innerHTML = '';
+    const container = document.createElement('div');
+    container.className = "absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white animate-fade-in";
 
-    const logDiv = document.getElementById('pkce-log');
+    const spinner = document.createElement('div');
+    spinner.className = "w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4";
+
+    const title = document.createElement('h2');
+    title.className = "text-xl font-bold";
+    title.textContent = t('messages.verifying_login');
+
+    const logContainer = document.createElement('div');
+    logContainer.className = "text-left max-w-sm w-full px-6 mt-4";
+
+    const logDiv = document.createElement('div');
+    logDiv.id = "pkce-log";
+    logDiv.className = "text-xs font-mono text-green-400 bg-black/40 p-3 rounded h-32 overflow-auto";
+    logDiv.textContent = "INIT...";
+
+    logContainer.appendChild(logDiv);
+    container.append(spinner, title, logContainer);
+    app.appendChild(container);
+
     const log = (msg) => {
-      logDiv.innerHTML += "<div>> " + msg + "</div>";
+      const line = document.createElement('div');
+      line.textContent = "> " + msg;
+      logDiv.appendChild(line);
       logDiv.scrollTop = logDiv.scrollHeight;
     };
 
