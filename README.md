@@ -16,6 +16,32 @@ Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 *   **Code Quality**: Bereinigung aller Linting-Fehler (Unused Vars, Duplikate) für eine saubere Codebasis.
 *   **Optimization**: Entfernung von totem Code.
 
+### v1.5.0 (17.02.2026) - Security Hardened
+*   **Security**: DOM-XSS Findings (P1) behoben (Output Encoding in History & Intro).
+*   **Security**: OAuth State Validation (P2) auf "Fail-Closed" gehärtet.
+*   **Security**: Content Security Policy (P3) verschärft (kein `unsafe-inline` für Scripts).
+*   **Security**: Changeset-IDs validiert & externe Links (`noopener`) abgesichert.
+*   **Feature**: `escapeHTML` Utility für zentralen Schutz.
+
+### v1.4.1 (16.02.2026) - Refactoring & Testing
+*   **Refactoring**: `createHydrant` Function Clean-up (toter Parameter entfernt).
+*   **Refactoring**: `checkLogin` Error-Handling verbessert (keine "Error: 401" Namen mehr).
+*   **Refactoring**: Magic Numbers in `constants.js` ausgelagert.
+*   **Tests**: Unit-Tests für `auth`, `osm` und `overpass` Services hinzugefügt (Vitest).
+*   **i18n**: Hardcodierte Strings in `main.js` durch `t()` Übersetzungsfunktionen ersetzt.
+*   **i18n**: Fehlende Übersetzungen für `general` und `messages` Sektionen in 13 Sprachen ergänzt.
+*   **Refactoring**: `confirm-view.js` (960 Zeilen) in 4 Module aufgeteilt (`template`, `map`, `form`, `photo`).
+*   **Refactoring**: Wiederverwendbare Overlay-Utility extrahiert (`overlay.js`).
+*   **Feature**: Token-Refresh-Handling für automatische OAuth-Erneuerung.
+*   **Feature**: Tap-to-Move und Fullscreen-Karte im Edit Mode.
+*   **Fix**: Native `alert()` Aufrufe durch App-eigene Overlays ersetzt.
+*   **Fix**: Versionsduplikation behoben (zentrale `version.js` + automatisches SW-Update).
+*   **Fix**: Fehlende Helper-Funktionen (`normalizeTags`, `escapeXml` etc.) in `osm.js` wiederhergestellt.
+*   **Tests**: Erweiterte Tests für Geo- und Foto-Services.
+
+### v1.4.0
+*   Initiales Release mit Edit-Mode, Failover-System, Gamification und 15 Sprachen.
+
 ---
 
 ## ✨ Features
