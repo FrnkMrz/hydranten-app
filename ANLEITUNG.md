@@ -1,4 +1,4 @@
-# 🚒 Hydranten Jäger - Anleitung (v1.5.0)
+# 🚒 Hydranten Jäger - Anleitun
 
 **🌐 Live App:** [https://hydrantenjaeger.de](https://hydrantenjaeger.de)
 
