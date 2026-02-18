@@ -5,13 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run verify:version && npm test && vite build",
+    "build": "npm test && vite build",
     "preview": "vite preview",
     "test": "npm run verify:i18n && vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "verify:i18n": "node scripts/verify-i18n.js",
-    "verify:version": "node scripts/update-sw-version.js"
+    "verify:i18n": "node scripts/verify-i18n.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
@@ -22,6 +21,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "vite": "^7.2.4",
+    "vite-plugin-pwa": "^1.2.0",
     "vitest": "^4.0.18"
   },
   "dependencies": {
