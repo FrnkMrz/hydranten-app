@@ -123,6 +123,9 @@ export async function initCamera(element, onBack, onCapture) {
   const cleanup = () => {
     clearInterval(statusInterval);
     window.removeEventListener('deviceorientation', boundListener);
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
   };
 
   // Hook cleanup into Back buttons
@@ -229,4 +232,6 @@ export async function initCamera(element, onBack, onCapture) {
     }
     // Note: We leave btn.onclick active so desktop users without cam can still click "Shutter" to get a red image
   }
+
+  return cleanup;
 }

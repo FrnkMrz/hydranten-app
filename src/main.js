@@ -72,7 +72,7 @@ async function showCamera() {
   state.view = 'camera';
   app.innerHTML = renderCameraView();
 
-  await initCamera(app,
+  const cleanup = await initCamera(app,
     () => showIntro(), // onBack
     async (blob) => {  // onCapture
       // Mock capture if blob is null (from fallback button)
@@ -142,6 +142,10 @@ async function showCamera() {
   const settingsBtn = document.getElementById('settings-btn');
   if (settingsBtn) {
     settingsBtn.onclick = () => showSettings();
+  }
+
+  if (typeof cleanup === 'function') {
+    currentCleanup = cleanup;
   }
 }
 
@@ -324,6 +328,7 @@ function handleEdit(nodeId) {
         setTimeout(() => showIntro(), 2500);
       }
     });
+
 }
 
 
