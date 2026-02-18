@@ -232,35 +232,37 @@ function handleEdit(nodeId) {
         { back: () => { showIntro(); } }, // OnBack (Cancel) -> Intro
         (data) => {
           // OnSubmit (Save)
-          import('./components/overlay.js').then(({ showProcessOverlay }) => {
-            showProcessOverlay(
-              app,
-              t('messages.saving_data'),
-              (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log),
-              { onClose: () => showIntro() }
-            );
-          });
-        },
-        true, // editMode
-        nodeData, // initialData
-        (id, version) => {
-          // OnDelete
-          if (deleteHydrant) {
+          (data) => {
+            // OnSubmit (Save)
             import('./components/overlay.js').then(({ showProcessOverlay }) => {
               showProcessOverlay(
                 app,
-                t('messages.deleting_data'),
-                (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log),
+                t('messages.saving_data'),
+                (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log),
                 { onClose: () => showIntro() }
               );
             });
-          } else {
-            import('./components/overlay.js').then(({ showMessageOverlay }) => {
-              showMessageOverlay(app, t('general.error'), t('messages.internal_error_reload'), 'error');
-            });
-            console.error("deleteHydrant missing");
-          }
-        }
+          },
+            true, // editMode
+            nodeData, // initialData
+            (id, version) => {
+              // OnDelete
+              if (deleteHydrant) {
+                import('./components/overlay.js').then(({ showProcessOverlay }) => {
+                  showProcessOverlay(
+                    app,
+                    t('messages.deleting_data'),
+                    (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log),
+                    { onClose: () => showIntro() }
+                  );
+                });
+              } else {
+                import('./components/overlay.js').then(({ showMessageOverlay }) => {
+                  showMessageOverlay(app, t('general.error'), t('messages.internal_error_reload'), 'error');
+                });
+                console.error("deleteHydrant missing");
+              }
+            }
       );
     })
     .catch(err => {

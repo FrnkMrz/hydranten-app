@@ -88,15 +88,20 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
     // SUBMIT BUTTON
     const submitBtn = element.querySelector('#submit-img-btn');
+    // SUBMIT BUTTON
+    const submitBtn = element.querySelector('#submit-img-btn');
     if (submitBtn) {
       if (editMode) {
         submitBtn.innerHTML = `<span>💾 ${t('confirm.save_btn') || 'Speichern'}</span>`;
       }
 
-      submitBtn.onclick = () => {
+      const submitHandler = (e) => {
+        if (e) e.preventDefault();
+
         // Edit Mode: If no changes, just go back
-        if (editMode && formLogic && !formLogic.hasChanges()) {
-          console.log("No changes detected, cancelling edit.");
+        const changes = formLogic ? formLogic.hasChanges() : false;
+
+        if (editMode && formLogic && !changes) {
           if (onRetake && onRetake.back) onRetake.back();
           return;
         }
@@ -133,6 +138,8 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           version: editMode ? initialData.version : null
         });
       };
+
+      submitBtn.addEventListener('click', submitHandler);
     }
 
   } catch (err) {
