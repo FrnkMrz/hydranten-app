@@ -147,32 +147,39 @@ export async function initCamera(element, onBack, onCapture) {
   let stream = null;
 
   const performCapture = () => {
-    // If no stream (error mode), allow mock capture if needed, 
-    // BUT user wanted "Simulate Photo" removed. 
-    // However, for debugging without camera availability on Desktop, we might still want it logic-wise?
-    // If stream is null, simple red fallback.
+    // 1. Calculate optimal dimensions (Max 1920px width for Performance)
+    const MAX_WIDTH = 1920;
 
-    // Use full video resolution for high quality photos
-    const width = video.videoWidth || 1920;
-    const height = video.videoHeight || 1080;
+    // Default to video dimensions or fallback
+    let finalWidth = video.videoWidth || 1920;
+    let finalHeight = video.videoHeight || 1080;
 
-    canvas.width = width;
-    canvas.height = height;
+    // Scale down if too large
+    if (finalWidth > MAX_WIDTH) {
+      const ratio = MAX_WIDTH / finalWidth;
+      finalWidth = MAX_WIDTH;
+      finalHeight = finalHeight * ratio;
+    }
+
+    // 2. Set canvas to optimized size
+    canvas.width = finalWidth;
+    canvas.height = finalHeight;
     const ctx = canvas.getContext('2d');
 
     if (stream && stream.active) {
-      ctx.drawImage(video, 0, 0, width, height);
+      // 3. Draw image
+      ctx.drawImage(video, 0, 0, finalWidth, finalHeight);
       stream.getTracks().forEach(track => track.stop());
     } else {
-      // Fallback Red
+      // Fallback Red (Desktop/Error)
       ctx.fillStyle = '#cc0000';
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillRect(0, 0, finalWidth, finalHeight);
     }
 
-    // High quality JPEG (95% instead of 85%)
+    // 4. Compress to 0.80 (80%) quality (Reduces size ~80%)
     canvas.toBlob((blob) => {
       onCapture(blob);
-    }, 'image/jpeg', 0.95);
+    }, 'image/jpeg', 0.80);
   };
 
   btn.onclick = performCapture;
