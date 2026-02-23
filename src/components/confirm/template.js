@@ -57,7 +57,7 @@ export function renderConfirmView() {
 
          <!-- Type Selection (Grid) -->
           <div class="space-y-3">
-             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">${t('confirm.type_label')}</h3>
+             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">${t('confirm.type_label')}</h3>
              
              <!-- Row 1: Main Types -->
              <div id="type-grid-main" class="grid grid-cols-2 gap-2">
@@ -71,7 +71,7 @@ export function renderConfirmView() {
              
              <!-- SIGN Container (Moved here for proximity) -->
              <div id="sign-container" class="hidden mt-2 border-t border-gray-800 pt-2 animate-fade-in">
-                 <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.sign_label')}</label>
+                 <label class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">${t('confirm.sign_label')}</label>
                  <div class="grid grid-cols-3 gap-2 bg-gray-800/50 p-1 rounded-xl">
                      <button type="button" class="sign-option-btn min-h-[44px] px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="yes">
                         ✅ ${t('confirm.sign_options.yes')}
@@ -91,7 +91,7 @@ export function renderConfirmView() {
 
          <!-- Position Selection -->
          <div class="space-y-3">
-             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">${t('confirm.position_label')}</h3>
+             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">${t('confirm.position_label')}</h3>
              <div class="grid grid-cols-5 gap-2 bg-gray-800/50 p-1 rounded-xl">
                  <button type="button" class="pos-option-btn min-h-[44px] min-w-[44px] px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="">
                     🚫 ${t('confirm.locations.none')}
@@ -117,13 +117,13 @@ export function renderConfirmView() {
             
             <!-- Diameter / Volume -->
              <div id="diameter-container">
-                 <label for="hydrant-diameter" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.diameter_label')}</label>
+                 <label for="hydrant-diameter" class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">${t('confirm.diameter_label')}</label>
                  <!-- Using type="tel" to trigger numeric keypad on mobile but avoid spinner arrows -->
                   <input type="tel" inputmode="numeric" pattern="[0-9]*" id="hydrant-diameter" placeholder="${t('confirm.diameter_placeholder')}" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none appearance-none">
              </div>
 
             <div id="volume-container" class="hidden">
-                <label for="hydrant-volume" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Volumen (m³)</label>
+                <label for="hydrant-volume" class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">Volumen (m³)</label>
                 <input type="text" id="hydrant-volume" placeholder="${t('confirm.volume_placeholder')}" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
             </div>
 
@@ -131,13 +131,13 @@ export function renderConfirmView() {
                <!-- SIGN Container removed from here -->
                
                <div id="ref-container">
-                  <label for="hydrant-ref" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.number_label')}</label>
+                  <label for="hydrant-ref" class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">${t('confirm.number_label')}</label>
                   <input type="text" id="hydrant-ref" placeholder="${t('confirm.number_placeholder')}" maxlength="50" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                </div>
 
                <!-- Water Source (NEW) -->
                <div>
-                  <label for="hydrant-water-source" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.water_source_label')}</label>
+                  <label for="hydrant-water-source" class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">${t('confirm.water_source_label')}</label>
                    <div class="relative">
                       <select id="hydrant-water-source" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none appearance-none">
                         <option value="">${t('confirm.water_source_default')}</option>
@@ -149,14 +149,14 @@ export function renderConfirmView() {
                         <option value="reservoir">${t('confirm.water_source_reservoir')}</option>
                       </select>
                       <!-- Custom Arrow -->
-                      <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
+                      <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                       </div>
                    </div>
                </div>
                
                <div>
-                  <label for="hydrant-note" class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.notes_label')}</label>
+                  <label for="hydrant-note" class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">${t('confirm.notes_label')}</label>
                   <textarea id="hydrant-note" placeholder="${t('confirm.notes_placeholder')}" maxlength="255" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white h-20 outline-none"></textarea>
                </div>
             </div>

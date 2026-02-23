@@ -28,8 +28,19 @@ const state = {
   location: null
 };
 
-// Cleanup function for current view
+// Clean up function for current view
 let currentCleanup = null;
+
+// A11y: Screen Reader Announcer
+let a11yAnnouncer = document.getElementById('a11y-announcer');
+if (!a11yAnnouncer) {
+  a11yAnnouncer = document.createElement('div');
+  a11yAnnouncer.id = 'a11y-announcer';
+  a11yAnnouncer.className = 'sr-only'; // Tailwind utility for visually hidden
+  a11yAnnouncer.setAttribute('aria-live', 'polite');
+  a11yAnnouncer.setAttribute('aria-atomic', 'true');
+  document.body.appendChild(a11yAnnouncer);
+}
 
 function switchView(viewName, renderFn, initFn) {
   // Cleanup previous view
@@ -41,9 +52,20 @@ function switchView(viewName, renderFn, initFn) {
   state.view = viewName;
   app.innerHTML = renderFn();
 
-  // Accessibility: Focus Management
+  // Accessibility: Focus Management and Announcement
   app.setAttribute('tabindex', '-1');
   app.focus();
+
+  // Announce the view change to screen readers
+  const viewMap = {
+    'intro': t('intro.title_pre') + ' ' + t('intro.title_post'),
+    'camera': t('camera.take_photo_btn'), // Rough approximation for "Camera"
+    'confirm': t('confirm.title'),
+    'settings': t('settings.title'),
+    'history': t('settings.history_btn')
+  };
+  const announcedName = viewMap[viewName] || viewName;
+  a11yAnnouncer.textContent = `${announcedName} ${t('general.loaded') || 'geladen'}`;
 
   // Init new view and store cleanup (if any)
   const cleanup = initFn();

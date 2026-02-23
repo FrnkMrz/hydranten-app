@@ -15,7 +15,7 @@ export function renderHistoryView() {
 
       <!-- Content Area -->
       <div id="history-content" class="flex-1 overflow-auto custom-scrollbar flex flex-col gap-4 z-10">
-         <div class="flex items-center justify-center h-full text-gray-500">
+         <div class="flex items-center justify-center h-full text-gray-400">
             <span class="animate-pulse">${t('history.loading')}</span>
          </div>
       </div>
@@ -57,7 +57,7 @@ async function loadHistory(container) {
     const changesets = await fetchUserChangesets(username);
 
     if (changesets.length === 0) {
-      container.innerHTML = `<div class="text-gray-500 text-center">${t('history.no_data')}</div>`;
+      container.innerHTML = `<div class="text-gray-400 text-center">${t('history.no_data')}</div>`;
       return;
     }
 
@@ -77,7 +77,7 @@ async function loadHistory(container) {
                 <div class="p-4 rounded-xl border ${bgClass} text-sm">
                     <div class="flex justify-between mb-1">
                         <a href="https://www.openstreetmap.org/changeset/${cs.id}" target="_blank" rel="noopener noreferrer" class="font-bold text-blue-400 hover:text-blue-300 underline underline-offset-2">#${cs.id} ↗</a>
-                        <span class="text-gray-500 text-xs">${date}</span>
+                        <span class="text-gray-400 text-xs">${date}</span>
                     </div>
                     <div class="text-gray-200 break-words mb-2">
                         ${escapeHTML(comment)}

@@ -300,7 +300,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                          <p>Code: MIT License</p>
                          
                          <p class="mt-3 text-xs font-bold text-gray-400">Map Tiles:</p>
-                         <p class="text-[10px] text-gray-500 leading-tight">
+                         <p class="text-[10px] text-gray-400 leading-tight">
                             Basemap: © OpenStreetMap contributors<br>
                             Satellite: Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community<br>
                             Topo: Map style: © OpenTopoMap (CC-BY-SA)
