@@ -73,13 +73,13 @@ export function renderConfirmView() {
              <div id="sign-container" class="hidden mt-2 border-t border-gray-800 pt-2 animate-fade-in">
                  <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">${t('confirm.sign_label')}</label>
                  <div class="grid grid-cols-3 gap-2 bg-gray-800/50 p-1 rounded-xl">
-                     <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="yes">
+                     <button type="button" class="sign-option-btn min-h-[44px] px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="yes">
                         ✅ ${t('confirm.sign_options.yes')}
                      </button>
-                     <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="no">
+                     <button type="button" class="sign-option-btn min-h-[44px] px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="no">
                         ❌ ${t('confirm.sign_options.no')}
                      </button>
-                     <button type="button" class="sign-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="unknown">
+                     <button type="button" class="sign-option-btn min-h-[44px] px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="unknown">
                         ❓ ${t('confirm.sign_options.unknown')}
                      </button>
                  </div>
@@ -93,19 +93,19 @@ export function renderConfirmView() {
          <div class="space-y-3">
              <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">${t('confirm.position_label')}</h3>
              <div class="grid grid-cols-5 gap-2 bg-gray-800/50 p-1 rounded-xl">
-                 <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="">
+                 <button type="button" class="pos-option-btn min-h-[44px] min-w-[44px] px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="">
                     🚫 ${t('confirm.locations.none')}
                  </button>
-                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="sidewalk">
+                <button type="button" class="pos-option-btn min-h-[44px] min-w-[44px] px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="sidewalk">
                    🚶 ${t('confirm.locations.sidewalk')}
                 </button>
-                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="lane">
+                <button type="button" class="pos-option-btn min-h-[44px] min-w-[44px] px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="lane">
                    🚗 ${t('confirm.locations.street')}
                 </button>
-                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="parking_lane">
+                <button type="button" class="pos-option-btn min-h-[44px] min-w-[44px] px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="parking_lane">
                    🅿️ ${t('confirm.locations.parking')}
                 </button>
-                <button type="button" class="pos-option-btn py-2 px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="green">
+                <button type="button" class="pos-option-btn min-h-[44px] min-w-[44px] px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="green">
                    🌳 ${t('confirm.locations.green')}
                 </button>
              </div>

@@ -12,8 +12,8 @@ export function renderCameraView() {
              <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
          </button>
          <div class="bg-black/40 backdrop-blur text-xs px-3 py-1 rounded-full text-white border border-white/10 flex flex-col items-end mt-1">
-            <span id="gps-status" class="font-mono text-green-400">GPS: --</span>
-            <span id="compass-status" class="font-mono text-yellow-400">${t('camera.compass_label')}: --</span>
+            <span id="gps-status" class="font-mono text-green-400" aria-live="polite" aria-atomic="true">GPS: --</span>
+            <span id="compass-status" class="font-mono text-yellow-400" aria-live="polite" aria-atomic="true">${t('camera.compass_label')}: --</span>
          </div>
       </div>
 

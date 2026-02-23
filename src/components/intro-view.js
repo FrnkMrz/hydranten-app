@@ -260,8 +260,9 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    if (infoBtn) {
       // ... existing info modal logic ...
       infoBtn.onclick = () => {
-         const modal = document.createElement('div');
-         modal.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/90 p-6 animate-fade-in backdrop-blur-md";
+         const modal = document.createElement('dialog');
+         modal.className = "m-0 p-0 absolute inset-0 z-[100] flex items-center justify-center bg-black/90 p-6 backdrop-blur-md w-full h-full max-w-full max-h-full bg-transparent";
+         modal.setAttribute('aria-modal', 'true');
          modal.innerHTML = `
              <div class="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl overflow-y-auto max-h-[80vh]">
                  <h3 class="text-xl font-bold text-white mb-4">${t('intro.info_legal')}</h3>
@@ -317,7 +318,12 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
              </div>
            `;
          element.appendChild(modal);
-         modal.querySelector('#close-intro-info-btn').onclick = () => modal.remove();
+         modal.showModal();
+         modal.querySelector('#close-intro-info-btn').onclick = () => {
+            modal.close();
+            modal.remove();
+            infoBtn.focus();
+         };
       };
    }
 
@@ -336,8 +342,9 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       langBtn.innerHTML = `<span style="font-family: 'Apple Color Emoji','Segoe UI Emoji', system-ui; font-size: 1.5rem; line-height: 1;">${flagIcon}</span>`;
 
       langBtn.onclick = () => {
-         const modal = document.createElement('div');
-         modal.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/90 p-6 animate-fade-in backdrop-blur-md";
+         const modal = document.createElement('dialog');
+         modal.className = "m-0 p-0 absolute inset-0 z-[100] flex items-center justify-center bg-black/90 p-6 backdrop-blur-md w-full h-full max-w-full max-h-full bg-transparent";
+         modal.setAttribute('aria-modal', 'true');
 
          const langs = [
             { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
@@ -362,19 +369,20 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                    <h3 class="text-xl font-bold text-white mb-4 text-center">Language / Sprache</h3>
                    <div class="grid grid-cols-2 gap-3">
                        ${langs.map(l => `
-                           <button class="lang-option p-3 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/10 flex items-center gap-3 ${lang === l.code ? 'border-green-500 bg-green-900/20' : ''}" data-code="${l.code}">
+                           <button class="lang-option p-3 min-h-[44px] rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/10 flex items-center gap-3 ${lang === l.code ? 'border-green-500 bg-green-900/20' : ''}" data-code="${l.code}">
                                <span class="text-2xl">${l.flag}</span>
                                <span class="text-white font-bold text-sm">${l.label}</span>
                            </button>
                        `).join('')}
                    </div>
-                   <button id="close-lang-btn" class="w-full mt-6 py-3 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-xl font-bold transition">
+                   <button id="close-lang-btn" class="w-full mt-6 py-3 min-h-[44px] bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-xl font-bold transition">
                        Cancel
                    </button>
                </div>
            `;
 
          element.appendChild(modal);
+         modal.showModal();
 
          modal.querySelectorAll('.lang-option').forEach(btn => {
             btn.onclick = () => {
@@ -382,7 +390,11 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
             };
          });
 
-         modal.querySelector('#close-lang-btn').onclick = () => modal.remove();
+         modal.querySelector('#close-lang-btn').onclick = () => {
+            modal.close();
+            modal.remove();
+            langBtn.focus();
+         };
       };
    }
 
@@ -393,14 +405,14 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    // Live GPS Update & Map
    const mapContainer = element.querySelector('#intro-map');
    let map = null;
-//    let marker = null;
+   //    let marker = null;
 
    // Init Cached Position immediately
    let lastPos = getLastKnownPosition();
    // Remove aggressive stale check - better to show old position than error
-//    const initialCenter = lastPos ? [lastPos.lat, lastPos.lng] : [48.137, 11.576];
+   //    const initialCenter = lastPos ? [lastPos.lat, lastPos.lng] : [48.137, 11.576];
    // Fix: Increase default zoom to 16 so that hydrate fetch (min 14) works even without GPS fix
-//    const initialZoom = lastPos ? 18 : 16;
+   //    const initialZoom = lastPos ? 18 : 16;
 
    // Keep track of marker globally within this scope (closure) for updates
    let userMarker = null; // Re-introduced
@@ -709,23 +721,34 @@ function updateHydrants(map, onEdit) {
                   fillColor = BLUE;
                }
 
-               const m = L.circleMarker([node.lat, node.lon], {
-                  radius: 8, // Slightly bigger for easier tap
-                  fillColor: fillColor,
-                  color: '#fff',
-                  weight: 2,
-                  opacity: 0.9,
-                  fillOpacity: 0.7,
-                  className: 'hydrant-marker cursor-pointer'
+               // Screen Reader Accessible Marker
+               const iconHtml = `<button aria-label="${t('intro.hydrant_marker_alt') || 'Hydrant anzeigen und bearbeiten'}" class="w-full h-full rounded-full border-2 border-white shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500 transition-all cursor-pointer" style="background-color: ${fillColor}; opacity: 0.9;"></button>`;
+
+               const m = L.marker([node.lat, node.lon], {
+                  icon: L.divIcon({
+                     className: 'hydrant-custom-icon bg-transparent',
+                     html: iconHtml,
+                     iconSize: [24, 24], // 24x24 minimum swipable touch area
+                     iconAnchor: [12, 12]
+                  }),
+                  keyboard: true
                });
 
                // Fix: Ensure marker is added to layer!
                m.addTo(hydrantLayer);
 
+               // Since it's a native button inside the icon, we can just use the standard Leaflet click
+               // which also fires when VoiceOver "double taps" the element
                m.on('click', () => {
                   // console.log("Clicked Hydrant:", node.id, "onEdit:", onEdit); // DEBUG
                   // Visual feedback
-                  m.setStyle({ fillColor: '#3b82f6', radius: 10, color: 'white', weight: 4 });
+                  const btn = m.getElement().querySelector('button');
+                  if (btn) {
+                     btn.style.backgroundColor = '#3b82f6';
+                     btn.style.transform = 'scale(1.2)';
+                     btn.style.borderWidth = '4px';
+                  }
+
                   setTimeout(() => {
                      if (onEdit) {
                         onEdit(node.id); // Trigger Edit Mode
@@ -736,8 +759,6 @@ function updateHydrants(map, onEdit) {
                            showMessageOverlay(app, "Error", t('error.edit_function_missing'), 'error');
                         });
                      }
-                     // Reset style handled by re-render usually, but let's be nice
-                     // m.setStyle({ fillColor: RED, radius: 8, weight: 2 });
                   }, 100);
                });
 

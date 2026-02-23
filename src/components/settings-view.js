@@ -205,8 +205,9 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
   // Info Modal Logic
   if (infoBtn) {
     infoBtn.onclick = () => {
-      const modal = document.createElement('div');
-      modal.className = "absolute inset-0 z-50 flex items-center justify-center bg-black/90 p-6 animate-fade-in backdrop-blur-md";
+      const modal = document.createElement('dialog');
+      modal.className = "m-0 p-0 absolute inset-0 z-[100] flex items-center justify-center bg-black/90 p-6 backdrop-blur-md w-full h-full max-w-full max-h-full bg-transparent";
+      modal.setAttribute('aria-modal', 'true');
       modal.innerHTML = `
             <div class="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl overflow-y-auto max-h-[80vh]">
                 <h3 class="text-xl font-bold text-white mb-4">${t('intro.info_legal')}</h3>
@@ -248,7 +249,12 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
             </div>
           `;
       element.appendChild(modal);
-      modal.querySelector('#close-info-btn').onclick = () => modal.remove();
+      modal.showModal();
+      modal.querySelector('#close-info-btn').onclick = () => {
+        modal.close();
+        modal.remove();
+        infoBtn.focus();
+      };
     };
   }
 
