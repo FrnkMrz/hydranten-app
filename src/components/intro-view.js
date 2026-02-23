@@ -575,13 +575,18 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       getPosition(true)
          .then(pos => {
             // Success: Update map if not already done or just refine
-            if (!map) initMap(pos.lat, pos.lng, 18);
-            else {
-               // Update marker and view if accuracy is good
+            if (!map) {
+               initMap(pos.lat, pos.lng, 18);
+            } else {
+               // ALWAYS pan to the new fresh position on startup if we were using a cached one
                if (userMarker) userMarker.setLatLng([pos.lat, pos.lng]);
-               // Only pan if we were using default/old pos
-               // Only pan if we were using default/old pos
                map.setView([pos.lat, pos.lng], 18);
+               // Re-apply bounds around the fresh location
+               const BOUND_OFFSET = 0.002;
+               map.setMaxBounds([
+                  [pos.lat - BOUND_OFFSET, pos.lng - BOUND_OFFSET],
+                  [pos.lat + BOUND_OFFSET, pos.lng + BOUND_OFFSET]
+               ]);
             }
             updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
          })
