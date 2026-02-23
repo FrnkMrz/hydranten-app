@@ -1,14 +1,24 @@
-# 🚒 Hydranten Jäger APP (v1.5.1)
+# 🚒 Hydranten Jäger APP (v1.5.2)
 
 **🌐 Live App:** [https://hydrantenjaeger.de](https://hydrantenjaeger.de)
 
 Eine moderne, mobil-optimierte Progressive Web App (PWA) zum blitzschnellen Erfassen und Pflegen von Hydranten in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
-> **Status**: Version 1.5.1 (Stable Release)
-> *Features: Security Hardened, Failover-System, Edit-Mode, Smart-Tags, Token-Refresh, CI/CD.*
+> **Status**: Version 1.5.2 (Stable Release)
+> *Features: Security Hardened, Failover-System, Edit-Mode, Smart-Tags, Token-Refresh, CI/CD, PWA Accessibility.*
 
 ## 📋 Changelog
+
+### v1.5.2 (23.02.2026) - Accessibility & Security Polish
+*   **A11y (Accessibility)**: Vollständige Überarbeitung für mobile Screenreader (VoiceOver/TalkBack).
+*   **A11y**: Leaflet `circleMarker` durch HTML `divIcon` `<button>`s ersetzt, um Kartenmarker per Wischgeste bedienbar zu machen.
+*   **A11y**: Modale (Info, Sprache) zu HTML5 `<dialog>` umgebaut (`aria-modal`), um Screenreader-Fokus einzusperren.
+*   **A11y**: Touch-Targets (Tippflächen) für alle relevanten Buttons auf die geforderten 44x44px vergrößert.
+*   **A11y**: Ansichtswechsel werden nun per `aria-live` automatisch angesagt.
+*   **A11y**: Text-Kontraste erhöht (`text-gray-400`), um Sichtbarkeit im im direkten Sonnenlicht zu garantieren.
+*   **Security**: Behebung von npm `audit` Vulnerabilities (ReDoS in devDependencies).
+*   **Fix**: GPS-Startup-Logik: Karte fokussiert nach App-Start nun automatisch die frisch gefundene Position.
 
 ### v1.5.1 (18.02.2026) - Code Quality & Docs
 *   **CI/CD**: Vollständige Pipeline für Linting, Tests und Build-Checks integriert.
