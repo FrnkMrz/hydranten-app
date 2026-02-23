@@ -316,7 +316,21 @@ function showConfirm() {
               }
             }
           );
+        }).catch(err => {
+          console.error("Failed to load overlay module", err);
+          alert("Error: " + err.message);
+          if (btn) {
+            btn.innerHTML = `<span>${t('general.retry')}</span>`;
+            btn.disabled = false;
+          }
         });
+      }).catch(err => {
+        console.error("Failed to load OSM module", err);
+        alert("Network Error: Please reload the app. " + err.message);
+        if (btn) {
+          btn.innerHTML = `<span>${t('general.retry')}</span>`;
+          btn.disabled = false;
+        }
       });
     }
   );

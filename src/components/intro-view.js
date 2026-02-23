@@ -727,7 +727,7 @@ function updateHydrants(map, onEdit) {
                }
 
                // Screen Reader Accessible Marker
-               const iconHtml = `<button aria-label="${t('intro.hydrant_marker_alt') || 'Hydrant anzeigen und bearbeiten'}" class="w-full h-full rounded-full border-2 border-white shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500 transition-all cursor-pointer" style="background-color: ${fillColor}; opacity: 0.9;"></button>`;
+               const iconHtml = `<div role="button" tabindex="0" aria-label="${t('intro.hydrant_marker_alt') || 'Hydrant anzeigen und bearbeiten'}" class="w-full h-full rounded-full border-2 border-white shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500 transition-all cursor-pointer" style="background-color: ${fillColor}; opacity: 0.9;"></div>`;
 
                const m = L.marker([node.lat, node.lon], {
                   icon: L.divIcon({
@@ -747,7 +747,7 @@ function updateHydrants(map, onEdit) {
                m.on('click', () => {
                   // console.log("Clicked Hydrant:", node.id, "onEdit:", onEdit); // DEBUG
                   // Visual feedback
-                  const btn = m.getElement().querySelector('button');
+                  const btn = m.getElement().querySelector('[role="button"]');
                   if (btn) {
                      btn.style.backgroundColor = '#3b82f6';
                      btn.style.transform = 'scale(1.2)';
