@@ -418,7 +418,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    let userMarker = null; // Re-introduced
 
    if (mapContainer && !map) {
-      mapContainer.innerHTML = `<div class="flex h-full w-full items-center justify-center bg-gray-900 z-50 relative"><svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="ml-3 text-white font-medium">${t('general.loading')}</span></div>`;
+      mapContainer.innerHTML = `<div class="flex flex-col h-full w-full items-center justify-center bg-gray-900 z-50 relative"><svg class="animate-spin h-10 w-10 text-blue-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="text-white font-medium text-lg">${t('messages.locating_position') || 'GPS wird gesucht...'}</span></div>`;
 
       // Toast Helper
       const showToast = (msg, isError = false) => {
@@ -499,110 +499,100 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
             // Let's just hook into moveend if the map MOVES (even programmatically).
             map.on('moveend', debouncedUpdate);
 
-            // Locate Me Logic
-            const locateBtn = element.querySelector('#locate-me-btn');
-            if (locateBtn) {
-               locateBtn.onclick = () => {
-                  locateBtn.classList.add('animate-pulse');
-                  // Force fresh position (with auto-retry for better accuracy)
-                  getPosition(true)
-                     .then(pos => {
-                        // If accuracy is poor (>40m), try once more immediately
-                        if (pos.accuracy > 40) {
-                           console.log(`GPS accuracy ${pos.accuracy}m - Retrying...`);
-                           return getPosition(true);
-                        }
-                        return pos;
-                     })
-                     .then(pos => {
-                        map.setView([pos.lat, pos.lng], 18);
+            // Force a resize invalidation shortly after render to ensure map fills container
+            setTimeout(() => {
+               map.invalidateSize();
 
-                        // Update Bounds
-                        const BOUND_OFFSET = 0.002;
-                        map.setMaxBounds([
-                           [pos.lat - BOUND_OFFSET, pos.lng - BOUND_OFFSET],
-                           [pos.lat + BOUND_OFFSET, pos.lng + BOUND_OFFSET]
-                        ]);
+               // Apply constraints if we have a specific position (zoom 18)
+               if (zoomLevel >= 18) {
+                  const BOUND_OFFSET = 0.002;
+                  map.setMaxBounds([
+                     [centerLat - BOUND_OFFSET, centerLng - BOUND_OFFSET],
+                     [centerLat + BOUND_OFFSET, centerLng + BOUND_OFFSET]
+                  ]);
+                  if (!userMarker) userMarker = L.marker([centerLat, centerLng], { interactive: false }).addTo(map);
+                  else userMarker.setLatLng([centerLat, centerLng]);
+               }
 
-                        if (!userMarker) userMarker = L.marker([pos.lat, pos.lng], { interactive: false }).addTo(map);
-                        else userMarker.setLatLng([pos.lat, pos.lng]);
-
-                        updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
-                        // updateHydrants(map, onEdit); // triggered by moveend
-                     }).catch(err => {
-                        console.warn("Manual Locate failed", err);
-                        showToast(t('error.gps_failed'), true);
-                     }).finally(() => {
-                        locateBtn.classList.remove('animate-pulse');
-                     });
-               };
-            }
+               updateHydrants(map, onEdit);
+            }, 300);
          }
-
-
-         // Helper to consistently apply bounds
-         const applyConstraints = (centerLat, centerLng) => {
-            const BOUND_OFFSET = 0.002;
-            map.setMaxBounds([
-               [centerLat - BOUND_OFFSET, centerLng - BOUND_OFFSET],
-               [centerLat + BOUND_OFFSET, centerLng + BOUND_OFFSET]
-            ]);
-         };
-
-         // Force a resize invalidation shortly after render to ensure map fills container
-         setTimeout(() => {
-            map.invalidateSize();
-
-            // Apply constraints if we have a specific position (zoom 18)
-            if (zoomLevel >= 18) {
-               applyConstraints(centerLat, centerLng);
-               if (!userMarker) userMarker = L.marker([centerLat, centerLng], { interactive: false }).addTo(map);
-               else userMarker.setLatLng([centerLat, centerLng]);
-            }
-
-            updateHydrants(map, onEdit);
-         }, 300);
       }; // End initMap function
 
-      // EXECUTE: Try to get fresh position first
-      // Better strategy: If we have lastPos, use it immediately!
-      if (lastPos) {
-         initMap(lastPos.lat, lastPos.lng, 18);
-         updatePosition(lastPos); // Ensure state is synced
+      let hasUserDragged = false;
+      let gpsPollInterval = null;
+
+      const fetchGpsAndUpdate = (forceCenter = false, showBtnSpinner = false) => {
+         const locateBtnLoader = showBtnSpinner ? element.querySelector('#locate-me-btn svg') : null;
+         if (locateBtnLoader) locateBtnLoader.classList.add('animate-spin');
+
+         return getPosition(true)
+            .then(pos => {
+               // Initial map load check
+               if (!map) {
+                  initMap(pos.lat, pos.lng, 18);
+                  // Setup drag listening after map is ready
+                  map.on('dragstart', () => { hasUserDragged = true; });
+               } else {
+                  if (userMarker) userMarker.setLatLng([pos.lat, pos.lng]);
+
+                  if (!hasUserDragged || forceCenter) {
+                     map.setView([pos.lat, pos.lng], 18);
+                     hasUserDragged = false; // reset flag on force
+
+                     // Re-apply bounds around the fresh location
+                     const BOUND_OFFSET = 0.002;
+                     map.setMaxBounds([
+                        [pos.lat - BOUND_OFFSET, pos.lng - BOUND_OFFSET],
+                        [pos.lat + BOUND_OFFSET, pos.lng + BOUND_OFFSET]
+                     ]);
+                  }
+               }
+               updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
+            })
+            .catch(err => {
+               console.warn("GPS update failed", err);
+               if (!map) {
+                  showToast(t('error.gps_unavailable'), true);
+                  // Fallback: Default Germany Center or lastPos
+                  if (lastPos) {
+                     initMap(lastPos.lat, lastPos.lng, 18);
+                  } else {
+                     initMap(51.1657, 10.4515, 6);
+                  }
+                  if (map) map.on('dragstart', () => { hasUserDragged = true; });
+               }
+            })
+            .finally(() => {
+               if (locateBtnLoader) locateBtnLoader.classList.remove('animate-spin');
+            });
+      };
+
+      // Locate Me Button Setup
+      const locateBtn = element.querySelector('#locate-me-btn');
+      if (locateBtn) {
+         locateBtn.onclick = () => {
+            hasUserDragged = false; // Reset drag so it forces centration
+            fetchGpsAndUpdate(true, true);
+         };
       }
 
-      // Then try to refine it (background update)
-      getPosition(true)
-         .then(pos => {
-            // Success: Update map if not already done or just refine
-            if (!map) {
-               initMap(pos.lat, pos.lng, 18);
-            } else {
-               // ALWAYS pan to the new fresh position on startup if we were using a cached one
-               if (userMarker) userMarker.setLatLng([pos.lat, pos.lng]);
-               map.setView([pos.lat, pos.lng], 18);
-               // Re-apply bounds around the fresh location
-               const BOUND_OFFSET = 0.002;
-               map.setMaxBounds([
-                  [pos.lat - BOUND_OFFSET, pos.lng - BOUND_OFFSET],
-                  [pos.lat + BOUND_OFFSET, pos.lng + BOUND_OFFSET]
-               ]);
-            }
-            updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
-         })
-         .catch(err => {
-            console.warn("Startup GPS update failed", err);
-            // Only show toast if we had NO position at all
-            if (!lastPos) {
-               showToast(t('error.gps_unavailable'), true);
-               // Fallback: Default Germany Center
-               initMap(51.1657, 10.4515, 6);
-            }
-         });
+      // EXECUTE: Start fetch loop initially
+      fetchGpsAndUpdate(true);
+
+      // Start polling every 15 seconds
+      gpsPollInterval = setInterval(() => fetchGpsAndUpdate(false, false), 15000);
+
+      // Store cleanup on element to be accessible by return function
+      element._gpsPollInterval = gpsPollInterval;
    }
 
-   // Return Cleanup Function (Stub for now, real cleanup in startMapGps logic if needed)
-   return () => { };
+   // Return Cleanup Function
+   return () => {
+      if (element && element._gpsPollInterval) {
+         clearInterval(element._gpsPollInterval);
+      }
+   };
 }
 
 // Extracted GPS start logic
