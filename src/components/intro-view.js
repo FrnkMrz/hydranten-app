@@ -55,9 +55,9 @@ export function renderIntroView() {
    return `
     <div class="h-full w-full bg-black text-white flex flex-col relative overflow-hidden">
       
-      <!-- Map - Fills remaining space (flex-grow) -->
-      <div class="w-full flex-grow min-h-[30%] relative z-0">
-          <div id="intro-map" class="w-full h-full"></div>
+      <!-- Map - Fills remaining space (flex-1) -->
+      <div class="w-full flex-1 min-h-[30%] relative z-0">
+          <div id="intro-map" class="absolute inset-0 z-0"></div>
           
           <!-- LOCATE ME BUTTON -->
           <button id="locate-me-btn" class="absolute bottom-6 right-4 z-[401] bg-blue-600/90 text-white p-3 rounded-full shadow-lg shadow-blue-900/40 border border-white/20 active:scale-95 hover:bg-blue-500 transition" aria-label="Locate Me">
@@ -75,7 +75,7 @@ export function renderIntroView() {
           </button>
 
           <!-- Gradient Overlay -->
-          <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none"></div>
+          <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-[400]"></div>
       </div>
 
       <!-- Bottom Sheet Content - Auto Height, Stacked -->
