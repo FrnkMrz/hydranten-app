@@ -520,7 +520,6 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       }; // End initMap function
 
       let hasUserDragged = false;
-      let gpsPollInterval = null;
 
       const fetchGpsAndUpdate = (forceCenter = false, showBtnSpinner = false) => {
          const locateBtnLoader = showBtnSpinner ? element.querySelector('#locate-me-btn svg') : null;
@@ -581,10 +580,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       fetchGpsAndUpdate(true);
 
       // Start polling every 15 seconds
-      gpsPollInterval = setInterval(() => fetchGpsAndUpdate(false, false), 15000);
-
-      // Store cleanup on element to be accessible by return function
-      element._gpsPollInterval = gpsPollInterval;
+      element._gpsPollInterval = setInterval(() => fetchGpsAndUpdate(false, false), 15000);
    }
 
    // Return Cleanup Function
