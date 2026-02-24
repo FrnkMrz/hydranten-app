@@ -1,14 +1,19 @@
-# 🚒 Hydranten Jäger APP (v1.5.2)
+# 🚒 Hydranten Jäger APP (v1.5.3)
 
 **🌐 Live App:** [https://hydrantenjaeger.de](https://hydrantenjaeger.de)
 
 Eine moderne, mobil-optimierte Progressive Web App (PWA) zum blitzschnellen Erfassen und Pflegen von Hydranten in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
-> **Status**: Version 1.5.2 (Stable Release)
-> *Features: Security Hardened, Failover-System, Edit-Mode, Smart-Tags, Token-Refresh, CI/CD, PWA Accessibility.*
+> **Status**: Version 1.5.3 (Stable Release)
+> *Features: Background GPS Polling, Delayed Map Loading, UI Accessibility, Security Hardened, Failover-System, Edit-Mode.*
 
 ## 📋 Changelog
+
+### v1.5.3 (24.02.2026) - GPS Polling & Layout Fixes
+*   **Feature (GPS):** Einführung von kontinuierlichem **Background Polling (15s Intervall)** in der Intro-Ansicht. Die Position wird im Hintergrund aktualisiert, um sofort bereit zu sein, wenn der Nutzer auf "Starten" klickt.
+*   **UI/UX (GPS):** Die Karte lädt nun verzögert (**Delayed Map Loading**), erst wenn das finale (verschlüsselte) GPS-Signal vorliegt. Zuvor wird ein eleganter Lade-Screen angezeigt (verhindert das Laden und anschließende Wegspringen veralteter Kartenkacheln).
+*   **Fix (UI):** Layout-Bruch auf länglichen Android-Smartphones behoben. Der Karten-Container füllt nun flexibel den gesamten Platz aus (`absolute inset-0`), ohne dass das schwarze Bottom-Sheet unnatürlich in die Höhe gestreckt wird.
 
 ### v1.5.2 (23.02.2026) - Accessibility & Security Polish
 *   **A11y (Accessibility)**: Vollständige Überarbeitung für mobile Screenreader (VoiceOver/TalkBack).
