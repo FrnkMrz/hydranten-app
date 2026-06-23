@@ -520,6 +520,13 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       }; // End initMap function
 
       let hasUserDragged = false;
+      let dragTrackingAttached = false;
+
+      const attachDragTracking = () => {
+         if (!map || dragTrackingAttached) return;
+         map.on('dragstart', () => { hasUserDragged = true; });
+         dragTrackingAttached = true;
+      };
 
       const fetchGpsAndUpdate = (forceCenter = false, showBtnSpinner = false) => {
          const locateBtnLoader = showBtnSpinner ? element.querySelector('#locate-me-btn svg') : null;
@@ -530,8 +537,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                // Initial map load check
                if (!map) {
                   initMap(pos.lat, pos.lng, 18);
-                  // Setup drag listening after map is ready
-                  map.on('dragstart', () => { hasUserDragged = true; });
+                  attachDragTracking();
                } else {
                   if (userMarker) userMarker.setLatLng([pos.lat, pos.lng]);
 
@@ -559,7 +565,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                   } else {
                      initMap(51.1657, 10.4515, 6);
                   }
-                  if (map) map.on('dragstart', () => { hasUserDragged = true; });
+                  attachDragTracking();
                }
             })
             .finally(() => {
@@ -574,6 +580,12 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
             hasUserDragged = false; // Reset drag so it forces centration
             fetchGpsAndUpdate(true, true);
          };
+      }
+
+      if (lastPos) {
+         initMap(lastPos.lat, lastPos.lng, 18);
+         updatePosition(lastPos);
+         attachDragTracking();
       }
 
       // EXECUTE: Start fetch loop initially
