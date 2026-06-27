@@ -12,20 +12,21 @@ Diese App ("Hydranten Jäger") ist ein privates Open-Source-Projekt zur Unterst�
 
 Die App läuft im Browser (Client-Side) und hat kein eigenes Backend zur Speicherung von
 Nutzerdaten. Für einzelne Funktionen kommuniziert der Browser jedoch direkt mit externen
-Diensten. Dabei erhalten diese Dienste technisch bedingt unter anderem deine IP-Adresse.
+Diensten. Dabei erhalten diese Dienste technisch bedingt unter anderem die IP-Adresse des
+Endgeräts.
 
 ### Fotos und Kamerazugriff
 
-*   Der Kamerazugriff erfolgt erst nach deiner Freigabe im Browser bzw. Betriebssystem.
+*   Der Kamerazugriff erfolgt erst nach entsprechender Freigabe im Browser bzw. Betriebssystem.
 *   Ein aufgenommenes Foto wird in der App nur vorübergehend im Arbeitsspeicher des Browsers verarbeitet und als Vorschau angezeigt. Es wird **nicht** an OpenStreetMap, den Entwickler oder einen anderen Server hochgeladen und nicht zur Bilderkennung oder zu anderen Analysezwecken verwendet.
 *   Die Standortkoordinaten werden **nicht aus dem Foto ausgelesen**. Sie stammen separat aus der Standortfreigabe des Endgeräts und werden für die Positionierung des Hydranten verwendet.
-*   Nur wenn du in der Fotoansicht ausdrücklich „Speichern“ wählst, erstellt die App lokal eine Kopie des Fotos mit Standort und Aufnahmezeit in den EXIF-Metadaten. Anschließend öffnet sie – abhängig vom Gerät – den systemeigenen Teilen-Dialog oder startet einen Download. Ob und wohin diese Kopie gespeichert oder geteilt wird, entscheidest du selbst. Die App speichert das Foto nicht automatisch in einer eigenen Cloud.
+*   Nur bei ausdrücklicher Auswahl der Funktion „Speichern“ erstellt die App lokal eine Kopie des Fotos mit Standort und Aufnahmezeit in den EXIF-Metadaten. Anschließend öffnet sie – abhängig vom Gerät – den systemeigenen Teilen-Dialog oder startet einen Download. Speicherort und mögliche Empfänger werden im jeweiligen Systemdialog ausgewählt. Die App speichert das Foto nicht automatisch in einer eigenen Cloud.
 *   Für den beschreibenden Dateinamen kann beim Speichern des Fotos die ermittelte Koordinate an Nominatim übertragen werden.
 
 ### Standort- und OpenStreetMap-Daten
 
-*   Der Standortzugriff erfolgt erst nach deiner Freigabe. Die App verarbeitet die Geräteposition und – soweit verfügbar – die Kompassrichtung lokal, um die vorgeschlagene Position des Hydranten zu bestimmen.
-*   Erst wenn du den Upload ausdrücklich startest, werden die gewählten Koordinaten und Hydranten-Sachdaten über die OpenStreetMap API veröffentlicht. Das Foto ist nicht Bestandteil dieses Uploads. OpenStreetMap ordnet die Bearbeitung deinem dortigen Benutzerkonto zu.
+*   Der Standortzugriff erfolgt erst nach entsprechender Freigabe. Die App verarbeitet die Geräteposition und – soweit verfügbar – die Kompassrichtung lokal, um die vorgeschlagene Position des Hydranten zu bestimmen.
+*   Erst nach ausdrücklichem Start des Uploads werden die gewählten Koordinaten und Hydranten-Sachdaten über die OpenStreetMap API veröffentlicht. Das Foto ist nicht Bestandteil dieses Uploads. OpenStreetMap ordnet die Bearbeitung dem verwendeten Benutzerkonto zu.
 *   Zum Laden von Hydranten und Karten werden Kartenausschnitt und weitere technisch erforderliche Anfragedaten an OpenStreetMap-Kachelserver, Overpass-Instanzen oder den jeweils ausgewählten Kartenanbieter gesendet.
 *   Zur Ermittlung von Orts- und Straßennamen werden Koordinaten an `nominatim.openstreetmap.org` übertragen.
 
