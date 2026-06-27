@@ -59,13 +59,13 @@ function switchView(viewName, renderFn, initFn) {
   // Announce the view change to screen readers
   const viewMap = {
     'intro': t('intro.title_pre') + ' ' + t('intro.title_post'),
-    'camera': t('camera.take_photo_btn'), // Rough approximation for "Camera"
+    'camera': t('camera.capture_btn_aria'),
     'confirm': t('confirm.title'),
     'settings': t('settings.title'),
     'history': t('settings.history_btn')
   };
   const announcedName = viewMap[viewName] || viewName;
-  a11yAnnouncer.textContent = `${announcedName} ${t('general.loaded') || 'geladen'}`;
+  a11yAnnouncer.textContent = announcedName;
 
   // Init new view and store cleanup (if any)
   const cleanup = initFn();
@@ -137,26 +137,42 @@ async function showCamera() {
 
       let loc;
       try {
-        // Try fresh position (3s timeout)
+        // Try a genuinely fresh position (3s timeout)
         loc = await Promise.race([
-          getPosition(),
+          getPosition(true),
           new Promise((_, r) => setTimeout(() => r(new Error('Timeout')), CONSTANTS.GPS_TIMEOUT_MS))
         ]);
         // loc is { lat, lng, accuracy, heading } from geo.js
       } catch (e) {
-        console.warn('GPS Fresh failed, using cached:', e);
+        console.warn('Fresh GPS failed, checking recent cache:', e);
         const last = getLastKnownPosition();
-        if (last) {
+        const isRecent = last?.timestamp &&
+          (Date.now() - last.timestamp) <= (CONSTANTS.GPS_MAX_AGE_MS * 2);
+
+        if (last && isRecent && Number.isFinite(last.lat) && Number.isFinite(last.lng)) {
           loc = { ...last }; // lat, lng, accuracy, heading
         } else {
-          // Absolute Fallback (Munich)
-          loc = { lat: CONSTANTS.DEFAULT_LAT, lng: CONSTANTS.DEFAULT_LNG, accuracy: 999, heading: 0 };
+          state.capturedBlob = null;
+          const { showMessageOverlay } = await import('./components/overlay.js');
+          showMessageOverlay(
+            app,
+            t('general.error'),
+            t('error.gps_failed'),
+            'error',
+            () => showCamera()
+          );
+          return;
         }
       }
 
       // Now we have a loc (flat object)
       try {
-        const heading = loc.heading || getCurrentHeading() || 0;
+        if (!Number.isFinite(loc.lat) || !Number.isFinite(loc.lng)) {
+          throw new Error('Invalid GPS coordinates');
+        }
+
+        const deviceHeading = Number.isFinite(loc.heading) ? loc.heading : getCurrentHeading();
+        const heading = Number.isFinite(deviceHeading) ? deviceHeading : null;
         const finalLoc = calculateOffsetPosition(loc.lat, loc.lng, CONSTANTS.OFFSET_DISTANCE_M, heading);
 
         state.location = {
@@ -169,8 +185,15 @@ async function showCamera() {
         showConfirm();
       } catch (err) {
         console.error("Calculation Error", err);
-        state.location = { lat: CONSTANTS.DEFAULT_LAT, lng: CONSTANTS.DEFAULT_LNG, accuracy: 999 };
-        showConfirm();
+        state.capturedBlob = null;
+        const { showMessageOverlay } = await import('./components/overlay.js');
+        showMessageOverlay(
+          app,
+          t('general.error'),
+          t('error.gps_failed'),
+          'error',
+          () => showCamera()
+        );
       }
     });
 
@@ -230,14 +253,20 @@ function showSettings() {
 }
 
 function showConfirm() {
+  if (currentCleanup) {
+    currentCleanup();
+    currentCleanup = null;
+  }
+
   startTracking(); // Keep tracking for updates
   initCompass();
   state.view = 'confirm';
   app.innerHTML = renderConfirmView();
-  initConfirmView(app, state.capturedBlob, state.location,
+  const cleanup = initConfirmView(app, state.capturedBlob, state.location,
     {
       back: () => {
         console.log("Main: Switching back to Camera...");
+        state.capturedBlob = null;
         showCamera().catch(err => {
           console.error("Main: Failed to show Camera", err);
           import('./components/overlay.js').then(({ showMessageOverlay }) => {
@@ -305,7 +334,10 @@ function showConfirm() {
             (log) => createHydrant(data, log),
             {
               onClose: (result) => {
-                if (result) showIntro(); // Success -> Intro
+                if (result) {
+                  state.capturedBlob = null;
+                  showIntro(); // Success -> Intro
+                }
                 else {
                   // Error -> Re-enable button
                   if (btn) {
@@ -334,6 +366,10 @@ function showConfirm() {
       });
     }
   );
+
+  if (typeof cleanup === 'function') {
+    currentCleanup = cleanup;
+  }
 }
 
 // Init App / Auth Check (Custom PKCE)

@@ -3,9 +3,13 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Create Hydrant Flow', () => {
 
-    test.beforeEach(async ({ context }) => {
-        // 1. Grant Permissions (Geolocation & Camera)
-        await context.grantPermissions(['geolocation', 'camera']);
+    test.beforeEach(async ({ context, browserName }) => {
+        // WebKit does not expose Playwright's synthetic "camera" permission.
+        // The app's camera fallback still exercises the remaining capture flow.
+        const permissions = browserName === 'chromium'
+            ? ['geolocation', 'camera']
+            : ['geolocation'];
+        await context.grantPermissions(permissions);
     });
 
     test('Create a new hydrant (Happy Path)', async ({ page }) => {

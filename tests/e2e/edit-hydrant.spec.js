@@ -76,7 +76,11 @@ test.describe('Edit Hydrant Flow', () => {
 
         // 4b. Fetch Node Ways (GET /node/12345/ways)
         await page.route('**/api/0.6/node/12345/ways', async route => {
-            await route.fulfill({ status: 200, contentType: 'text/xml', body: '<osm></osm>' });
+            await route.fulfill({
+                status: 200,
+                contentType: 'text/xml',
+                body: '<osm><way id="999"><nd ref="12345"/></way></osm>'
+            });
         });
 
         // Monitor Browser Console
@@ -135,7 +139,7 @@ test.describe('Edit Hydrant Flow', () => {
 
         // 2. Wait for Map & Marker
         // Use the Leaflet class as it is most reliable
-        const marker = page.locator('.hydrant-marker');
+        const marker = page.locator('.hydrant-custom-icon');
         await expect(marker).toBeVisible({ timeout: 15000 });
 
         // Debug: Log if multiple markers found
@@ -176,6 +180,10 @@ test.describe('Edit Hydrant Flow', () => {
         // 4. Wait for Edit View / Form
         const diameterInput = page.locator('#hydrant-diameter');
         await expect(diameterInput).toBeVisible({ timeout: 15000 });
+
+        // A node that belongs to a way must not be draggable, otherwise moving
+        // the hydrant would also alter the connected way geometry.
+        await expect(page.locator('#map .leaflet-marker-icon')).not.toHaveClass(/leaflet-marker-draggable/);
 
         // Verify Pre-fill
         await expect(diameterInput).toHaveValue('80');

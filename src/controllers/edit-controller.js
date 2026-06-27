@@ -63,7 +63,7 @@ export function handleEdit(nodeId, app, callbacks) {
                             app,
                             t('messages.saving_data'),
                             (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log),
-                            { onClose: () => showIntro() }
+                            { onClose: (result) => { if (result) showIntro(); } }
                         );
                     });
                 },
@@ -77,7 +77,7 @@ export function handleEdit(nodeId, app, callbacks) {
                                 app,
                                 t('messages.deleting_data'),
                                 (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log),
-                                { onClose: () => showIntro() }
+                                { onClose: (result) => { if (result) showIntro(); } }
                             );
                         });
                     } else {

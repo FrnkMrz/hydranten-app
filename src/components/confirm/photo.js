@@ -6,7 +6,7 @@ export function initPhoto(element, imageBlob, location, editMode) {
 
     if (!imageBlob || !img || editMode) {
         if (editMode && imgContainer) imgContainer.classList.add('hidden');
-        return;
+        return () => {};
     }
 
     const blobUrl = URL.createObjectURL(imageBlob);
@@ -84,11 +84,13 @@ export function initPhoto(element, imageBlob, location, editMode) {
 
             // Fallback: Regular download (Desktop or if share fails)
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(enrichedBlob);
+            const downloadUrl = URL.createObjectURL(enrichedBlob);
+            a.href = downloadUrl;
             a.download = filename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(downloadUrl), 0);
 
             // Visual Feedback: Green flash
             if (imgContainer) {
@@ -176,4 +178,10 @@ export function initPhoto(element, imageBlob, location, editMode) {
             }
         };
     }
+
+    return () => {
+        closeZoom();
+        URL.revokeObjectURL(blobUrl);
+        if (imgContainer) imgContainer.onclick = null;
+    };
 }

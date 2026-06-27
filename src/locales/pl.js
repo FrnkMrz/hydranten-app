@@ -34,6 +34,14 @@ export default {
         legal_link: "Info Prawne",
         history_btn: "Historia"
     },
+    gamification: {
+        rank_progress: "Jeszcze {count} do rangi {rank}!",
+        rank_max: "Jesteś legendą!",
+        legend: "Stopnie i odznaki",
+        list_title: "Wszystkie stopnie",
+        from_hydrants: "od {count} hydrantów",
+        level_title: "Ranga Łowcy Hydrantów"
+    },
     history: {
         title: "Historia",
         btn_label: "Historia",
@@ -83,19 +91,9 @@ export default {
             underground: "Podziemny",
             pillar: "Nadziemny",
             wall: "Ścienny",
-            suction: "Punkt czerpania",     // "Punkt Czerpania" -> "Punkt czerpania" (lowercase usually better, but keeping consistent)
-            cistern: "Cysterna",            // Simplified as requested maybe? Re-checking context... 
-            // Wait, user said "is not translated". I put "Cysterna / Zbiornik" and "Suchy Hydrant". 
-            // Maybe they want SPECIFIC terms. 
-            // "Trocken" -> "Suchy pion" (often used for dry risers/hydrants) or "Hydrant suchy".
-            // "Zisterne" -> "Cysterna" or "Zbiornik przeciwpożarowy".
-            // "Saugstelle" -> "Punkt czerpania wody".
-            // I will use standard fire fighting terms.
-
-
-
-
-
+            suction: "Punkt czerpania wody",
+            cistern: "Zbiornik przeciwpożarowy",
+            dry_hydrant: "Suchy hydrant",
         },
         locations: {
             sidewalk: "Chodnik",

@@ -191,10 +191,10 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
           t('settings.app_reset'),
           t('settings.reset_btn') + "? " + t('messages.no_undo'), // warning text
           () => {
-            // Yes
-            auth.logout();
-            localStorage.removeItem('osm_pkce_verifier');
-            localStorage.removeItem('osm_user_img');
+            // Clear all app-owned browser state, including cached location,
+            // OAuth data, settings, and optimistic OSM records.
+            localStorage.clear();
+            sessionStorage.clear();
             window.location.reload();
           }
         );
@@ -325,7 +325,6 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
     updateUI(null);
   }
 }
-
 
 
 

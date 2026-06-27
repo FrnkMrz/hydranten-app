@@ -712,8 +712,8 @@ function updateHydrants(map, onEdit) {
                   fillColor = BLUE;
                }
 
-               // Screen Reader Accessible Marker
-               const iconHtml = `<div role="button" tabindex="0" aria-label="${t('intro.hydrant_marker_alt') || 'Hydrant anzeigen und bearbeiten'}" class="w-full h-full rounded-full border-2 border-white shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500 transition-all cursor-pointer" style="background-color: ${fillColor}; opacity: 0.9;"></div>`;
+               const markerLabel = t('confirm.title_edit');
+               const iconHtml = `<div aria-hidden="true" class="hydrant-marker-visual w-full h-full rounded-full border-2 border-white shadow-md transition-all cursor-pointer" style="background-color: ${fillColor}; opacity: 0.9;"></div>`;
 
                const m = L.marker([node.lat, node.lon], {
                   icon: L.divIcon({
@@ -725,15 +725,17 @@ function updateHydrants(map, onEdit) {
                   keyboard: true
                });
 
-               // Fix: Ensure marker is added to layer!
                m.addTo(hydrantLayer);
+               const markerElement = m.getElement();
+               if (markerElement) {
+                  markerElement.setAttribute('role', 'button');
+                  markerElement.setAttribute('aria-label', markerLabel);
+               }
 
-               // Since it's a native button inside the icon, we can just use the standard Leaflet click
-               // which also fires when VoiceOver "double taps" the element
                m.on('click', () => {
                   // console.log("Clicked Hydrant:", node.id, "onEdit:", onEdit); // DEBUG
                   // Visual feedback
-                  const btn = m.getElement().querySelector('[role="button"]');
+                  const btn = m.getElement()?.querySelector('.hydrant-marker-visual');
                   if (btn) {
                      btn.style.backgroundColor = '#3b82f6';
                      btn.style.transform = 'scale(1.2)';
@@ -753,7 +755,6 @@ function updateHydrants(map, onEdit) {
                   }, 100);
                });
 
-               m.addTo(hydrantLayer);
             }
          });
       })

@@ -65,8 +65,9 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
         maxNativeZoom: maxNativeZoom
     }).addTo(map);
 
-    // Disable dragging if locked -> Now always draggable but restricted by map bounds
-    const marker = L.marker(center, { draggable: true, autoPan: true }).addTo(map);
+    // Nodes that are part of a way must not move because that would alter the
+    // geometry of the entire connected OSM way.
+    const marker = L.marker(center, { draggable: !isLocked, autoPan: true }).addTo(map);
     const statusPill = document.querySelector('#geo-status-pill');
 
     marker.on('dragend', function () {

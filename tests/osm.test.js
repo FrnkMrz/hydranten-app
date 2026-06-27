@@ -41,4 +41,26 @@ describe('OSM Service - createHydrant', () => {
         const data = { lat: 50, lng: 10, tags: {} };
         await expect(createHydrant(data, () => { })).rejects.toThrow('CS Init Failed: 401');
     });
+
+    it('closes the changeset when node creation fails', async () => {
+        fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({ address: { city: 'TestCity' } })
+        });
+        fetch.mockResolvedValueOnce({ ok: true, text: async () => '12345' });
+        fetch.mockResolvedValueOnce({
+            ok: false,
+            status: 400,
+            text: async () => 'Invalid node'
+        });
+        fetch.mockResolvedValueOnce({ ok: true });
+
+        const data = { lat: 50, lng: 10, tags: { emergency: 'fire_hydrant' } };
+        await expect(createHydrant(data, () => {})).rejects.toThrow('Node Create Failed: 400');
+
+        expect(fetch).toHaveBeenLastCalledWith(
+            'https://api.openstreetmap.org/api/0.6/changeset/12345/close',
+            expect.objectContaining({ method: 'PUT' })
+        );
+    });
 });

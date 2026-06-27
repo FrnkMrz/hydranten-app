@@ -89,7 +89,7 @@ try {
 let watcherId = null;
 
 export function startTracking() {
-    if (watcherId) return; // Already tracking
+    if (watcherId !== null) return; // Already tracking
     if (!navigator.geolocation) return;
 
     watcherId = navigator.geolocation.watchPosition(
@@ -116,7 +116,7 @@ export function startTracking() {
 }
 
 export function stopTracking() {
-    if (watcherId) {
+    if (watcherId !== null) {
         navigator.geolocation.clearWatch(watcherId);
         watcherId = null;
         console.log("GPS Tracking stopped (Battery saved).");

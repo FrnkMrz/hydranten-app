@@ -103,6 +103,26 @@ async function getLocationName(lat, lng, log) {
     return locationStr;
 }
 
+async function closeChangeset(changesetId, log) {
+    try {
+        const response = await fetch(`https://api.openstreetmap.org/api/0.6/changeset/${changesetId}/close`, {
+            method: 'PUT',
+            headers: await getAuthHeaderAsync()
+        });
+
+        if (!response.ok) {
+            log(c.err(`Changeset ${changesetId} could not be closed (${response.status})`));
+            return false;
+        }
+
+        log(c.info('Changeset Closed'));
+        return true;
+    } catch (error) {
+        log(c.err(`Changeset ${changesetId} close failed: ${error.message}`));
+        return false;
+    }
+}
+
 export async function createHydrant(data, log = console.log) {
     try {
         const { lat, lng, tags } = data;
@@ -138,60 +158,52 @@ export async function createHydrant(data, log = console.log) {
         const changesetId = await csRes.text();
         log(c.res(`Changeset ID: ${changesetId}`));
 
+        try {
+            // 3. Create Node
+            log(c.info(t('upload_log.uploading_hydrant')));
 
-        // 3. Create Node
-        log(c.info(t('upload_log.uploading_hydrant')));
+            let tagsXml = '';
+            for (const [k, v] of Object.entries(finalTags)) {
+                if (v) tagsXml += `<tag k="${escapeXml(k)}" v="${escapeXml(v)}"/>`;
+            }
 
-        let tagsXml = '';
-        for (const [k, v] of Object.entries(finalTags)) {
-            if (v) tagsXml += `<tag k="${escapeXml(k)}" v="${escapeXml(v)}"/>`;
-        }
-
-        const nodeXml = `
+            const nodeXml = `
 <osm>
   <node lat="${lat}" lon="${lng}" changeset="${changesetId}">
     ${tagsXml}
   </node>
 </osm>`;
 
-        log(c.req(`PUT /node/create Payload: <br><span class="text-xs font-mono text-gray-500">${nodeXml.replace(/</g, '&lt;')}</span>`));
-        // log(c.info(`XML: ${nodeXml.replace(/</g, '&lt;')}`)); // Too verbose? User liked looking at it implicitly.
+            log(c.req(`PUT /node/create Payload: <br><span class="text-xs font-mono text-gray-500">${nodeXml.replace(/</g, '&lt;')}</span>`));
 
-        const nodeRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/create`, {
-            method: 'PUT',
-            headers: await getAuthHeaderAsync(),
-            body: nodeXml
-        });
+            const nodeRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/create`, {
+                method: 'PUT',
+                headers: await getAuthHeaderAsync(),
+                body: nodeXml
+            });
 
-        if (!nodeRes.ok) throw new Error(`Node Create Failed: ${nodeRes.status} ${await nodeRes.text()}`);
-        const nodeId = await nodeRes.text();
-        log(c.res(`Node Created: ${nodeId}`));
+            if (!nodeRes.ok) throw new Error(`Node Create Failed: ${nodeRes.status} ${await nodeRes.text()}`);
+            const nodeId = await nodeRes.text();
+            log(c.res(`Node Created: ${nodeId}`));
 
+            // Optimistic UI: Remember created node locally to show it immediately
+            try {
+                const created = JSON.parse(localStorage.getItem('created_hydrants') || '[]');
+                const newNode = {
+                    id: nodeId,
+                    lat: parseFloat(lat),
+                    lon: parseFloat(lng),
+                    tags: finalTags,
+                    timestamp: Date.now()
+                };
+                created.push(newNode);
+                localStorage.setItem('created_hydrants', JSON.stringify(created));
+            } catch (e) { console.error("Could not save creation to local storage", e); }
 
-        // 4. Close Changeset
-        log(c.req(`PUT /changeset/${changesetId}/close`));
-        await fetch(`https://api.openstreetmap.org/api/0.6/changeset/${changesetId}/close`, {
-            method: 'PUT',
-            headers: await getAuthHeaderAsync()
-        });
-        log(c.success(`Changeset Closed`));
-
-        // Optimistic UI: Remember created node locally to show it immediately
-        try {
-            const created = JSON.parse(localStorage.getItem('created_hydrants') || '[]');
-            // Add new node. Remove duplicates if any.
-            const newNode = {
-                id: nodeId,
-                lat: parseFloat(lat),
-                lon: parseFloat(lng),
-                tags: finalTags,
-                timestamp: Date.now()
-            };
-            created.push(newNode);
-            localStorage.setItem('created_hydrants', JSON.stringify(created));
-        } catch (e) { console.error("Could not save creation to local storage", e); }
-
-        return { id: nodeId, changeset: changesetId };
+            return { id: nodeId, changeset: changesetId };
+        } finally {
+            await closeChangeset(changesetId, log);
+        }
 
     } catch (err) {
         log(c.err(err.message));
@@ -320,12 +332,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
         return { id, version: newVersion, changeset: changesetId };
 
     } finally {
-        // 4. Always Try to Close Changeset
-        await fetch(`https://api.openstreetmap.org/api/0.6/changeset/${changesetId}/close`, {
-            method: 'PUT',
-            headers: await getAuthHeaderAsync()
-        });
-        log(c.info(`Changeset Closed`));
+        await closeChangeset(changesetId, log);
     }
 }
 
@@ -403,11 +410,7 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
         return { id, version: newVersion };
 
     } finally {
-        await fetch(`https://api.openstreetmap.org/api/0.6/changeset/${changesetId}/close`, {
-            method: 'PUT',
-            headers: await getAuthHeaderAsync()
-        });
-        log(c.info(`Changeset Closed`));
+        await closeChangeset(changesetId, log);
     }
 }
 

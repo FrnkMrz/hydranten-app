@@ -31,48 +31,54 @@ export function determineHydrantType(tags) {
 export function prepareHydrantTags(currentTags, selectedType, selectedPos, diameter, ref, note, waterSource, volume, sign) {
     const tags = { ...currentTags };
 
+    // Remove every tag controlled by this form before rebuilding the selected
+    // hydrant type. This allows users to clear values and prevents hidden fields
+    // from leaking tags that do not belong to the selected object type.
+    [
+        'emergency',
+        'fire_hydrant:type',
+        'fire_hydrant:position',
+        'fire_hydrant:diameter',
+        'fire_hydrant:diameter:signed',
+        'ref',
+        'ref:signed',
+        'note',
+        'description',
+        'water_source',
+        'water_tank:volume'
+    ].forEach(key => delete tags[key]);
+
+    if (selectedPos) tags['fire_hydrant:position'] = selectedPos;
+    if (note?.trim()) tags['note'] = note.trim();
+    if (waterSource) tags['water_source'] = waterSource;
+
     // Handle specific types
     if (selectedType === 'cistern') {
         tags['emergency'] = 'water_tank';
-        delete tags['fire_hydrant:type'];
 
-        if (volume) {
+        if (volume?.trim()) {
             let val = volume.trim();
             if (/^\d+$/.test(val)) val += " m3";
             tags['water_tank:volume'] = val;
         }
-        tags['fire_hydrant:position'] = selectedPos;
+        if (ref?.trim()) tags['ref'] = ref.trim();
     }
     else if (selectedType === 'dry_hydrant') {
         tags['emergency'] = 'fire_hydrant';
         tags['fire_hydrant:type'] = 'dry_hydrant';
-        tags['fire_hydrant:position'] = selectedPos;
-        delete tags['water_tank:volume'];
+        if (diameter?.trim()) tags['fire_hydrant:diameter'] = diameter.trim();
+        if (ref?.trim()) tags['ref'] = ref.trim();
     }
     else if (selectedType === 'suction_point') {
         tags['emergency'] = 'suction_point';
-        tags['fire_hydrant:position'] = selectedPos;
-        delete tags['fire_hydrant:type'];
-        delete tags['water_tank:volume'];
-        delete tags['ref'];
-        delete tags['fire_hydrant:diameter'];
     }
     else {
         // Standard Hydrants (pillar, underground, wall, or unknown/new)
         tags['emergency'] = 'fire_hydrant';
 
-        // BUG FIX (Proposed): Only set fire_hydrant:type if selectedType is a valid known type or explicitly set.
-        // Ideally, if selectedType is empty/unknown, we shouldn't set it to 'pillar' unless the user actively chose 'pillar'.
-        // But for now, we replicate the EXISTING behavior to demonstrate the bug in tests.
-        if (selectedType) {
-            tags['fire_hydrant:type'] = selectedType;
-        } else {
-            // If no type selected, existing logic deleted it?
-            delete tags['fire_hydrant:type'];
-        }
-
-        tags['fire_hydrant:position'] = selectedPos;
-        delete tags['water_tank:volume'];
+        if (selectedType) tags['fire_hydrant:type'] = selectedType;
+        if (diameter?.trim()) tags['fire_hydrant:diameter'] = diameter.trim();
+        if (ref?.trim()) tags['ref'] = ref.trim();
 
         // Sign Logic
         if (selectedType === 'underground') {
@@ -87,21 +93,6 @@ export function prepareHydrantTags(currentTags, selectedType, selectedPos, diame
                 delete tags['ref:signed'];
             }
         }
-    }
-
-    // Common Fields
-    if (diameter) tags['fire_hydrant:diameter'] = diameter;
-    if (ref) tags['ref'] = ref;
-    if (note) tags['note'] = note;
-
-    // Water Source
-    if (waterSource) {
-        tags['water_source'] = waterSource;
-    } else if (currentTags && currentTags['water_source']) {
-        // If explicitly cleared (assuming waterSource passed as empty string means 'clear'), 
-        // BUT we need to be careful. In the UI, empty value means "default" or "no change"?
-        // The previous logic deleted it if it existed.
-        delete tags['water_source'];
     }
 
     return tags;

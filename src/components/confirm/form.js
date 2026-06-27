@@ -80,6 +80,7 @@ export function initFormLogic(element, location, editMode, initialData) {
         const currentType = typeInput ? typeInput.value : '';
         const currentPos = posInput ? posInput.value : '';
         const currentDiameter = diameterInput ? diameterInput.value : '';
+        const currentVolume = volumeInput ? volumeInput.value : '';
         const currentRef = refInput ? refInput.value : '';
         const currentNote = noteInput ? noteInput.value : '';
         const currentSign = signInput ? signInput.value : 'unknown';
@@ -100,6 +101,7 @@ export function initFormLogic(element, location, editMode, initialData) {
 
         const posChanged = (getTag('fire_hydrant:position') !== currentPos);
         const diaChanged = (getTag('fire_hydrant:diameter') !== currentDiameter);
+        const volumeChanged = (getTag('water_tank:volume') !== currentVolume);
         const refChanged = (getTag('ref') !== currentRef);
         const noteChanged = ((getTag('note') || getTag('description')) !== currentNote);
 
@@ -123,7 +125,7 @@ export function initFormLogic(element, location, editMode, initialData) {
         const lngDiff = Math.abs(location.lng - initialData.lng);
         const locChanged = (latDiff > 0.000001 || lngDiff > 0.000001);
 
-        hasChanges = (typeChanged || posChanged || diaChanged || refChanged || noteChanged || signChanged || sourceChanged || locChanged);
+        hasChanges = (typeChanged || posChanged || diaChanged || volumeChanged || refChanged || noteChanged || signChanged || sourceChanged || locChanged);
 
         // Update UI
         if (submitBtn) {
@@ -266,6 +268,7 @@ export function initFormLogic(element, location, editMode, initialData) {
         }
 
         if (diameterInput && nodeTags['fire_hydrant:diameter']) diameterInput.value = nodeTags['fire_hydrant:diameter'];
+        if (volumeInput && nodeTags['water_tank:volume']) volumeInput.value = nodeTags['water_tank:volume'];
         if (refInput && nodeTags['ref']) refInput.value = nodeTags['ref'];
         if (noteInput && (nodeTags['note'] || nodeTags['description'])) noteInput.value = nodeTags['note'] || nodeTags['description'];
 

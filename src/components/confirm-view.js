@@ -26,10 +26,10 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
       if (formLogic && formLogic.checkChanges) formLogic.checkChanges();
     };
 
-    initMap(element, location, editMode, initialData, onRetake, checkChangesWrapper);
+    const map = initMap(element, location, editMode, initialData, onRetake, checkChangesWrapper);
 
     // 2. Initialize Photo
-    initPhoto(element, imageBlob, location, editMode);
+    const cleanupPhoto = initPhoto(element, imageBlob, location, editMode);
 
     // 3. Initialize Form Logic
     formLogic = initFormLogic(element, location, editMode, initialData);
@@ -140,6 +140,11 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
       submitBtn.addEventListener('click', submitHandler);
     }
+
+    return () => {
+      if (typeof cleanupPhoto === 'function') cleanupPhoto();
+      if (map) map.remove();
+    };
 
   } catch (err) {
     console.error("FATAL ConfirmView Error", err);
