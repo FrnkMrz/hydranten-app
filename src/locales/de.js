@@ -16,7 +16,7 @@ export default {
         info_legal: "Rechtliche Hinweise",
         info_impressum: "Impressum",
         info_data: "Daten & Datenschutz",
-        info_data_text: "Diese App speichert keine personenbezogenen Daten auf eigenen Servern. Deine IP-Adresse wird an die Overpass API und Nominatim (OSM Foundation) übertragen, um Kartendaten und Adressen abzurufen. Die GPS-Verarbeitung erfolgt lokal auf deinem Gerät.",
+        info_data_text: "Fotos werden nur vorübergehend lokal im Browser verarbeitet, nicht hochgeladen und nicht analysiert. Die GPS-Position stammt separat aus der Standortfreigabe. An OpenStreetMap werden erst beim ausdrücklichen Upload Koordinaten und Hydranten-Sachdaten übertragen. Eine Fotokopie mit GPS-EXIF wird nur auf deinen ausdrücklichen Wunsch über Teilen oder Download gespeichert. Bei externen Kartendiensten, Overpass, Nominatim und OpenStreetMap wird technisch bedingt auch deine IP-Adresse übertragen.",
         info_license: "Lizenz & Code",
         disclaimer_text: "Nicht für Notfälle nutzen. Keine Garantie.\nMit Start werden Daten zu OSM geladen.",
         info_github: "Projekt auf GitHub ansehen",

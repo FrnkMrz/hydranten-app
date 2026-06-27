@@ -121,9 +121,10 @@ Die App folgt einer **MVC-ähnlichen Struktur** (Model-View-Controller), wobei `
     *   `geo.js`: Liefert GPS + Kompass.
     *   `main.js`: Berechnet die Zielkoordinate (Offset).
     *   `confirm-view`: User ergänzt Details (Typ, Durchmesser).
-3.  **Upload**:
-    *   `photo-service.js`: Skaliert das Bild (Canvas), entfernt EXIF-Ballast, fügt GPS-EXIF hinzu.
-    *   `osm.js`: Erstellt ein XML-Changeset und sendet es an die OSM API.
+3.  **Optionale lokale Fotospeicherung**:
+    *   `photo-service.js`: Erstellt nur auf ausdrücklichen Wunsch eine lokale Kopie des Fotos, ergänzt GPS-EXIF und übergibt sie an den Teilen-Dialog bzw. Download. Das Foto wird nicht hochgeladen.
+4.  **Upload**:
+    *   `osm.js`: Erstellt aus Koordinaten und Hydranten-Sachdaten ein XML-Changeset und sendet es an die OSM API. Das Foto ist nicht Bestandteil des Changesets.
 
 ### 🤖 Qualitäts-Sicherung (CI/CD)
 
@@ -149,7 +150,14 @@ Diese App ist ein Open-Source-Projekt. Die Daten stammen von OpenStreetMap.
 Nutze im Ernstfall immer offizielle Pläne.
 
 ### Datenschutz
-Es werden **keine** personenbezogenen Daten auf unseren Servern gespeichert. Die Kommunikation erfolgt direkt zwischen deinem Browser und OpenStreetMap.
+Aufgenommene Fotos werden nur vorübergehend lokal im Browser verarbeitet und **nicht**
+hochgeladen oder analysiert. Die GPS-Position stammt aus der separaten Standortfreigabe des
+Endgeräts. Nur wenn der Nutzer den Upload startet, werden Koordinaten und Hydranten-Sachdaten
+an OpenStreetMap übertragen. Eine Fotokopie mit GPS-EXIF wird ausschließlich auf ausdrücklichen
+Wunsch über den Teilen-Dialog bzw. Download auf dem Endgerät gespeichert.
+
+Ausführliche Informationen zu externen Diensten, lokaler Speicherung und Berechtigungen stehen
+in den [Rechtlichen Hinweisen und Datenschutzinformationen](DISCLAIMER.md).
 
 ---
 
