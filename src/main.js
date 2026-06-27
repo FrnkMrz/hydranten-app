@@ -7,6 +7,7 @@ import { renderHistoryView, initHistoryView } from './components/history-view.js
 import { renderRankListView, initRankListView } from './components/rank-list-view.js';
 import { getPosition, getCurrentHeading, calculateOffsetPosition, getLastKnownPosition } from './services/geo.js';
 import { auth } from './services/auth.js';
+import { createHydrant } from './services/osm.js';
 
 import { t } from './services/i18n.js';
 import { CONSTANTS } from './constants.js';
@@ -326,39 +327,30 @@ function showConfirm() {
       }
 
       // Real Upload Logic -> Use new Overlay
-      import('./services/osm.js').then(({ createHydrant }) => {
-        import('./components/overlay.js').then(({ showProcessOverlay }) => {
-          showProcessOverlay(
-            app,
-            t('messages.upload_wait'),
-            (log) => createHydrant(data, log),
-            {
-              onClose: (result) => {
-                if (result) {
-                  state.capturedBlob = null;
-                  showIntro(); // Success -> Intro
-                }
-                else {
-                  // Error -> Re-enable button
-                  if (btn) {
-                    btn.innerHTML = `<span>${t('general.retry')}</span>`;
-                    btn.disabled = false;
-                  }
+      import('./components/overlay.js').then(({ showProcessOverlay }) => {
+        showProcessOverlay(
+          app,
+          t('messages.upload_wait'),
+          (log) => createHydrant(data, log),
+          {
+            onClose: (result) => {
+              if (result) {
+                state.capturedBlob = null;
+                showIntro(); // Success -> Intro
+              }
+              else {
+                // Error -> Re-enable button
+                if (btn) {
+                  btn.innerHTML = `<span>${t('general.retry')}</span>`;
+                  btn.disabled = false;
                 }
               }
             }
-          );
-        }).catch(err => {
-          console.error("Failed to load overlay module", err);
-          alert("Error: " + err.message);
-          if (btn) {
-            btn.innerHTML = `<span>${t('general.retry')}</span>`;
-            btn.disabled = false;
           }
-        });
+        );
       }).catch(err => {
-        console.error("Failed to load OSM module", err);
-        alert("Network Error: Please reload the app. " + err.message);
+        console.error("Failed to load overlay module", err);
+        alert("Error: " + err.message);
         if (btn) {
           btn.innerHTML = `<span>${t('general.retry')}</span>`;
           btn.disabled = false;
