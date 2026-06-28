@@ -16,7 +16,7 @@ export default {
         info_legal: "Mentions Légales",
         info_impressum: "Impressum",
         info_data: "Données et Confidentialité",
-        info_data_text: "Cette application ne stocke pas de données personnelles sur ses propres serveurs. Votre adresse IP est transmise à l'API Overpass et à Nominatim (Fondation OSM) pour récupérer les données cartographiques et les adresses. Le traitement GPS est effectué localement sur votre appareil.",
+        info_data_text: "Les photos sont traitées uniquement de manière temporaire et locale dans le navigateur ; elles ne sont ni téléversées ni analysées. La position GPS est obtenue séparément au moyen de l’autorisation de localisation. Les coordonnées et les données du poteau d’incendie ne sont transmises à OpenStreetMap qu’après le lancement explicite d’un téléversement. Une copie de la photo contenant des données GPS EXIF n’est enregistrée que si le partage ou le téléchargement est expressément sélectionné. Lors de l’utilisation de services cartographiques externes, d’Overpass, de Nominatim et d’OpenStreetMap, l’adresse IP de l’appareil est également transmise pour des raisons techniques.",
         info_license: "Licence & Code",
         disclaimer_text: "Ne pas utiliser en cas d'urgence. Aucune garantie.\nLe démarrage implique le consentement à l'utilisation des données.",
         info_github: "Voir sur GitHub",

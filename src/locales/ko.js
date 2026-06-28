@@ -16,7 +16,7 @@ export default {
         info_legal: "법적 정보",
         info_impressum: "인프린트",
         info_data: "데이터 및 개인정보",
-        info_data_text: "이 앱은 개인 데이터를 자체 서버에 저장하지 않습니다. 지도 데이터와 주소를 검색하기 위해 귀하의 IP 주소가 Overpass API 및 Nominatim(OSM Foundation)으로 전송됩니다. GPS 처리는 기기에서 로컬로 수행됩니다.",
+        info_data_text: "사진은 브라우저에서 일시적으로 로컬 처리될 뿐 업로드되거나 분석되지 않습니다. GPS 위치는 위치 권한을 통해 사진과 별도로 확인됩니다. 좌표와 소화전 정보는 업로드가 명시적으로 시작된 경우에만 OpenStreetMap으로 전송됩니다. GPS EXIF 데이터가 포함된 사진 사본은 공유 또는 다운로드를 명시적으로 선택한 경우에만 저장됩니다. 외부 지도 서비스, Overpass, Nominatim 및 OpenStreetMap을 사용할 때는 기술적인 이유로 기기의 IP 주소도 전송됩니다.",
         info_license: "라이선스 및 코드",
         disclaimer_text: "비상시 사용 금지. 보증 없음.\n시작은 데이터 사용 동의를 의미합니다。",
         info_github: "GitHub에서 보기",

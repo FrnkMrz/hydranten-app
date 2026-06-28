@@ -16,7 +16,7 @@ export default {
         info_legal: "Juridische Informatie",
         info_impressum: "Colofon",
         info_data: "Gegevens & Privacy",
-        info_data_text: "Deze app slaat geen persoonlijke gegevens op eigen servers op. Uw IP-adres wordt verzonden naar de Overpass API en Nominatim (OSM Foundation) om kaartgegevens en adressen op te halen. GPS-verwerking vindt lokaal op uw apparaat plaats.",
+        info_data_text: "Foto’s worden uitsluitend tijdelijk en lokaal in de browser verwerkt; ze worden niet geüpload of geanalyseerd. De GPS-positie wordt afzonderlijk verkregen via locatietoestemming. Coördinaten en hydrantgegevens worden pas naar OpenStreetMap verzonden wanneer een upload uitdrukkelijk wordt gestart. Een kopie van de foto met GPS-EXIF-gegevens wordt alleen opgeslagen wanneer delen of downloaden uitdrukkelijk wordt geselecteerd. Bij het gebruik van externe kaartdiensten, Overpass, Nominatim en OpenStreetMap wordt om technische redenen ook het IP-adres van het apparaat verzonden.",
         info_license: "Licentie & Code",
         disclaimer_text: "Niet voor noodgevallen. Geen garantie.\nStart impliceert toestemming voor gegevensgebruik.",
         info_github: "Bekijk op GitHub",

@@ -16,7 +16,7 @@ export default {
         info_legal: "Yasal Bilgiler",
         info_impressum: "Künye",
         info_data: "Veri ve Gizlilik",
-        info_data_text: "Bu uygulama kendi sunucularında kişisel veri saklamaz. Harita verilerini ve adresleri almak için IP adresiniz Overpass API ve Nominatim'e (OSM Foundation) iletilir. GPS işlemleri cihazınızda yerel olarak yapılır.",
+        info_data_text: "Fotoğraflar tarayıcıda yalnızca geçici ve yerel olarak işlenir; yüklenmez veya analiz edilmez. GPS konumu, konum izni aracılığıyla fotoğraftan ayrı olarak alınır. Koordinatlar ve yangın musluğu bilgileri yalnızca yükleme açıkça başlatıldığında OpenStreetMap’e aktarılır. GPS EXIF verilerini içeren bir fotoğraf kopyası yalnızca paylaşma veya indirme açıkça seçildiğinde kaydedilir. Harici harita hizmetleri, Overpass, Nominatim ve OpenStreetMap kullanılırken teknik nedenlerle cihazın IP adresi de aktarılır.",
         info_license: "Lisans ve Kod",
         disclaimer_text: "Acil durumlarda kullanmayın. Garanti yoktur.\nBaşlatma, veri kullanım onayını ifade eder.",
         info_github: "GitHub'da Görüntüle",

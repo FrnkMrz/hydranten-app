@@ -16,7 +16,7 @@ export default {
         info_legal: "Note Legali",
         info_impressum: "Impressum",
         info_data: "Dati e Privacy",
-        info_data_text: "Questa app non memorizza dati personali sui propri server. Il tuo indirizzo IP viene trasmesso all'API Overpass e a Nominatim (Fondazione OSM) per recuperare dati cartografici e indirizzi. L'elaborazione GPS avviene localmente sul tuo dispositivo.",
+        info_data_text: "Le foto vengono elaborate solo temporaneamente e localmente nel browser; non vengono caricate né analizzate. La posizione GPS viene ottenuta separatamente tramite l’autorizzazione alla posizione. Le coordinate e i dati dell’idrante vengono trasmessi a OpenStreetMap solo quando viene avviato esplicitamente un caricamento. Una copia della foto contenente dati GPS EXIF viene salvata solo se viene selezionata esplicitamente la condivisione o il download. Quando si utilizzano servizi cartografici esterni, Overpass, Nominatim e OpenStreetMap, per motivi tecnici viene trasmesso anche l’indirizzo IP del dispositivo.",
         info_license: "Licenza e Codice",
         disclaimer_text: "Non usare in caso di emergenza. Nessuna garanzia.\nL'avvio implica il consenso all'uso dei dati.",
         info_github: "Vedi su GitHub",

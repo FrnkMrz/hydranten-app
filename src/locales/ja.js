@@ -16,7 +16,7 @@ export default {
         info_legal: "法的情報",
         info_impressum: "刻印",
         info_data: "データとプライバシー",
-        info_data_text: "このアプリは独自のサーバーに個人データを保存しません。地図データや住所を取得するために、IPアドレスがOverpass APIおよびNominatim（OSM財団）に送信されます。GPS処理はデバイス上でローカルに行われます。",
+        info_data_text: "写真はブラウザー内で一時的かつローカルにのみ処理され、アップロードや解析は行われません。GPS位置情報は、位置情報の許可を通じて写真とは別に取得されます。座標と消火栓の属性情報は、アップロードが明示的に開始された場合にのみOpenStreetMapへ送信されます。GPS EXIFデータを含む写真のコピーは、共有またはダウンロードが明示的に選択された場合にのみ保存されます。外部地図サービス、Overpass、Nominatim、OpenStreetMapの利用時には、技術上の理由により端末のIPアドレスも送信されます。",
         info_license: "ライセンスとコード",
         disclaimer_text: "緊急時には使用しないでください。保証はありません。\n開始はデータ使用への同意を意味します。",
         info_github: "GitHubで見る",

@@ -16,7 +16,7 @@ export default {
         info_legal: "Pravne informacije",
         info_impressum: "Impressum",
         info_data: "Podaci i privatnost",
-        info_data_text: "Ova aplikacija ne pohranjuje osobne podatke na vlastite poslužitelje. Vaša IP adresa prenosi se na Overpass API i Nominatim (OSM Foundation) radi dohvaćanja kartografskih podataka i adresa. GPS obrada odvija se lokalno na vašem uređaju.",
+        info_data_text: "Fotografije se obrađuju samo privremeno i lokalno u pregledniku; ne prenose se niti analiziraju. GPS položaj dobiva se zasebno putem dopuštenja za lokaciju. Koordinate i podaci o hidrantu prenose se na OpenStreetMap tek kada se prijenos izričito pokrene. Kopija fotografije s GPS EXIF podacima sprema se samo ako se izričito odabere dijeljenje ili preuzimanje. Pri korištenju vanjskih kartografskih usluga, Overpassa, Nominatima i OpenStreetMapa iz tehničkih se razloga prenosi i IP adresa uređaja.",
         info_license: "Licenca i kod",
         disclaimer_text: "Ne koristiti u hitnim slučajevima. Nema jamstva.\nPočetak podrazumijeva pristanak na korištenje podataka.",
         info_github: "Pogledaj na GitHubu",

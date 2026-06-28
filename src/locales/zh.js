@@ -16,7 +16,7 @@ export default {
         info_legal: "法律信息",
         info_impressum: "印记",
         info_data: "数据与隐私",
-        info_data_text: "此应用程序不会在自己的服务器上存储任何个人数据。您的 IP 地址将传输到 Overpass API 和 Nominatim (OSM 基金会) 以检索地图数据和地址。GPS 处理在您的设备上本地执行。",
+        info_data_text: "照片仅在浏览器中进行临时本地处理，不会被上传或分析。GPS 位置通过位置权限单独获取。只有在明确启动上传后，坐标和消防栓属性数据才会传输至 OpenStreetMap。仅在明确选择共享或下载时，才会保存包含 GPS EXIF 数据的照片副本。使用外部地图服务、Overpass、Nominatim 和 OpenStreetMap 时，出于技术原因也会传输设备的 IP 地址。",
         info_license: "许可与代码",
         disclaimer_text: "请勿在紧急情况下使用。无担保。\n开始即表示同意数据使用。",
         info_github: "在GitHub上查看",

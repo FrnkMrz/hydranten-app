@@ -16,7 +16,7 @@ export default {
         info_legal: "Información Legal",
         info_impressum: "Aviso Legal",
         info_data: "Datos y Privacidad",
-        info_data_text: "Esta aplicación no almacena datos personales en sus propios servidores. Tu dirección IP se transmite a la API de Overpass y a Nominatim (Fundación OSM) para recuperar datos de mapas y direcciones. El procesamiento de GPS se realiza localmente en tu dispositivo.",
+        info_data_text: "Las fotos se procesan únicamente de forma temporal y local en el navegador; no se suben ni se analizan. La posición GPS se obtiene por separado mediante el permiso de ubicación. Las coordenadas y los datos del hidrante solo se transmiten a OpenStreetMap cuando se inicia expresamente una subida. Una copia de la foto con datos GPS EXIF solo se guarda si se selecciona expresamente compartirla o descargarla. Al utilizar servicios de mapas externos, Overpass, Nominatim y OpenStreetMap, también se transmite por motivos técnicos la dirección IP del dispositivo.",
         info_license: "Licencia y Código",
         disclaimer_text: "No usar en emergencias. Sin garantía.\nIniciar implica consentimiento de uso de datos.",
         info_github: "Ver en GitHub",
