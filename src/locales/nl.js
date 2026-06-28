@@ -22,6 +22,10 @@ export default {
         info_github: "Bekijk op GitHub",
         lang_btn_aria: "Taal / Language"
     },
+    pwa: {
+        update_available: "Er is een nieuwe appversie beschikbaar.",
+        update_now: "Nu bijwerken"
+    },
     settings: {
         title: "Instellingen",
         map_style: "Kaartstijl",

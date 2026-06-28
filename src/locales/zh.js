@@ -22,6 +22,10 @@ export default {
         info_github: "在GitHub上查看",
         lang_btn_aria: "语言 / Language"
     },
+    pwa: {
+        update_available: "有新的应用版本可用。",
+        update_now: "立即更新"
+    },
     settings: {
         title: "设置",
         map_style: "地图样式",

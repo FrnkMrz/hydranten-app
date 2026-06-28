@@ -22,6 +22,10 @@ export default {
         info_github: "GitHub'da Görüntüle",
         lang_btn_aria: "Dil / Language"
     },
+    pwa: {
+        update_available: "Uygulamanın yeni bir sürümü mevcut.",
+        update_now: "Şimdi güncelle"
+    },
     settings: {
         title: "Ayarlar",
         map_style: "Harita Stili",

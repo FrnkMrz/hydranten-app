@@ -22,6 +22,10 @@ export default {
         info_github: "Zobrazit na GitHubu",
         lang_btn_aria: "Jazyk / Language"
     },
+    pwa: {
+        update_available: "Je k dispozici nová verze aplikace.",
+        update_now: "Aktualizovat nyní"
+    },
     settings: {
         title: "Nastavení",
 

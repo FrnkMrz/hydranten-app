@@ -22,6 +22,10 @@ export default {
         info_github: "Zobacz na GitHub",
         lang_btn_aria: "Język / Language"
     },
+    pwa: {
+        update_available: "Dostępna jest nowa wersja aplikacji.",
+        update_now: "Aktualizuj teraz"
+    },
     settings: {
         title: "Ustawienia",
         map_style: "Styl mapy",

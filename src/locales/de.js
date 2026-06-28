@@ -22,6 +22,10 @@ export default {
         info_github: "Projekt auf GitHub ansehen",
         lang_btn_aria: "Sprache / Language"
     },
+    pwa: {
+        update_available: "Eine neue App-Version ist verfügbar.",
+        update_now: "Jetzt aktualisieren"
+    },
     settings: {
         title: "Einstellungen",
         account: "OSM Konto",

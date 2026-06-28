@@ -22,6 +22,10 @@ export default {
         info_github: "GitHubで見る",
         lang_btn_aria: "言語 / Language"
     },
+    pwa: {
+        update_available: "新しいバージョンのアプリを利用できます。",
+        update_now: "今すぐ更新"
+    },
     settings: {
         title: "設定",
         map_style: "地図のスタイル",

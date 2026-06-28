@@ -22,6 +22,10 @@ export default {
         info_github: "Voir sur GitHub",
         lang_btn_aria: "Langue / Language"
     },
+    pwa: {
+        update_available: "Une nouvelle version de l’application est disponible.",
+        update_now: "Mettre à jour"
+    },
     settings: {
         title: "Paramètres",
         legal_link: "Mentions légales & Mentions",

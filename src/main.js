@@ -8,6 +8,8 @@ import { renderRankListView, initRankListView } from './components/rank-list-vie
 import { getPosition, getCurrentHeading, calculateOffsetPosition, getLastKnownPosition } from './services/geo.js';
 import { auth } from './services/auth.js';
 import { createHydrant } from './services/osm.js';
+import { registerSW } from 'virtual:pwa-register';
+import { initPwaUpdates } from './services/pwa-update.js';
 
 import { t } from './services/i18n.js';
 import { CONSTANTS } from './constants.js';
@@ -21,6 +23,8 @@ import { initCompass, stopCompass, startTracking, stopTracking } from './service
 // startTracking() is now managed per view
 
 const app = document.querySelector('#app');
+
+initPwaUpdates(registerSW);
 
 // Simple State Management
 const state = {

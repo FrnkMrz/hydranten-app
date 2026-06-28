@@ -22,6 +22,10 @@ export default {
         info_github: "عرض على GitHub",
         lang_btn_aria: "اللغة / Language"
     },
+    pwa: {
+        update_available: "يتوفر إصدار جديد من التطبيق.",
+        update_now: "التحديث الآن"
+    },
     settings: {
         title: "الإعدادات",
         map_style: "نمط الخريطة",

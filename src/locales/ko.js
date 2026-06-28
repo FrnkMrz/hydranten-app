@@ -22,6 +22,10 @@ export default {
         info_github: "GitHub에서 보기",
         lang_btn_aria: "언어 / Language"
     },
+    pwa: {
+        update_available: "새 앱 버전을 사용할 수 있습니다.",
+        update_now: "지금 업데이트"
+    },
     settings: {
         title: "설정",
         map_style: "지도 스타일",

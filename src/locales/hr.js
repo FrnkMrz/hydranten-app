@@ -22,6 +22,10 @@ export default {
         info_github: "Pogledaj na GitHubu",
         lang_btn_aria: "Jezik / Language"
     },
+    pwa: {
+        update_available: "Dostupna je nova verzija aplikacije.",
+        update_now: "Ažuriraj sada"
+    },
     settings: {
         title: "Postavke",
         map_style: "Stil karte",

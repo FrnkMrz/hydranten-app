@@ -24,9 +24,9 @@ export default defineConfig({
 
     plugins: [
         VitePWA({
-            // 'autoUpdate' ensures the new SW activates immediately, 
-            // preventing users from being stuck on old versions.
-            registerType: 'autoUpdate',
+            // Let the app notify users before reloading so an in-progress
+            // photo or edit is never discarded by an automatic update.
+            registerType: 'prompt',
 
             // Files in /public to include in the cache
             includeAssets: ['hydrant.svg', 'icon-v3-192.png', 'manifest.json'],
