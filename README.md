@@ -1,14 +1,21 @@
-# 🚒 Hydranten Jäger APP (v1.5.5)
+# 🚒 Hydranten Jäger APP (v1.6.0)
 
 **🌐 Live App:** [https://hydrantenjaeger.de](https://hydrantenjaeger.de)
 
 Eine moderne, mobil-optimierte Progressive Web App (PWA) zum blitzschnellen Erfassen und Pflegen von Hydranten in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
-> **Status**: Version 1.5.5 (Stable Release)
+> **Status**: Version 1.6.0 (Stable Release)
 > *Features: GPS Safety, Reliable OSM Workflows, Mobile Chrome/Safari Tests, Privacy, PWA Updates & Accessibility.*
 
 ## 📋 Changelog
+
+### v1.6.0 (28.06.2026) - Konsolidierung & automatisierte Browser-Tests
+*   **Release-Konsolidierung:** Die größeren Stabilitäts-, Datenschutz-, PWA- und Toolchain-Verbesserungen der jüngsten Wartungsrunde werden als neues Minor Release gebündelt.
+*   **CI-E2E:** Alle 14 mobilen End-to-End-Tests für Chromium und WebKit laufen nun bei jedem Push und Pull Request verpflichtend in GitHub Actions.
+*   **Testdiagnose:** Der Playwright-HTML-Report wird nach jedem CI-Lauf für 14 Tage als GitHub-Actions-Artefakt bereitgestellt.
+*   **Repository-Hygiene:** Generierte Playwright-Reports und Laufstatusdateien sind nicht mehr Teil der Versionsverwaltung.
+*   **Qualitätsstatus:** 36 Unit-/Integrationstests, 14 mobile E2E-Tests, PWA-Produktions-Build und npm-Sicherheitsaudit sind erfolgreich.
 
 ### v1.5.5 (28.06.2026) - PWA, Datenschutz & Toolchain
 *   **PWA-Aktualisierung:** Neue App-Versionen werden aktiv angezeigt und können kontrolliert übernommen werden, ohne eine laufende Aufnahme oder Bearbeitung automatisch zu verwerfen.
@@ -167,6 +174,7 @@ Jeder Push auf `main` oder Pull Request durchläuft eine automatisierte Pipeline
 1.  **Linting**: Prüft auf Code-Style und potenzielle Fehler (`npm run lint`).
 2.  **Testing**: Führt Unit-Tests durch (`npm test`).
 3.  **Build**: Verifiziert, dass der Production-Build erfolgreich durchläuft (`npm run build`).
+4.  **Mobile E2E**: Prüft die vollständigen Kernabläufe in Chromium und WebKit (`npm run test:e2e`). Der HTML-Report wird als kurzlebiges Actions-Artefakt gespeichert.
 
 ---
 
