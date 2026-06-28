@@ -11,7 +11,7 @@ export const CONSTANTS = {
     GPS_ACCURACY_THRESHOLD_M: 40,
 
     // App Config
-    APP_VERSION_STABLE: '1.5.4',
+    APP_VERSION_STABLE: '1.5.5',
 
     // Overpass API
     OVERPASS_TIMEOUT_MS: 5000,
