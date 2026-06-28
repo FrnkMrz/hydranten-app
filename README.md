@@ -6,9 +6,16 @@ Eine moderne, mobil-optimierte Progressive Web App (PWA) zum blitzschnellen Erfa
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
 > **Status**: Version 1.5.4 (Stable Release)
-> *Features: GPS Safety, Reliable OSM Workflows, Mobile Chrome/Safari Tests, Privacy & Accessibility.*
+> *Features: GPS Safety, Reliable OSM Workflows, Mobile Chrome/Safari Tests, Privacy, PWA Updates & Accessibility.*
 
 ## 📋 Changelog
+
+### Unveröffentlicht (seit 28.06.2026) - PWA, Datenschutz & Toolchain
+*   **PWA-Aktualisierung:** Neue App-Versionen werden aktiv angezeigt und können kontrolliert übernommen werden, ohne eine laufende Aufnahme oder Bearbeitung automatisch zu verwerfen.
+*   **Datenschutz & i18n:** Die Hinweise zur lokalen Fotoverarbeitung, separaten GPS-Ermittlung und Übertragung an externe Dienste wurden in allen 15 Sprachen vereinheitlicht.
+*   **CI/CD:** GitHub Actions und die CI-Laufzeit wurden auf aktuelle Versionen und Node.js 24 umgestellt.
+*   **Toolchain:** Vite wurde auf 8.1 und jsdom auf 29.1 aktualisiert; der reproduzierbare Build mit `npm ci` bleibt ohne bekannte npm-Sicherheitslücken.
+*   **Tests:** 36 Unit-/Integrationstests sowie 14 E2E-Tests für Mobile Chrome und Mobile Safari bestanden.
 
 ### v1.5.4 (27.06.2026) - Datenqualität, Datenschutz & Stabilität
 *   **GPS-Sicherheit:** Uploads ohne belastbare Geräteposition werden blockiert; feste Ersatzkoordinaten werden nicht mehr verwendet.
@@ -72,6 +79,7 @@ Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 ### 🚀 PWA & Live-Daten
 *   **Installierbar**: Fühlt sich an wie eine Native App (iOS & Android).
 *   **Offline-Ready**: Dank Service Worker (`vite-plugin-pwa`) funktioniert die App auch bei schlechtem Netz.
+*   **Kontrollierte Updates**: Bei einer neuen Version erscheint ein Hinweis. Die Aktualisierung wird ausdrücklich gestartet, damit laufende Eingaben nicht durch eine automatische Neuladung verloren gehen.
 *   **Smart Icon**: Passt sich dem Device an (Adaptive Icons).
 
 ### 📍 Intelligente Erfassung (Smart Mapping)
@@ -81,7 +89,7 @@ Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 *   **Locked Nodes 🔒**: Erkennt automatisch, ob ein Hydrant Teil eines Gebäudes oder Weges ist und schützt die Geometrie.
 
 ### 🛡️ Sicherheit
-*   **Client-Side Only**: Kein Backend-Server. Deine Daten bleiben bei dir.
+*   **Client-Side Only**: Die App besitzt kein eigenes Backend. Fotos werden lokal verarbeitet; nur ausdrücklich ausgelöste OSM-Bearbeitungen und technisch notwendige Anfragen gehen an externe Dienste.
 *   **OAuth 2.0 (PKCE)**: Sicherer Login via OpenStreetMap ohne Passwort-Weitergabe.
 *   **Content Security Policy**: Strikte Richtlinien gegen XSS-Angriffe.
 *   **Auto-Sanitization**: Alle Inputs werden vor dem Rendern bereinigt (`escapeHTML`).
@@ -102,11 +110,11 @@ Diese App wurde mit einem Fokus auf **Performance**, **Langlebigkeit** und **War
 | Bereich | Technologie | Begründung |
 | :--- | :--- | :--- |
 | **Core** | **Vanilla JS (ES6+)** | Kein Overhead, direkter DOM-Zugriff, zukunftssicher. |
-| **Build Tool** | **Vite** | Extrem schneller Dev-Server und optimierte Production-Builds. |
+| **Build Tool** | **Vite 8** | Extrem schneller Dev-Server und optimierte Production-Builds. |
 | **UI / Styling** | **TailwindCSS** | Utility-First Ansatz für konsistentes Design und Dark Mode. |
 | **Karten** | **Leaflet.js** | Leichtgewichtige, bewährte Mapping-Library. |
 | **PWA** | **vite-plugin-pwa** | Generiert Service Worker und Manifest für Offline-Support. |
-| **Testing** | **Vitest** & **Playwright** | Unit-Tests für Logik, E2E-Tests für User-Flows. |
+| **Testing** | **Vitest 4**, **jsdom 29** & **Playwright** | Unit-/DOM-Tests für Logik sowie mobile E2E-Tests für User-Flows. |
 | **Linting** | **ESLint** | Code-Qualität und Fehlervermeidung (CI-integriert). |
 
 ### 🧩 Architektur-Muster
@@ -120,6 +128,7 @@ Die App folgt einer **MVC-ähnlichen Struktur** (Model-View-Controller), wobei `
     *   `auth.js`: OAuth 2.0 PKCE Flow und Token-Management.
     *   `geo.js`: Abstraktion der Geolocation API und Kompass-Daten.
     *   `i18n.js`: Lokalisierungssystem.
+    *   `pwa-update.js`: Registriert den Service Worker, prüft auf neue Versionen und zeigt den kontrollierten Aktualisierungshinweis.
 *   `src/controllers/`: **Controllers**. Verbinden Views mit Services für komplexe Abläufe (z.B. `edit-controller.js`).
 
 #### 2. Datenfluss
@@ -134,9 +143,27 @@ Die App folgt einer **MVC-ähnlichen Struktur** (Model-View-Controller), wobei `
 4.  **Upload**:
     *   `osm.js`: Erstellt aus Koordinaten und Hydranten-Sachdaten ein XML-Changeset und sendet es an die OSM API. Das Foto ist nicht Bestandteil des Changesets.
 
+### 💻 Lokale Entwicklung
+
+Vite 8 und jsdom 29 benötigen Node.js `20.19+`, `22.13+` oder `24+`. Die CI verwendet Node.js 24.
+
+```bash
+npm ci
+npm run dev
+```
+
+Wichtige Qualitätsprüfungen:
+
+```bash
+npm run lint
+npm test
+npm run test:e2e
+npm run build
+```
+
 ### 🤖 Qualitäts-Sicherung (CI/CD)
 
-Jeder Push auf `main` oder Pull Request durchläuft eine automatisierte Pipeline (GitHub Actions):
+Jeder Push auf `main` oder Pull Request durchläuft eine automatisierte Pipeline mit GitHub Actions und Node.js 24:
 1.  **Linting**: Prüft auf Code-Style und potenzielle Fehler (`npm run lint`).
 2.  **Testing**: Führt Unit-Tests durch (`npm test`).
 3.  **Build**: Verifiziert, dass der Production-Build erfolgreich durchläuft (`npm run build`).
