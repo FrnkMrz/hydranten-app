@@ -26,6 +26,13 @@ export default {
         update_available: "有新的应用版本可用。",
         update_now: "立即更新"
     },
+    hydrant_data: {
+        loading: "正在加载消防栓数据 …",
+        slow: "数据请求所需时间较长",
+        current: "消防栓数据已是最新",
+        unavailable: "消防栓数据目前不可用",
+        stale: "现有数据 – 更新失败"
+    },
     settings: {
         title: "设置",
         map_style: "地图样式",

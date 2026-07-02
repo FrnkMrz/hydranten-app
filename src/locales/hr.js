@@ -26,6 +26,13 @@ export default {
         update_available: "Dostupna je nova verzija aplikacije.",
         update_now: "Ažuriraj sada"
     },
+    hydrant_data: {
+        loading: "Učitavanje podataka o hidrantima …",
+        slow: "Dohvaćanje podataka traje dulje",
+        current: "Podaci o hidrantima su ažurni",
+        unavailable: "Podaci o hidrantima trenutačno nisu dostupni",
+        stale: "Postojeći podaci – ažuriranje nije uspjelo"
+    },
     settings: {
         title: "Postavke",
         map_style: "Stil karte",

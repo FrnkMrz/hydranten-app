@@ -26,6 +26,13 @@ export default {
         update_available: "Dostępna jest nowa wersja aplikacji.",
         update_now: "Aktualizuj teraz"
     },
+    hydrant_data: {
+        loading: "Ładowanie danych hydrantów …",
+        slow: "Pobieranie danych trwa dłużej",
+        current: "Dane hydrantów są aktualne",
+        unavailable: "Dane hydrantów są obecnie niedostępne",
+        stale: "Dostępne dane – aktualizacja nie powiodła się"
+    },
     settings: {
         title: "Ustawienia",
         map_style: "Styl mapy",

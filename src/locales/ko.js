@@ -26,6 +26,13 @@ export default {
         update_available: "새 앱 버전을 사용할 수 있습니다.",
         update_now: "지금 업데이트"
     },
+    hydrant_data: {
+        loading: "소화전 데이터를 불러오는 중 …",
+        slow: "데이터 요청이 평소보다 오래 걸립니다",
+        current: "소화전 데이터가 최신 상태입니다",
+        unavailable: "현재 소화전 데이터를 사용할 수 없습니다",
+        stale: "기존 데이터 – 업데이트 실패"
+    },
     settings: {
         title: "설정",
         map_style: "지도 스타일",

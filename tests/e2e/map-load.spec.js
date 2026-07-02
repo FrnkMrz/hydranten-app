@@ -65,6 +65,26 @@ test.describe('Map & GPS Features', () => {
         // For now, just ensuring it's there and clickable is enough for this test.
     });
 
+    test('Shows a non-blocking status while hydrant data is loading', async ({ page }) => {
+        await page.context().setGeolocation({ latitude: 48.137154, longitude: 11.576124 });
+
+        await page.route('**/interpreter', async route => {
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await route.fulfill({
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify({ elements: [] })
+            });
+        });
+
+        await page.goto('/');
+
+        const status = page.locator('#hydrant-data-status');
+        await expect(status).toHaveAttribute('data-state', 'loading', { timeout: 3000 });
+        await expect(page.locator('#start-btn')).toBeEnabled();
+        await expect(status).toBeHidden({ timeout: 5000 });
+    });
+
     test('Blocks capture flow if GPS is denied', async ({ page, context }) => {
         // 1. Deny Permissions
         await context.clearPermissions();

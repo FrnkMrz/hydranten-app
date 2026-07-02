@@ -26,6 +26,13 @@ export default {
         update_available: "Eine neue App-Version ist verfügbar.",
         update_now: "Jetzt aktualisieren"
     },
+    hydrant_data: {
+        loading: "Hydrantendaten werden geladen …",
+        slow: "Der Datenabruf dauert länger",
+        current: "Hydrantendaten sind aktuell",
+        unavailable: "Hydrantendaten derzeit nicht verfügbar",
+        stale: "Vorhandene Daten – Aktualisierung fehlgeschlagen"
+    },
     settings: {
         title: "Einstellungen",
         account: "OSM Konto",

@@ -26,6 +26,13 @@ export default {
         update_available: "È disponibile una nuova versione dell’app.",
         update_now: "Aggiorna ora"
     },
+    hydrant_data: {
+        loading: "Caricamento dei dati degli idranti …",
+        slow: "Il recupero dei dati richiede più tempo",
+        current: "I dati degli idranti sono aggiornati",
+        unavailable: "I dati degli idranti non sono disponibili",
+        stale: "Dati esistenti – aggiornamento non riuscito"
+    },
     settings: {
         title: "Impostazioni",
         map_style: "Stile mappa",

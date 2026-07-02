@@ -26,6 +26,13 @@ export default {
         update_available: "Uygulamanın yeni bir sürümü mevcut.",
         update_now: "Şimdi güncelle"
     },
+    hydrant_data: {
+        loading: "Yangın musluğu verileri yükleniyor …",
+        slow: "Veri isteği daha uzun sürüyor",
+        current: "Yangın musluğu verileri güncel",
+        unavailable: "Yangın musluğu verileri şu anda kullanılamıyor",
+        stale: "Mevcut veriler – güncelleme başarısız"
+    },
     settings: {
         title: "Ayarlar",
         map_style: "Harita Stili",

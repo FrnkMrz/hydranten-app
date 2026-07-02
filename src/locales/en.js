@@ -26,6 +26,13 @@ export default {
         update_available: "A new app version is available.",
         update_now: "Update now"
     },
+    hydrant_data: {
+        loading: "Loading hydrant data …",
+        slow: "The data request is taking longer",
+        current: "Hydrant data is up to date",
+        unavailable: "Hydrant data is currently unavailable",
+        stale: "Existing data – update failed"
+    },
     settings: {
         title: "Settings",
         account: "OSM Account",

@@ -54,4 +54,21 @@ describe('Overpass Service', () => {
 
         await expect(overpass.fetchHydrants(mockBounds)).rejects.toThrow("Alle Overpass-Server sind nicht erreichbar");
     });
+
+    it('does not try another server after the request is cancelled', async () => {
+        fetch.mockImplementation((_url, { signal }) => new Promise((_, reject) => {
+            signal.addEventListener('abort', () => {
+                const error = new Error('Aborted');
+                error.name = 'AbortError';
+                reject(error);
+            });
+        }));
+
+        const controller = new AbortController();
+        const request = overpass.fetchHydrants(mockBounds, { signal: controller.signal });
+        controller.abort();
+
+        await expect(request).rejects.toMatchObject({ name: 'AbortError' });
+        expect(fetch).toHaveBeenCalledTimes(1);
+    });
 });

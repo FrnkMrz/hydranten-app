@@ -26,6 +26,13 @@ export default {
         update_available: "新しいバージョンのアプリを利用できます。",
         update_now: "今すぐ更新"
     },
+    hydrant_data: {
+        loading: "消火栓データを読み込んでいます …",
+        slow: "データの取得に時間がかかっています",
+        current: "消火栓データは最新です",
+        unavailable: "消火栓データは現在利用できません",
+        stale: "既存データ – 更新に失敗しました"
+    },
     settings: {
         title: "設定",
         map_style: "地図のスタイル",

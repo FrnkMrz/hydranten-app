@@ -26,6 +26,13 @@ export default {
         update_available: "Hay una nueva versión de la aplicación disponible.",
         update_now: "Actualizar ahora"
     },
+    hydrant_data: {
+        loading: "Cargando datos de hidrantes …",
+        slow: "La consulta de datos está tardando más",
+        current: "Los datos de hidrantes están actualizados",
+        unavailable: "Los datos de hidrantes no están disponibles",
+        stale: "Datos existentes – actualización fallida"
+    },
     settings: {
         title: "Configuración",
         legal_link: "Aviso legal e Impresión",

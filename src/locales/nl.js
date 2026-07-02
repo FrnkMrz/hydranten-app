@@ -26,6 +26,13 @@ export default {
         update_available: "Er is een nieuwe appversie beschikbaar.",
         update_now: "Nu bijwerken"
     },
+    hydrant_data: {
+        loading: "Hydrantgegevens worden geladen …",
+        slow: "Het ophalen van gegevens duurt langer",
+        current: "Hydrantgegevens zijn actueel",
+        unavailable: "Hydrantgegevens zijn momenteel niet beschikbaar",
+        stale: "Bestaande gegevens – bijwerken mislukt"
+    },
     settings: {
         title: "Instellingen",
         map_style: "Kaartstijl",

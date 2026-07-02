@@ -26,6 +26,13 @@ export default {
         update_available: "Une nouvelle version de l’application est disponible.",
         update_now: "Mettre à jour"
     },
+    hydrant_data: {
+        loading: "Chargement des données des hydrants …",
+        slow: "La récupération des données prend plus de temps",
+        current: "Les données des hydrants sont à jour",
+        unavailable: "Les données des hydrants sont indisponibles",
+        stale: "Données existantes – échec de la mise à jour"
+    },
     settings: {
         title: "Paramètres",
         legal_link: "Mentions légales & Mentions",

@@ -11,7 +11,17 @@ const SERVERS = [
 /**
  * Versucht eine Query auf mehreren Servern nacheinander auszuführen
  */
-async function fetchWithFallback(query, attempt = 0) {
+function createAbortError() {
+    const error = new Error('Overpass request aborted');
+    error.name = 'AbortError';
+    return error;
+}
+
+async function fetchWithFallback(query, attempt = 0, externalSignal = null) {
+    if (externalSignal?.aborted) {
+        throw createAbortError();
+    }
+
     if (attempt >= SERVERS.length) {
         throw new Error("Alle Overpass-Server sind nicht erreichbar.");
     }
@@ -19,6 +29,8 @@ async function fetchWithFallback(query, attempt = 0) {
     const server = SERVERS[attempt];
     // Timeout etwas reduziert pro Request für schnelleren Wechsel
     const controller = new AbortController();
+    const abortFromExternalSignal = () => controller.abort();
+    externalSignal?.addEventListener('abort', abortFromExternalSignal, { once: true });
     const timeoutId = setTimeout(() => controller.abort(), 25000); // Global fetch timeout
 
     try {
@@ -30,13 +42,11 @@ async function fetchWithFallback(query, attempt = 0) {
             signal: controller.signal
         });
 
-        clearTimeout(timeoutId);
-
         if (response.status === 429) {
             // Rate Limit: Kurz warten und nächsten Server probieren
             // console.warn("Rate Limit (429). Warte kurz...");
             await new Promise(r => setTimeout(r, 2000));
-            return fetchWithFallback(query, attempt + 1);
+            return fetchWithFallback(query, attempt + 1, externalSignal);
         }
 
         if (!response.ok) {
@@ -47,15 +57,21 @@ async function fetchWithFallback(query, attempt = 0) {
         return await response.json();
 
     } catch (_err) {
-        clearTimeout(timeoutId);
+        if (externalSignal?.aborted) {
+            throw createAbortError();
+        }
+
         // console.warn(`Server ${server} fehlgeschlagen:`, err.message);
         // Rekursiver Aufruf des nächsten Servers
-        return fetchWithFallback(query, attempt + 1);
+        return fetchWithFallback(query, attempt + 1, externalSignal);
+    } finally {
+        clearTimeout(timeoutId);
+        externalSignal?.removeEventListener('abort', abortFromExternalSignal);
     }
 }
 
 export const overpass = {
-    async fetchHydrants(bounds) {
+    async fetchHydrants(bounds, { signal } = {}) {
         // Query Optimierung: Timeout im Overpass QL selbst setzen
         // [timeout:25] damit der Server selbst abbricht, bevor unser Fetch-Timeout greift
         const s = bounds.getSouth();
@@ -72,7 +88,7 @@ export const overpass = {
         `;
 
 
-        const data = await fetchWithFallback(query);
+        const data = await fetchWithFallback(query, 0, signal);
         const elements = data.elements || [];
 
         // Post-Processing wie gehabt

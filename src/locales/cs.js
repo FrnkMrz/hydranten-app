@@ -26,6 +26,13 @@ export default {
         update_available: "Je k dispozici nová verze aplikace.",
         update_now: "Aktualizovat nyní"
     },
+    hydrant_data: {
+        loading: "Načítání dat hydrantů …",
+        slow: "Načítání dat trvá déle",
+        current: "Data hydrantů jsou aktuální",
+        unavailable: "Data hydrantů momentálně nejsou dostupná",
+        stale: "Dostupná data – aktualizace se nezdařila"
+    },
     settings: {
         title: "Nastavení",
 

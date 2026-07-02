@@ -5,6 +5,7 @@ import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { getLastKnownPosition, updatePosition, getPosition, initCompass, startTracking, hasCompassAccess } from '../services/geo.js';
+import { createHydrantLoadStatus } from './hydrant-load-status.js';
 
 import { overpass } from '../services/overpass.js';
 
@@ -58,6 +59,7 @@ export function renderIntroView() {
       <!-- Map - Fills remaining space (flex-1) -->
       <div class="w-full flex-1 min-h-[30%] relative z-0">
           <div id="intro-map" class="absolute inset-0 z-0"></div>
+          <div id="hydrant-data-status" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
           
           <!-- LOCATE ME BUTTON -->
           <button id="locate-me-btn" class="absolute bottom-6 right-4 z-[401] bg-blue-600/90 text-white p-3 rounded-full shadow-lg shadow-blue-900/40 border border-white/20 active:scale-95 hover:bg-blue-500 transition" aria-label="Locate Me">
@@ -406,6 +408,18 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    const mapContainer = element.querySelector('#intro-map');
    let map = null;
    //    let marker = null;
+   const hydrantRequestState = {
+      latestRequestId: 0,
+      controller: null
+   };
+   const hydrantLoadStatus = createHydrantLoadStatus(
+      element.querySelector('#hydrant-data-status'),
+      () => {
+         if (map) {
+            updateHydrants(map, onEdit, hydrantLoadStatus, hydrantRequestState, { immediate: true });
+         }
+      }
+   );
 
    // Init Cached Position immediately
    let lastPos = getLastKnownPosition();
@@ -494,7 +508,10 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 
             // Debounced Map Move Handler
             // Pass onEdit here!
-            const debouncedUpdate = debounce(() => updateHydrants(map, onEdit), 1000);
+            const debouncedUpdate = debounce(
+               () => updateHydrants(map, onEdit, hydrantLoadStatus, hydrantRequestState),
+               1000
+            );
 
             // Let's just hook into moveend if the map MOVES (even programmatically).
             map.on('moveend', debouncedUpdate);
@@ -514,7 +531,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                   else userMarker.setLatLng([centerLat, centerLng]);
                }
 
-               updateHydrants(map, onEdit);
+               updateHydrants(map, onEdit, hydrantLoadStatus, hydrantRequestState);
             }, 300);
          }
       }; // End initMap function
@@ -588,6 +605,9 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       if (element && element._gpsPollInterval) {
          clearInterval(element._gpsPollInterval);
       }
+      hydrantRequestState.latestRequestId++;
+      hydrantRequestState.controller?.abort();
+      hydrantLoadStatus.destroy();
    };
 }
 
@@ -628,14 +648,27 @@ function startMapGps(map, onLocationFound, _onEdit) {
 
 
 // Helper to fetch and draw
-function updateHydrants(map, onEdit) {
-   if (map.getZoom() < 14) return; // Don't fetch for whole world
+function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = false } = {}) {
+   if (map.getZoom() < 14) {
+      requestState.latestRequestId++;
+      requestState.controller?.abort();
+      requestState.controller = null;
+      loadStatus.hide();
+      return; // Don't fetch for whole world
+   }
 
    // Fetch padded bounds to ensure we cover the draggable area
    const bounds = map.getBounds().pad(0.5);
+   requestState.controller?.abort();
 
-   overpass.fetchHydrants(bounds)
+   const controller = new AbortController();
+   const requestId = ++requestState.latestRequestId;
+   requestState.controller = controller;
+   loadStatus.setLoading({ immediate });
+
+   overpass.fetchHydrants(bounds, { signal: controller.signal })
       .then(elements => {
+         if (requestId !== requestState.latestRequestId) return;
          if (!hydrantLayer) return;
 
          // Optimistic Filter: Remove hydrants that we know are deleted locally
@@ -757,20 +790,18 @@ function updateHydrants(map, onEdit) {
 
             }
          });
+
+         loadStatus.setSuccess();
       })
       .catch(err => {
+         if (requestId !== requestState.latestRequestId || err.name === 'AbortError') return;
+
          console.warn("Hydranten konnten nicht geladen werden:", err);
-         // Show Toast
-         const mapContainer = document.querySelector('#intro-map');
-         if (mapContainer && mapContainer.parentNode) {
-            const toast = document.createElement('div');
-            toast.className = "absolute top-4 left-1/2 -translate-x-1/2 bg-red-600/90 backdrop-blur text-white px-4 py-2 rounded-full shadow-lg text-xs font-bold z-50 animate-fade-in pointer-events-none";
-            toast.innerText = t("error.network_error");
-            mapContainer.parentNode.appendChild(toast);
-            setTimeout(() => {
-               toast.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-               setTimeout(() => toast.remove(), 500);
-            }, 3000);
+         loadStatus.setError({ hasCachedData: visibleHydrants.size > 0 });
+      })
+      .finally(() => {
+         if (requestId === requestState.latestRequestId) {
+            requestState.controller = null;
          }
       });
 }
