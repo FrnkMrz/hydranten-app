@@ -3,6 +3,8 @@ import { DACHLILU_COVERAGE } from '../data/dachlilu-coverage.js';
 const BASE_URL = 'https://pipeline.openfiremap.org';
 const PMTILES_FILE = 'openfiremap.pmtiles';
 const METADATA_TTL_MS = 10 * 60 * 1000;
+const METADATA_TIMEOUT_MS = 3000;
+const PMTILES_READ_TIMEOUT_MS = 10000;
 const MAX_TILE_CACHE_SIZE = 128;
 const MAX_TILES_PER_VIEW = 300;
 const TILE_LAYERS = ['hydrants', 'water_points', 'defibrillators'];
@@ -79,44 +81,44 @@ export function isRegionalCoverage(bounds) {
     return DACHLILU_COVERAGE.some(polygon => rectangleInPolygon(box, polygon));
 }
 
-async function fetchMetadata(signal) {
+function fetchMetadata(signal) {
     if (signal?.aborted) throw abortError();
     const now = Date.now();
     if (metadata && now - metadataFetchedAt < METADATA_TTL_MS) return metadata;
-    if (metadataPromise) return metadataPromise;
-
-    metadataPromise = (async () => {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 3000);
-        const abort = () => controller.abort();
-        signal?.addEventListener('abort', abort, { once: true });
-        try {
-            const response = await fetch(`${BASE_URL}/metadata.json`, { cache: 'no-cache', signal: controller.signal });
-            if (!response.ok) throw new Error(`Regional-Metadaten: HTTP ${response.status}`);
-            const data = await response.json();
-            const generatedAt = typeof data?.generated_at === 'string' ? data.generated_at : null;
-            const osmDataUntil = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(data?.osm_data_until ?? '') ? data.osm_data_until : null;
-            if (!generatedAt) throw new Error('Regional-Metadaten enthalten keine Build-Version.');
-            if (metadata?.generatedAt !== generatedAt) {
-                pmtiles = null;
-                pmtilesUrl = null;
-                header = null;
-                tileCache.clear();
+    if (!metadataPromise) {
+        const request = (async () => {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), METADATA_TIMEOUT_MS);
+            try {
+                const response = await fetch(`${BASE_URL}/metadata.json`, { cache: 'no-cache', signal: controller.signal });
+                if (!response.ok) throw new Error(`Regional-Metadaten: HTTP ${response.status}`);
+                const data = await response.json();
+                const generatedAt = typeof data?.generated_at === 'string' ? data.generated_at : null;
+                const osmDataUntil = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(data?.osm_data_until ?? '') ? data.osm_data_until : null;
+                if (!generatedAt) throw new Error('Regional-Metadaten enthalten keine Build-Version.');
+                if (metadata?.generatedAt !== generatedAt) {
+                    pmtiles = null;
+                    pmtilesUrl = null;
+                    header = null;
+                    tileCache.clear();
+                }
+                metadata = { generatedAt, osmDataUntil };
+                metadataFetchedAt = Date.now();
+                return metadata;
+            } catch (error) {
+                if (controller.signal.aborted) throw new Error('Regional metadata request timed out.', { cause: error });
+                throw error;
+            } finally {
+                clearTimeout(timeout);
             }
-            metadata = { generatedAt, osmDataUntil };
-            metadataFetchedAt = Date.now();
-            return metadata;
-        } catch (error) {
-            if (signal?.aborted) throw abortError();
-            if (controller.signal.aborted) throw new Error('Regional metadata request timed out.', { cause: error });
-            throw error;
-        } finally {
-            clearTimeout(timeout);
-            signal?.removeEventListener('abort', abort);
-            metadataPromise = null;
-        }
-    })();
-    return metadataPromise;
+        })();
+        let sharedRequest;
+        sharedRequest = request.finally(() => {
+            if (metadataPromise === sharedRequest) metadataPromise = null;
+        });
+        metadataPromise = sharedRequest;
+    }
+    return raceAbort(metadataPromise, signal);
 }
 
 async function loadDecoderModules() {
@@ -145,6 +147,34 @@ function getPmtiles(meta) {
     return pmtiles;
 }
 
+function withTimeout(operation, timeoutMs, message, onTimeout) {
+    let timeout;
+    const timedOut = new Promise((_, reject) => {
+        timeout = setTimeout(() => {
+            onTimeout?.();
+            reject(new Error(message));
+        }, timeoutMs);
+    });
+    return Promise.race([Promise.resolve().then(operation), timedOut]).finally(() => clearTimeout(timeout));
+}
+
+async function getPmtilesHeader(source) {
+    try {
+        return await withTimeout(
+            () => source.getHeader(),
+            PMTILES_READ_TIMEOUT_MS,
+            'Regional PMTiles header request timed out.'
+        );
+    } catch (error) {
+        if (pmtiles === source) {
+            pmtiles = null;
+            pmtilesUrl = null;
+            header = null;
+        }
+        throw error;
+    }
+}
+
 function lonToTile(lon, z) { return Math.floor((lon + 180) / 360 * 2 ** z); }
 function latToTile(lat, z) {
     const rad = Math.max(-85.0511, Math.min(85.0511, lat)) * Math.PI / 180;
@@ -156,14 +186,24 @@ async function getTile(source, z, x, y, signal) {
     if (tileCache.has(key)) return tileCache.get(key);
     if (signal?.aborted) throw abortError();
     if (!tileRequests.has(key)) {
-        const request = source.getZxy(z, x, y, signal).then(response => {
+        const controller = new AbortController();
+        const request = withTimeout(
+            () => source.getZxy(z, x, y, controller.signal),
+            PMTILES_READ_TIMEOUT_MS,
+            `Regional PMTiles tile request timed out (${z}/${x}/${y}).`,
+            () => controller.abort()
+        ).then(response => {
             if (!response?.data) return null;
             const decoded = new VectorTileClass(new PbfReaderClass(new Uint8Array(response.data)));
             tileCache.set(key, decoded);
             if (tileCache.size > MAX_TILE_CACHE_SIZE) tileCache.delete(tileCache.keys().next().value);
             return decoded;
-        }).finally(() => tileRequests.delete(key));
-        tileRequests.set(key, request);
+        });
+        let sharedRequest;
+        sharedRequest = request.finally(() => {
+            if (tileRequests.get(key) === sharedRequest) tileRequests.delete(key);
+        });
+        tileRequests.set(key, sharedRequest);
     }
     return raceAbort(tileRequests.get(key), signal);
 }
@@ -205,7 +245,7 @@ async function fetchRegionalNodes(bounds, { signal, zoom = 14 } = {}) {
     const meta = await fetchMetadata(signal);
     await loadDecoderModules();
     const source = getPmtiles(meta);
-    if (!header) header = await raceAbort(source.getHeader(), signal);
+    if (!header) header = await raceAbort(getPmtilesHeader(source), signal);
     const box = coordinates(bounds);
     const withinHeader = box.south >= header.minLat - 1e-5 && box.north <= header.maxLat + 1e-5 &&
         box.west >= header.minLon - 1e-5 && box.east <= header.maxLon + 1e-5;
