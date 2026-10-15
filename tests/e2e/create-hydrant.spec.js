@@ -1,6 +1,27 @@
 
 import { test, expect } from '@playwright/test';
 
+async function mockGeolocation(page, accuracy) {
+    await page.addInitScript(({ accuracyMeters }) => {
+        const makePosition = () => ({
+            coords: {
+                latitude: 48.137154,
+                longitude: 11.576124,
+                accuracy: accuracyMeters,
+                heading: null
+            },
+            timestamp: Date.now()
+        });
+
+        navigator.geolocation.getCurrentPosition = success => success(makePosition());
+        navigator.geolocation.watchPosition = success => {
+            success(makePosition());
+            return 1;
+        };
+        navigator.geolocation.clearWatch = () => {};
+    }, { accuracyMeters: accuracy });
+}
+
 test.describe('Create Hydrant Flow', () => {
 
     test.beforeEach(async ({ context, browserName }) => {
@@ -16,7 +37,7 @@ test.describe('Create Hydrant Flow', () => {
         // --- MOCKS ---
 
         // 1. Geolocation
-        await page.context().setGeolocation({ latitude: 48.137154, longitude: 11.576124 });
+        await mockGeolocation(page, 5);
 
         // 2. Auth (Seed LocalStorage)
         await page.addInitScript(() => {
@@ -179,7 +200,7 @@ test.describe('Create Hydrant Flow', () => {
     });
 
     test('blocks capture confirmation when GPS accuracy is worse than 40m', async ({ page }) => {
-        await page.context().setGeolocation({ latitude: 48.137154, longitude: 11.576124, accuracy: 41 });
+        await mockGeolocation(page, 41);
         await page.addInitScript(() => localStorage.setItem('language', 'en'));
 
         await page.goto('/');

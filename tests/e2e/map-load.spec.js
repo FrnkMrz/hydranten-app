@@ -115,7 +115,7 @@ test.describe('Map & GPS Features', () => {
         await captureBtn.click();
 
         await expect(
-            page.getByText(/Location could not be determined|Standort konnte nicht ermittelt/)
+            page.getByText(/No sufficiently accurate, recent location is available|Kein ausreichend genauer, aktueller Standort verfügbar/)
         ).toBeVisible();
         await expect(page.locator('#submit-img-btn')).toHaveCount(0);
     });
