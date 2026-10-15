@@ -108,7 +108,7 @@ async function fetchMetadata(signal) {
             return metadata;
         } catch (error) {
             if (signal?.aborted) throw abortError();
-            if (controller.signal.aborted) throw new Error('Regional metadata request timed out.');
+            if (controller.signal.aborted) throw new Error('Regional metadata request timed out.', { cause: error });
             throw error;
         } finally {
             clearTimeout(timeout);
