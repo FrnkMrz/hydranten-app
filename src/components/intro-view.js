@@ -727,6 +727,12 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
             const updateIsVisible = map.getBounds().contains([localNode.lat, localNode.lon]);
             const localTags = localNode.tags || {};
             const serverTags = serverNode?.tags || {};
+            const localVersion = Number(localNode.version);
+            const serverVersion = Number(serverNode?.version);
+            const serverHasNewerVersion = serverNode && !serverNode._isPendingLocalEdit &&
+               Number.isSafeInteger(localVersion) && localVersion > 0 &&
+               Number.isSafeInteger(serverVersion) && serverVersion > localVersion;
+            if (serverHasNewerVersion) return;
             const tagsMatch = Object.keys(localTags).length === Object.keys(serverTags).length &&
                Object.entries(localTags).every(([key, value]) => serverTags[key] === value);
             // The area cache is patched optimistically after a successful edit. It cannot confirm
