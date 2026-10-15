@@ -84,6 +84,12 @@ Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 ### v1.4.0
 *   Initiales Release mit Edit-Mode, Failover-System, Gamification und 15 Sprachen.
 
+## Releases und Versionstags
+
+Stabile Releases verwenden [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH`. Für ein Release wird ein eigener PR erstellt, der die Versionsnummer in `package.json`, `package-lock.json`, `src/version.js`, `src/constants.js` und im README synchronisiert und den passenden Changelog-Eintrag datiert.
+
+Nach dem Merge des Release-PRs und erfolgreichen Pflichtprüfungen erhält genau dieser Release-Commit einen annotierten Git-Tag im Format `vMAJOR.MINOR.PATCH` (zum Beispiel `v1.6.1`). Der Tag wird anschließend zum Remote gepusht. Normale Feature- und Bugfix-Merges bekommen keinen Tag; veröffentlichte Versionstags werden nicht verschoben oder wiederverwendet.
+
 ---
 
 ## ✨ Features
