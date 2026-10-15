@@ -1,5 +1,6 @@
 import { t } from '../../services/i18n.js';
 import { determineHydrantType } from '../../services/hydrant-logic.js';
+import { renderAedMarkerSymbol } from '../aed-marker.js';
 
 export function initFormLogic(element, location, editMode, initialData) {
     const typeInput = element.querySelector('#hydrant-type');
@@ -35,7 +36,7 @@ export function initFormLogic(element, location, editMode, initialData) {
                </svg>`
         },
         { id: 'underground', label: t('confirm.types.underground'), icon: '<span class="text-4xl mb-1">🕳️</span>' },
-        { id: 'aed', label: t('confirm.types.aed'), icon: '<span class="text-4xl mb-1">💚</span>' }
+        { id: 'aed', label: t('confirm.types.aed'), icon: `<span class="mb-1 flex h-10 w-10 overflow-hidden rounded-md">${renderAedMarkerSymbol()}</span>` }
     ];
     const subTypes = [
         { id: 'dry_hydrant', label: t('confirm.types.dry_hydrant'), icon: '<span class="text-xl">🌵</span>' },
