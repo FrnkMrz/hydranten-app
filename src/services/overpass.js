@@ -59,10 +59,11 @@ function updateCachedNode(updatedNode) {
         }
 
         const previousNode = index >= 0 ? entry.nodes[index] : {};
+        const numericId = Number(updatedNode.id);
         const node = {
             ...previousNode,
             ...updatedNode,
-            id: previousNode.id ?? updatedNode.id,
+            id: previousNode.id ?? (Number.isSafeInteger(numericId) ? numericId : updatedNode.id),
             type: 'node',
             tags: { ...updatedNode.tags }
         };
