@@ -73,7 +73,7 @@ Created and deleted hydrants are cached in localStorage (`created_hydrants`, `de
 Translations in `src/locales/*.js`. Access via `t('key.path')` from `services/i18n.js`. The `en.js` file is the reference — `scripts/verify-i18n.js` checks all locales for missing keys. German and English are critical (fail build if incomplete).
 
 ### Overpass Failover
-Queries cycle through 3 servers (overpass-api.de → kumi.systems → maps.mail.ru) with automatic retry on timeout or rate limiting.
+Queries cycle through 3 servers (overpass-api.de → kumi.systems → maps.mail.ru) on network/server errors, timeouts, rate limits and HTTP errors. HTTP 400 is returned immediately because a malformed query will fail on every instance.
 
 ## Testing
 
@@ -81,9 +81,10 @@ Tests use Vitest with jsdom. Run `npm test` which also verifies i18n completenes
 
 ## Deployment
 
-Push to `main` triggers `.github/workflows/deploy.yml`:
-1. `npm ci` → `npm run build` (includes tests) → deploy `dist/` to GitHub Pages
-2. Custom domain: `hydrantenjaeger.de` (configured via CNAME file)
+Push to `main` triggers `.github/workflows/ci.yml`:
+1. Lint, translation checks, unit/integration tests, production build and mobile E2E checks run.
+2. The production build artifact is deployed to GitHub Pages only after the build and E2E jobs succeed.
+3. Custom domain: `hydrantenjaeger.de` (configured via CNAME file)
 
 ## Important Notes
 

@@ -1,7 +1,35 @@
 import { describe, it, expect } from 'vitest';
-import { calculateOffsetPosition } from './geo';
+import { calculateOffsetPosition, hasReliableGpsFix } from './geo';
 
 describe('geo service', () => {
+    describe('hasReliableGpsFix', () => {
+        const now = 1_700_000_000_000;
+        const validFix = {
+            lat: 48.137,
+            lng: 11.576,
+            accuracy: 40,
+            timestamp: now,
+            timestampIsDevice: true
+        };
+
+        it('accepts a recent device fix at the accuracy threshold', () => {
+            expect(hasReliableGpsFix(validFix, now)).toBe(true);
+        });
+
+        it('rejects inaccurate, stale, future, or synthetic-time fixes', () => {
+            expect(hasReliableGpsFix({ ...validFix, accuracy: 40.1 }, now)).toBe(false);
+            expect(hasReliableGpsFix({ ...validFix, timestamp: now - 20_001 }, now)).toBe(false);
+            expect(hasReliableGpsFix({ ...validFix, timestamp: now + 1 }, now)).toBe(false);
+            expect(hasReliableGpsFix({ ...validFix, timestampIsDevice: false }, now)).toBe(false);
+        });
+
+        it('rejects missing or invalid coordinates and accuracy', () => {
+            expect(hasReliableGpsFix(null, now)).toBe(false);
+            expect(hasReliableGpsFix({ ...validFix, lat: NaN }, now)).toBe(false);
+            expect(hasReliableGpsFix({ ...validFix, accuracy: undefined }, now)).toBe(false);
+        });
+    });
+
     describe('calculateOffsetPosition', () => {
         it('should return original position if bearing is null', () => {
             const result = calculateOffsetPosition(48.137, 11.576, 3, null);

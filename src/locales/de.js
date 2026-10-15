@@ -80,7 +80,7 @@ export default {
         node_deleted: "Dieser Hydrant existiert nicht mehr.",
         oops: "Hoppla!",
         back_to_map: "Zurück zur Karte",
-        gps_failed: "Standort konnte nicht ermittelt werden. Bitte GPS aktivieren.",
+        gps_failed: "Kein ausreichend genauer, aktueller Standort verfügbar. Bitte GPS prüfen und erneut versuchen.",
         gps_unavailable: "GPS nicht verfügbar. Fallback-Karte wird angezeigt.",
         edit_function_missing: "Interner Fehler: Edit-Funktion fehlt.",
         network_error: "Laden fehlgeschlagen (Netzwerk/API)",

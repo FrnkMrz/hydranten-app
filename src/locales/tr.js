@@ -194,7 +194,7 @@ export default {
         node_deleted: "Bu hidrat artık mevcut değil.",
         oops: "Hata!",
         back_to_map: "Haritaya Dön",
-        gps_failed: "Konum belirlenemedi. GPS'i kontrol edin.",
+        gps_failed: "Yeterince doğru ve güncel bir konum yok. GPS'i kontrol edip yeniden deneyin.",
         gps_unavailable: "GPS yok. Varsayılan harita.",
         edit_function_missing: "Dahili Hata: Düzenleme fonksiyonu eksik.",
         network_error: "Yükleme Hatası (Ağ/API)",

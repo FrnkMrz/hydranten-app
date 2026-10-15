@@ -194,7 +194,7 @@ export default {
         node_deleted: "Este hidrante ya no existe.",
         oops: "¡Vaya!",
         back_to_map: "Volver al mapa",
-        gps_failed: "Ubicación no encontrada. Verifique GPS.",
+        gps_failed: "No hay una ubicación suficientemente precisa y reciente. Comprueba el GPS e inténtalo de nuevo.",
         gps_unavailable: "GPS no disponible. Mapa por defecto.",
         edit_function_missing: "Error interno: Falta función de edición.",
         network_error: "Error de carga (Red/API)",

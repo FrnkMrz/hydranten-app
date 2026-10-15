@@ -50,7 +50,12 @@ async function fetchWithFallback(query, attempt = 0, externalSignal = null) {
         }
 
         if (!response.ok) {
-            if (response.status === 400) throw new Error(`Bad Request (400)`); // Syntax error, don't retry
+            if (response.status === 400) {
+                const error = new Error('Bad Request (400)');
+                error.retryable = false;
+                throw error; // A malformed query will fail the same way on every server.
+            }
+            // Other HTTP errors may come from an instance-specific policy or endpoint issue.
             throw new Error(`HTTP ${response.status}`);
         }
 
@@ -59,6 +64,9 @@ async function fetchWithFallback(query, attempt = 0, externalSignal = null) {
     } catch (_err) {
         if (externalSignal?.aborted) {
             throw createAbortError();
+        }
+        if (_err.retryable === false) {
+            throw _err;
         }
 
         // console.warn(`Server ${server} fehlgeschlagen:`, err.message);

@@ -195,7 +195,7 @@ export default {
         node_deleted: "Tento hydrant již neexistuje.",
         oops: "Jejda!",
         back_to_map: "Zpět na mapu",
-        gps_failed: "Polohu nelze určit. Zkontrolujte GPS.",
+        gps_failed: "Není k dispozici dostatečně přesná a aktuální poloha. Zkontrolujte GPS a zkuste to znovu.",
         gps_unavailable: "GPS nedostupné. Zobrazena výchozí mapa.",
         edit_function_missing: "Interní chyba: Chybí funkce úprav.",
         network_error: "Načtení selhalo (Síť/API)",

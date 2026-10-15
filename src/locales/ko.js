@@ -194,7 +194,7 @@ export default {
         node_deleted: "이 소화전은 더 이상 존재하지 않습니다.",
         oops: "이런!",
         back_to_map: "지도로 돌아가기",
-        gps_failed: "위치를 찾을 수 없습니다. GPS를 확인하세요.",
+        gps_failed: "정확하고 최신인 위치 정보를 사용할 수 없습니다. GPS를 확인하고 다시 시도하세요.",
         gps_unavailable: "GPS 사용 불가. 기본 지도 표시.",
         edit_function_missing: "내부 오류: 편집 기능 누락.",
         network_error: "로드 실패 (네트워크/API)",

@@ -25,7 +25,7 @@ Endgeräts.
 
 ### Standort- und OpenStreetMap-Daten
 
-*   Der Standortzugriff erfolgt erst nach entsprechender Freigabe. Die App verarbeitet die Geräteposition und – soweit verfügbar – die Kompassrichtung lokal, um die vorgeschlagene Position des Hydranten zu bestimmen.
+*   Der Standortzugriff erfolgt erst nach entsprechender Freigabe. Die App verarbeitet die Geräteposition und – soweit verfügbar – die Kompassrichtung lokal, um die vorgeschlagene Position des Hydranten zu bestimmen. Für neue Erfassungen muss der GPS-Fix höchstens 20 Sekunden alt sein und eine angegebene Genauigkeit von höchstens 40 m haben. Ist das nicht erfüllt, hält die App die Erfassung an; veraltete Ersatzpositionen werden nicht an OpenStreetMap gesendet.
 *   Erst nach ausdrücklichem Start des Uploads werden die gewählten Koordinaten und Hydranten-Sachdaten über die OpenStreetMap API veröffentlicht. Das Foto ist nicht Bestandteil dieses Uploads. OpenStreetMap ordnet die Bearbeitung dem verwendeten Benutzerkonto zu.
 *   Zum Laden von Hydranten und Karten werden Kartenausschnitt und weitere technisch erforderliche Anfragedaten an OpenStreetMap-Kachelserver, Overpass-Instanzen oder den jeweils ausgewählten Kartenanbieter gesendet.
 *   Zur Ermittlung von Orts- und Straßennamen werden Koordinaten an `nominatim.openstreetmap.org` übertragen.

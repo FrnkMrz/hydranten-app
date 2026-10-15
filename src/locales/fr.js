@@ -194,7 +194,7 @@ export default {
         node_deleted: "Cette borne n'existe plus.",
         oops: "Oups !",
         back_to_map: "Retour carte",
-        gps_failed: "Localisation impossible. Vérifiez le GPS.",
+        gps_failed: "Aucune position suffisamment précise et récente n’est disponible. Vérifiez le GPS et réessayez.",
         gps_unavailable: "GPS indisponible. Carte par défaut.",
         edit_function_missing: "Erreur interne : Fonction d'édition manquante.",
         network_error: "Échec chgt (Réseau/API)",
