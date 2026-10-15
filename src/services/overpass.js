@@ -55,11 +55,8 @@ async function fetchWithFallback(query, attempt = 0, externalSignal = null) {
                 error.retryable = false;
                 throw error; // A malformed query will fail the same way on every server.
             }
-            const error = new Error(`HTTP ${response.status}`);
-            if (response.status >= 400 && response.status < 500 && response.status !== 408) {
-                error.retryable = false;
-            }
-            throw error;
+            // Other HTTP errors may come from an instance-specific policy or endpoint issue.
+            throw new Error(`HTTP ${response.status}`);
         }
 
         return await response.json();

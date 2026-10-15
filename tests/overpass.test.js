@@ -55,6 +55,14 @@ describe('Overpass Service', () => {
         expect(fetch).toHaveBeenCalledTimes(1);
     });
 
+    it('fails over when one instance rejects the request with HTTP 403', async () => {
+        fetch.mockResolvedValueOnce({ ok: false, status: 403 });
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ elements: [] }) });
+
+        await expect(overpass.fetchHydrants(mockBounds)).resolves.toEqual([]);
+        expect(fetch).toHaveBeenCalledTimes(2);
+    });
+
     it('retries a temporary server error on the next instance', async () => {
         fetch.mockResolvedValueOnce({ ok: false, status: 503 });
         fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ elements: [] }) });

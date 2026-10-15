@@ -13,7 +13,7 @@ Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 ### Unreleased - Review-Härtungen
 *   **GPS-Sicherheit:** Neue Erfassungen benötigen einen höchstens 20 Sekunden alten Geräte-Fix mit maximal 40 m angegebener Ungenauigkeit. Veraltete, nicht verifizierbare Cache-Einträge werden abgewiesen.
 *   **Deployment:** GitHub Pages wird nach einem Push auf `main` erst veröffentlicht, wenn Produktions-Build und mobile E2E-Prüfungen erfolgreich waren.
-*   **Overpass-Failover:** Ungültige Abfragen (HTTP 400) und andere permanente Client-Fehler werden sofort gemeldet; vorübergehende Netzwerk-, Server-, Timeout- und Rate-Limit-Fehler wechseln zum nächsten Server.
+*   **Overpass-Failover:** Ungültige Abfragen (HTTP 400) werden sofort gemeldet. Bei anderen HTTP-Fehlern sowie Netzwerk-, Server-, Timeout- und Rate-Limit-Fehlern wird die nächste Instanz versucht.
 
 ### v1.6.0 (28.06.2026) - Konsolidierung & automatisierte Browser-Tests
 *   **Release-Konsolidierung:** Die größeren Stabilitäts-, Datenschutz-, PWA- und Toolchain-Verbesserungen der jüngsten Wartungsrunde werden als neues Minor Release gebündelt.
