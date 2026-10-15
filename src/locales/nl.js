@@ -27,6 +27,10 @@ export default {
         update_now: "Nu bijwerken"
     },
     hydrant_data: {
+        source_regional: 'Regionale OSM-gegevens · stand {date}',
+        source_regional_no_delta: 'Regionale gegevens; live controle is momenteel niet beschikbaar',
+        source_regional_live_delta: 'Regionale OSM-gegevens met live updates',
+        source_overpass: 'Live gegevens: Overpass',
         loading: "Hydrantgegevens worden geladen …",
         slow: "Het ophalen van gegevens duurt langer",
         current: "Hydrantgegevens zijn actueel",

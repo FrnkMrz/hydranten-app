@@ -19,6 +19,7 @@ L.Icon.Default.mergeOptions({
 
 // Globals for Hydrants
 const visibleHydrants = new Set();
+const hydrantMarkerData = new Map();
 let hydrantLayer = null;
 
 import { t, lang, setLanguage } from '../services/i18n.js';
@@ -61,6 +62,7 @@ export function renderIntroView() {
       <div class="w-full flex-1 min-h-[30%] relative z-0">
           <div id="intro-map" class="absolute inset-0 z-0"></div>
           <div id="hydrant-data-status" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+          <div id="map-data-source" class="hidden pointer-events-none absolute top-safe-14 left-1/2 z-[401] -translate-x-1/2 rounded-full border border-white/10 bg-gray-950/80 px-3 py-1.5 text-[10px] font-medium text-gray-200 shadow backdrop-blur-md" role="status" aria-live="polite"></div>
           
           <!-- LOCATE ME BUTTON -->
           <button id="locate-me-btn" class="absolute bottom-6 right-4 z-[401] bg-blue-600/90 text-white p-3 rounded-full shadow-lg shadow-blue-900/40 border border-white/20 active:scale-95 hover:bg-blue-500 transition" aria-label="Locate Me">
@@ -403,6 +405,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 
    // Reset cached markers on mount to force redraw on the new map instance
    if (visibleHydrants) visibleHydrants.clear();
+   hydrantMarkerData.clear();
    // Reset global layer reference if needed, though it's overwritten below
    hydrantLayer = null;
    // Live GPS Update & Map
@@ -667,140 +670,217 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
    requestState.controller = controller;
    loadStatus.setLoading({ immediate });
 
-   overpass.fetchHydrants(bounds, { signal: controller.signal })
-      .then(elements => {
-         if (requestId !== requestState.latestRequestId) return;
-         if (!hydrantLayer) return;
+   const renderHydrants = (elements, { preview = false } = {}) => {
+      if (requestId !== requestState.latestRequestId) return;
+      if (!hydrantLayer) return;
 
-         // Optimistic Filter: Remove hydrants that we know are deleted locally
-         let localDeleted = [];
-         let localCreated = [];
-         try {
-            localDeleted = JSON.parse(localStorage.getItem('deleted_hydrants') || '[]');
-            localCreated = JSON.parse(localStorage.getItem('created_hydrants') || '[]');
+      const sourceStatus = document.getElementById('map-data-source');
+      if (sourceStatus) {
+         const source = elements.dataSource;
+         if (source?.type === 'regional') {
+            const dataTimestamp = source.osmDataUntil;
+            const parsedDate = dataTimestamp ? new Date(dataTimestamp) : null;
+            const date = parsedDate && !Number.isNaN(parsedDate.getTime()) ? parsedDate.toLocaleDateString(lang) : '–';
+            sourceStatus.textContent = t('hydrant_data.source_regional').replace('{date}', date);
+            sourceStatus.title = source.liveDelta == null
+               ? sourceStatus.textContent
+               : source.liveDelta === false
+                  ? t('hydrant_data.source_regional_no_delta')
+                  : t('hydrant_data.source_regional_live_delta');
+         } else {
+            sourceStatus.textContent = t('hydrant_data.source_overpass');
+            sourceStatus.title = t('hydrant_data.source_overpass');
+         }
+         sourceStatus.classList.remove('hidden');
+      }
 
-            // Cleanup Created: Remove items older than 15 minutes or arguably if they appear in API (handled below)
-            const now = Date.now();
-            const validCreated = localCreated.filter(n => (now - (n.timestamp || 0)) < 15 * 60 * 1000);
-            if (validCreated.length !== localCreated.length) {
-               localStorage.setItem('created_hydrants', JSON.stringify(validCreated));
-               localCreated = validCreated;
-            }
-         } catch (_e) { /* ignore */ }
+      // Optimistic Filter: Remove hydrants that we know are deleted locally
+      let localDeleted = [];
+      let localCreated = [];
+      let localUpdated = [];
+      try {
+         localDeleted = JSON.parse(localStorage.getItem('deleted_hydrants') || '[]');
+         localCreated = JSON.parse(localStorage.getItem('created_hydrants') || '[]');
+         localUpdated = JSON.parse(localStorage.getItem('updated_hydrants') || '[]');
 
-         // 1. Filter out deleted
-         let filteredElements = elements.filter(node => !localDeleted.includes(String(node.id)));
-
-         // 2. Inject local/newly created hydrants (if not already present)
-         const existingIds = new Set(filteredElements.map(n => String(n.id)));
-         // let injectedCount = 0;
-
-         localCreated.forEach(localNode => {
-            // Check bounds (roughly) to only add if in view? 
-            // Or just add them, Leaflet handles off-screen fine usually, but Overpass query was bounded.
-            // Let's checks bounds to be nice.
-            if (map.getBounds().contains([localNode.lat, localNode.lon])) {
-               // Fix: Ensure we don't re-inject if it was deleted locally!
-               if (!localDeleted.includes(String(localNode.id))) {
-                  if (!existingIds.has(String(localNode.id))) {
-                     filteredElements.push(localNode);
-                     // injectedCount++;
-                  }
-               }
-            }
-         });
-
-         // Logic for Edit Button Visibility
-         const totalHydrants = filteredElements.length;
-         if (totalHydrants > 0) {
-            const editBtn = document.querySelector('#edit-mode-btn');
-            const closeFsBtn = document.querySelector('#close-fullscreen-btn');
-            const isFullscreen = closeFsBtn && !closeFsBtn.classList.contains('hidden');
-
-            if (editBtn && !isFullscreen) editBtn.classList.remove('hidden');
+         // Cleanup Created: Remove items older than 15 minutes or arguably if they appear in API (handled below)
+         const now = Date.now();
+         const validCreated = localCreated.filter(n => (now - (n.timestamp || 0)) < 15 * 60 * 1000);
+         if (validCreated.length !== localCreated.length) {
+            localStorage.setItem('created_hydrants', JSON.stringify(validCreated));
+            localCreated = validCreated;
          }
 
-         // console.log(`Fetched ${elements.length}, Deleted ${elements.length - filteredElements.length + injectedCount}, Injected ${injectedCount} locals. Showing ${filteredElements.length}`);
+         const validUpdated = localUpdated.filter(node => (now - (node.timestamp || 0)) < 30 * 24 * 60 * 60 * 1000);
+         if (validUpdated.length !== localUpdated.length) {
+            localStorage.setItem('updated_hydrants', JSON.stringify(validUpdated));
+            localUpdated = validUpdated;
+         }
+      } catch (_e) { /* ignore */ }
 
-         // Jäger Red (Tailwind red-600) = #DC2626
-         const RED = '#DC2626';
-         // Blue for Suction Points (Tailwind blue-600) = #2563EB
-         const BLUE = '#2563EB';
+      // 1. Filter out deleted
+      let filteredElements = elements.filter(node => !localDeleted.includes(String(node.id)));
 
-         filteredElements.forEach(node => {
-            if (!node.lat || !node.lon) return;
+      // 2. Apply local edits until a later data response contains the saved version.
+      const stillPendingUpdates = [];
+      localUpdated.forEach(localNode => {
+         const nodeIndex = filteredElements.findIndex(node => String(node.id) === String(localNode.id));
+         const serverNode = nodeIndex >= 0 ? filteredElements[nodeIndex] : null;
+         const updateIsVisible = map.getBounds().contains([localNode.lat, localNode.lon]);
+         const localTags = localNode.tags || {};
+         const serverTags = serverNode?.tags || {};
+         const localVersion = Number(localNode.version);
+         const serverVersion = Number(serverNode?.version);
+         const serverHasNewerVersion = serverNode && !serverNode._isPendingLocalEdit &&
+            Number.isSafeInteger(localVersion) && localVersion > 0 &&
+            Number.isSafeInteger(serverVersion) && serverVersion > localVersion;
+         if (serverHasNewerVersion) return;
+         const tagsMatch = Object.keys(localTags).length === Object.keys(serverTags).length &&
+            Object.entries(localTags).every(([key, value]) => serverTags[key] === value);
+         // The area cache is patched optimistically after a successful edit. It cannot confirm
+         // that the upstream Overpass/PMTiles data has caught up with the saved edit.
+         if (serverNode && !serverNode._isPendingLocalEdit && Math.abs(serverNode.lat - localNode.lat) < 1e-7 &&
+             Math.abs(serverNode.lon - localNode.lon) < 1e-7 &&
+             tagsMatch) {
+            return;
+         }
+         stillPendingUpdates.push(localNode);
+         if (nodeIndex >= 0) filteredElements.splice(nodeIndex, 1);
+         if (updateIsVisible && !localDeleted.includes(String(localNode.id))) {
+            filteredElements.push({ ...localNode, type: 'node', tags: { ...localNode.tags } });
+         }
+      });
+      if (!preview && stillPendingUpdates.length !== localUpdated.length) {
+         try { localStorage.setItem('updated_hydrants', JSON.stringify(stillPendingUpdates)); } catch (_e) { /* ignore */ }
+      }
 
-            if (!visibleHydrants.has(node.id)) {
-               visibleHydrants.add(node.id);
+      // 3. Inject local/newly created hydrants (if not already present)
+      const existingIds = new Set(filteredElements.map(n => String(n.id)));
+      // let injectedCount = 0;
 
-               // Determine color based on tags
-               let fillColor = RED;
-               const isAed = node.tags?.emergency === 'defibrillator';
-               const isSuction = node.tags && (
-                  node.tags.emergency === 'suction_point' ||
-                  node.tags.emergency === 'water_tank' ||
-                  node.tags['fire_hydrant:type'] === 'suction_point' ||
-                  node.tags['fire_hydrant:type'] === 'cistern'
-               );
-
-               if (isSuction) {
-                  fillColor = BLUE;
-               } else if (isAed) {
-                  fillColor = '#16A34A';
+      localCreated.forEach(localNode => {
+         // Check bounds (roughly) to only add if in view?
+         // Or just add them, Leaflet handles off-screen fine usually, but Overpass query was bounded.
+         // Let's checks bounds to be nice.
+         if (map.getBounds().contains([localNode.lat, localNode.lon])) {
+            // Fix: Ensure we don't re-inject if it was deleted locally!
+            if (!localDeleted.includes(String(localNode.id))) {
+               if (!existingIds.has(String(localNode.id))) {
+                  filteredElements.push(localNode);
+                  // injectedCount++;
                }
-
-               const markerLabel = isAed ? t('confirm.aed_marker_aria') : t('confirm.title_edit');
-               const markerVisualClass = isAed
-                  ? 'hydrant-marker-visual aed-marker-visual w-full h-full rounded-md border-2 border-white shadow-md transition-all cursor-pointer overflow-hidden'
-                  : 'hydrant-marker-visual w-full h-full rounded-full border-2 border-white shadow-md transition-all cursor-pointer flex items-center justify-center text-white';
-               const markerSymbol = isAed ? renderAedMarkerSymbol() : '';
-               const iconHtml = `<div aria-hidden="true" class="${markerVisualClass}" style="${isAed ? '' : `background-color: ${fillColor}; `}opacity: 0.95;">${markerSymbol}</div>`;
-
-               const m = L.marker([node.lat, node.lon], {
-                  icon: L.divIcon({
-                     className: 'hydrant-custom-icon bg-transparent',
-                     html: iconHtml,
-                     iconSize: isAed ? [32, 32] : [24, 24], // Minimum swipable touch area
-                     iconAnchor: isAed ? [16, 16] : [12, 12]
-                  }),
-                  keyboard: true
-               });
-
-               m.addTo(hydrantLayer);
-               const markerElement = m.getElement();
-               if (markerElement) {
-                  markerElement.setAttribute('role', 'button');
-                  markerElement.setAttribute('aria-label', markerLabel);
-               }
-
-               m.on('click', () => {
-                  // console.log("Clicked Hydrant:", node.id, "onEdit:", onEdit); // DEBUG
-                  // Visual feedback
-                  const btn = m.getElement()?.querySelector('.hydrant-marker-visual');
-                  if (btn) {
-                     btn.style.backgroundColor = '#3b82f6';
-                     btn.style.transform = 'scale(1.2)';
-                     btn.style.borderWidth = '4px';
-                  }
-
-                  setTimeout(() => {
-                     if (onEdit) {
-                        onEdit(node.id); // Trigger Edit Mode
-                     } else {
-                        console.error("onEdit is MISSING in click handler!");
-                        import('../components/overlay.js').then(({ showMessageOverlay }) => {
-                           const app = document.getElementById('app');
-                           showMessageOverlay(app, "Error", t('error.edit_function_missing'), 'error');
-                        });
-                     }
-                  }, 100);
-               });
-
             }
-         });
+         }
+      });
 
-         loadStatus.setSuccess();
-      })
+      // Logic for Edit Button Visibility
+      const totalHydrants = filteredElements.length;
+      if (totalHydrants > 0) {
+         const editBtn = document.querySelector('#edit-mode-btn');
+         const closeFsBtn = document.querySelector('#close-fullscreen-btn');
+         const isFullscreen = closeFsBtn && !closeFsBtn.classList.contains('hidden');
+
+         if (editBtn && !isFullscreen) editBtn.classList.remove('hidden');
+      }
+
+      // console.log(`Fetched ${elements.length}, Deleted ${elements.length - filteredElements.length + injectedCount}, Injected ${injectedCount} locals. Showing ${filteredElements.length}`);
+
+      // Jäger Red (Tailwind red-600) = #DC2626
+      const RED = '#DC2626';
+      // Blue for Suction Points (Tailwind blue-600) = #2563EB
+      const BLUE = '#2563EB';
+
+      filteredElements.forEach(node => {
+         if (!node.lat || !node.lon) return;
+
+         const markerKey = String(node.id);
+         const markerSignature = `${node.lat},${node.lon},${JSON.stringify(node.tags || {})}`;
+         const previousMarker = hydrantMarkerData.get(markerKey);
+         if (previousMarker && previousMarker.signature !== markerSignature) {
+            previousMarker.marker.remove();
+            hydrantMarkerData.delete(markerKey);
+            visibleHydrants.delete(markerKey);
+         }
+
+         if (!visibleHydrants.has(markerKey)) {
+            visibleHydrants.add(markerKey);
+
+            // Determine color based on tags
+            let fillColor = RED;
+            const isAed = node.tags?.emergency === 'defibrillator';
+            const isSuction = node.tags && (
+               node.tags.emergency === 'suction_point' ||
+               node.tags.emergency === 'water_tank' ||
+               node.tags['fire_hydrant:type'] === 'suction_point' ||
+               node.tags['fire_hydrant:type'] === 'cistern'
+            );
+
+            if (isSuction) {
+               fillColor = BLUE;
+            } else if (isAed) {
+               fillColor = '#16A34A';
+            }
+
+            const markerLabel = isAed ? t('confirm.aed_marker_aria') : t('confirm.title_edit');
+            const markerVisualClass = isAed
+               ? 'hydrant-marker-visual aed-marker-visual w-full h-full rounded-md border-2 border-white shadow-md transition-all cursor-pointer overflow-hidden'
+               : 'hydrant-marker-visual w-full h-full rounded-full border-2 border-white shadow-md transition-all cursor-pointer flex items-center justify-center text-white';
+            const markerSymbol = isAed ? renderAedMarkerSymbol() : '';
+            const iconHtml = `<div aria-hidden="true" class="${markerVisualClass}" style="${isAed ? '' : `background-color: ${fillColor}; `}opacity: 0.95;">${markerSymbol}</div>`;
+
+            const m = L.marker([node.lat, node.lon], {
+               icon: L.divIcon({
+                  className: 'hydrant-custom-icon bg-transparent',
+                  html: iconHtml,
+                  iconSize: isAed ? [32, 32] : [24, 24], // Minimum swipable touch area
+                  iconAnchor: isAed ? [16, 16] : [12, 12]
+               }),
+               keyboard: true
+            });
+
+            m.addTo(hydrantLayer);
+            hydrantMarkerData.set(markerKey, { marker: m, signature: markerSignature });
+            const markerElement = m.getElement();
+            if (markerElement) {
+               markerElement.setAttribute('role', 'button');
+               markerElement.setAttribute('aria-label', markerLabel);
+            }
+
+            m.on('click', () => {
+               // console.log("Clicked Hydrant:", node.id, "onEdit:", onEdit); // DEBUG
+               // Visual feedback
+               const btn = m.getElement()?.querySelector('.hydrant-marker-visual');
+               if (btn) {
+                  btn.style.backgroundColor = '#3b82f6';
+                  btn.style.transform = 'scale(1.2)';
+                  btn.style.borderWidth = '4px';
+               }
+
+               setTimeout(() => {
+                  if (onEdit) {
+                     onEdit(node.id); // Trigger Edit Mode
+                  } else {
+                     console.error("onEdit is MISSING in click handler!");
+                     import('../components/overlay.js').then(({ showMessageOverlay }) => {
+                        const app = document.getElementById('app');
+                        showMessageOverlay(app, "Error", t('error.edit_function_missing'), 'error');
+                     });
+                  }
+               }, 100);
+            });
+
+         }
+      });
+
+      loadStatus.setSuccess();
+   };
+
+   overpass.fetchHydrants(bounds, {
+      signal: controller.signal,
+      zoom: map.getZoom(),
+      onRegionalData: elements => renderHydrants(elements, { preview: true })
+   })
+      .then(elements => renderHydrants(elements))
       .catch(err => {
          if (requestId !== requestState.latestRequestId || err.name === 'AbortError') return;
 

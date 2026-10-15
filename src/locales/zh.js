@@ -27,6 +27,10 @@ export default {
         update_now: "立即更新"
     },
     hydrant_data: {
+        source_regional: '区域 OSM 数据 · 截至 {date}',
+        source_regional_no_delta: '正在显示区域数据；当前无法检查实时更新',
+        source_regional_live_delta: '包含实时更新的区域 OSM 数据',
+        source_overpass: '实时数据：Overpass',
         loading: "正在加载消防栓数据 …",
         slow: "数据请求所需时间较长",
         current: "消防栓数据已是最新",

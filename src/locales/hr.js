@@ -27,6 +27,10 @@ export default {
         update_now: "Ažuriraj sada"
     },
     hydrant_data: {
+        source_regional: 'Regionalni OSM podaci · stanje {date}',
+        source_regional_no_delta: 'Regionalni podaci; provjera ažuriranja trenutačno nije dostupna',
+        source_regional_live_delta: 'Regionalni OSM podaci s ažuriranjima uživo',
+        source_overpass: 'Podaci uživo: Overpass',
         loading: "Učitavanje podataka o hidrantima …",
         slow: "Dohvaćanje podataka traje dulje",
         current: "Podaci o hidrantima su ažurni",

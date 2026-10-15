@@ -27,6 +27,10 @@ export default {
         update_now: "Jetzt aktualisieren"
     },
     hydrant_data: {
+        source_regional: 'Regionale OSM-Daten · Stand {date}',
+        source_regional_no_delta: 'Regionaler Datenstand; Live-Abgleich derzeit nicht erreichbar',
+        source_regional_live_delta: 'Regionale OSM-Daten mit Live-Abgleich',
+        source_overpass: 'Live-Daten: Overpass',
         loading: "Kartendaten werden geladen …",
         slow: "Der Datenabruf dauert länger",
         current: "Kartendaten sind aktuell",

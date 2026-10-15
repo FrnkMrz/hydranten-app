@@ -27,6 +27,10 @@ export default {
         update_now: "今すぐ更新"
     },
     hydrant_data: {
+        source_regional: '地域の OSM データ · {date} 時点',
+        source_regional_no_delta: '地域データを表示中。ライブ更新の確認は現在利用できません',
+        source_regional_live_delta: 'ライブ更新を反映した地域の OSM データ',
+        source_overpass: 'ライブデータ: Overpass',
         loading: "消火栓データを読み込んでいます …",
         slow: "データの取得に時間がかかっています",
         current: "消火栓データは最新です",

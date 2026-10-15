@@ -27,6 +27,10 @@ export default {
         update_now: "Aktualizovat nyní"
     },
     hydrant_data: {
+        source_regional: 'Regionální data OSM · k {date}',
+        source_regional_no_delta: 'Regionální data; kontrola živých změn je nyní nedostupná',
+        source_regional_live_delta: 'Regionální data OSM s živými aktualizacemi',
+        source_overpass: 'Živá data: Overpass',
         loading: "Načítání dat hydrantů …",
         slow: "Načítání dat trvá déle",
         current: "Data hydrantů jsou aktuální",

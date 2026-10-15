@@ -340,6 +340,24 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
             tags: finalTags
         });
 
+        // Keep regional base tiles from restoring the old position/tags after a reload.
+        try {
+            const updated = JSON.parse(localStorage.getItem('updated_hydrants') || '[]')
+                .filter(node => String(node.id) !== String(id));
+            const savedVersion = Number(newVersion);
+            updated.push({
+                id: String(id),
+                version: Number.isSafeInteger(savedVersion) ? savedVersion : null,
+                lat: Number(lat),
+                lon: Number(lng),
+                tags: finalTags,
+                timestamp: Date.now()
+            });
+            localStorage.setItem('updated_hydrants', JSON.stringify(updated));
+        } catch (storageError) {
+            console.warn('Could not save edited map node locally', storageError);
+        }
+
         return { id, version: newVersion, changeset: changesetId };
 
     } finally {
