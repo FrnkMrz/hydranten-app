@@ -1,4 +1,5 @@
 // src/services/overpass.js
+import { regionalData } from './regional-data.js';
 
 
 // Liste bekannter, stabiler Overpass-Instanzen
@@ -42,11 +43,13 @@ function getCachedArea(box) {
 
     const [entry] = areaCache.splice(index, 1);
     areaCache.unshift(entry);
-    return entry.nodes.map(node => ({ ...node, tags: { ...node.tags } }));
+    const cachedNodes = entry.nodes.map(node => ({ ...node, tags: { ...node.tags } }));
+    cachedNodes.dataSource = entry.dataSource;
+    return cachedNodes;
 }
 
 function cacheArea(box, nodes) {
-    areaCache.unshift({ box, nodes, timestamp: Date.now() });
+    areaCache.unshift({ box, nodes, dataSource: nodes.dataSource, timestamp: Date.now() });
     if (areaCache.length > AREA_CACHE_LIMIT) areaCache.length = AREA_CACHE_LIMIT;
 }
 
@@ -71,6 +74,10 @@ function updateCachedNode(updatedNode) {
         if (index >= 0) entry.nodes[index] = node;
         else entry.nodes.push(node);
     }
+}
+
+function clearAreaCache() {
+    areaCache.length = 0;
 }
 
 /**
@@ -143,8 +150,9 @@ async function fetchWithFallback(query, attempt = 0, externalSignal = null) {
 
 export const overpass = {
     updateCachedNode,
+    clearCache: clearAreaCache,
 
-    async fetchHydrants(bounds, { signal } = {}) {
+    async fetchHydrants(bounds, { signal, zoom } = {}) {
         if (signal?.aborted) throw createAbortError();
 
         // Query Optimierung: Timeout im Overpass QL selbst setzen
@@ -158,34 +166,57 @@ export const overpass = {
         const cachedNodes = getCachedArea(box);
         if (cachedNodes) return cachedNodes;
 
-        const query = `
+        const queryFor = (newerThan = null) => `
             [out:json][timeout:25];
-            node["emergency"~"fire_hydrant|water_tank|suction_point|defibrillator"](${s},${w},${n},${e})->.n;
+            node["emergency"~"fire_hydrant|water_tank|suction_point|defibrillator"](${s},${w},${n},${e})${newerThan ? `(newer:"${newerThan}")` : ''}->.n;
             .n out body;
             way(bn.n);
             out skel;
         `;
 
+        const normalizeElements = data => {
+            const nodes = [];
+            const lockedNodeIds = new Set();
+            (data.elements || []).forEach(el => {
+                if (el.type === 'node') nodes.push(el);
+                else if (el.type === 'way' && el.nodes) el.nodes.forEach(nid => lockedNodeIds.add(nid));
+            });
+            return nodes.map(node => {
+                if (lockedNodeIds.has(node.id)) node._isPartOfWay = true;
+                return node;
+            });
+        };
 
-        const data = await fetchWithFallback(query, 0, signal);
-        const elements = data.elements || [];
+        let regionalNodes = null;
+        try {
+            regionalNodes = await regionalData.fetchRegionalNodes(bounds, { signal, zoom });
+        } catch (error) {
+            if (error?.name === 'AbortError' || signal?.aborted) throw createAbortError();
+            console.warn('Regionale Kartendaten nicht verfügbar; wechsle auf Overpass:', error?.message || error);
+        }
 
-        // Post-Processing wie gehabt
-        const nodes = [];
-        const lockedNodeIds = new Set();
-
-        elements.forEach(el => {
-            if (el.type === 'node') {
-                nodes.push(el);
-            } else if (el.type === 'way' && el.nodes) {
-                el.nodes.forEach(nid => lockedNodeIds.add(nid));
+        let normalizedNodes;
+        if (regionalNodes) {
+            normalizedNodes = regionalNodes;
+            const osmDataUntil = regionalNodes.dataSource?.osmDataUntil;
+            if (osmDataUntil) {
+                try {
+                    const delta = normalizeElements(await fetchWithFallback(queryFor(osmDataUntil), 0, signal));
+                    const merged = new Map(regionalNodes.map(node => [`${node.type}:${node.id}`, node]));
+                    delta.forEach(node => merged.set(`${node.type}:${node.id}`, node));
+                    normalizedNodes = Array.from(merged.values());
+                    normalizedNodes.dataSource = { ...regionalNodes.dataSource, liveDelta: true };
+                } catch (error) {
+                    if (error?.name === 'AbortError' || signal?.aborted) throw createAbortError();
+                    console.warn('Overpass-Abgleich nicht verfügbar; verwende den regionalen Datenstand:', error?.message || error);
+                    normalizedNodes.dataSource = { ...regionalNodes.dataSource, liveDelta: false };
+                }
+            } else {
+                normalizedNodes.dataSource = { ...regionalNodes.dataSource, liveDelta: false };
             }
-        });
-
-        const normalizedNodes = nodes.map(node => {
-            if (lockedNodeIds.has(node.id)) node._isPartOfWay = true;
-            return node;
-        });
+        } else {
+            normalizedNodes = normalizeElements(await fetchWithFallback(queryFor(), 0, signal));
+        }
 
         cacheArea(box, normalizedNodes);
         return normalizedNodes;

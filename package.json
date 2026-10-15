@@ -29,8 +29,11 @@
     "vitest": "^4.0.18"
   },
   "dependencies": {
+    "@mapbox/vector-tile": "^3.0.0",
     "geolib": "^3.3.4",
     "leaflet": "^1.9.4",
-    "piexifjs": "^1.0.6"
+    "pbf": "^5.1.2",
+    "piexifjs": "^1.0.6",
+    "pmtiles": "^4.5.0"
   }
 }

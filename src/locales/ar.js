@@ -27,6 +27,10 @@ export default {
         update_now: "التحديث الآن"
     },
     hydrant_data: {
+        source_regional: 'بيانات OSM إقليمية · بتاريخ {date}',
+        source_regional_no_delta: 'بيانات إقليمية؛ فحص التحديث المباشر غير متاح حاليًا',
+        source_regional_live_delta: 'بيانات OSM إقليمية مع تحديثات مباشرة',
+        source_overpass: 'بيانات مباشرة: Overpass',
         loading: "جارٍ تحميل بيانات صنابير الإطفاء …",
         slow: "يستغرق طلب البيانات وقتًا أطول",
         current: "بيانات صنابير الإطفاء محدّثة",

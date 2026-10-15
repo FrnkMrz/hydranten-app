@@ -18,6 +18,7 @@ L.Icon.Default.mergeOptions({
 
 // Globals for Hydrants
 const visibleHydrants = new Set();
+const hydrantMarkerData = new Map();
 let hydrantLayer = null;
 
 import { t, lang, setLanguage } from '../services/i18n.js';
@@ -60,6 +61,7 @@ export function renderIntroView() {
       <div class="w-full flex-1 min-h-[30%] relative z-0">
           <div id="intro-map" class="absolute inset-0 z-0"></div>
           <div id="hydrant-data-status" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+          <div id="map-data-source" class="hidden pointer-events-none absolute top-safe-14 left-1/2 z-[401] -translate-x-1/2 rounded-full border border-white/10 bg-gray-950/80 px-3 py-1.5 text-[10px] font-medium text-gray-200 shadow backdrop-blur-md" role="status" aria-live="polite"></div>
           
           <!-- LOCATE ME BUTTON -->
           <button id="locate-me-btn" class="absolute bottom-6 right-4 z-[401] bg-blue-600/90 text-white p-3 rounded-full shadow-lg shadow-blue-900/40 border border-white/20 active:scale-95 hover:bg-blue-500 transition" aria-label="Locate Me">
@@ -402,6 +404,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 
    // Reset cached markers on mount to force redraw on the new map instance
    if (visibleHydrants) visibleHydrants.clear();
+   hydrantMarkerData.clear();
    // Reset global layer reference if needed, though it's overwritten below
    hydrantLayer = null;
    // Live GPS Update & Map
@@ -666,17 +669,37 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
    requestState.controller = controller;
    loadStatus.setLoading({ immediate });
 
-   overpass.fetchHydrants(bounds, { signal: controller.signal })
+   overpass.fetchHydrants(bounds, { signal: controller.signal, zoom: map.getZoom() })
       .then(elements => {
          if (requestId !== requestState.latestRequestId) return;
          if (!hydrantLayer) return;
 
+         const sourceStatus = document.getElementById('map-data-source');
+         if (sourceStatus) {
+            const source = elements.dataSource;
+            if (source?.type === 'regional') {
+               const dataTimestamp = source.osmDataUntil;
+               const parsedDate = dataTimestamp ? new Date(dataTimestamp) : null;
+               const date = parsedDate && !Number.isNaN(parsedDate.getTime()) ? parsedDate.toLocaleDateString(lang) : '–';
+               sourceStatus.textContent = t('hydrant_data.source_regional').replace('{date}', date);
+               sourceStatus.title = source.liveDelta === false
+                  ? t('hydrant_data.source_regional_no_delta')
+                  : t('hydrant_data.source_regional_live_delta');
+            } else {
+               sourceStatus.textContent = t('hydrant_data.source_overpass');
+               sourceStatus.title = t('hydrant_data.source_overpass');
+            }
+            sourceStatus.classList.remove('hidden');
+         }
+
          // Optimistic Filter: Remove hydrants that we know are deleted locally
          let localDeleted = [];
          let localCreated = [];
+         let localUpdated = [];
          try {
             localDeleted = JSON.parse(localStorage.getItem('deleted_hydrants') || '[]');
             localCreated = JSON.parse(localStorage.getItem('created_hydrants') || '[]');
+            localUpdated = JSON.parse(localStorage.getItem('updated_hydrants') || '[]');
 
             // Cleanup Created: Remove items older than 15 minutes or arguably if they appear in API (handled below)
             const now = Date.now();
@@ -685,12 +708,43 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
                localStorage.setItem('created_hydrants', JSON.stringify(validCreated));
                localCreated = validCreated;
             }
+
+            const validUpdated = localUpdated.filter(node => (now - (node.timestamp || 0)) < 30 * 24 * 60 * 60 * 1000);
+            if (validUpdated.length !== localUpdated.length) {
+               localStorage.setItem('updated_hydrants', JSON.stringify(validUpdated));
+               localUpdated = validUpdated;
+            }
          } catch (_e) { /* ignore */ }
 
          // 1. Filter out deleted
          let filteredElements = elements.filter(node => !localDeleted.includes(String(node.id)));
 
-         // 2. Inject local/newly created hydrants (if not already present)
+         // 2. Apply local edits until a later data response contains the saved version.
+         const stillPendingUpdates = [];
+         localUpdated.forEach(localNode => {
+            const nodeIndex = filteredElements.findIndex(node => String(node.id) === String(localNode.id));
+            const serverNode = nodeIndex >= 0 ? filteredElements[nodeIndex] : null;
+            const updateIsVisible = map.getBounds().contains([localNode.lat, localNode.lon]);
+            const localTags = localNode.tags || {};
+            const serverTags = serverNode?.tags || {};
+            const tagsMatch = Object.keys(localTags).length === Object.keys(serverTags).length &&
+               Object.entries(localTags).every(([key, value]) => serverTags[key] === value);
+            if (serverNode && Math.abs(serverNode.lat - localNode.lat) < 1e-7 &&
+                Math.abs(serverNode.lon - localNode.lon) < 1e-7 &&
+                tagsMatch) {
+               return;
+            }
+            stillPendingUpdates.push(localNode);
+            if (nodeIndex >= 0) filteredElements.splice(nodeIndex, 1);
+            if (updateIsVisible && !localDeleted.includes(String(localNode.id))) {
+               filteredElements.push({ ...localNode, type: 'node', tags: { ...localNode.tags } });
+            }
+         });
+         if (stillPendingUpdates.length !== localUpdated.length) {
+            try { localStorage.setItem('updated_hydrants', JSON.stringify(stillPendingUpdates)); } catch (_e) { /* ignore */ }
+         }
+
+         // 3. Inject local/newly created hydrants (if not already present)
          const existingIds = new Set(filteredElements.map(n => String(n.id)));
          // let injectedCount = 0;
 
@@ -729,6 +783,15 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
          filteredElements.forEach(node => {
             if (!node.lat || !node.lon) return;
 
+            const markerKey = String(node.id);
+            const markerSignature = `${node.lat},${node.lon},${JSON.stringify(node.tags || {})}`;
+            const previousMarker = hydrantMarkerData.get(markerKey);
+            if (previousMarker && previousMarker.signature !== markerSignature) {
+               previousMarker.marker.remove();
+               hydrantMarkerData.delete(markerKey);
+               visibleHydrants.delete(node.id);
+            }
+
             if (!visibleHydrants.has(node.id)) {
                visibleHydrants.add(node.id);
 
@@ -763,6 +826,7 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
                });
 
                m.addTo(hydrantLayer);
+               hydrantMarkerData.set(markerKey, { marker: m, signature: markerSignature });
                const markerElement = m.getElement();
                if (markerElement) {
                   markerElement.setAttribute('role', 'button');

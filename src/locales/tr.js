@@ -27,6 +27,10 @@ export default {
         update_now: "Şimdi güncelle"
     },
     hydrant_data: {
+        source_regional: 'Bölgesel OSM verileri · {date} itibarıyla',
+        source_regional_no_delta: 'Bölgesel veriler; canlı güncelleme denetimi şu anda kullanılamıyor',
+        source_regional_live_delta: 'Canlı güncellemelerle bölgesel OSM verileri',
+        source_overpass: 'Canlı veriler: Overpass',
         loading: "Yangın musluğu verileri yükleniyor …",
         slow: "Veri isteği daha uzun sürüyor",
         current: "Yangın musluğu verileri güncel",

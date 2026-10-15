@@ -6,6 +6,8 @@ test.describe('Map & GPS Features', () => {
     test.beforeEach(async ({ context }) => {
         // Grant geolocation permission
         await context.grantPermissions(['geolocation']);
+        // Keep map assertions deterministic when regional data is available.
+        await context.route('https://pipeline.openfiremap.org/**', route => route.abort());
     });
 
     test('Loads map at user location and fetches hydrants', async ({ page }) => {

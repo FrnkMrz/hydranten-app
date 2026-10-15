@@ -27,6 +27,10 @@ export default {
         update_now: "지금 업데이트"
     },
     hydrant_data: {
+        source_regional: '지역 OSM 데이터 · 기준일 {date}',
+        source_regional_no_delta: '지역 데이터 표시 중 · 실시간 확인을 사용할 수 없습니다',
+        source_regional_live_delta: '실시간 업데이트가 반영된 지역 OSM 데이터',
+        source_overpass: '실시간 데이터: Overpass',
         loading: "소화전 데이터를 불러오는 중 …",
         slow: "데이터 요청이 평소보다 오래 걸립니다",
         current: "소화전 데이터가 최신 상태입니다",

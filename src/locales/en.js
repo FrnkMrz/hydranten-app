@@ -27,6 +27,10 @@ export default {
         update_now: "Update now"
     },
     hydrant_data: {
+        source_regional: 'Regional OSM data · as of {date}',
+        source_regional_no_delta: 'Regional data; live update check is currently unavailable',
+        source_regional_live_delta: 'Regional OSM data with live updates',
+        source_overpass: 'Live data: Overpass',
         loading: "Loading map data …",
         slow: "The data request is taking longer",
         current: "Map data is up to date",

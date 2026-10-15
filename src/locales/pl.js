@@ -27,6 +27,10 @@ export default {
         update_now: "Aktualizuj teraz"
     },
     hydrant_data: {
+        source_regional: 'Regionalne dane OSM · stan na {date}',
+        source_regional_no_delta: 'Dane regionalne; sprawdzanie aktualizacji jest obecnie niedostępne',
+        source_regional_live_delta: 'Regionalne dane OSM z aktualizacjami na żywo',
+        source_overpass: 'Dane na żywo: Overpass',
         loading: "Ładowanie danych hydrantów …",
         slow: "Pobieranie danych trwa dłużej",
         current: "Dane hydrantów są aktualne",

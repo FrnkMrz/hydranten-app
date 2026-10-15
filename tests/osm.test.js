@@ -1,6 +1,6 @@
 // tests/osm.test.js
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createHydrant } from '../src/services/osm.js';
+import { createHydrant, updateHydrant } from '../src/services/osm.js';
 import * as Auth from '../src/services/auth.js';
 
 global.fetch = vi.fn();
@@ -11,6 +11,7 @@ vi.spyOn(Auth, 'getAuthHeaderAsync').mockResolvedValue({ 'Authorization': 'Beare
 describe('OSM Service - createHydrant', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        localStorage.clear();
     });
 
     it('successfully creates a hydrant', async () => {
@@ -62,5 +63,22 @@ describe('OSM Service - createHydrant', () => {
             'https://api.openstreetmap.org/api/0.6/changeset/12345/close',
             expect.objectContaining({ method: 'PUT' })
         );
+    });
+
+    it('stores a successful node edit for immediate map reconciliation', async () => {
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ address: { city: 'TestCity' } }) });
+        fetch.mockResolvedValueOnce({ ok: true, text: async () => '12345' });
+        fetch.mockResolvedValueOnce({ ok: true, text: async () => '8' });
+        fetch.mockResolvedValueOnce({ ok: true });
+
+        await updateHydrant('777', '7', { emergency: 'defibrillator', access: 'yes' }, 50, 10, () => {});
+
+        expect(JSON.parse(localStorage.getItem('updated_hydrants'))).toEqual([
+            expect.objectContaining({
+                id: '777', lat: 50, lon: 10,
+                tags: { emergency: 'defibrillator', access: 'yes' },
+                timestamp: expect.any(Number)
+            })
+        ]);
     });
 });
