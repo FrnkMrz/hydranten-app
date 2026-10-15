@@ -1,29 +1,33 @@
-# 🚒 Hydranten Jäger APP (v1.6.0)
+# 🚒 Hydranten Jäger APP (v1.7.0)
 
 **🌐 Live App:** [https://hydrantenjaeger.de](https://hydrantenjaeger.de)
 
 Eine moderne, mobil-optimierte Progressive Web App (PWA) zum Erfassen und Pflegen von Hydranten, Löschwasserstellen und AEDs in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
-> **Status**: Version 1.6.0 (Stable Release)
-> *Features: GPS Safety, Reliable OSM Workflows, Mobile Chrome/Safari Tests, Privacy, PWA Updates & Accessibility.*
+> **Status**: Release-Kandidat 1.7.0 – Release nach Review und erfolgreichen Pflichtprüfungen
+> *Features: AED-Unterstützung, schnellere Kartendaten, verbesserter Edit-Modus, GPS-Sicherheit, zuverlässige OSM-Abläufe und PWA-Updates.*
 
 ### Weiterentwicklung (live seit 15.10.2026)
 
-Der aktuelle Stand wurde nach dem Merge am 15.10.2026 erfolgreich auf [hydrantenjaeger.de](https://hydrantenjaeger.de) ausgerollt. Die offizielle Versionsnummer steht weiterhin auf 1.6.0; der Changelog oben beschreibt den formellen Release-Stand.
+Der Änderungssatz wurde nach dem Merge am 15.10.2026 auf [hydrantenjaeger.de](https://hydrantenjaeger.de) ausgerollt. Dieser Release-Kandidat vergibt dafür die neue Versionskennung 1.7.0. Das Release ist erst nach Review, Merge und erfolgreichen Pflichtprüfungen abgeschlossen.
 
-**In diesem Änderungssatz enthalten:**
+**Enthalten:**
 
 * **AEDs / Defibrillatoren:** Die Kartensuche findet OSM-Knoten mit `emergency=defibrillator`. AEDs werden in der Karte kenntlich gemacht und können im Bearbeitungsformular unter anderem mit Zugang, Innen-/Außenlage und Öffnungszeiten gepflegt werden. Taginfo-Metadaten, Foto-Beschriftungen und deutsche sowie englische Texte sind ergänzt.
 * **Wiederverwendung geladener Kartendaten:** Erfolgreich geladene Kartenausschnitte werden für drei Minuten im Arbeitsspeicher zwischengespeichert (höchstens zwölf Ausschnitte). Wenn ein späterer Kartenausschnitt vollständig darin liegt, entfällt die erneute Overpass-Anfrage. Das ist eine sitzungsgebundene Cache-Optimierung; eine vorberechnete oder regional gehostete Datenversorgung ist damit noch nicht umgesetzt.
 * **Edit-Modus:** Beim Laden gibt es Abbrechen, bei vorübergehenden Fehlern Wiederholen und bei fehlgeschlagenem Laden eine Rückkehr zur Karte. Ladeabbrüche und Zeitüberschreitungen werden behandelt; AEDs erhalten einen passenden Bearbeitungstitel.
 * **Bedienbarkeit:** Fokusdarstellung und reduzierte Animation bei entsprechender Systemeinstellung sind ergänzt.
 
-**Noch geplant:** Eine vorberechnete bzw. regional bereitgestellte Kartendatenversorgung für Deutschland, Österreich, die Schweiz, Liechtenstein und Luxemburg. Die aktuelle Cache-Optimierung ersetzt diese Datenversorgung nicht.
+**Noch geplant:** Eine vorberechnete bzw. regional bereitgestellte Kartendatenversorgung für Deutschland, Österreich, die Schweiz, Liechtenstein und Luxemburg. Sie ist nicht Teil dieses Release-Kandidaten.
 
 ## 📋 Changelog
 
-### Unreleased - Review-Härtungen
+### v1.7.0 (15.10.2026) - AEDs, Kartendaten & Bearbeitungsmodus
+*   **AEDs / Defibrillatoren:** Kartensuche und Marker für `emergency=defibrillator`; Bearbeitungsfelder für Zugang, Innen-/Außenlage und Öffnungszeiten sowie passende Taginfo-, Foto- und Übersetzungsdaten.
+*   **Kartendaten:** Erfolgreich geladene Ausschnitte werden kurzzeitig im Arbeitsspeicher wiederverwendet. Nach erfolgreichen Bearbeitungen wird der Cache aktualisiert.
+*   **Edit-Modus:** Abbrechen und Wiederholen beim Laden, verständliche Fehlerbehandlung und AED-spezifischer Bearbeitungstitel.
+*   **Bedienbarkeit:** Sichtbarer Tastaturfokus und reduzierte Animation entsprechend der Systemeinstellung.
 *   **GPS-Sicherheit:** Neue Erfassungen benötigen einen höchstens 20 Sekunden alten Geräte-Fix mit maximal 40 m angegebener Ungenauigkeit. Veraltete, nicht verifizierbare Cache-Einträge werden abgewiesen.
 *   **Deployment:** GitHub Pages wird nach einem Push auf `main` erst veröffentlicht, wenn Produktions-Build und mobile E2E-Prüfungen erfolgreich waren.
 *   **Overpass-Failover:** Ungültige Abfragen (HTTP 400) werden sofort gemeldet. Bei anderen HTTP-Fehlern sowie Netzwerk-, Server-, Timeout- und Rate-Limit-Fehlern wird die nächste Instanz versucht.
