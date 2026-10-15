@@ -1,16 +1,16 @@
-# 🚒 Hydranten Jäger APP (v1.7.0)
+# 🚒 Hydranten Jäger APP (v1.8.0)
 
 **🌐 Live App:** [https://hydrantenjaeger.de](https://hydrantenjaeger.de)
 
 Eine moderne, mobil-optimierte Progressive Web App (PWA) zum Erfassen und Pflegen von Hydranten, Löschwasserstellen und AEDs in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
-> **Status**: Release-Kandidat 1.7.0 – Release nach Review und erfolgreichen Pflichtprüfungen
-> *Features: AED-Unterstützung, schnellere Kartendaten, verbesserter Edit-Modus, GPS-Sicherheit, zuverlässige OSM-Abläufe und PWA-Updates.*
+> **Status**: Release-Kandidat 1.8.0 – Veröffentlichung nach Merge und erfolgreichen Pflichtprüfungen
+> *Features: regionale PMTiles-Daten für DACHLiLu, AED-Unterstützung, verbesserter Edit-Modus und kontrollierte PWA-Updates.*
 
-### Weiterentwicklung (live seit 15.10.2026)
+### Version 1.7.0 (live seit 15.10.2026)
 
-Der Änderungssatz wurde nach dem Merge am 15.10.2026 auf [hydrantenjaeger.de](https://hydrantenjaeger.de) ausgerollt. Dieser Release-Kandidat vergibt dafür die neue Versionskennung 1.7.0. Das Release ist erst nach Review, Merge und erfolgreichen Pflichtprüfungen abgeschlossen.
+Version 1.7.0 mit AED-Unterstützung, verbessertem Edit-Modus und den zugehörigen Stabilitätsverbesserungen ist auf [hydrantenjaeger.de](https://hydrantenjaeger.de) verfügbar.
 
 **Enthalten:**
 
@@ -26,17 +26,24 @@ Der Änderungssatz wurde nach dem Merge am 15.10.2026 auf [hydrantenjaeger.de](h
 3. Den Standort auf der kleinen Karte prüfen oder anpassen und bekannte Angaben zu Zugang, Innen-/Außenlage, Öffnungszeiten und Referenz ergänzen.
 4. Angaben prüfen und zu OpenStreetMap hochladen. Bestehende AEDs lassen sich über ihren Kartenmarker öffnen und bearbeiten.
 
-### In Arbeit (noch nicht ausgerollt)
+### Release-Kandidat 1.8.0: Regionale Datenversorgung
 
-Die regionale Datenversorgung wird in diesem Feature-Branch umgesetzt und ist noch nicht Teil von Version 1.7.0. In der vollständig abgedeckten DACHLiLu-Region (Deutschland, Österreich, Schweiz, Liechtenstein und Luxemburg) zeigt die App zuerst die vorberechneten PMTiles-Kacheln von OpenFireMap an. Danach fragt sie neue oder geänderte Objekte per Overpass ab und ergänzt die Karte im Anschluss. Ein langsamer Overpass-Abgleich hält die bereits geladenen PMTiles-Daten nicht zurück. Außerhalb der exakten Abdeckung und bei Pipeline-Fehlern wird Overpass direkt verwendet. Die Änderung wird erst nach Review, Merge und erfolgreicher Veröffentlichung in der App verfügbar.
+Die regionale Datenversorgung ist in den Release-Kandidaten 1.8.0 aufgenommen, aber noch nicht durch diesen Release veröffentlicht. Innerhalb der vollständigen DACHLiLu-Abdeckung (Deutschland, Österreich, Schweiz, Liechtenstein und Luxemburg) zeigt die App zuerst die vorberechneten PMTiles-Kacheln von OpenFireMap. Anschließend fragt sie neue oder geänderte Objekte seit dem OSM-Datenstand des Quellextrakts über Overpass ab und ergänzt die Karte. Der Live-Abgleich hält die erste Anzeige der PMTiles nicht zurück. Außerhalb der exakten Abdeckung und bei Pipeline-Fehlern nutzt die App Overpass direkt.
 
 **Datenstand und Grenzen:** `generated_at` kennzeichnet den Pipeline-Build; für den Overpass-Abgleich zählt `osm_data_until`, der OSM-Datenstand der Quellextrakte. Die Abfrage `newer:` findet neue und geänderte Objekte, aber keine Löschungen oder Änderungen, durch die ein Objekt aus den abgefragten Tags herausfällt. Solche Objekte können bis zum nächsten Pipeline-Build auf der Karte bleiben. Erfolgreiche eigene Bearbeitungen werden lokal überlagert, bis derselbe Stand aus der Datenversorgung zurückkommt.
 
-**Overpass-Endpunkte:** Verwendet werden `overpass-api.de`, `lz4.overpass-api.de`, `z.overpass-api.de` und `overpass.kumi.systems`; `maps.mail.ru` wird nicht mehr genutzt. Der Live-Abgleich hat ein Client-Limit von 15 Sekunden, der vollständige Overpass-Fallback 30 Sekunden. Das serverseitige Query-Limit beträgt 25 Sekunden.
+**Overpass-Endpunkte und Zeitlimits:** Verwendet werden `overpass-api.de`, `lz4.overpass-api.de`, `z.overpass-api.de` und `overpass.kumi.systems`; `maps.mail.ru` wird nicht mehr genutzt. Verfügbare Instanzen werden gemischt abgefragt; nach Fehlern oder Rate-Limits gehen Instanzen kurzzeitig in Abkühlung. Das Client-Limit beträgt 12 Sekunden je Anfrage, 15 Sekunden für den Live-Abgleich und 30 Sekunden für den vollständigen Overpass-Fallback. Das serverseitige Query-Limit bleibt bei 25 Sekunden.
 
-**Betriebsvoraussetzung:** Der öffentliche R2-Endpunkt muss Anfragen vom App-Origin `https://hydrantenjaeger.de` per CORS erlauben. Ist der Origin noch nicht freigeschaltet, funktioniert die App weiter über Overpass; die regionale Beschleunigung greift dann erst nach der CORS-Anpassung.
+**Betrieb:** Der öffentliche R2-Endpunkt muss CORS-Anfragen vom App-Origin `https://hydrantenjaeger.de` erlauben. Falls die regionale Quelle nicht erreichbar ist, bleibt Overpass als Fallback verfügbar.
 
 ## 📋 Changelog
+
+### v1.8.0 (Release-Kandidat, 15.10.2026) - Regionale Datenversorgung
+*   **Schneller Kartenstart:** Für DACHLiLu werden vorberechnete OpenFireMap-PMTiles zuerst angezeigt; der Overpass-Live-Abgleich ergänzt anschließend neue und geänderte Objekte.
+*   **Robuster Fallback:** Außerhalb der vollständigen PMTiles-Abdeckung und bei Fehlern der regionalen Quelle lädt die App Daten direkt über Overpass.
+*   **Datenstand:** Die Dokumentation erklärt die Zeitstempel `generated_at` und `osm_data_until` sowie die Grenzen des `newer:`-Abgleichs.
+*   **Overpass-Failover:** Verwendet werden die vier Instanzen `overpass-api.de`, `lz4.overpass-api.de`, `z.overpass-api.de` und `overpass.kumi.systems`; Fehler- und Rate-Limit-Instanzen werden zeitweise pausiert.
+*   **Zeitlimits und Betrieb:** 12 Sekunden pro Anfrage, 15 Sekunden für den Live-Abgleich und 30 Sekunden für den vollständigen Fallback; die R2-Quelle benötigt CORS für `https://hydrantenjaeger.de`.
 
 ### v1.7.0 (15.10.2026) - AEDs, Kartendaten & Bearbeitungsmodus
 *   **AEDs / Defibrillatoren:** AEDs über den Erfassungsablauf der App eintragen sowie auf der Karte finden und bearbeiten; ISO-7010-E010-Piktogramm und Felder für Zugang, Innen-/Außenlage und Öffnungszeiten.
@@ -46,9 +53,6 @@ Die regionale Datenversorgung wird in diesem Feature-Branch umgesetzt und ist no
 *   **GPS-Sicherheit:** Neue Erfassungen benötigen einen höchstens 20 Sekunden alten Geräte-Fix mit maximal 40 m angegebener Ungenauigkeit. Veraltete, nicht verifizierbare Cache-Einträge werden abgewiesen.
 *   **Deployment:** GitHub Pages wird nach einem Push auf `main` erst veröffentlicht, wenn Produktions-Build und mobile E2E-Prüfungen erfolgreich waren.
 *   **Overpass-Failover:** Ungültige Abfragen (HTTP 400) werden sofort gemeldet. Bei anderen HTTP-Fehlern sowie Netzwerk-, Server-, Timeout- und Rate-Limit-Fehlern wird die nächste Instanz versucht.
-
-### Unveröffentlicht
-*   **Regionale Datenversorgung (in Arbeit):** PMTiles-Basiskarten von OpenFireMap für DACHLiLu, versionsgebunden über `metadata.json`; diese werden vor dem Overpass-Delta angezeigt. Verwendete Overpass-Instanzen wie in OpenFireMap: `overpass-api.de`, `lz4.overpass-api.de`, `z.overpass-api.de` und `overpass.kumi.systems`; `maps.mail.ru` wird nicht mehr verwendet. Verfügbare Instanzen werden gemischt abgefragt; fehlerhafte Instanzen gehen kurz in Abkühlung. Client-Limit: 12 Sekunden je Anfrage, insgesamt 15 Sekunden für den Delta-Abgleich und 30 Sekunden für den vollständigen Overpass-Fallback. Das serverseitige Overpass-Query-Limit bleibt bei 25 Sekunden.
 
 ### v1.6.0 (28.06.2026) - Konsolidierung & automatisierte Browser-Tests
 *   **Release-Konsolidierung:** Die größeren Stabilitäts-, Datenschutz-, PWA- und Toolchain-Verbesserungen der jüngsten Wartungsrunde werden als neues Minor Release gebündelt.
