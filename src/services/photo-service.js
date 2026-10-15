@@ -105,7 +105,8 @@ export async function generateFilename(location, tags = {}) {
 
     // Determine type label
     let typeLabel = 'Hydrant';
-    if (tags.emergency === 'water_tank') typeLabel = 'Zisterne';
+    if (tags.emergency === 'defibrillator') typeLabel = 'AED';
+    else if (tags.emergency === 'water_tank') typeLabel = 'Zisterne';
     else if (tags.emergency === 'suction_point') typeLabel = 'Saugstelle';
 
     try {

@@ -10,11 +10,18 @@ export function initFormLogic(element, location, editMode, initialData) {
     const volumeInput = element.querySelector('#hydrant-volume');
     const signInput = element.querySelector('#hydrant-sign');
     const sourceInput = element.querySelector('#hydrant-water-source');
+    const aedAccessInput = element.querySelector('#aed-access');
+    const aedIndoorInput = element.querySelector('#aed-indoor');
+    const aedOpeningHoursInput = element.querySelector('#aed-opening-hours');
 
     const volumeContainer = element.querySelector('#volume-container');
     const diameterContainer = element.querySelector('#diameter-container');
     const signContainer = element.querySelector('#sign-container');
     const refContainer = element.querySelector('#ref-container');
+    const aedDetailsContainer = element.querySelector('#aed-details-container');
+    const waterSourceContainer = element.querySelector('#water-source-container');
+    const positionContainer = element.querySelector('#position-container');
+    const refLabel = element.querySelector('#hydrant-ref-label');
 
     const submitBtn = element.querySelector('#submit-img-btn');
 
@@ -27,7 +34,8 @@ export function initFormLogic(element, location, editMode, initialData) {
                  <path d="M7 21H17V19H15V11H17C17.55 11 18 10.55 18 10V8C18 7.45 17.55 7 17 7H15V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V7H7C6.45 7 6 7.45 6 8V10C6 10.55 6.45 11 7 11H9V19H7V21ZM11 5C11 4.45 11.45 4 12 4C12.55 4 13 4.45 13 5V7H11V5ZM7 8H9V10H7V8ZM15 8H17V10H15V8Z" fill="#DC2626"/>
                </svg>`
         },
-        { id: 'underground', label: t('confirm.types.underground'), icon: '<span class="text-4xl mb-1">🕳️</span>' }
+        { id: 'underground', label: t('confirm.types.underground'), icon: '<span class="text-4xl mb-1">🕳️</span>' },
+        { id: 'aed', label: t('confirm.types.aed'), icon: '<span class="text-4xl mb-1">💚</span>' }
     ];
     const subTypes = [
         { id: 'dry_hydrant', label: t('confirm.types.dry_hydrant'), icon: '<span class="text-xl">🌵</span>' },
@@ -85,34 +93,48 @@ export function initFormLogic(element, location, editMode, initialData) {
         const currentNote = noteInput ? noteInput.value : '';
         const currentSign = signInput ? signInput.value : 'unknown';
         const currentSource = sourceInput ? sourceInput.value : '';
+        const currentAedAccess = aedAccessInput ? aedAccessInput.value : '';
+        const currentAedIndoor = aedIndoorInput ? aedIndoorInput.value : '';
+        const currentAedOpeningHours = aedOpeningHoursInput ? aedOpeningHoursInput.value.trim() : '';
 
         // Helper to safely get tag
         const getTag = (k) => initialData.tags[k] || '';
 
         // Compare Tags
         let typeChanged;
-        if (currentType === 'cistern') {
+        if (currentType === 'aed') {
+            typeChanged = getTag('emergency') !== 'defibrillator';
+        } else if (currentType === 'cistern') {
             typeChanged = (getTag('emergency') !== 'water_tank');
+        } else if (currentType === 'suction_point') {
+            typeChanged = getTag('emergency') !== 'suction_point';
         } else if (currentType === 'dry_hydrant') {
-            typeChanged = (getTag('fire_hydrant:type') !== 'dry_hydrant');
+            typeChanged = getTag('emergency') !== 'fire_hydrant' || getTag('fire_hydrant:type') !== 'dry_hydrant';
         } else {
-            typeChanged = (getTag('fire_hydrant:type') !== currentType);
+            typeChanged = getTag('emergency') !== 'fire_hydrant' || getTag('fire_hydrant:type') !== currentType;
         }
 
-        const posChanged = (getTag('fire_hydrant:position') !== currentPos);
-        const diaChanged = (getTag('fire_hydrant:diameter') !== currentDiameter);
-        const volumeChanged = (getTag('water_tank:volume') !== currentVolume);
+        const posChanged = currentType !== 'aed' && (getTag('fire_hydrant:position') !== currentPos);
+        const diaChanged = currentType !== 'aed' && currentType !== 'cistern' && currentType !== 'suction_point' && (getTag('fire_hydrant:diameter') !== currentDiameter);
+        const volumeChanged = currentType === 'cistern' && (getTag('water_tank:volume') !== currentVolume);
         const refChanged = (getTag('ref') !== currentRef);
         const noteChanged = ((getTag('note') || getTag('description')) !== currentNote);
 
         const originalSource = getTag('water_source') || '';
-        const sourceChanged = (originalSource !== (currentSource || ''));
+        const sourceChanged = currentType !== 'aed' && (originalSource !== (currentSource || ''));
+        const aedAttributesChanged = currentType === 'aed' && (
+            getTag('access') !== currentAedAccess ||
+            getTag('indoor') !== currentAedIndoor ||
+            getTag('opening_hours') !== currentAedOpeningHours
+        );
 
         // Sign check logic
         let signChanged;
         const originalSign = getTag('fire_hydrant:diameter:signed');
 
-        if (currentSign === 'no') {
+        if (currentType === 'aed' || currentType === 'cistern' || currentType === 'suction_point') {
+            signChanged = false;
+        } else if (currentSign === 'no') {
             signChanged = (originalSign !== 'no');
         } else if (currentSign === 'yes') {
             signChanged = (originalSign !== 'yes');
@@ -125,7 +147,7 @@ export function initFormLogic(element, location, editMode, initialData) {
         const lngDiff = Math.abs(location.lng - initialData.lng);
         const locChanged = (latDiff > 0.000001 || lngDiff > 0.000001);
 
-        hasChanges = (typeChanged || posChanged || diaChanged || volumeChanged || refChanged || noteChanged || signChanged || sourceChanged || locChanged);
+        hasChanges = (typeChanged || posChanged || diaChanged || volumeChanged || refChanged || noteChanged || signChanged || sourceChanged || aedAttributesChanged || locChanged);
 
         // Update UI
         if (submitBtn) {
@@ -167,11 +189,20 @@ export function initFormLogic(element, location, editMode, initialData) {
             if (volumeContainer) volumeContainer.classList.add('hidden');
             if (diameterContainer) diameterContainer.classList.add('hidden');
             if (refContainer) refContainer.classList.add('hidden');
+        } else if (val === 'aed') {
+            if (volumeContainer) volumeContainer.classList.add('hidden');
+            if (diameterContainer) diameterContainer.classList.add('hidden');
+            if (refContainer) refContainer.classList.remove('hidden');
         } else {
             if (volumeContainer) volumeContainer.classList.add('hidden');
             if (diameterContainer) diameterContainer.classList.remove('hidden');
             if (refContainer) refContainer.classList.remove('hidden');
         }
+
+        if (aedDetailsContainer) aedDetailsContainer.classList.toggle('hidden', val !== 'aed');
+        if (waterSourceContainer) waterSourceContainer.classList.toggle('hidden', val === 'aed');
+        if (positionContainer) positionContainer.classList.toggle('hidden', val === 'aed');
+        if (refLabel) refLabel.textContent = t(val === 'aed' ? 'confirm.aed_ref_label' : 'confirm.number_label');
 
         if (signContainer) {
             if (val === 'underground') {
@@ -271,6 +302,17 @@ export function initFormLogic(element, location, editMode, initialData) {
         if (volumeInput && nodeTags['water_tank:volume']) volumeInput.value = nodeTags['water_tank:volume'];
         if (refInput && nodeTags['ref']) refInput.value = nodeTags['ref'];
         if (noteInput && (nodeTags['note'] || nodeTags['description'])) noteInput.value = nodeTags['note'] || nodeTags['description'];
+        if (aedAccessInput && nodeTags.access) {
+            if (![...aedAccessInput.options].some(option => option.value === nodeTags.access)) {
+                const existingOption = document.createElement('option');
+                existingOption.value = nodeTags.access;
+                existingOption.textContent = `${nodeTags.access} (${t('confirm.aed_existing_value')})`;
+                aedAccessInput.append(existingOption);
+            }
+            aedAccessInput.value = nodeTags.access;
+        }
+        if (aedIndoorInput && nodeTags.indoor) aedIndoorInput.value = nodeTags.indoor;
+        if (aedOpeningHoursInput && nodeTags.opening_hours) aedOpeningHoursInput.value = nodeTags.opening_hours;
 
         if (sourceInput && nodeTags['water_source']) {
             // Need to set value AFTER options populated by updateGrid
@@ -295,7 +337,7 @@ export function initFormLogic(element, location, editMode, initialData) {
 
     // Attach Listeners
     if (editMode) {
-        [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput, signInput, sourceInput].forEach(el => {
+        [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput, signInput, sourceInput, aedAccessInput, aedIndoorInput, aedOpeningHoursInput].forEach(el => {
             if (el) el.addEventListener('input', checkChanges);
             if (el) el.addEventListener('change', checkChanges);
         });

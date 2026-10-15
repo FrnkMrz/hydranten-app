@@ -27,10 +27,10 @@ export default {
         update_now: "Jetzt aktualisieren"
     },
     hydrant_data: {
-        loading: "Hydrantendaten werden geladen …",
+        loading: "Kartendaten werden geladen …",
         slow: "Der Datenabruf dauert länger",
-        current: "Hydrantendaten sind aktuell",
-        unavailable: "Hydrantendaten derzeit nicht verfügbar",
+        current: "Kartendaten sind aktuell",
+        unavailable: "Kartendaten derzeit nicht verfügbar",
         stale: "Vorhandene Daten – Aktualisierung fehlgeschlagen"
     },
     settings: {
@@ -77,7 +77,7 @@ export default {
     },
     error: {
         load_failed: "Laden fehlgeschlagen",
-        node_deleted: "Dieser Hydrant existiert nicht mehr.",
+        node_deleted: "Dieses Objekt existiert nicht mehr.",
         oops: "Hoppla!",
         back_to_map: "Zurück zur Karte",
         gps_failed: "Kein ausreichend genauer, aktueller Standort verfügbar. Bitte GPS prüfen und erneut versuchen.",
@@ -96,7 +96,7 @@ export default {
         location_fallback: "Ort",
         nominatim_error: "Nominatim Fehler: {status}",
         creating_changeset: "Erstelle Changeset...",
-        uploading_hydrant: "Lade Hydranten hoch...",
+        uploading_hydrant: "Lade Objekt zu OSM hoch...",
         starting_update: "Starte Update-Prozess...",
         update_conflict: "Konflikt! Jemand hat den Hydranten gerade bearbeitet. Bitte neu laden.",
         update_success: "Update Erfolgreich!",
@@ -107,7 +107,23 @@ export default {
     },
     confirm: {
         title: "Daten prüfen",
-        title_edit: "Hydrant bearbeiten",
+        title_edit: "Objekt bearbeiten",
+        aed_marker_aria: "Defibrillator bearbeiten",
+        aed_title_edit: "Defibrillator bearbeiten",
+        aed_details: "Defibrillator-Daten",
+        aed_access: "Zugang",
+        aed_unspecified: "Keine Angabe",
+        aed_access_public: "Öffentlich zugänglich",
+        aed_access_no: "Nicht zugänglich",
+        aed_access_permissive: "Mit Erlaubnis zugänglich",
+        aed_access_customers: "Für Kunden",
+        aed_access_destination: "Nur für Besucher des Ziels",
+        aed_access_private: "Privat",
+        aed_existing_value: "bestehender Wert",
+        aed_indoor: "Innenraum",
+        aed_opening_hours: "Zugangszeiten",
+        aed_opening_hours_placeholder: "z. B. Mo-Fr 08:00-18:00",
+        aed_ref_label: "Kennzeichnung / Referenz",
         preview_alt: "Aufgenommenes Foto",
         back_btn_aria: "Zurück zur Kamera",
         back_btn_label: "Zurück",
@@ -117,6 +133,7 @@ export default {
         delete_confirm: "Hydrant wirklich löschen?",
         delete_confirm_cistern: "Zisterne wirklich löschen?",
         delete_confirm_suction: "Saugstelle wirklich löschen?",
+        delete_confirm_aed: "Defibrillator wirklich löschen?",
         water_source_label: "Wasserquelle",
         water_source_default: "Keine Angabe",
         water_source_main: "Leitungsnetz",
@@ -145,6 +162,7 @@ export default {
             suction: "Saugstelle",
             cistern: "Zisterne",
             dry_hydrant: "Trockenhydrant",
+            aed: "Defibrillator",
 
 
         },
@@ -201,7 +219,9 @@ export default {
     messages: {
         locating_position: "Ermittle Position...",
         please_login: "Bitte melde dich an, um Hydranten zu bearbeiten.",
-        loading_hydrant: "Lade Hydrant #{id}...",
+        loading_hydrant: "Lade OSM-Objekt #{id}...",
+        edit_load_retry: "Die Daten für Objekt #{id} konnten nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.",
+        edit_node_deleted_hint: "Das ausgewählte Objekt wurde in OpenStreetMap gelöscht.",
         saving_data: "Speichere...",
         deleting_data: "Lösche...",
         internal_error_reload: "Interner Fehler: Funktion nicht verfügbar. Bitte neu laden.",

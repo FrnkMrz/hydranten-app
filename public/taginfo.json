@@ -4,7 +4,7 @@
   "data_url": "https://hydrantenjaeger.de/taginfo.json",
   "project": {
     "name": "Hydranten Jäger",
-    "description": "Mobile app for viewing, adding, and editing fire hydrants and water sources in OpenStreetMap.",
+    "description": "Mobile app for viewing, adding, and editing fire hydrants, water sources, and AEDs in OpenStreetMap.",
     "project_url": "https://hydrantenjaeger.de",
     "doc_url": "https://github.com/FrnkMrz/hydranten-app#openstreetmap-tags",
     "icon_url": "https://hydrantenjaeger.de/icon-v3-192.png",
@@ -29,6 +29,12 @@
       "value": "water_tank",
       "object_types": ["node"],
       "description": "Queries and edits cisterns and other water tanks."
+    },
+    {
+      "key": "emergency",
+      "value": "defibrillator",
+      "object_types": ["node"],
+      "description": "Queries and edits AEDs (automated external defibrillators)."
     },
     {
       "key": "fire_hydrant:type",
@@ -59,6 +65,21 @@
       "key": "water_tank:volume",
       "object_types": ["node"],
       "description": "Reads and edits water tank volume."
+    },
+    {
+      "key": "access",
+      "object_types": ["node"],
+      "description": "Reads and edits AED access conditions."
+    },
+    {
+      "key": "indoor",
+      "object_types": ["node"],
+      "description": "Reads and edits whether an AED is located indoors."
+    },
+    {
+      "key": "opening_hours",
+      "object_types": ["node"],
+      "description": "Reads and edits the opening hours that apply to an AED."
     },
     {
       "key": "ref",

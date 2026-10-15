@@ -26,6 +26,7 @@ function escapeXml(str) {
  * Helper to determine object type name for comments
  */
 function getTypeName(tags) {
+    if (tags['emergency'] === 'defibrillator') return 'AED';
     if (tags['emergency'] === 'water_tank') return 'Cistern';
     if (tags['emergency'] === 'suction_point') return 'Suction Point';
     return 'Hydrant';
@@ -214,9 +215,9 @@ export async function createHydrant(data, log = console.log) {
 /**
  * Fetch latest node data (version & tags) to assure safe editing
  */
-export async function fetchNodeData(id) {
+export async function fetchNodeData(id, { signal } = {}) {
     const url = `https://api.openstreetmap.org/api/0.6/node/${id}`; // Auth not strictly needed for public read
-    const res = await fetch(url);
+    const res = await fetch(url, { signal });
     if (res.status === 404 || res.status === 410) {
         throw new Error("NODE_DELETED");
     }
@@ -236,7 +237,7 @@ export async function fetchNodeData(id) {
 
     let isPartOfWay = false;
     try {
-        const waysRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/${id}/ways`);
+        const waysRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/${id}/ways`, { signal });
         if (waysRes.ok) {
             const waysText = await waysRes.text();
             const waysDoc = parser.parseFromString(waysText, "text/xml");
@@ -245,6 +246,7 @@ export async function fetchNodeData(id) {
             }
         }
     } catch (e) {
+        if (signal?.aborted) throw e;
         console.warn("Could not fetch parent ways", e);
     }
 

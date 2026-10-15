@@ -6,6 +6,7 @@
 export function determineHydrantType(tags) {
     if (!tags) return undefined;
 
+    if (tags['emergency'] === 'defibrillator') return 'aed';
     if (tags['emergency'] === 'water_tank') return 'cistern';
     if (tags['emergency'] === 'suction_point') return 'suction_point';
     if (tags['fire_hydrant:type'] === 'dry_hydrant') return 'dry_hydrant';
@@ -28,7 +29,7 @@ export function determineHydrantType(tags) {
  * @param {string} sign - The sign state ('yes', 'no', 'unknown').
  * @returns {Object} The new tags object.
  */
-export function prepareHydrantTags(currentTags, selectedType, selectedPos, diameter, ref, note, waterSource, volume, sign) {
+export function prepareHydrantTags(currentTags, selectedType, selectedPos, diameter, ref, note, waterSource, volume, sign, aedAttributes = {}) {
     const tags = { ...currentTags };
 
     // Remove every tag controlled by this form before rebuilding the selected
@@ -48,8 +49,27 @@ export function prepareHydrantTags(currentTags, selectedType, selectedPos, diame
         'water_tank:volume'
     ].forEach(key => delete tags[key]);
 
-    if (selectedPos) tags['fire_hydrant:position'] = selectedPos;
     if (note?.trim()) tags['note'] = note.trim();
+
+    if (selectedType === 'aed') {
+        delete tags['access'];
+        delete tags['indoor'];
+        delete tags['opening_hours'];
+        tags['emergency'] = 'defibrillator';
+        if (aedAttributes.access) tags['access'] = aedAttributes.access;
+        if (aedAttributes.indoor) tags['indoor'] = aedAttributes.indoor;
+        if (aedAttributes.openingHours?.trim()) tags['opening_hours'] = aedAttributes.openingHours.trim();
+        if (ref?.trim()) tags['ref'] = ref.trim();
+        return tags;
+    }
+
+    if (currentTags?.emergency === 'defibrillator') {
+        delete tags['access'];
+        delete tags['indoor'];
+        delete tags['opening_hours'];
+    }
+
+    if (selectedPos) tags['fire_hydrant:position'] = selectedPos;
     if (waterSource) tags['water_source'] = waterSource;
 
     // Handle specific types

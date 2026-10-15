@@ -734,6 +734,7 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
 
                // Determine color based on tags
                let fillColor = RED;
+               const isAed = node.tags?.emergency === 'defibrillator';
                const isSuction = node.tags && (
                   node.tags.emergency === 'suction_point' ||
                   node.tags.emergency === 'water_tank' ||
@@ -743,17 +744,20 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
 
                if (isSuction) {
                   fillColor = BLUE;
+               } else if (isAed) {
+                  fillColor = '#16A34A';
                }
 
-               const markerLabel = t('confirm.title_edit');
-               const iconHtml = `<div aria-hidden="true" class="hydrant-marker-visual w-full h-full rounded-full border-2 border-white shadow-md transition-all cursor-pointer" style="background-color: ${fillColor}; opacity: 0.9;"></div>`;
+               const markerLabel = isAed ? t('confirm.aed_marker_aria') : t('confirm.title_edit');
+               const markerSymbol = isAed ? '<span class="text-sm font-black leading-none">⚡</span>' : '';
+               const iconHtml = `<div aria-hidden="true" class="hydrant-marker-visual w-full h-full rounded-full border-2 border-white shadow-md transition-all cursor-pointer flex items-center justify-center text-white" style="background-color: ${fillColor}; opacity: 0.95;">${markerSymbol}</div>`;
 
                const m = L.marker([node.lat, node.lon], {
                   icon: L.divIcon({
                      className: 'hydrant-custom-icon bg-transparent',
                      html: iconHtml,
-                     iconSize: [24, 24], // 24x24 minimum swipable touch area
-                     iconAnchor: [12, 12]
+                     iconSize: isAed ? [28, 28] : [24, 24], // Minimum swipable touch area
+                     iconAnchor: isAed ? [14, 14] : [12, 12]
                   }),
                   keyboard: true
                });
