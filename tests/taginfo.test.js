@@ -1,11 +1,12 @@
 import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-const taginfoUrl = new URL('../public/taginfo.json', import.meta.url);
+const taginfoPath = resolve(process.cwd(), 'public/taginfo.json');
 
 describe('Taginfo project metadata', () => {
     it('is valid project data and documents every OSM tag used by the app', async () => {
-        const project = JSON.parse(await readFile(taginfoUrl, 'utf8'));
+        const project = JSON.parse(await readFile(taginfoPath, 'utf8'));
 
         expect(project.data_format).toBe(1);
         expect(project.data_url).toBe('https://hydrantenjaeger.de/taginfo.json');
