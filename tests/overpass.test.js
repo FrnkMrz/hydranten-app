@@ -3,18 +3,31 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { overpass } from '../src/services/overpass.js';
 
 // Mock Bounds Object
+let boundsOffset = 0;
 const mockBounds = {
-    getSouth: () => 48.0,
-    getNorth: () => 48.1,
-    getWest: () => 11.0,
-    getEast: () => 11.1
+    getSouth: () => 48.0 + boundsOffset,
+    getNorth: () => 48.1 + boundsOffset,
+    getWest: () => 11.0 + boundsOffset,
+    getEast: () => 11.1 + boundsOffset
 };
+
+function makeBounds(south, west, north, east) {
+    return {
+        getSouth: () => south,
+        getWest: () => west,
+        getNorth: () => north,
+        getEast: () => east
+    };
+}
 
 global.fetch = vi.fn();
 
 describe('Overpass Service', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        // Each test uses a distinct area so the service's in-memory area cache
+        // cannot reuse a previous test's mocked network response.
+        boundsOffset += 0.2;
     });
 
     it('fetches hydrants successfully from first server', async () => {
@@ -76,6 +89,35 @@ describe('Overpass Service', () => {
         fetch.mockRejectedValue(new Error("Down"));
 
         await expect(overpass.fetchHydrants(mockBounds)).rejects.toThrow("Alle Overpass-Server sind nicht erreichbar");
+    });
+
+    it('updates cached nodes when an edited node moves between cached areas', async () => {
+        const oldBounds = makeBounds(40, -4, 41, -3);
+        const newBounds = makeBounds(42, 2, 43, 3);
+        fetch
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({
+                    elements: [{
+                        type: 'node', id: 42, lat: 40.5, lon: -3.5,
+                        tags: { emergency: 'fire_hydrant' }
+                    }]
+                })
+            })
+            .mockResolvedValueOnce({ ok: true, json: async () => ({ elements: [] }) });
+
+        await overpass.fetchHydrants(oldBounds);
+        await overpass.fetchHydrants(newBounds);
+        overpass.updateCachedNode({
+            id: '42', lat: 42.5, lon: 2.5,
+            tags: { emergency: 'defibrillator', access: 'yes' }
+        });
+
+        await expect(overpass.fetchHydrants(oldBounds)).resolves.toEqual([]);
+        await expect(overpass.fetchHydrants(newBounds)).resolves.toMatchObject([
+            { id: 42, lat: 42.5, lon: 2.5, tags: { emergency: 'defibrillator', access: 'yes' } }
+        ]);
+        expect(fetch).toHaveBeenCalledTimes(2);
     });
 
     it('does not try another server after the request is cancelled', async () => {

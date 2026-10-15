@@ -10,6 +10,7 @@ const c = {
 import { getAuthHeaderAsync } from './auth.js';
 import { USER_AGENT, CREATED_BY } from '../version.js';
 import { t } from './i18n.js';
+import { overpass } from './overpass.js';
 
 // XML Escaping Helper
 function escapeXml(str) {
@@ -26,6 +27,7 @@ function escapeXml(str) {
  * Helper to determine object type name for comments
  */
 function getTypeName(tags) {
+    if (tags['emergency'] === 'defibrillator') return 'AED';
     if (tags['emergency'] === 'water_tank') return 'Cistern';
     if (tags['emergency'] === 'suction_point') return 'Suction Point';
     return 'Hydrant';
@@ -214,9 +216,9 @@ export async function createHydrant(data, log = console.log) {
 /**
  * Fetch latest node data (version & tags) to assure safe editing
  */
-export async function fetchNodeData(id) {
+export async function fetchNodeData(id, { signal } = {}) {
     const url = `https://api.openstreetmap.org/api/0.6/node/${id}`; // Auth not strictly needed for public read
-    const res = await fetch(url);
+    const res = await fetch(url, { signal });
     if (res.status === 404 || res.status === 410) {
         throw new Error("NODE_DELETED");
     }
@@ -236,7 +238,7 @@ export async function fetchNodeData(id) {
 
     let isPartOfWay = false;
     try {
-        const waysRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/${id}/ways`);
+        const waysRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/${id}/ways`, { signal });
         if (waysRes.ok) {
             const waysText = await waysRes.text();
             const waysDoc = parser.parseFromString(waysText, "text/xml");
@@ -245,6 +247,7 @@ export async function fetchNodeData(id) {
             }
         }
     } catch (e) {
+        if (signal?.aborted) throw e;
         console.warn("Could not fetch parent ways", e);
     }
 
@@ -328,6 +331,14 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
 
         const newVersion = await nodeRes.text(); // Returns new version number
         log(c.success(t('upload_log.update_success').replace('{version}', newVersion)));
+
+        // Keep any loaded map areas consistent until Overpass catches up.
+        overpass.updateCachedNode({
+            id,
+            lat: Number(lat),
+            lon: Number(lng),
+            tags: finalTags
+        });
 
         return { id, version: newVersion, changeset: changesetId };
 

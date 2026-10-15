@@ -232,10 +232,17 @@ function handleEdit(nodeId) {
   stopCompass();
   // But let's save battery for now as we edit a fixed node.
   import('./controllers/edit-controller.js').then(({ handleEdit }) => {
-    handleEdit(nodeId, app, {
+    const cleanupEdit = handleEdit(nodeId, app, {
       showSettings: () => showSettings(),
       showIntro: () => showIntro()
     });
+    if (typeof cleanupEdit === 'function') {
+      const cleanupPreviousView = currentCleanup;
+      currentCleanup = () => {
+        cleanupEdit();
+        cleanupPreviousView?.();
+      };
+    }
   });
 }
 

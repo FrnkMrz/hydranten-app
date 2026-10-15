@@ -2,11 +2,24 @@
 
 **🌐 Live App:** [https://hydrantenjaeger.de](https://hydrantenjaeger.de)
 
-Eine moderne, mobil-optimierte Progressive Web App (PWA) zum blitzschnellen Erfassen und Pflegen von Hydranten in OpenStreetMap (OSM).
+Eine moderne, mobil-optimierte Progressive Web App (PWA) zum Erfassen und Pflegen von Hydranten, Löschwasserstellen und AEDs in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
 > **Status**: Version 1.6.0 (Stable Release)
 > *Features: GPS Safety, Reliable OSM Workflows, Mobile Chrome/Safari Tests, Privacy, PWA Updates & Accessibility.*
+
+### Entwicklungsstand (15.10.2026)
+
+Die folgenden Änderungen befinden sich im Review-Branch und sind **noch nicht in Version 1.6.0 oder auf der Live-App ausgerollt**. Die Versionsnummer und der Release-Changelog oben beschreiben weiterhin den zuletzt veröffentlichten Stand.
+
+**In diesem Änderungssatz enthalten:**
+
+* **AEDs / Defibrillatoren:** Die Kartensuche findet OSM-Knoten mit `emergency=defibrillator`. AEDs werden in der Karte kenntlich gemacht und können im Bearbeitungsformular unter anderem mit Zugang, Innen-/Außenlage und Öffnungszeiten gepflegt werden. Taginfo-Metadaten, Foto-Beschriftungen und deutsche sowie englische Texte sind ergänzt.
+* **Wiederverwendung geladener Kartendaten:** Erfolgreich geladene Kartenausschnitte werden für drei Minuten im Arbeitsspeicher zwischengespeichert (höchstens zwölf Ausschnitte). Wenn ein späterer Kartenausschnitt vollständig darin liegt, entfällt die erneute Overpass-Anfrage. Das ist eine sitzungsgebundene Cache-Optimierung; eine vorberechnete oder regional gehostete Datenversorgung ist damit noch nicht umgesetzt.
+* **Edit-Modus:** Beim Laden gibt es Abbrechen, bei vorübergehenden Fehlern Wiederholen und bei fehlgeschlagenem Laden eine Rückkehr zur Karte. Ladeabbrüche und Zeitüberschreitungen werden behandelt; AEDs erhalten einen passenden Bearbeitungstitel.
+* **Bedienbarkeit:** Fokusdarstellung und reduzierte Animation bei entsprechender Systemeinstellung sind ergänzt.
+
+**Noch geplant:** Eine vorberechnete bzw. regional bereitgestellte Kartendatenversorgung für Deutschland, Österreich, die Schweiz, Liechtenstein und Luxemburg. Sie ist nicht Teil dieses Änderungssatzes. Die hier beschriebenen Änderungen müssen zunächst geprüft und zusammengeführt werden; ein Release oder Rollout ist damit nicht verbunden.
 
 ## 📋 Changelog
 
@@ -95,7 +108,7 @@ Nach dem Merge des Release-PRs und erfolgreichen Pflichtprüfungen erhält genau
 ## ✨ Features
 
 ### OpenStreetMap tags
-The app's Taginfo project file is published at [hydrantenjaeger.de/taginfo.json](https://hydrantenjaeger.de/taginfo.json). It describes the hydrant and water-source tags queried, read, and edited by the app. Keep this file in sync when the Overpass query or OSM editing form changes.
+The app's Taginfo project file is published at [hydrantenjaeger.de/taginfo.json](https://hydrantenjaeger.de/taginfo.json). It describes the hydrant, water-source, and AED tags queried, read, and edited by the app. Keep this file in sync when the Overpass query or OSM editing form changes.
 
 ### 🚀 PWA & Live-Daten
 *   **Installierbar**: Fühlt sich an wie eine Native App (iOS & Android).
@@ -106,7 +119,7 @@ The app's Taginfo project file is published at [hydrantenjaeger.de/taginfo.json]
 ### 📍 Intelligente Erfassung (Smart Mapping)
 *   **Auto-GPS**: Startet erst nach Berechtigung (Datenschutz-konform) und zentriert die Karte anhand der Geräteposition. Neue Erfassungen erfordern einen höchstens 20 Sekunden alten Fix mit maximal 40 m angegebener Ungenauigkeit; andernfalls wird die Erfassung angehalten und ein erneuter GPS-Versuch angeboten.
 *   **Kompass-Offset**: Position wird automatisch 3 Meter in Blickrichtung verschoben, da man meist *vor* dem Objekt steht.
-*   **Live Preview**: Zeigt bereits vorhandene Hydranten in der Umgebung an (Overpass API) und verhindert Duplikate.
+*   **Live Preview**: Zeigt Hydranten, Löschwasserstellen und AEDs in der Umgebung an und hilft, vorhandene Objekte zu pflegen.
 *   **Locked Nodes 🔒**: Erkennt automatisch, ob ein Hydrant Teil eines Gebäudes oder Weges ist und schützt die Geometrie.
 
 ### 🛡️ Sicherheit

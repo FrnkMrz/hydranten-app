@@ -8,6 +8,71 @@ const SERVERS = [
     'https://maps.mail.ru/osm/tools/overpass/api/interpreter' // Weiterer Backup
 ];
 
+// Reuse recently loaded map areas while the user pans around. This keeps small
+// map movements from issuing another Overpass request for the same data.
+const AREA_CACHE_TTL_MS = 3 * 60 * 1000;
+const AREA_CACHE_LIMIT = 12;
+const areaCache = [];
+
+function boundsToBox(bounds) {
+    return {
+        south: bounds.getSouth(),
+        west: bounds.getWest(),
+        north: bounds.getNorth(),
+        east: bounds.getEast()
+    };
+}
+
+function containsBox(outer, inner) {
+    return outer.south <= inner.south && outer.west <= inner.west &&
+        outer.north >= inner.north && outer.east >= inner.east;
+}
+
+function boxContainsPoint(box, node) {
+    return node.lat >= box.south && node.lat <= box.north &&
+        node.lon >= box.west && node.lon <= box.east;
+}
+
+function getCachedArea(box) {
+    const now = Date.now();
+    const index = areaCache.findIndex(entry =>
+        now - entry.timestamp <= AREA_CACHE_TTL_MS && containsBox(entry.box, box)
+    );
+    if (index < 0) return null;
+
+    const [entry] = areaCache.splice(index, 1);
+    areaCache.unshift(entry);
+    return entry.nodes.map(node => ({ ...node, tags: { ...node.tags } }));
+}
+
+function cacheArea(box, nodes) {
+    areaCache.unshift({ box, nodes, timestamp: Date.now() });
+    if (areaCache.length > AREA_CACHE_LIMIT) areaCache.length = AREA_CACHE_LIMIT;
+}
+
+function updateCachedNode(updatedNode) {
+    for (const entry of areaCache) {
+        const index = entry.nodes.findIndex(node => String(node.id) === String(updatedNode.id));
+        if (!boxContainsPoint(entry.box, updatedNode)) {
+            if (index >= 0) entry.nodes.splice(index, 1);
+            continue;
+        }
+
+        const previousNode = index >= 0 ? entry.nodes[index] : {};
+        const numericId = Number(updatedNode.id);
+        const node = {
+            ...previousNode,
+            ...updatedNode,
+            id: previousNode.id ?? (Number.isSafeInteger(numericId) ? numericId : updatedNode.id),
+            type: 'node',
+            tags: { ...updatedNode.tags }
+        };
+
+        if (index >= 0) entry.nodes[index] = node;
+        else entry.nodes.push(node);
+    }
+}
+
 /**
  * Versucht eine Query auf mehreren Servern nacheinander auszuführen
  */
@@ -61,13 +126,11 @@ async function fetchWithFallback(query, attempt = 0, externalSignal = null) {
 
         return await response.json();
 
-    } catch (_err) {
+    } catch (err) {
         if (externalSignal?.aborted) {
             throw createAbortError();
         }
-        if (_err.retryable === false) {
-            throw _err;
-        }
+        if (err?.retryable === false) throw err;
 
         // console.warn(`Server ${server} fehlgeschlagen:`, err.message);
         // Rekursiver Aufruf des nächsten Servers
@@ -79,7 +142,11 @@ async function fetchWithFallback(query, attempt = 0, externalSignal = null) {
 }
 
 export const overpass = {
+    updateCachedNode,
+
     async fetchHydrants(bounds, { signal } = {}) {
+        if (signal?.aborted) throw createAbortError();
+
         // Query Optimierung: Timeout im Overpass QL selbst setzen
         // [timeout:25] damit der Server selbst abbricht, bevor unser Fetch-Timeout greift
         const s = bounds.getSouth();
@@ -87,9 +154,13 @@ export const overpass = {
         const w = bounds.getWest();
         const e = bounds.getEast();
 
+        const box = boundsToBox(bounds);
+        const cachedNodes = getCachedArea(box);
+        if (cachedNodes) return cachedNodes;
+
         const query = `
             [out:json][timeout:25];
-            node["emergency"~"fire_hydrant|water_tank|suction_point"](${s},${w},${n},${e})->.n;
+            node["emergency"~"fire_hydrant|water_tank|suction_point|defibrillator"](${s},${w},${n},${e})->.n;
             .n out body;
             way(bn.n);
             out skel;
@@ -111,10 +182,13 @@ export const overpass = {
             }
         });
 
-        return nodes.map(node => {
+        const normalizedNodes = nodes.map(node => {
             if (lockedNodeIds.has(node.id)) node._isPartOfWay = true;
             return node;
         });
+
+        cacheArea(box, normalizedNodes);
+        return normalizedNodes;
 
 
     }

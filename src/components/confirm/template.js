@@ -90,7 +90,7 @@ export function renderConfirmView() {
           </div>
 
          <!-- Position Selection -->
-         <div class="space-y-3">
+         <div id="position-container" class="space-y-3">
              <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">${t('confirm.position_label')}</h3>
              <div class="grid grid-cols-5 gap-2 bg-gray-800/50 p-1 rounded-xl">
                  <button type="button" class="pos-option-btn min-h-[44px] min-w-[44px] px-1 rounded-lg text-gray-400 font-bold transition text-xs flex items-center justify-center gap-1" data-value="">
@@ -127,16 +127,44 @@ export function renderConfirmView() {
                 <input type="text" id="hydrant-volume" placeholder="${t('confirm.volume_placeholder')}" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
             </div>
 
+            <div id="aed-details-container" class="hidden space-y-4 rounded-xl border border-green-500/20 bg-green-950/20 p-4">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-green-300">${t('confirm.aed_details')}</h3>
+                <div>
+                    <label for="aed-access" class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">${t('confirm.aed_access')}</label>
+                    <select id="aed-access" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                        <option value="">${t('confirm.aed_unspecified')}</option>
+                        <option value="yes">${t('confirm.aed_access_public')}</option>
+                        <option value="no">${t('confirm.aed_access_no')}</option>
+                        <option value="permissive">${t('confirm.aed_access_permissive')}</option>
+                        <option value="customers">${t('confirm.aed_access_customers')}</option>
+                        <option value="destination">${t('confirm.aed_access_destination')}</option>
+                        <option value="private">${t('confirm.aed_access_private')}</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="aed-indoor" class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">${t('confirm.aed_indoor')}</label>
+                    <select id="aed-indoor" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                        <option value="">${t('confirm.aed_unspecified')}</option>
+                        <option value="yes">${t('confirm.sign_options.yes')}</option>
+                        <option value="no">${t('confirm.sign_options.no')}</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="aed-opening-hours" class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">${t('confirm.aed_opening_hours')}</label>
+                    <input type="text" id="aed-opening-hours" placeholder="${t('confirm.aed_opening_hours_placeholder')}" maxlength="120" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
+                </div>
+            </div>
+
             <div class="space-y-4">
                <!-- SIGN Container removed from here -->
                
                <div id="ref-container">
-                  <label for="hydrant-ref" class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">${t('confirm.number_label')}</label>
+                  <label id="hydrant-ref-label" for="hydrant-ref" class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">${t('confirm.number_label')}</label>
                   <input type="text" id="hydrant-ref" placeholder="${t('confirm.number_placeholder')}" maxlength="50" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none">
                </div>
 
                <!-- Water Source (NEW) -->
-               <div>
+               <div id="water-source-container">
                   <label for="hydrant-water-source" class="block text-[10px] uppercase text-gray-400 mb-1 font-bold">${t('confirm.water_source_label')}</label>
                    <div class="relative">
                       <select id="hydrant-water-source" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white outline-none appearance-none">

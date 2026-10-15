@@ -76,6 +76,8 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
               confirmMsg = t('confirm.delete_confirm_cistern') || confirmMsg;
             } else if (initialData.tags['emergency'] === 'suction_point') {
               confirmMsg = t('confirm.delete_confirm_suction') || confirmMsg;
+            } else if (initialData.tags['emergency'] === 'defibrillator') {
+                confirmMsg = t('confirm.delete_confirm_aed') || confirmMsg;
             }
           }
 
@@ -113,6 +115,11 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         const sourceInput = element.querySelector('#hydrant-water-source');
         const volumeInput = element.querySelector('#hydrant-volume');
         const signInput = element.querySelector('#hydrant-sign');
+        const aedAttributes = {
+          access: element.querySelector('#aed-access')?.value || '',
+          indoor: element.querySelector('#aed-indoor')?.value || '',
+          openingHours: element.querySelector('#aed-opening-hours')?.value || ''
+        };
 
         const selectedType = typeInput ? typeInput.value : '';
         const selectedPos = posInput ? posInput.value : '';
@@ -127,7 +134,8 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           noteInput ? noteInput.value : null,
           sourceInput ? sourceInput.value : null,
           volumeInput ? volumeInput.value : null,
-          signInput ? signInput.value : 'unknown'
+          signInput ? signInput.value : 'unknown',
+          aedAttributes
         );
 
         onSubmit({

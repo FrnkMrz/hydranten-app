@@ -56,7 +56,8 @@ export function initPhoto(element, imageBlob, location, editMode) {
             const tags = {};
             if (typeInput) {
                 const type = typeInput.value;
-                if (type === 'cistern') tags.emergency = 'water_tank';
+                if (type === 'aed') tags.emergency = 'defibrillator';
+                else if (type === 'cistern') tags.emergency = 'water_tank';
                 else if (type === 'suction_point') tags.emergency = 'suction_point';
             }
 

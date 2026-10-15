@@ -3,7 +3,82 @@ import { fetchNodeData, updateHydrant, deleteHydrant } from '../services/osm.js'
 import { renderConfirmView, initConfirmView } from '../components/confirm-view.js';
 import { t } from '../services/i18n.js';
 
+const EDIT_LOAD_TIMEOUT_MS = 15000;
 
+function createButton(label, className, onClick) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = className;
+    button.textContent = label;
+    button.addEventListener('click', onClick);
+    return button;
+}
+
+function renderLoading(app, nodeId, onCancel) {
+    const container = document.createElement('section');
+    container.className = 'h-full w-full bg-slate-950 text-white flex flex-col items-center justify-center gap-5 p-8 text-center animate-fade-in';
+    container.setAttribute('role', 'status');
+    container.setAttribute('aria-live', 'polite');
+
+    const spinner = document.createElement('div');
+    spinner.className = 'h-12 w-12 rounded-full border-4 border-blue-400 border-t-transparent animate-spin';
+    spinner.setAttribute('aria-hidden', 'true');
+
+    const heading = document.createElement('h1');
+    heading.className = 'text-xl font-bold';
+    heading.textContent = t('confirm.title_edit');
+
+    const message = document.createElement('p');
+    message.className = 'max-w-xs text-sm text-slate-300';
+    message.textContent = t('messages.loading_hydrant').replace('{id}', nodeId);
+
+    const cancel = createButton(
+        t('confirm.cancel_btn'),
+        'min-h-11 rounded-xl border border-white/15 bg-white/10 px-5 font-semibold transition hover:bg-white/15',
+        onCancel
+    );
+
+    container.append(spinner, heading, message, cancel);
+    app.replaceChildren(container);
+}
+
+function renderLoadError(app, nodeId, error, { onRetry, onCancel }) {
+    const container = document.createElement('section');
+    container.className = 'h-full w-full bg-slate-950 text-white flex flex-col items-center justify-center gap-5 p-8 text-center animate-fade-in';
+
+    const icon = document.createElement('div');
+    icon.className = 'text-5xl';
+    icon.textContent = error.message === 'NODE_DELETED' ? '🗺️' : '⚠️';
+    icon.setAttribute('aria-hidden', 'true');
+
+    const heading = document.createElement('h1');
+    heading.className = 'text-2xl font-bold text-amber-300';
+    heading.textContent = error.message === 'NODE_DELETED' ? t('error.node_deleted') : t('error.load_failed');
+
+    const message = document.createElement('p');
+    message.className = 'max-w-sm text-sm leading-relaxed text-slate-300';
+    message.textContent = error.message === 'NODE_DELETED'
+        ? t('messages.edit_node_deleted_hint')
+        : t('messages.edit_load_retry').replace('{id}', nodeId);
+
+    const actions = document.createElement('div');
+    actions.className = 'flex w-full max-w-sm flex-col gap-3';
+    if (error.message !== 'NODE_DELETED') {
+        actions.append(createButton(
+            t('general.retry'),
+            'min-h-12 rounded-xl bg-blue-600 px-5 font-bold transition hover:bg-blue-500 active:scale-[0.99]',
+            onRetry
+        ));
+    }
+    actions.append(createButton(
+        t('error.back_to_map'),
+        'min-h-12 rounded-xl border border-white/15 bg-white/10 px-5 font-semibold transition hover:bg-white/15',
+        onCancel
+    ));
+
+    container.append(icon, heading, message, actions);
+    app.replaceChildren(container);
+}
 
 export function handleEdit(nodeId, app, callbacks) {
     const { showSettings, showIntro } = callbacks;
@@ -15,124 +90,88 @@ export function handleEdit(nodeId, app, callbacks) {
         return;
     }
 
-    console.log("Edit Mode requested for Node:", nodeId);
+    let activeController = null;
+    let disposed = false;
+    let cleanupConfirm = null;
 
-    // Simple Loading Visual
-    app.innerHTML = '';
-    const container = document.createElement('div');
-    container.className = "h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-4";
+    const load = async () => {
+        activeController?.abort();
+        const controller = new AbortController();
+        activeController = controller;
+        let timedOut = false;
+        const timeoutId = window.setTimeout(() => {
+            timedOut = true;
+            controller.abort();
+        }, EDIT_LOAD_TIMEOUT_MS);
 
-    const spinner = document.createElement('div');
-    spinner.className = "w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin";
+        renderLoading(app, nodeId, () => {
+            disposed = true;
+            controller.abort();
+            showIntro();
+        });
 
-    const msg = document.createElement('p');
-    msg.className = "font-bold";
-    msg.textContent = t('messages.loading_hydrant').replace('{id}', nodeId);
+        try {
+            const nodeData = await fetchNodeData(nodeId, { signal: controller.signal });
+            if (disposed || controller.signal.aborted) return;
 
-    container.append(spinner, msg);
-    app.appendChild(container);
-
-    // Safety check (Imports should be available)
-    if (!fetchNodeData) console.error("Missing fetchNodeData import");
-    if (!deleteHydrant) console.error("Missing deleteHydrant import");
-
-    // Network Timeout Logic (10s)
-    const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Network Timeout')), 10000)
-    );
-
-    Promise.race([
-        fetchNodeData(nodeId),
-        timeoutPromise
-    ])
-        .then(nodeData => {
-            // console.log("Loaded Node Data:", nodeData);
-            // Switch to Confirm View in Edit Mode
             app.innerHTML = renderConfirmView();
+            const title = app.querySelector('#confirm-title');
+            if (title) {
+                title.textContent = nodeData.tags?.emergency === 'defibrillator'
+                    ? t('confirm.aed_title_edit')
+                    : t('confirm.title_edit');
+            }
 
-            // Init Confirm View with Edit Mode = true
-            initConfirmView(
+            cleanupConfirm = initConfirmView(
                 app,
-                null, // No Photo Blob
-                { lat: nodeData.lat, lng: nodeData.lng, accuracy: 0 }, // Location
-                { back: () => { showIntro(); } }, // OnBack (Cancel) -> Intro
-                (data) => {
-                    // OnSubmit (Save)
+                null,
+                { lat: nodeData.lat, lng: nodeData.lng, accuracy: 0 },
+                { back: showIntro },
+                data => {
                     import('../components/overlay.js').then(({ showProcessOverlay }) => {
                         showProcessOverlay(
                             app,
                             t('messages.saving_data'),
-                            (log) => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log),
-                            { onClose: (result) => { if (result) showIntro(); } }
+                            log => updateHydrant(data.id, data.version, data.tags, data.lat, data.lng, log),
+                            { onClose: result => { if (result) showIntro(); } }
                         );
                     });
                 },
-                true, // editMode
-                nodeData, // initialData
+                true,
+                nodeData,
                 (id, version) => {
-                    // OnDelete
-                    if (deleteHydrant) {
-                        import('../components/overlay.js').then(({ showProcessOverlay }) => {
-                            showProcessOverlay(
-                                app,
-                                t('messages.deleting_data'),
-                                (log) => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log),
-                                { onClose: (result) => { if (result) showIntro(); } }
-                            );
-                        });
-                    } else {
-                        import('../components/overlay.js').then(({ showMessageOverlay }) => {
-                            showMessageOverlay(app, t('general.error'), t('messages.internal_error_reload'), 'error');
-                        });
-                        console.error("deleteHydrant missing");
-                    }
+                    import('../components/overlay.js').then(({ showProcessOverlay }) => {
+                        showProcessOverlay(
+                            app,
+                            t('messages.deleting_data'),
+                            log => deleteHydrant(id, version, nodeData.lat, nodeData.lng, nodeData.tags, log),
+                            { onClose: result => { if (result) showIntro(); } }
+                        );
+                    });
                 }
             );
-        })
-        .catch(err => {
-            console.error("Load Failed:", err);
-            // ... (Error handling code remains same)
-            let msg = t('error.load_failed') + ": " + err.message;
-            let autoClose = false;
+        } catch (error) {
+            if (disposed || controller.signal.aborted && !timedOut) return;
+            const loadError = timedOut ? new Error('Network Timeout') : error;
+            renderLoadError(app, nodeId, loadError, {
+                onRetry: () => load(),
+                onCancel: () => {
+                    disposed = true;
+                    controller.abort();
+                    showIntro();
+                }
+            });
+        } finally {
+            window.clearTimeout(timeoutId);
+            if (activeController === controller) activeController = null;
+        }
+    };
 
-            if (err.message === "NODE_DELETED") {
-                msg = t('error.node_deleted');
-                autoClose = true;
-            }
-
-            // Update Loading Screen with Error
-            app.innerHTML = '';
-            const container = document.createElement('div');
-            container.className = "h-full w-full bg-black flex flex-col items-center justify-center text-white space-y-6 p-8 text-center animate-fade-in";
-
-            const icon = document.createElement('div');
-            icon.className = "text-6xl";
-            icon.textContent = "⚠️";
-
-            const title = document.createElement('h2');
-            title.className = "text-2xl font-bold text-red-500";
-            title.textContent = t('error.oops');
-
-            const message = document.createElement('p');
-            message.className = "text-lg text-gray-300";
-            message.textContent = msg;
-
-            const btnContainer = document.createElement('div');
-            btnContainer.className = "w-full max-w-xs mt-4";
-
-            const btn = document.createElement('button');
-            btn.id = "error-back-btn";
-            btn.className = "w-full py-4 bg-gray-800 hover:bg-gray-700 rounded-xl font-bold transition";
-            btn.textContent = t('error.back_to_map');
-
-            btnContainer.appendChild(btn);
-            container.append(icon, title, message, btnContainer);
-            app.appendChild(container);
-
-            document.getElementById('error-back-btn').onclick = () => showIntro();
-
-            if (autoClose) {
-                setTimeout(() => showIntro(), 2500);
-            }
-        });
+    load();
+    return () => {
+        disposed = true;
+        activeController?.abort();
+        cleanupConfirm?.();
+        cleanupConfirm = null;
+    };
 }
