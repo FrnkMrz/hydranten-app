@@ -40,6 +40,7 @@ test.describe('Create Hydrant Flow', () => {
                     address: { road: 'Marienplatz', city: 'München', postcode: '80331' }
                 })
             });
+
         });
 
         // 3b. Create Changeset (PUT /api/0.6/changeset/create)
@@ -175,6 +176,22 @@ test.describe('Create Hydrant Flow', () => {
 
         // eventual return to Intro
         await expect(startBtn).toBeVisible({ timeout: 10000 });
+    });
+
+    test('blocks capture confirmation when GPS accuracy is worse than 40m', async ({ page }) => {
+        await page.context().setGeolocation({ latitude: 48.137154, longitude: 11.576124, accuracy: 41 });
+        await page.addInitScript(() => localStorage.setItem('language', 'en'));
+
+        await page.goto('/');
+        await page.locator('#start-btn').click();
+
+        const captureBtn = page.locator('#capture-btn');
+        await expect(captureBtn).toBeVisible();
+        await captureBtn.click();
+
+        await expect(page.locator('#msg-overlay-close-btn')).toBeVisible({ timeout: 20000 });
+        await expect(page.locator('#app')).toContainText('No sufficiently accurate, recent location is available.');
+        await expect(page.locator('button[data-value="underground"]')).toHaveCount(0);
     });
 
 });

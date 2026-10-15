@@ -194,7 +194,7 @@ export default {
         node_deleted: "此消火栓已不存在。",
         oops: "糟糕！",
         back_to_map: "返回地图",
-        gps_failed: "无法确定位置。请检查GPS。",
+        gps_failed: "没有足够准确且最新的位置。请检查 GPS 后重试。",
         gps_unavailable: "GPS不可用。显示默认地图。",
         edit_function_missing: "内部错误：缺少编辑功能。",
         network_error: "加载失败（网络/API）",

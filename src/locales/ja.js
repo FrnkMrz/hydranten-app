@@ -194,7 +194,7 @@ export default {
         node_deleted: "この消火栓は存在しません。",
         oops: "おっと！",
         back_to_map: "地図に戻る",
-        gps_failed: "位置情報を取得できません。GPSを確認してください。",
+        gps_failed: "十分に正確で新しい位置情報を取得できません。GPSを確認して、もう一度お試しください。",
         gps_unavailable: "GPS利用不可。デフォルト地図を表示。",
         edit_function_missing: "内部エラー：編集機能が見つかりません。",
         network_error: "読み込み失敗（通信/API）",

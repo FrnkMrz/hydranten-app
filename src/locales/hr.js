@@ -194,7 +194,7 @@ export default {
         node_deleted: "Ovaj hidrant više ne postoji.",
         oops: "Ups!",
         back_to_map: "Natrag na kartu",
-        gps_failed: "Lokacija nije utvrđena. Provjerite GPS.",
+        gps_failed: "Nema dovoljno precizne i aktualne lokacije. Provjerite GPS i pokušajte ponovno.",
         gps_unavailable: "GPS nedostupan. Prikazana zadana karta.",
         edit_function_missing: "Interna greška: Nema funkcije uređivanja.",
         network_error: "Greška mreže/API",

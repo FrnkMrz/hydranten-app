@@ -10,6 +10,11 @@ Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
 ## 📋 Changelog
 
+### Unreleased - Review-Härtungen
+*   **GPS-Sicherheit:** Neue Erfassungen benötigen einen höchstens 20 Sekunden alten Geräte-Fix mit maximal 40 m angegebener Ungenauigkeit. Veraltete, nicht verifizierbare Cache-Einträge werden abgewiesen.
+*   **Deployment:** GitHub Pages wird nach einem Push auf `main` erst veröffentlicht, wenn Produktions-Build und mobile E2E-Prüfungen erfolgreich waren.
+*   **Overpass-Failover:** Ungültige Abfragen (HTTP 400) und andere permanente Client-Fehler werden sofort gemeldet; vorübergehende Netzwerk-, Server-, Timeout- und Rate-Limit-Fehler wechseln zum nächsten Server.
+
 ### v1.6.0 (28.06.2026) - Konsolidierung & automatisierte Browser-Tests
 *   **Release-Konsolidierung:** Die größeren Stabilitäts-, Datenschutz-, PWA- und Toolchain-Verbesserungen der jüngsten Wartungsrunde werden als neues Minor Release gebündelt.
 *   **CI-E2E:** Alle 14 mobilen End-to-End-Tests für Chromium und WebKit laufen nun bei jedem Push und Pull Request verpflichtend in GitHub Actions.
@@ -90,7 +95,7 @@ Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 *   **Smart Icon**: Passt sich dem Device an (Adaptive Icons).
 
 ### 📍 Intelligente Erfassung (Smart Mapping)
-*   **Auto-GPS**: Startet erst nach Berechtigung (Datenschutz-konform) und zentriert die Karte präzise.
+*   **Auto-GPS**: Startet erst nach Berechtigung (Datenschutz-konform) und zentriert die Karte anhand der Geräteposition. Neue Erfassungen erfordern einen höchstens 20 Sekunden alten Fix mit maximal 40 m angegebener Ungenauigkeit; andernfalls wird die Erfassung angehalten und ein erneuter GPS-Versuch angeboten.
 *   **Kompass-Offset**: Position wird automatisch 3 Meter in Blickrichtung verschoben, da man meist *vor* dem Objekt steht.
 *   **Live Preview**: Zeigt bereits vorhandene Hydranten in der Umgebung an (Overpass API) und verhindert Duplikate.
 *   **Locked Nodes 🔒**: Erkennt automatisch, ob ein Hydrant Teil eines Gebäudes oder Weges ist und schützt die Geometrie.
@@ -175,6 +180,8 @@ Jeder Push auf `main` oder Pull Request durchläuft eine automatisierte Pipeline
 2.  **Testing**: Führt Unit-Tests durch (`npm test`).
 3.  **Build**: Verifiziert, dass der Production-Build erfolgreich durchläuft (`npm run build`).
 4.  **Mobile E2E**: Prüft die vollständigen Kernabläufe in Chromium und WebKit (`npm run test:e2e`). Der HTML-Report wird als kurzlebiges Actions-Artefakt gespeichert.
+
+Ein Push auf `main` wird erst nach erfolgreichem Build und erfolgreichen Mobile-E2E-Tests zu GitHub Pages deployt. Pull Requests werden geprüft, aber nicht veröffentlicht.
 
 ---
 

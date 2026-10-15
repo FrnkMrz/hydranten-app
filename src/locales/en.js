@@ -79,7 +79,7 @@ export default {
         node_deleted: "This hydrant no longer exists.",
         oops: "Oops!",
         back_to_map: "Back to Map",
-        gps_failed: "Location could not be determined. Please check GPS settings.",
+        gps_failed: "No sufficiently accurate, recent location is available. Check GPS and try again.",
         gps_unavailable: "GPS unavailable. Default map shown.",
         edit_function_missing: "Internal Error: Edit function missing.",
         network_error: "Load Failed (Network/API)",

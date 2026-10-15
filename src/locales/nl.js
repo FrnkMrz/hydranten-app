@@ -194,7 +194,7 @@ export default {
         node_deleted: "Deze hydrant bestaat niet meer.",
         oops: "Oeps!",
         back_to_map: "Terug naar kaart",
-        gps_failed: "Locatie onbepaald. Controleer GPS.",
+        gps_failed: "Er is geen voldoende nauwkeurige en recente locatie beschikbaar. Controleer GPS en probeer het opnieuw.",
         gps_unavailable: "GPS onbeschikbaar. Standaardkaart.",
         edit_function_missing: "Interne fout: Edit-functie mist.",
         network_error: "Laden mislukt (Netwerk/API)",

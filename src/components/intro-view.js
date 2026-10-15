@@ -167,7 +167,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          const startApp = () => {
             // Step 1: Force immediate fresh GPS update
             getPosition(true).then(pos => {
-               updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
+               updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading }, timestamp: pos.timestamp, timestampIsDevice: pos.timestampIsDevice });
             }).catch(console.warn).finally(() => {
                initCompass();
                startTracking();
@@ -564,7 +564,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                      ]);
                   }
                }
-               updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading } });
+               updatePosition({ coords: { latitude: pos.lat, longitude: pos.lng, accuracy: pos.accuracy, heading: pos.heading }, timestamp: pos.timestamp, timestampIsDevice: pos.timestampIsDevice });
             })
             .catch(err => {
                console.warn("GPS update failed", err);

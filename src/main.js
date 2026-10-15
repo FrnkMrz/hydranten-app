@@ -5,7 +5,7 @@ import { renderSettingsView, initSettingsView } from './components/settings-view
 import { renderIntroView, initIntroView } from './components/intro-view.js';
 import { renderHistoryView, initHistoryView } from './components/history-view.js';
 import { renderRankListView, initRankListView } from './components/rank-list-view.js';
-import { getPosition, getCurrentHeading, calculateOffsetPosition, getLastKnownPosition } from './services/geo.js';
+import { getPosition, getCurrentHeading, calculateOffsetPosition, getLastKnownPosition, hasReliableGpsFix } from './services/geo.js';
 import { auth } from './services/auth.js';
 import { createHydrant } from './services/osm.js';
 import { registerSW } from 'virtual:pwa-register';
@@ -147,14 +147,14 @@ async function showCamera() {
           getPosition(true),
           new Promise((_, r) => setTimeout(() => r(new Error('Timeout')), CONSTANTS.GPS_TIMEOUT_MS))
         ]);
-        // loc is { lat, lng, accuracy, heading } from geo.js
+        if (!hasReliableGpsFix(loc)) {
+          throw new Error('GPS fix is stale or too inaccurate');
+        }
       } catch (e) {
         console.warn('Fresh GPS failed, checking recent cache:', e);
         const last = getLastKnownPosition();
-        const isRecent = last?.timestamp &&
-          (Date.now() - last.timestamp) <= (CONSTANTS.GPS_MAX_AGE_MS * 2);
 
-        if (last && isRecent && Number.isFinite(last.lat) && Number.isFinite(last.lng)) {
+        if (hasReliableGpsFix(last)) {
           loc = { ...last }; // lat, lng, accuracy, heading
         } else {
           state.capturedBlob = null;
@@ -184,8 +184,21 @@ async function showCamera() {
           lat: finalLoc.lat,
           lng: finalLoc.lng,
           accuracy: loc.accuracy,
-          heading: heading
+          heading: heading,
+          timestamp: loc.timestamp,
+          timestampIsDevice: loc.timestampIsDevice
         };
+
+        updatePosition({
+          coords: {
+            latitude: loc.lat,
+            longitude: loc.lng,
+            accuracy: loc.accuracy,
+            heading: loc.heading
+          },
+          timestamp: loc.timestamp,
+          timestampIsDevice: loc.timestampIsDevice
+        });
 
         showConfirm();
       } catch (err) {
@@ -282,7 +295,8 @@ function showConfirm() {
       retryGPS: async () => {
         try {
           // Hard fetch
-          const l = await getPosition();
+          const l = await getPosition(true);
+          if (!hasReliableGpsFix(l)) return null;
           return { lat: l.lat, lng: l.lng, accuracy: l.accuracy };
         } catch (e) {
           import('./components/overlay.js').then(({ showMessageOverlay }) => {

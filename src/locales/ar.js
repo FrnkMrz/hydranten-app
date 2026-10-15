@@ -193,7 +193,7 @@ export default {
         node_deleted: "هذا الصنبور لم يعد موجوداً.",
         oops: "عفواً!",
         back_to_map: "عودة للخريطة",
-        gps_failed: "تعذر تحديد الموقع. تحقق من GPS.",
+        gps_failed: "لا يتوفر موقع حديث ودقيق بما يكفي. تحقق من GPS وحاول مرة أخرى.",
         gps_unavailable: "GPS غير متاح. الخريطة الافتراضية.",
         edit_function_missing: "خطأ داخلي: ميزة التعديل مفقودة.",
         network_error: "فشل التحميل (شبكة/API)",

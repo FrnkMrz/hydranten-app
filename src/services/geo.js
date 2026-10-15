@@ -88,18 +88,32 @@ try {
 } catch (e) { console.error("Error loading cached pos", e); }
 let watcherId = null;
 
+/** Returns whether a location fix is trustworthy enough to attach to a capture. */
+export function hasReliableGpsFix(position, now = Date.now()) {
+    if (!position || !Number.isFinite(position.lat) || !Number.isFinite(position.lng)) return false;
+    if (!Number.isFinite(position.accuracy) || position.accuracy > CONSTANTS.GPS_ACCURACY_THRESHOLD_M) return false;
+    if (!Number.isFinite(position.timestamp) || position.timestampIsDevice !== true) return false;
+
+    const ageMs = now - position.timestamp;
+    return ageMs >= 0 && ageMs <= CONSTANTS.GPS_MAX_AGE_MS * 2;
+}
+
 export function startTracking() {
     if (watcherId !== null) return; // Already tracking
     if (!navigator.geolocation) return;
 
     watcherId = navigator.geolocation.watchPosition(
         (pos) => {
+            const hasDeviceTimestamp = Number.isFinite(pos.timestamp);
             lastPosition = {
                 lat: pos.coords.latitude,
                 lng: pos.coords.longitude,
                 accuracy: pos.coords.accuracy,
                 heading: pos.coords.heading,
-                timestamp: Date.now()
+                // Preserve the time of the actual fix. A cached browser fix
+                // must not look fresh just because it was received again.
+                timestamp: hasDeviceTimestamp ? pos.timestamp : Date.now(),
+                timestampIsDevice: hasDeviceTimestamp
             };
             localStorage.setItem('last_known_pos', JSON.stringify(lastPosition));
         },
@@ -126,12 +140,15 @@ export function stopTracking() {
 export function updatePosition(pos) {
     if (pos.coords) {
         // Raw GeolocationPosition
+        const hasDeviceTimestamp = Number.isFinite(pos.timestamp) &&
+            (pos.timestampIsDevice === undefined || pos.timestampIsDevice === true);
         lastPosition = {
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
             accuracy: pos.coords.accuracy,
             heading: pos.coords.heading,
-            timestamp: Date.now()
+            timestamp: hasDeviceTimestamp ? pos.timestamp : Date.now(),
+            timestampIsDevice: hasDeviceTimestamp
         };
     } else if (pos.lat !== undefined && pos.lng !== undefined) {
         // Already processed object
@@ -140,7 +157,8 @@ export function updatePosition(pos) {
             lng: pos.lng,
             accuracy: pos.accuracy || 0,
             heading: pos.heading || null,
-            timestamp: Date.now()
+            timestamp: Number.isFinite(pos.timestamp) ? pos.timestamp : Date.now(),
+            timestampIsDevice: pos.timestampIsDevice === true
         };
     } else {
         console.warn("Invalid position object passed to updatePosition", pos);
@@ -169,13 +187,16 @@ export async function getPosition(forceFresh = false) {
         }
 
         const success = (pos) => {
+            const hasDeviceTimestamp = Number.isFinite(pos.timestamp);
             const p = {
                 lat: pos.coords.latitude,
                 lng: pos.coords.longitude,
                 accuracy: pos.coords.accuracy,
-                heading: pos.coords.heading
+                heading: pos.coords.heading,
+                timestamp: hasDeviceTimestamp ? pos.timestamp : Date.now(),
+                timestampIsDevice: hasDeviceTimestamp
             };
-            lastPosition = { ...p, timestamp: Date.now() }; // Update cache
+            lastPosition = p; // Keep the device fix time for freshness checks.
             resolve(p);
         };
 

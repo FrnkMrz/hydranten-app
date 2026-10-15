@@ -194,7 +194,7 @@ export default {
         node_deleted: "Questo idrante non esiste più.",
         oops: "Ops!",
         back_to_map: "Torna alla mappa",
-        gps_failed: "Posizione non determinata. Controlla GPS.",
+        gps_failed: "Non è disponibile una posizione sufficientemente precisa e recente. Controlla il GPS e riprova.",
         gps_unavailable: "GPS non disponibile. Mappa predefinita.",
         edit_function_missing: "Errore interno: Funzione modifica mancante.",
         network_error: "Caricamento fallito (Rete/API)",
