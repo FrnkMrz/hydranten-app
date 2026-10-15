@@ -106,6 +106,10 @@ async function fetchMetadata(signal) {
             metadata = { generatedAt, osmDataUntil };
             metadataFetchedAt = Date.now();
             return metadata;
+        } catch (error) {
+            if (signal?.aborted) throw abortError();
+            if (controller.signal.aborted) throw new Error('Regional metadata request timed out.');
+            throw error;
         } finally {
             clearTimeout(timeout);
             signal?.removeEventListener('abort', abort);
