@@ -94,6 +94,9 @@ Nach dem Merge des Release-PRs und erfolgreichen Pflichtprüfungen erhält genau
 
 ## ✨ Features
 
+### OpenStreetMap tags
+The app's Taginfo project file is published at [hydrantenjaeger.de/taginfo.json](https://hydrantenjaeger.de/taginfo.json). It describes the hydrant and water-source tags queried, read, and edited by the app. Keep this file in sync when the Overpass query or OSM editing form changes.
+
 ### 🚀 PWA & Live-Daten
 *   **Installierbar**: Fühlt sich an wie eine Native App (iOS & Android).
 *   **Offline-Ready**: Dank Service Worker (`vite-plugin-pwa`) funktioniert die App auch bei schlechtem Netz.

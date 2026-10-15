@@ -1,0 +1,85 @@
+{
+  "$schema": "https://raw.githubusercontent.com/taginfo/taginfo-projects/master/taginfo-project-schema.json",
+  "data_format": 1,
+  "data_url": "https://hydrantenjaeger.de/taginfo.json",
+  "project": {
+    "name": "Hydranten Jäger",
+    "description": "Mobile app for viewing, adding, and editing fire hydrants and water sources in OpenStreetMap.",
+    "project_url": "https://hydrantenjaeger.de",
+    "doc_url": "https://github.com/FrnkMrz/hydranten-app#openstreetmap-tags",
+    "icon_url": "https://hydrantenjaeger.de/icon-v3-192.png",
+    "contact_name": "Hydranten Jäger",
+    "contact_email": "info@openfiremap.org"
+  },
+  "tags": [
+    {
+      "key": "emergency",
+      "value": "fire_hydrant",
+      "object_types": ["node"],
+      "description": "Queries and edits fire hydrants."
+    },
+    {
+      "key": "emergency",
+      "value": "suction_point",
+      "object_types": ["node"],
+      "description": "Queries and edits water suction points."
+    },
+    {
+      "key": "emergency",
+      "value": "water_tank",
+      "object_types": ["node"],
+      "description": "Queries and edits cisterns and other water tanks."
+    },
+    {
+      "key": "fire_hydrant:type",
+      "object_types": ["node"],
+      "description": "Reads and edits hydrant types, including pillar, underground, wall, and dry hydrant. Existing other values are preserved."
+    },
+    {
+      "key": "fire_hydrant:position",
+      "object_types": ["node"],
+      "description": "Reads and edits hydrant position. The form offers sidewalk, lane, parking_lane, and green; street is normalized to lane."
+    },
+    {
+      "key": "fire_hydrant:diameter",
+      "object_types": ["node"],
+      "description": "Reads and edits the hydrant diameter."
+    },
+    {
+      "key": "fire_hydrant:diameter:signed",
+      "object_types": ["node"],
+      "description": "Reads and edits whether an underground hydrant's diameter is shown on its sign."
+    },
+    {
+      "key": "water_source",
+      "object_types": ["node"],
+      "description": "Reads and edits the water source, with form values main, groundwater, pond, lake, river, and reservoir."
+    },
+    {
+      "key": "water_tank:volume",
+      "object_types": ["node"],
+      "description": "Reads and edits water tank volume."
+    },
+    {
+      "key": "ref",
+      "object_types": ["node"],
+      "description": "Reads and edits the hydrant or water tank reference."
+    },
+    {
+      "key": "ref:signed",
+      "value": "no",
+      "object_types": ["node"],
+      "description": "Reads and writes the legacy sign marker when an underground hydrant diameter is not signed."
+    },
+    {
+      "key": "note",
+      "object_types": ["node"],
+      "description": "Reads and edits the note field."
+    },
+    {
+      "key": "description",
+      "object_types": ["node"],
+      "description": "Reads legacy descriptions into the note field when editing; new edits are saved as note."
+    }
+  ]
+}
