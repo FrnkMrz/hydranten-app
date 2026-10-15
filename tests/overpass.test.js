@@ -3,11 +3,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { overpass } from '../src/services/overpass.js';
 
 // Mock Bounds Object
+let boundsOffset = 0;
 const mockBounds = {
-    getSouth: () => 48.0,
-    getNorth: () => 48.1,
-    getWest: () => 11.0,
-    getEast: () => 11.1
+    getSouth: () => 48.0 + boundsOffset,
+    getNorth: () => 48.1 + boundsOffset,
+    getWest: () => 11.0 + boundsOffset,
+    getEast: () => 11.1 + boundsOffset
 };
 
 global.fetch = vi.fn();
@@ -15,6 +16,9 @@ global.fetch = vi.fn();
 describe('Overpass Service', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        // Each test uses a distinct area so the service's in-memory area cache
+        // cannot reuse a previous test's mocked network response.
+        boundsOffset += 0.2;
     });
 
     it('fetches hydrants successfully from first server', async () => {
