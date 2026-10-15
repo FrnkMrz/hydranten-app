@@ -14,17 +14,24 @@ Der Änderungssatz wurde nach dem Merge am 15.10.2026 auf [hydrantenjaeger.de](h
 
 **Enthalten:**
 
-* **AEDs / Defibrillatoren:** AEDs lassen sich direkt auf der Karte neu eintragen und bearbeiten. Die Kartensuche findet OSM-Knoten mit `emergency=defibrillator`; der Marker zeigt das standardisierte Piktogramm ISO 7010 E010. Zugang, Innen-/Außenlage und Öffnungszeiten können ebenfalls gepflegt werden.
+* **AEDs / Defibrillatoren:** AEDs lassen sich über den Erfassungsablauf der App neu eintragen, auf der Karte finden und bearbeiten. Die Kartensuche findet OSM-Knoten mit `emergency=defibrillator`; Marker und Typauswahl zeigen das standardisierte Piktogramm ISO 7010 E010. Zugang, Innen-/Außenlage und Öffnungszeiten können ebenfalls gepflegt werden.
 * **Wiederverwendung geladener Kartendaten:** Erfolgreich geladene Kartenausschnitte werden für drei Minuten im Arbeitsspeicher zwischengespeichert (höchstens zwölf Ausschnitte). Wenn ein späterer Kartenausschnitt vollständig darin liegt, entfällt die erneute Overpass-Anfrage. Das ist eine sitzungsgebundene Cache-Optimierung; eine vorberechnete oder regional gehostete Datenversorgung ist damit noch nicht umgesetzt.
 * **Edit-Modus:** Beim Laden gibt es Abbrechen, bei vorübergehenden Fehlern Wiederholen und bei fehlgeschlagenem Laden eine Rückkehr zur Karte. Ladeabbrüche und Zeitüberschreitungen werden behandelt; AEDs erhalten einen passenden Bearbeitungstitel.
 * **Bedienbarkeit:** Fokusdarstellung und reduzierte Animation bei entsprechender Systemeinstellung sind ergänzt.
+
+### AED mit der App erfassen
+
+1. Bei OpenStreetMap anmelden und **Starten** wählen.
+2. Ein Foto des AED aufnehmen. Auf der Bestätigungsseite **Defibrillator** auswählen.
+3. Den Standort auf der kleinen Karte prüfen oder anpassen und bekannte Angaben zu Zugang, Innen-/Außenlage, Öffnungszeiten und Referenz ergänzen.
+4. Angaben prüfen und zu OpenStreetMap hochladen. Bestehende AEDs lassen sich über ihren Kartenmarker öffnen und bearbeiten.
 
 **Noch geplant:** Eine vorberechnete bzw. regional bereitgestellte Kartendatenversorgung für Deutschland, Österreich, die Schweiz, Liechtenstein und Luxemburg. Sie ist nicht Teil dieses Release-Kandidaten.
 
 ## 📋 Changelog
 
 ### v1.7.0 (15.10.2026) - AEDs, Kartendaten & Bearbeitungsmodus
-*   **AEDs / Defibrillatoren:** AEDs direkt auf der Karte eintragen und bearbeiten; Kartensuche und ISO-7010-E010-Marker für `emergency=defibrillator` sowie Felder für Zugang, Innen-/Außenlage und Öffnungszeiten.
+*   **AEDs / Defibrillatoren:** AEDs über den Erfassungsablauf der App eintragen sowie auf der Karte finden und bearbeiten; ISO-7010-E010-Piktogramm und Felder für Zugang, Innen-/Außenlage und Öffnungszeiten.
 *   **Kartendaten:** Erfolgreich geladene Ausschnitte werden kurzzeitig im Arbeitsspeicher wiederverwendet. Nach erfolgreichen Bearbeitungen wird der Cache aktualisiert.
 *   **Edit-Modus:** Abbrechen und Wiederholen beim Laden, verständliche Fehlerbehandlung und AED-spezifischer Bearbeitungstitel.
 *   **Bedienbarkeit:** Sichtbarer Tastaturfokus und reduzierte Animation entsprechend der Systemeinstellung.
