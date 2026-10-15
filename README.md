@@ -8,9 +8,9 @@ Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 > **Status**: Version 1.6.0 (Stable Release)
 > *Features: GPS Safety, Reliable OSM Workflows, Mobile Chrome/Safari Tests, Privacy, PWA Updates & Accessibility.*
 
-### Entwicklungsstand (15.10.2026)
+### Weiterentwicklung (live seit 15.10.2026)
 
-Die folgenden Änderungen befinden sich im Review-Branch und sind **noch nicht in Version 1.6.0 oder auf der Live-App ausgerollt**. Die Versionsnummer und der Release-Changelog oben beschreiben weiterhin den zuletzt veröffentlichten Stand.
+Der aktuelle Stand wurde nach dem Merge am 15.10.2026 erfolgreich auf [hydrantenjaeger.de](https://hydrantenjaeger.de) ausgerollt. Die offizielle Versionsnummer steht weiterhin auf 1.6.0; der Changelog oben beschreibt den formellen Release-Stand.
 
 **In diesem Änderungssatz enthalten:**
 
@@ -19,7 +19,7 @@ Die folgenden Änderungen befinden sich im Review-Branch und sind **noch nicht i
 * **Edit-Modus:** Beim Laden gibt es Abbrechen, bei vorübergehenden Fehlern Wiederholen und bei fehlgeschlagenem Laden eine Rückkehr zur Karte. Ladeabbrüche und Zeitüberschreitungen werden behandelt; AEDs erhalten einen passenden Bearbeitungstitel.
 * **Bedienbarkeit:** Fokusdarstellung und reduzierte Animation bei entsprechender Systemeinstellung sind ergänzt.
 
-**Noch geplant:** Eine vorberechnete bzw. regional bereitgestellte Kartendatenversorgung für Deutschland, Österreich, die Schweiz, Liechtenstein und Luxemburg. Sie ist nicht Teil dieses Änderungssatzes. Die hier beschriebenen Änderungen müssen zunächst geprüft und zusammengeführt werden; ein Release oder Rollout ist damit nicht verbunden.
+**Noch geplant:** Eine vorberechnete bzw. regional bereitgestellte Kartendatenversorgung für Deutschland, Österreich, die Schweiz, Liechtenstein und Luxemburg. Die aktuelle Cache-Optimierung ersetzt diese Datenversorgung nicht.
 
 ## 📋 Changelog
 
