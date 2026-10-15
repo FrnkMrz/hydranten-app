@@ -11,6 +11,15 @@ const mockBounds = {
     getEast: () => 11.1 + boundsOffset
 };
 
+function makeBounds(south, west, north, east) {
+    return {
+        getSouth: () => south,
+        getWest: () => west,
+        getNorth: () => north,
+        getEast: () => east
+    };
+}
+
 global.fetch = vi.fn();
 
 describe('Overpass Service', () => {
@@ -80,6 +89,35 @@ describe('Overpass Service', () => {
         fetch.mockRejectedValue(new Error("Down"));
 
         await expect(overpass.fetchHydrants(mockBounds)).rejects.toThrow("Alle Overpass-Server sind nicht erreichbar");
+    });
+
+    it('updates cached nodes when an edited node moves between cached areas', async () => {
+        const oldBounds = makeBounds(40, -4, 41, -3);
+        const newBounds = makeBounds(42, 2, 43, 3);
+        fetch
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({
+                    elements: [{
+                        type: 'node', id: 42, lat: 40.5, lon: -3.5,
+                        tags: { emergency: 'fire_hydrant' }
+                    }]
+                })
+            })
+            .mockResolvedValueOnce({ ok: true, json: async () => ({ elements: [] }) });
+
+        await overpass.fetchHydrants(oldBounds);
+        await overpass.fetchHydrants(newBounds);
+        overpass.updateCachedNode({
+            id: '42', lat: 42.5, lon: 2.5,
+            tags: { emergency: 'defibrillator', access: 'yes' }
+        });
+
+        await expect(overpass.fetchHydrants(oldBounds)).resolves.toEqual([]);
+        await expect(overpass.fetchHydrants(newBounds)).resolves.toMatchObject([
+            { id: 42, lat: 42.5, lon: 2.5, tags: { emergency: 'defibrillator', access: 'yes' } }
+        ]);
+        expect(fetch).toHaveBeenCalledTimes(2);
     });
 
     it('does not try another server after the request is cancelled', async () => {

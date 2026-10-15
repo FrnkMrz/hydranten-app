@@ -10,6 +10,7 @@ const c = {
 import { getAuthHeaderAsync } from './auth.js';
 import { USER_AGENT, CREATED_BY } from '../version.js';
 import { t } from './i18n.js';
+import { overpass } from './overpass.js';
 
 // XML Escaping Helper
 function escapeXml(str) {
@@ -330,6 +331,14 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
 
         const newVersion = await nodeRes.text(); // Returns new version number
         log(c.success(t('upload_log.update_success').replace('{version}', newVersion)));
+
+        // Keep any loaded map areas consistent until Overpass catches up.
+        overpass.updateCachedNode({
+            id,
+            lat: Number(lat),
+            lon: Number(lng),
+            tags: finalTags
+        });
 
         return { id, version: newVersion, changeset: changesetId };
 

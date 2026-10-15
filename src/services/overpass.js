@@ -28,6 +28,11 @@ function containsBox(outer, inner) {
         outer.north >= inner.north && outer.east >= inner.east;
 }
 
+function boxContainsPoint(box, node) {
+    return node.lat >= box.south && node.lat <= box.north &&
+        node.lon >= box.west && node.lon <= box.east;
+}
+
 function getCachedArea(box) {
     const now = Date.now();
     const index = areaCache.findIndex(entry =>
@@ -43,6 +48,28 @@ function getCachedArea(box) {
 function cacheArea(box, nodes) {
     areaCache.unshift({ box, nodes, timestamp: Date.now() });
     if (areaCache.length > AREA_CACHE_LIMIT) areaCache.length = AREA_CACHE_LIMIT;
+}
+
+function updateCachedNode(updatedNode) {
+    for (const entry of areaCache) {
+        const index = entry.nodes.findIndex(node => String(node.id) === String(updatedNode.id));
+        if (!boxContainsPoint(entry.box, updatedNode)) {
+            if (index >= 0) entry.nodes.splice(index, 1);
+            continue;
+        }
+
+        const previousNode = index >= 0 ? entry.nodes[index] : {};
+        const node = {
+            ...previousNode,
+            ...updatedNode,
+            id: previousNode.id ?? updatedNode.id,
+            type: 'node',
+            tags: { ...updatedNode.tags }
+        };
+
+        if (index >= 0) entry.nodes[index] = node;
+        else entry.nodes.push(node);
+    }
 }
 
 /**
@@ -114,6 +141,8 @@ async function fetchWithFallback(query, attempt = 0, externalSignal = null) {
 }
 
 export const overpass = {
+    updateCachedNode,
+
     async fetchHydrants(bounds, { signal } = {}) {
         if (signal?.aborted) throw createAbortError();
 
