@@ -153,7 +153,7 @@ export const overpass = {
     updateCachedNode,
     clearCache: clearAreaCache,
 
-    async fetchHydrants(bounds, { signal, zoom } = {}) {
+    async fetchHydrants(bounds, { signal, zoom, onRegionalData } = {}) {
         if (signal?.aborted) throw createAbortError();
 
         // Query Optimierung: Timeout im Overpass QL selbst setzen
@@ -198,6 +198,16 @@ export const overpass = {
 
         let normalizedNodes;
         if (regionalNodes) {
+            // Paint the fast regional snapshot before asking Overpass for newer nodes.
+            // A slow live delta must not keep an already available map off screen.
+            if (!signal?.aborted && typeof onRegionalData === 'function') {
+                try {
+                    onRegionalData(regionalNodes);
+                } catch (error) {
+                    console.warn('Regionale Kartendaten konnten nicht sofort angezeigt werden:', error?.message || error);
+                }
+            }
+
             normalizedNodes = regionalNodes;
             const osmDataUntil = regionalNodes.dataSource?.osmDataUntil;
             if (osmDataUntil) {
