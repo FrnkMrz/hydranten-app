@@ -46,7 +46,7 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
 
     // Dynamic Tile Layer
     const style = localStorage.getItem('map_style') || 'osm';
-    let tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    let tileUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     let attribution = '';
     let maxNativeZoom = 19;
 
