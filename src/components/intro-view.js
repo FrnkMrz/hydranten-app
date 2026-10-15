@@ -797,11 +797,11 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
             if (previousMarker && previousMarker.signature !== markerSignature) {
                previousMarker.marker.remove();
                hydrantMarkerData.delete(markerKey);
-               visibleHydrants.delete(node.id);
+               visibleHydrants.delete(markerKey);
             }
 
-            if (!visibleHydrants.has(node.id)) {
-               visibleHydrants.add(node.id);
+            if (!visibleHydrants.has(markerKey)) {
+               visibleHydrants.add(markerKey);
 
                // Determine color based on tags
                let fillColor = RED;
