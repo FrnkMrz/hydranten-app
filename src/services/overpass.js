@@ -68,6 +68,7 @@ function updateCachedNode(updatedNode) {
             ...updatedNode,
             id: previousNode.id ?? (Number.isSafeInteger(numericId) ? numericId : updatedNode.id),
             type: 'node',
+            _isPendingLocalEdit: true,
             tags: { ...updatedNode.tags }
         };
 

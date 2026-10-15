@@ -729,7 +729,9 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
             const serverTags = serverNode?.tags || {};
             const tagsMatch = Object.keys(localTags).length === Object.keys(serverTags).length &&
                Object.entries(localTags).every(([key, value]) => serverTags[key] === value);
-            if (serverNode && Math.abs(serverNode.lat - localNode.lat) < 1e-7 &&
+            // The area cache is patched optimistically after a successful edit. It cannot confirm
+            // that the upstream Overpass/PMTiles data has caught up with the saved edit.
+            if (serverNode && !serverNode._isPendingLocalEdit && Math.abs(serverNode.lat - localNode.lat) < 1e-7 &&
                 Math.abs(serverNode.lon - localNode.lon) < 1e-7 &&
                 tagsMatch) {
                return;
