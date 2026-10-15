@@ -39,7 +39,7 @@ Die regionale Datenversorgung wird in diesem Feature-Branch umgesetzt und ist no
 *   **Overpass-Failover:** Ungültige Abfragen (HTTP 400) werden sofort gemeldet. Bei anderen HTTP-Fehlern sowie Netzwerk-, Server-, Timeout- und Rate-Limit-Fehlern wird die nächste Instanz versucht.
 
 ### Unveröffentlicht
-*   **Regionale Datenversorgung (in Arbeit):** PMTiles-Basiskarten von OpenFireMap für DACHLiLu, versionsgebunden über `metadata.json`; Overpass-Delta für neue/geänderte Objekte und Overpass-Fallback bei unvollständiger Abdeckung oder Ausfall.
+*   **Regionale Datenversorgung (in Arbeit):** PMTiles-Basiskarten von OpenFireMap für DACHLiLu, versionsgebunden über `metadata.json`; diese werden vor dem Overpass-Delta angezeigt. Verwendete Overpass-Instanzen wie in OpenFireMap: `overpass-api.de`, `lz4.overpass-api.de`, `z.overpass-api.de` und `overpass.kumi.systems`; `maps.mail.ru` wird nicht mehr verwendet. Verfügbare Instanzen werden gemischt abgefragt; fehlerhafte Instanzen gehen kurz in Abkühlung. Client-Limit: 12 Sekunden je Anfrage, insgesamt 15 Sekunden für den Delta-Abgleich und 30 Sekunden für den vollständigen Overpass-Fallback. Das serverseitige Overpass-Query-Limit bleibt bei 25 Sekunden.
 
 ### v1.6.0 (28.06.2026) - Konsolidierung & automatisierte Browser-Tests
 *   **Release-Konsolidierung:** Die größeren Stabilitäts-, Datenschutz-, PWA- und Toolchain-Verbesserungen der jüngsten Wartungsrunde werden als neues Minor Release gebündelt.
