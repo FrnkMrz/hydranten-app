@@ -32,6 +32,9 @@ Der Änderungssatz wurde nach dem Merge am 15.10.2026 auf [hydrantenjaeger.de](h
 *   **Deployment:** GitHub Pages wird nach einem Push auf `main` erst veröffentlicht, wenn Produktions-Build und mobile E2E-Prüfungen erfolgreich waren.
 *   **Overpass-Failover:** Ungültige Abfragen (HTTP 400) werden sofort gemeldet. Bei anderen HTTP-Fehlern sowie Netzwerk-, Server-, Timeout- und Rate-Limit-Fehlern wird die nächste Instanz versucht.
 
+### Unveröffentlicht
+*   **AED-Kartenmarker:** Zeigt das standardisierte Piktogramm ISO 7010 E010.
+
 ### v1.6.0 (28.06.2026) - Konsolidierung & automatisierte Browser-Tests
 *   **Release-Konsolidierung:** Die größeren Stabilitäts-, Datenschutz-, PWA- und Toolchain-Verbesserungen der jüngsten Wartungsrunde werden als neues Minor Release gebündelt.
 *   **CI-E2E:** Alle 14 mobilen End-to-End-Tests für Chromium und WebKit laufen nun bei jedem Push und Pull Request verpflichtend in GitHub Actions.
