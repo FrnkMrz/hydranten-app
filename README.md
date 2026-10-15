@@ -14,10 +14,17 @@ Der Änderungssatz wurde nach dem Merge am 15.10.2026 auf [hydrantenjaeger.de](h
 
 **Enthalten:**
 
-* **AEDs / Defibrillatoren:** Die Kartensuche findet OSM-Knoten mit `emergency=defibrillator`. AEDs werden in der Karte kenntlich gemacht und können im Bearbeitungsformular unter anderem mit Zugang, Innen-/Außenlage und Öffnungszeiten gepflegt werden. Taginfo-Metadaten, Foto-Beschriftungen und deutsche sowie englische Texte sind ergänzt.
+* **AEDs / Defibrillatoren:** AEDs lassen sich über den Erfassungsablauf der App neu eintragen, auf der Karte finden und bearbeiten. Die Kartensuche findet OSM-Knoten mit `emergency=defibrillator`; Marker und Typauswahl zeigen das standardisierte Piktogramm ISO 7010 E010. Zugang, Innen-/Außenlage und Öffnungszeiten können ebenfalls gepflegt werden.
 * **Wiederverwendung geladener Kartendaten:** Erfolgreich geladene Kartenausschnitte werden für drei Minuten im Arbeitsspeicher zwischengespeichert (höchstens zwölf Ausschnitte). Wenn ein späterer Kartenausschnitt vollständig darin liegt, entfällt die erneute Overpass-Anfrage.
 * **Edit-Modus:** Beim Laden gibt es Abbrechen, bei vorübergehenden Fehlern Wiederholen und bei fehlgeschlagenem Laden eine Rückkehr zur Karte. Ladeabbrüche und Zeitüberschreitungen werden behandelt; AEDs erhalten einen passenden Bearbeitungstitel.
 * **Bedienbarkeit:** Fokusdarstellung und reduzierte Animation bei entsprechender Systemeinstellung sind ergänzt.
+
+### AED mit der App erfassen
+
+1. Bei OpenStreetMap anmelden und **Starten** wählen.
+2. Ein Foto des AED aufnehmen. Auf der Bestätigungsseite **Defibrillator** auswählen.
+3. Den Standort auf der kleinen Karte prüfen oder anpassen und bekannte Angaben zu Zugang, Innen-/Außenlage, Öffnungszeiten und Referenz ergänzen.
+4. Angaben prüfen und zu OpenStreetMap hochladen. Bestehende AEDs lassen sich über ihren Kartenmarker öffnen und bearbeiten.
 
 ### In Arbeit (noch nicht ausgerollt)
 
@@ -25,12 +32,14 @@ Die regionale Datenversorgung wird in diesem Feature-Branch umgesetzt und ist no
 
 **Datenstand und Grenzen:** `generated_at` kennzeichnet den Pipeline-Build; für den Overpass-Abgleich zählt `osm_data_until`, der OSM-Datenstand der Quellextrakte. Die Abfrage `newer:` findet neue und geänderte Objekte, aber keine Löschungen oder Änderungen, durch die ein Objekt aus den abgefragten Tags herausfällt. Solche Objekte können bis zum nächsten Pipeline-Build auf der Karte bleiben. Erfolgreiche eigene Bearbeitungen werden lokal überlagert, bis derselbe Stand aus der Datenversorgung zurückkommt.
 
+**Overpass-Endpunkte:** Verwendet werden `overpass-api.de`, `lz4.overpass-api.de`, `z.overpass-api.de` und `overpass.kumi.systems`; `maps.mail.ru` wird nicht mehr genutzt. Der Live-Abgleich hat ein Client-Limit von 15 Sekunden, der vollständige Overpass-Fallback 30 Sekunden. Das serverseitige Query-Limit beträgt 25 Sekunden.
+
 **Betriebsvoraussetzung:** Der öffentliche R2-Endpunkt muss Anfragen vom App-Origin `https://hydrantenjaeger.de` per CORS erlauben. Ist der Origin noch nicht freigeschaltet, funktioniert die App weiter über Overpass; die regionale Beschleunigung greift dann erst nach der CORS-Anpassung.
 
 ## 📋 Changelog
 
 ### v1.7.0 (15.10.2026) - AEDs, Kartendaten & Bearbeitungsmodus
-*   **AEDs / Defibrillatoren:** Kartensuche und Marker für `emergency=defibrillator`; Bearbeitungsfelder für Zugang, Innen-/Außenlage und Öffnungszeiten sowie passende Taginfo-, Foto- und Übersetzungsdaten.
+*   **AEDs / Defibrillatoren:** AEDs über den Erfassungsablauf der App eintragen sowie auf der Karte finden und bearbeiten; ISO-7010-E010-Piktogramm und Felder für Zugang, Innen-/Außenlage und Öffnungszeiten.
 *   **Kartendaten:** Erfolgreich geladene Ausschnitte werden kurzzeitig im Arbeitsspeicher wiederverwendet. Nach erfolgreichen Bearbeitungen wird der Cache aktualisiert.
 *   **Edit-Modus:** Abbrechen und Wiederholen beim Laden, verständliche Fehlerbehandlung und AED-spezifischer Bearbeitungstitel.
 *   **Bedienbarkeit:** Sichtbarer Tastaturfokus und reduzierte Animation entsprechend der Systemeinstellung.

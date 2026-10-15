@@ -6,6 +6,7 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { getLastKnownPosition, updatePosition, getPosition, initCompass, startTracking, hasCompassAccess } from '../services/geo.js';
 import { createHydrantLoadStatus } from './hydrant-load-status.js';
+import { renderAedMarkerSymbol } from './aed-marker.js';
 
 import { overpass } from '../services/overpass.js';
 
@@ -821,15 +822,18 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
             }
 
             const markerLabel = isAed ? t('confirm.aed_marker_aria') : t('confirm.title_edit');
-            const markerSymbol = isAed ? '<span class="text-sm font-black leading-none">⚡</span>' : '';
-            const iconHtml = `<div aria-hidden="true" class="hydrant-marker-visual w-full h-full rounded-full border-2 border-white shadow-md transition-all cursor-pointer flex items-center justify-center text-white" style="background-color: ${fillColor}; opacity: 0.95;">${markerSymbol}</div>`;
+            const markerVisualClass = isAed
+               ? 'hydrant-marker-visual aed-marker-visual w-full h-full rounded-md border-2 border-white shadow-md transition-all cursor-pointer overflow-hidden'
+               : 'hydrant-marker-visual w-full h-full rounded-full border-2 border-white shadow-md transition-all cursor-pointer flex items-center justify-center text-white';
+            const markerSymbol = isAed ? renderAedMarkerSymbol() : '';
+            const iconHtml = `<div aria-hidden="true" class="${markerVisualClass}" style="${isAed ? '' : `background-color: ${fillColor}; `}opacity: 0.95;">${markerSymbol}</div>`;
 
             const m = L.marker([node.lat, node.lon], {
                icon: L.divIcon({
                   className: 'hydrant-custom-icon bg-transparent',
                   html: iconHtml,
-                  iconSize: isAed ? [28, 28] : [24, 24], // Minimum swipable touch area
-                  iconAnchor: isAed ? [14, 14] : [12, 12]
+                  iconSize: isAed ? [32, 32] : [24, 24], // Minimum swipable touch area
+                  iconAnchor: isAed ? [16, 16] : [12, 12]
                }),
                keyboard: true
             });
