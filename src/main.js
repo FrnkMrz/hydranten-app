@@ -5,7 +5,7 @@ import { renderSettingsView, initSettingsView } from './components/settings-view
 import { renderIntroView, initIntroView } from './components/intro-view.js';
 import { renderHistoryView, initHistoryView } from './components/history-view.js';
 import { renderRankListView, initRankListView } from './components/rank-list-view.js';
-import { getPosition, getCurrentHeading, calculateOffsetPosition, getLastKnownPosition, hasReliableGpsFix } from './services/geo.js';
+import { getPosition, getCurrentHeading, calculateOffsetPosition, getLastKnownPosition, hasReliableGpsFix, updatePosition } from './services/geo.js';
 import { auth } from './services/auth.js';
 import { createHydrant } from './services/osm.js';
 import { registerSW } from 'virtual:pwa-register';
