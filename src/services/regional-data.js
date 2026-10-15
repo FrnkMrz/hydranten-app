@@ -181,8 +181,8 @@ function latToTile(lat, z) {
     return Math.floor((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2 * 2 ** z);
 }
 
-async function getTile(source, z, x, y, signal) {
-    const key = `${metadata.generatedAt}/${z}/${x}/${y}`;
+async function getTile(source, generatedAt, z, x, y, signal) {
+    const key = `${generatedAt}/${z}/${x}/${y}`;
     if (tileCache.has(key)) return tileCache.get(key);
     if (signal?.aborted) throw abortError();
     if (!tileRequests.has(key)) {
@@ -269,7 +269,7 @@ async function fetchRegionalNodes(bounds, { signal, zoom = 14 } = {}) {
         while (next < tileCoords.length) {
             if (signal?.aborted) throw abortError();
             const { x, y } = tileCoords[next++];
-            const tile = await getTile(source, z, x, y, signal);
+            const tile = await getTile(source, meta.generatedAt, z, x, y, signal);
             if (!tile?.layers) continue;
             for (const layerName of TILE_LAYERS) {
                 const layer = tile.layers[layerName];
