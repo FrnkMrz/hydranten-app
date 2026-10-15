@@ -170,7 +170,7 @@ export const overpass = {
         const queryFor = (newerThan = null) => `
             [out:json][timeout:25];
             node["emergency"~"fire_hydrant|water_tank|suction_point|defibrillator"](${s},${w},${n},${e})${newerThan ? `(newer:"${newerThan}")` : ''}->.n;
-            .n out body;
+            .n out meta;
             way(bn.n);
             out skel;
         `;
