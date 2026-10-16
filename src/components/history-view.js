@@ -93,7 +93,7 @@ async function loadHistory(container) {
 
   } catch (err) {
     console.error("[History] Load Error:", err);
-    container.innerHTML = `<div class="text-red-400 text-center p-4">${t('history.error')}<br>${err.message}</div>`;
+    container.innerHTML = `<div class="text-red-400 text-center p-4">${t('history.error')}<br>${escapeHTML(err?.message || String(err))}</div>`;
   }
 }
 
