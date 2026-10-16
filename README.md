@@ -153,6 +153,7 @@ The app's Taginfo project file is published at [hydrantenjaeger.de/taginfo.json]
 *   **OAuth 2.0 (PKCE)**: Sicherer Login via OpenStreetMap ohne Passwort-Weitergabe.
 *   **Referrer-Schutz**: Seitenanfragen senden nur den Ursprung; OAuth-Codes und andere URL-Parameter werden nicht als Referrer offengelegt.
 *   **Content Security Policy**: Strikte Richtlinien gegen XSS-Angriffe.
+*   **Abhängigkeiten**: Dependabot prüft npm-Pakete und GitHub Actions wöchentlich; CI blockiert bekannte hohe und kritische npm-Sicherheitslücken.
 *   **Auto-Sanitization**: Alle Inputs werden vor dem Rendern bereinigt (`escapeHTML`).
 
 ### 🏆 Gamification
