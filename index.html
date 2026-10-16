@@ -17,7 +17,8 @@
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self';
-    style-src 'self' 'unsafe-inline';
+    style-src 'self';
+    style-src-attr 'unsafe-inline';
     img-src 'self' data: blob: https://*.openstreetmap.org https://openstreetmap.org https://tile.openstreetmap.org https://*.opentopomap.org https://server.arcgisonline.com https://*.gravatar.com https://gravatar.com https://www.gravatar.com https://*.amazonaws.com;
     connect-src 'self' https://overpass-api.de https://lz4.overpass-api.de https://z.overpass-api.de https://overpass.kumi.systems https://pipeline.openfiremap.org https://nominatim.openstreetmap.org https://master.apis.dev.openstreetmap.org https://api.openstreetmap.org https://www.openstreetmap.org;
     object-src 'none';

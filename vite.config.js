@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import packageJson from './package.json';
+import { createDevCspStylePlugin } from './scripts/dev-csp-style-plugin.js';
 
 /**
  * Vite Configuration with PWA Support
@@ -41,6 +42,7 @@ export default defineConfig({
                 // Increase the limit for caching (e.g., Leaflet chunks can be large)
                 maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3 MiB
             }
-        })
+        }),
+        createDevCspStylePlugin(),
     ]
 });
