@@ -6,6 +6,7 @@ vi.mock('../src/services/auth.js', () => ({
 
 import { auth } from '../src/services/auth.js';
 import { handleAuthCallback } from '../src/controllers/auth-controller.js';
+import { t } from '../src/services/i18n.js';
 
 describe('OAuth callback security', () => {
     beforeEach(() => {
@@ -23,7 +24,7 @@ describe('OAuth callback security', () => {
         });
 
         await vi.waitFor(() => {
-            expect(app.textContent).toContain('Anmeldung erfolgreich.');
+            expect(app.textContent).toContain(t('general.success'));
         });
 
         expect(app.textContent).not.toContain(authorizationCode);
