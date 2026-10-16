@@ -9,14 +9,16 @@ import { handleAuthCallback } from '../src/controllers/auth-controller.js';
 import { t } from '../src/services/i18n.js';
 
 describe('OAuth callback security', () => {
+    const accessToken = 'accessTokenSecret123';
+
     beforeEach(() => {
         vi.clearAllMocks();
-        auth.exchangeCode.mockResolvedValue('sensitive-access-token');
+        auth.exchangeCode.mockResolvedValue(accessToken);
     });
 
     it('does not display the authorization code or access token in the UI log', async () => {
         const app = document.createElement('div');
-        const authorizationCode = 'sensitive-authorization-code';
+        const authorizationCode = 'authCodeSecret123';
 
         handleAuthCallback(`?code=${authorizationCode}`, '', app, {
             showSettings: vi.fn(),
@@ -28,6 +30,8 @@ describe('OAuth callback security', () => {
         });
 
         expect(app.textContent).not.toContain(authorizationCode);
-        expect(app.textContent).not.toContain('sensitive-access-token');
+        expect(app.textContent).not.toContain(authorizationCode.substring(0, 5));
+        expect(app.textContent).not.toContain(accessToken);
+        expect(app.textContent).not.toContain(accessToken.substring(0, 10));
     });
 });
