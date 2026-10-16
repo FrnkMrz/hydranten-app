@@ -41,12 +41,12 @@ export function handleAuthCallback(locationSearch, locationHash, app, callbacks)
                 logDiv.scrollTop = logDiv.scrollHeight;
             };
 
-            log("Authorization-Code empfangen. Anmeldung wird geprüft.");
+            log(t('messages.verifying_login'));
 
             auth.exchangeCode(code)
                 .then(() => {
                     // The token is persisted by the auth service. Never put it in UI logs.
-                    log("Anmeldung erfolgreich. Weiterleitung …");
+                    log(t('general.success'));
                     setTimeout(() => {
                         window.history.replaceState({}, document.title, window.location.pathname);
                         showSettings();
