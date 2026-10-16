@@ -71,10 +71,8 @@ export const auth = {
     },
 
     // 2. Exchange Code (Call this on callback)
-    async exchangeCode(code) {
+    async exchangeCode(code, serverState) {
         // State prüfen (CSRF Schutz)
-        const params = new URLSearchParams(window.location.search);
-        const serverState = params.get('state');
         const localState = localStorage.getItem('osm_auth_state');
 
         // Fail-Closed: State MUST be present and match
