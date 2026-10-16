@@ -41,6 +41,7 @@ test.describe('Authentication Flow', () => {
         await page.addInitScript(() => {
             localStorage.setItem('osm_auth_state', 'mock_state_xyz');
             localStorage.setItem('osm_pkce_verifier', 'mock_verifier_abc');
+            localStorage.setItem('language', 'en');
         });
 
         // We navigate to the app with the 'code' query param AND the matching 'state'
@@ -51,8 +52,10 @@ test.describe('Authentication Flow', () => {
         // The app shows a loading screen with "#pkce-log" first
         const log = page.locator('#pkce-log');
         await expect(log).toBeVisible();
-        await expect(log).toContainText('Got Code');
-        await expect(log).toContainText('SUCCESS! Token');
+        await expect(log).toContainText('Verifying Login...');
+        await expect(log).toContainText('Success');
+        await expect(log).not.toContainText('valid_auth_code_from_osm');
+        await expect(log).not.toContainText('mock_access_token_123');
 
         // Then it switches to Settings View
         // We verify that the User Display in Settings shows the name
