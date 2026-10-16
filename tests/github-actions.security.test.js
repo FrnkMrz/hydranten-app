@@ -7,6 +7,13 @@ const workflowFiles = readdirSync(workflowsDirectory, { withFileTypes: true })
   .filter(entry => entry.isFile() && ['.yml', '.yaml'].includes(extname(entry.name)))
   .map(entry => join(workflowsDirectory, entry.name));
 
+function isPinnedOrLocalAction(line) {
+  const target = line.match(/^\s*(?:-\s*)?uses:\s*([^\s#]+)/)?.[1];
+  if (!target) return false;
+  if (target.startsWith('./')) return true;
+  return /^[^@]+@[0-9a-f]{40}\s+#\s+v\d+/i.test(line.trim().replace(/^(?:-\s*)?/, ''));
+}
+
 describe('GitHub Actions security', () => {
   it('pins every external action in every workflow to a full SHA and documents its release tag', () => {
     expect(workflowFiles.length).toBeGreaterThan(0);
@@ -20,8 +27,12 @@ describe('GitHub Actions security', () => {
     expect(usesLines.length).toBeGreaterThan(0);
     expect(usesLines.some(({ line }) => /^\s*-\s*uses:\s*/.test(line))).toBe(true);
     for (const { path, line } of usesLines) {
-      const reference = line.match(/^\s*(?:-\s*)?uses:\s*[^@\s]+@([0-9a-f]{40})\s+#\s+v\d+/i);
-      expect(reference, `Action in ${path} is not SHA-pinned: ${line.trim()}`).not.toBeNull();
+      expect(isPinnedOrLocalAction(line), `Action in ${path} is not SHA-pinned: ${line.trim()}`).toBe(true);
     }
+  });
+
+  it('allows repository-local actions without an external commit SHA', () => {
+    expect(isPinnedOrLocalAction('      uses: ./path/to/action')).toBe(true);
+    expect(isPinnedOrLocalAction('      uses: actions/checkout@v6')).toBe(false);
   });
 });
