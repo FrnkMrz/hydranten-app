@@ -41,16 +41,12 @@ export function handleAuthCallback(locationSearch, locationHash, app, callbacks)
                 logDiv.scrollTop = logDiv.scrollHeight;
             };
 
-            log("Got Code: " + code.substring(0, 5) + "...");
-
-            // Debug Verifier in Storage
-            const verifier = localStorage.getItem('osm_pkce_verifier');
-            log("Verifier in Storage: " + (verifier ? "YES (" + verifier.length + " chars)" : "NO (!!!)"));
+            log("Authorization-Code empfangen. Anmeldung wird geprüft.");
 
             auth.exchangeCode(code)
-                .then(accessToken => {
-                    log("SUCCESS! Token: " + accessToken.substring(0, 10) + "...");
-                    log("Redirecting...");
+                .then(() => {
+                    // The token is persisted by the auth service. Never put it in UI logs.
+                    log("Anmeldung erfolgreich. Weiterleitung …");
                     setTimeout(() => {
                         window.history.replaceState({}, document.title, window.location.pathname);
                         showSettings();
