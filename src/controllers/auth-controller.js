@@ -8,7 +8,12 @@ export function handleAuthCallback(locationSearch, locationHash, app, callbacks)
         const params = new URLSearchParams(locationSearch);
         const code = params.get('code');
         if (code) {
+            const state = params.get('state');
             console.log("PKCE Auth Callback detected!");
+
+            // Authorization codes are short-lived credentials. Remove them from
+            // the address bar before any asynchronous token exchange begins.
+            window.history.replaceState({}, document.title, window.location.pathname);
 
             // Loading
             app.innerHTML = '';
@@ -43,12 +48,11 @@ export function handleAuthCallback(locationSearch, locationHash, app, callbacks)
 
             log(t('messages.verifying_login'));
 
-            auth.exchangeCode(code)
+            auth.exchangeCode(code, state)
                 .then(() => {
                     // The token is persisted by the auth service. Never put it in UI logs.
                     log(t('general.success'));
                     setTimeout(() => {
-                        window.history.replaceState({}, document.title, window.location.pathname);
                         showSettings();
                     }, 1000);
                 })
@@ -61,7 +65,6 @@ export function handleAuthCallback(locationSearch, locationHash, app, callbacks)
                     div.innerHTML = `<button onclick="window.location.href='/'" class="w-full mt-4 py-3 bg-red-600 hover:bg-red-700 rounded-xl font-bold">${t('messages.back_to_start')}</button>`;
                     const btn = div.querySelector('button');
                     btn.onclick = () => {
-                        window.history.replaceState({}, document.title, window.location.pathname);
                         showIntro();
                     };
                     // Clear innerHTML usage above by creating element manually

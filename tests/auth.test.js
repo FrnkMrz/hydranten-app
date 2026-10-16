@@ -56,7 +56,7 @@ describe('Auth Service', () => {
 
         localStorage.setItem('osm_pkce_verifier', 'test-verifier');
 
-        const token = await auth.exchangeCode('test-code');
+        const token = await auth.exchangeCode('test-code', STATE);
         expect(token).toBe('test-token');
         expect(localStorage.setItem).toHaveBeenCalledWith('osm-auth', expect.stringContaining('test-token'));
     });
@@ -74,21 +74,19 @@ describe('Auth Service', () => {
         });
         localStorage.setItem('osm_pkce_verifier', 'test-verifier');
 
-        await expect(auth.exchangeCode('bad-code')).rejects.toThrow('Token Exchange Failed (400)');
+        await expect(auth.exchangeCode('bad-code', STATE)).rejects.toThrow('Token Exchange Failed (400)');
     });
 
     it('handles state mismatch', async () => {
         localStorage.setItem('osm_auth_state', 'state-A');
-        window.location.search = `?code=code&state=state-B`; // Mismatch
 
-        await expect(auth.exchangeCode('code')).rejects.toThrow('Security Alert');
+        await expect(auth.exchangeCode('code', 'state-B')).rejects.toThrow('Security Alert');
     });
 
     it('rejects missing oauth state (fail-closed)', async () => {
         localStorage.setItem('osm_auth_state', 'state-A');
-        window.location.search = `?code=code`; // Missing state param
 
-        await expect(auth.exchangeCode('code')).rejects.toThrow('Security Alert');
+        await expect(auth.exchangeCode('code', null)).rejects.toThrow('Security Alert');
     });
 
     it('checkLogin returns null on error', async () => {
