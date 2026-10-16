@@ -151,6 +151,7 @@ The app's Taginfo project file is published at [hydrantenjaeger.de/taginfo.json]
 ### 🛡️ Sicherheit
 *   **Client-Side Only**: Die App besitzt kein eigenes Backend. Fotos werden lokal verarbeitet; nur ausdrücklich ausgelöste OSM-Bearbeitungen und technisch notwendige Anfragen gehen an externe Dienste.
 *   **OAuth 2.0 (PKCE)**: Sicherer Login via OpenStreetMap ohne Passwort-Weitergabe.
+*   **Referrer-Schutz**: Seitenanfragen senden nur den Ursprung; OAuth-Codes und andere URL-Parameter werden nicht als Referrer offengelegt.
 *   **Content Security Policy**: Strikte Richtlinien gegen XSS-Angriffe.
 *   **Auto-Sanitization**: Alle Inputs werden vor dem Rendern bereinigt (`escapeHTML`).
 
