@@ -14,4 +14,10 @@ describe('Content Security Policy', () => {
   it('restricts base elements to the app origin', () => {
     expect(csp).toMatch(/base-uri\s+'self';/);
   });
+
+  it('allows app stylesheets and needed style attributes without allowing inline style blocks', () => {
+    expect(csp).toMatch(/style-src\s+'self';/);
+    expect(csp).toMatch(/style-src-attr\s+'unsafe-inline';/);
+    expect(csp).not.toMatch(/style-src\s+[^;]*'unsafe-inline'/);
+  });
 });

@@ -152,7 +152,7 @@ The app's Taginfo project file is published at [hydrantenjaeger.de/taginfo.json]
 *   **Client-Side Only**: Die App besitzt kein eigenes Backend. Fotos werden lokal verarbeitet; nur ausdrücklich ausgelöste OSM-Bearbeitungen und technisch notwendige Anfragen gehen an externe Dienste.
 *   **OAuth 2.0 (PKCE)**: Sicherer Login via OpenStreetMap ohne Passwort-Weitergabe.
 *   **Referrer-Schutz**: Seitenanfragen senden nur den Ursprung; OAuth-Codes und andere URL-Parameter werden nicht als Referrer offengelegt.
-*   **Content Security Policy**: Strikte Richtlinien gegen XSS-Angriffe.
+*   **Content Security Policy**: Strikte Richtlinien gegen XSS-Angriffe; Stylesheets sind auf die App beschränkt, Inline-Styles sind nur für benötigte Style-Attribute erlaubt.
 *   **Abhängigkeiten**: Dependabot erstellt wöchentliche Updates für npm und GitHub Actions; Actions sind auf unveränderliche Commit-SHAs gepinnt, CI blockiert bekannte hohe und kritische npm-Sicherheitslücken.
 *   **Auto-Sanitization**: Alle Inputs werden vor dem Rendern bereinigt (`escapeHTML`).
 
