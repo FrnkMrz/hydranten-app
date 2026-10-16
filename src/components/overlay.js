@@ -61,11 +61,11 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
                    <div class="w-full bg-gray-800 rounded-lg p-3 mb-4 text-left space-y-2 border border-green-500/30">
                       <div class="flex justify-between text-xs">
                            <span class="text-gray-400">${t('messages.node_id') || 'Node ID'}</span>
-                           <span class="text-white font-mono font-bold select-all">#${result.id}</span>
+                           <span class="text-white font-mono font-bold select-all">#${escapeHtml(result.id)}</span>
                       </div>
                        <div class="flex justify-between text-xs">
                            <span class="text-gray-400">${t('messages.changeset') || 'Changeset'}</span>
-                           <span class="text-white font-mono select-all">#${result.changeset || '?'}</span>
+                           <span class="text-white font-mono select-all">#${escapeHtml(result.changeset || '?')}</span>
                       </div>
                    </div>
                  `;
