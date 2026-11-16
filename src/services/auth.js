@@ -3,13 +3,42 @@ import { USER_AGENT } from '../version.js';
 // PKCE Helpers
 function generateRandomString(length) {
     const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+    // Rejection sampling keeps every character equally likely (no modulo bias).
+    const limit = 256 - (256 % charset.length);
     let result = '';
-    const values = new Uint32Array(length);
-    crypto.getRandomValues(values);
-    for (let i = 0; i < length; i++) {
-        result += charset[values[i] % charset.length];
+    while (result.length < length) {
+        const values = new Uint8Array(length);
+        crypto.getRandomValues(values);
+        for (let i = 0; i < values.length && result.length < length; i++) {
+            if (values[i] < limit) result += charset[values[i] % charset.length];
+        }
     }
     return result;
+}
+
+function clearPendingLogin() {
+    localStorage.removeItem('osm_pkce_verifier');
+    localStorage.removeItem('osm_auth_state');
+}
+
+/** Rejects token responses that do not contain a usable bearer token. */
+function assertTokenResponse(data) {
+    if (!data || typeof data.access_token !== 'string' || data.access_token.trim() === '') {
+        throw new Error('Token response did not contain an access token');
+    }
+    const expiresIn = Number(data.expires_in);
+    return Number.isFinite(expiresIn) && expiresIn > 0 ? expiresIn : null;
+}
+
+/** Only https avatar URLs are stored; anything else is dropped. */
+function normalizeAvatarUrl(href) {
+    try {
+        const url = new URL(String(href).trim(), 'https://www.openstreetmap.org');
+        if (url.protocol === 'http:') url.protocol = 'https:';
+        return url.protocol === 'https:' ? url.href : null;
+    } catch (_e) {
+        return null;
+    }
 }
 
 async function sha256(plain) {
@@ -52,7 +81,7 @@ export const auth = {
 
         // SECURITY: Verifier lokal speichern, NICHT in den State packen!
         // State nur noch für CSRF nutzen
-        const state = generateRandomString(16);
+        const state = generateRandomString(32);
         try {
             localStorage.setItem('osm_pkce_verifier', verifier);
             localStorage.setItem('osm_auth_state', state);
@@ -66,7 +95,6 @@ export const auth = {
         const scope = 'read_prefs write_api';
         const url = `https://www.openstreetmap.org/oauth2/authorize?response_type=code&client_id=${this.options.client_id}&redirect_uri=${encodeURIComponent(this.options.redirect_uri)}&scope=${encodeURIComponent(scope)}&code_challenge=${challenge}&code_challenge_method=S256&state=${state}`;
 
-        console.log("[Auth] Redirecting to:", url);
         window.location.href = url;
     },
 
@@ -77,12 +105,17 @@ export const auth = {
 
         // Fail-Closed: State MUST be present and match
         if (!serverState || !localState || serverState !== localState) {
-            console.error("State Validation Failed!", { server: serverState, local: localState });
+            // Never log the state values themselves.
+            console.error("OAuth state validation failed");
             throw new Error("Security Alert: OAuth State mismatch or missing! Possible CSRF Attack.");
         }
 
         // Verifier aus Storage holen
         const verifier = localStorage.getItem('osm_pkce_verifier');
+
+        // State and verifier are single-use: drop them before the exchange so a
+        // replayed callback can never be validated against them again.
+        clearPendingLogin();
 
         if (!verifier) throw new Error("PKCE Verifier missing (Login Session expired?). Please retry login.");
 
@@ -112,8 +145,9 @@ export const auth = {
 
         // Calculate Expiration
         // OSM returns expires_in (seconds)
-        if (data.expires_in) {
-            data.expires_at = Date.now() + (data.expires_in * 1000);
+        const expiresIn = assertTokenResponse(data);
+        if (expiresIn) {
+            data.expires_at = Date.now() + (expiresIn * 1000);
         }
 
         // Save Token Data
@@ -122,10 +156,6 @@ export const auth = {
         } catch (_e) {
             console.error("Failed to save token:", _e);
         }
-
-        // Cleanup Security Items
-        localStorage.removeItem('osm_pkce_verifier');
-        localStorage.removeItem('osm_auth_state');
 
         return data.access_token;
     },
@@ -171,10 +201,13 @@ export const auth = {
             // "If the authorization server issues a new refresh token, the client must discard the old one."
             // If not provided, we assume old one is valid (though RFC says it usually is provided).
 
+            const expiresIn = assertTokenResponse(newData);
             const updatedData = { ...data, ...newData };
 
-            if (newData.expires_in) {
-                updatedData.expires_at = Date.now() + (newData.expires_in * 1000);
+            if (expiresIn) {
+                updatedData.expires_at = Date.now() + (expiresIn * 1000);
+            } else {
+                delete updatedData.expires_at;
             }
 
             try {
@@ -233,6 +266,7 @@ export const auth = {
         localStorage.removeItem('osm-auth');
         localStorage.removeItem('osm_user_name');
         localStorage.removeItem('osm_user_img');
+        clearPendingLogin();
     }
 };
 
@@ -294,21 +328,14 @@ export async function checkLogin() {
             // Try to find image
             const img = user.querySelector('img');
             if (img && img.getAttribute('href')) {
-                let imgUrl = img.getAttribute('href');
-
-                // Fix: Ensure Absolute URL and trim
+                // Resolve relative URLs against OSM and only keep https URLs.
+                const imgUrl = normalizeAvatarUrl(img.getAttribute('href'));
                 if (imgUrl) {
-                    imgUrl = imgUrl.trim();
-                    if (imgUrl.startsWith('/')) {
-                        imgUrl = 'https://www.openstreetmap.org' + imgUrl;
-                    }
-                    // Fix: Enforce HTTPS
-                    if (imgUrl.startsWith('http://')) {
-                        imgUrl = imgUrl.replace('http://', 'https://');
-                    }
                     try {
                         localStorage.setItem('osm_user_img', imgUrl);
                     } catch (_e) { console.warn("Storage Full", _e); }
+                } else {
+                    localStorage.removeItem('osm_user_img');
                 }
             } else {
                 localStorage.removeItem('osm_user_img');
