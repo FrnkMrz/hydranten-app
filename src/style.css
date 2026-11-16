@@ -165,6 +165,12 @@ textarea {
     stroke: var(--color-ember-400);
   }
 
+  /* Flag emoji: force the emoji font so flags render on every device. */
+  .hj-flag {
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", system-ui;
+    line-height: 1;
+  }
+
   /* Full-screen page background. */
   .hj-screen {
     color: var(--hj-ivory);

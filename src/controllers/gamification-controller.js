@@ -30,6 +30,8 @@ export function initGamificationWidget(element, username, onShowRankList) {
 
         fetchUserHydrantCount(username).then(count => {
             if (gameContainer.dataset.rankRequest !== requestId) return;
+            // Unknown count (Overpass unreachable): show no rank rather than a wrong one.
+            if (count === null || count === undefined) return;
             const rank = getRank(count);
             rankName.innerText = rank.current.name;
             rankCurrent.innerText = count;

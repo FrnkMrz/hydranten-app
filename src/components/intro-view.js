@@ -131,7 +131,7 @@ export function renderIntroView() {
          <!-- Footer Actions -->
          <div class="flex items-center gap-2 w-full max-w-md">
               <button id="lang-btn" class="hj-btn hj-btn-ghost shrink-0 px-4 min-h-[3rem]" aria-label="${t('intro.lang_btn_aria') || 'Language / Sprache'}">
-                ${icon('globe', 'w-[1.125rem] h-[1.125rem]')}
+                <span class="hj-flag text-xl" aria-hidden="true">🌐</span>
               </button>
 
               <button id="intro-settings-btn" class="hj-btn hj-btn-ghost flex-grow min-w-0 min-h-[3rem] text-sm font-medium">
@@ -345,40 +345,44 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    // Language Switcher Logic
    const langBtn = element.querySelector('#lang-btn');
    if (langBtn) {
-      // Globe plus the active language code instead of a flag.
-      langBtn.innerHTML = `${icon('globe', 'w-[1.125rem] h-[1.125rem]')}<span class="text-xs font-semibold uppercase tracking-[0.16em]">${escapeHTML(lang)}</span>`;
+      const langs = [
+         { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+         { code: 'en', label: 'English', flag: '🇬🇧' },
+         { code: 'pl', label: 'Polski', flag: '🇵🇱' },
+         { code: 'cs', label: 'Čeština', flag: '🇨🇿' },
+         { code: 'fr', label: 'Français', flag: '🇫🇷' },
+         { code: 'nl', label: 'Nederlands', flag: '🇳🇱' },
+         { code: 'es', label: 'Español', flag: '🇪🇸' },
+         { code: 'pt', label: 'Português', flag: '🇵🇹' },
+         { code: 'hr', label: 'Hrvatski', flag: '🇭🇷' },
+         { code: 'it', label: 'Italiano', flag: '🇮🇹' },
+         { code: 'ja', label: '日本語', flag: '🇯🇵' },
+         { code: 'ko', label: '한국어', flag: '🇰🇷' },
+         { code: 'zh', label: '中文', flag: '🇨🇳' },
+         { code: 'tr', label: 'Türkçe', flag: '🇹🇷' },
+         { code: 'ar', label: 'العربية', flag: '🇸🇦' }
+      ];
+      // Flag of the active language plus its code.
+      const activeFlag = langs.find(l => l.code === lang)?.flag || '🌐';
+      langBtn.innerHTML = `<span class="hj-flag text-xl" aria-hidden="true">${activeFlag}</span><span class="text-xs font-semibold uppercase tracking-[0.16em]">${escapeHTML(lang)}</span>`;
 
       langBtn.onclick = () => {
          const modal = document.createElement('dialog');
          modal.className = "hj-backdrop m-0 absolute inset-0 z-[100] flex items-center justify-center p-5 w-full h-full max-w-full max-h-full";
          modal.setAttribute('aria-modal', 'true');
 
-         const langs = [
-            { code: 'de', label: 'Deutsch' },
-            { code: 'en', label: 'English' },
-            { code: 'pl', label: 'Polski' },
-            { code: 'cs', label: 'Čeština' },
-            { code: 'fr', label: 'Français' },
-            { code: 'nl', label: 'Nederlands' },
-            { code: 'es', label: 'Español' },
-            { code: 'pt', label: 'Português' },
-            { code: 'hr', label: 'Hrvatski' },
-            { code: 'it', label: 'Italiano' },
-            { code: 'ja', label: '日本語' },
-            { code: 'ko', label: '한국어' },
-            { code: 'zh', label: '中文' },
-            { code: 'tr', label: 'Türkçe' },
-            { code: 'ar', label: 'العربية' }
-         ];
 
          modal.innerHTML = `
                <div class="hj-dialog custom-scrollbar p-6 max-w-sm w-full max-h-[86vh] overflow-y-auto">
                    <h3 class="hj-wordmark text-[1.9rem] mb-5 text-center">Language</h3>
                    <div class="grid grid-cols-2 gap-2">
                        ${langs.map(l => `
-                           <button class="lang-option hj-option px-4 py-3 min-h-[3.25rem] flex flex-col items-start justify-center text-start ${lang === l.code ? 'is-selected' : ''}" data-code="${l.code}" lang="${l.code}">
-                               <span class="text-sm font-medium text-ivory">${l.label}</span>
-                               <span class="hj-eyebrow mt-0.5 text-[9px]" aria-hidden="true">${l.code}</span>
+                           <button class="lang-option hj-option px-3 py-3 min-h-[3.5rem] flex items-center gap-3 text-start ${lang === l.code ? 'is-selected' : ''}" data-code="${l.code}" lang="${l.code}">
+                               <span class="hj-flag text-2xl" aria-hidden="true">${l.flag}</span>
+                               <span class="min-w-0 flex flex-col">
+                                  <span class="text-sm font-medium text-ivory truncate">${l.label}</span>
+                                  <span class="hj-eyebrow mt-0.5 text-[9px]" aria-hidden="true">${l.code}</span>
+                               </span>
                            </button>
                        `).join('')}
                    </div>
