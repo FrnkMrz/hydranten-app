@@ -8,12 +8,12 @@ export function renderCameraView() {
       
       <!-- Top Bar: Back & GPS Status -->
       <div class="absolute w-full px-4 z-50 flex justify-between items-start pointer-events-none" style="top: calc(0.75rem + env(safe-area-inset-top, 20px));">
-         <button id="back-to-intro-btn" class="pointer-events-auto bg-black/40 backdrop-blur-md p-4 rounded-full text-white border border-white/10 active:scale-95 transition-transform" aria-label="${t('camera.back_btn_aria')}">
+         <button id="back-to-intro-btn" class="hj-fab pointer-events-auto" aria-label="${t('camera.back_btn_aria')}">
              <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
          </button>
-         <div class="bg-black/40 backdrop-blur text-xs px-3 py-1 rounded-full text-white border border-white/10 flex flex-col items-end mt-1">
+         <div class="hj-pill rounded-2xl text-[11px] leading-relaxed px-3.5 py-2 text-white flex flex-col items-end tabular-nums">
             <span id="gps-status" class="font-mono text-green-400" aria-live="polite" aria-atomic="true">GPS: --</span>
-            <span id="compass-status" class="font-mono text-yellow-400" aria-live="polite" aria-atomic="true">${t('camera.compass_label')}: --</span>
+            <span id="compass-status" class="font-mono text-amber-300" aria-live="polite" aria-atomic="true">${t('camera.compass_label')}: --</span>
          </div>
       </div>
 
@@ -23,20 +23,21 @@ export function renderCameraView() {
       <!-- Controls (Padded for Safari Bottom Bar) -->
       <div class="absolute bottom-0 left-0 right-0 p-8 flex flex-col justify-center items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" style="padding-bottom: calc(8rem + env(safe-area-inset-bottom, 20px));">
         <!-- Compass Heading Display -->
-        <div class="mb-6 px-4 py-2 bg-black/40 backdrop-blur rounded-full text-white text-sm font-mono border border-white/20">
-           🧭 <span id="compass-heading">0</span>°
+        <div class="hj-pill mb-6 px-4 py-2 text-white text-sm font-mono tabular-nums flex items-center gap-2">
+           <svg aria-hidden="true" class="w-4 h-4 text-ember-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg>
+           <span><span id="compass-heading">0</span>°</span>
         </div>
 
       <!-- Error Overlay (Hidden by default) -->
-      <div id="camera-error" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-gray-900/95 text-white p-6 text-center z-40">
+      <div id="camera-error" class="hj-screen hidden absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-40">
          <p class="text-4xl mb-4">📷🚫</p>
-         <p class="text-xl font-bold mb-2">${t('camera.error_title')}</p>
+         <p class="text-xl font-extrabold tracking-tight mb-2">${t('camera.error_title')}</p>
          <p id="camera-error-msg" class="text-sm opacity-70 mb-6">${t('camera.error_access')}</p>
-         <button id="error-back-btn" class="px-6 py-3 bg-red-600 rounded-xl font-bold">${t('camera.back_btn_label')}</button>
+         <button id="error-back-btn" class="hj-btn hj-btn-primary px-8">${t('camera.back_btn_label')}</button>
       </div>
 
-      <button id="capture-btn" class="w-20 h-20 rounded-full border-4 border-white shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center active:scale-90 transition-transform duration-100 group z-[100] relative bg-black/20 backdrop-blur-sm" aria-label="${t('camera.capture_btn_aria')}">
-           <div class="w-16 h-16 bg-red-600 rounded-full group-active:bg-red-700 transition-colors border-2 border-white/20"></div>
+      <button id="capture-btn" class="w-[5.25rem] h-[5.25rem] rounded-full border-[3px] border-white/90 shadow-[0_0_0_6px_rgba(255,255,255,0.12),0_18px_40px_rgba(0,0,0,0.6)] flex items-center justify-center active:scale-90 transition-transform duration-100 group z-[100] relative bg-black/20 backdrop-blur-sm" aria-label="${t('camera.capture_btn_aria')}">
+           <div class="w-[4.1rem] h-[4.1rem] rounded-full bg-gradient-to-br from-ember-600 via-ember-500 to-ember-400 group-active:brightness-90 transition shadow-[inset_0_2px_0_rgba(255,255,255,0.4)]"></div>
       </button>
       </div>
       

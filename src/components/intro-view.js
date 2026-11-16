@@ -29,7 +29,7 @@ import { APP_VERSION } from '../version.js';
 export function renderIntroView() {
    // Check Login Status
    let loginText = t('intro.login_osm');
-   let loginClass = "text-gray-400 hover:text-white";
+   let loginClass = "";
 
    try {
       const token = JSON.parse(localStorage.getItem('osm-auth') || '{}');
@@ -46,95 +46,108 @@ export function renderIntroView() {
 
          if (img) {
             // Show Avatar
-            loginText = `<img src="${escapeHTML(img)}" class="w-6 h-6 rounded-full border border-green-400" alt="${name}"> <span class="truncate max-w-[100px]">${name}</span>`;
+            loginText = `<img src="${escapeHTML(img)}" class="w-7 h-7 shrink-0 rounded-full ring-2 ring-emerald-400/70 object-cover" alt=""> <span class="truncate">${name}</span>`;
          } else {
-            loginText = `✅ ${name}`;
+            loginText = `<span class="truncate">${name}</span>`;
          }
 
-         loginClass = "text-green-400 hover:text-green-300 font-bold";
+         loginClass = "text-emerald-300";
       }
    } catch (_e) { /* ignore */ }
 
+   // Line icons for the four steps (stroke uses the tile's ember colour).
+   const stepIcon = path => `<span class="hj-step-icon" aria-hidden="true"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">${path}</svg></span>`;
+   const steps = [
+      { key: 'step1', icon: '<path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/>' },
+      { key: 'step2', icon: '<path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>' },
+      { key: 'step3', icon: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>' },
+      { key: 'step4', icon: '<path d="M7 18a4 4 0 0 1-.6-7.95A5.5 5.5 0 0 1 17.2 9.1 4.5 4.5 0 0 1 17 18"/><path d="M12 19v-7m0 0-3 3m3-3 3 3"/>' }
+   ];
+   const stepsHtml = steps.map(({ key, icon }, index) => {
+      const bold = t(`intro.${key}_bold`);
+      const rest = t(`intro.${key}`).replace(bold, '').trim();
+      return `
+             <li class="relative flex min-w-0 flex-col items-center gap-2 text-center">
+                ${index > 0 ? '<span class="absolute top-[1.35rem] right-[calc(50%+1.6rem)] h-px w-[calc(100%-3.2rem)] bg-gradient-to-r from-white/5 to-white/20" aria-hidden="true"></span>' : ''}
+                ${stepIcon(icon)}
+                <p class="min-w-0 max-w-full leading-tight">
+                   <span class="block text-[13px] font-bold text-white break-words">${bold}</span>
+                   <span class="block text-[11px] text-white/50 break-words">${rest}</span>
+                </p>
+             </li>`;
+   }).join('');
+
    return `
-    <div class="h-full w-full bg-black text-white flex flex-col relative overflow-hidden">
+    <div class="h-full w-full bg-ink-900 text-white flex flex-col relative overflow-hidden">
       
       <!-- Map - Fills remaining space (flex-1) -->
-      <div class="w-full flex-1 min-h-[30%] relative z-0">
+      <div class="w-full flex-1 min-h-[34%] relative z-0">
           <div id="intro-map" class="absolute inset-0 z-0"></div>
           <div id="hydrant-data-status" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
-          <div id="map-data-source" class="hidden pointer-events-none absolute top-safe-14 left-1/2 z-[401] -translate-x-1/2 rounded-full border border-white/10 bg-gray-950/80 px-3 py-1.5 text-[10px] font-medium text-gray-200 shadow backdrop-blur-md" role="status" aria-live="polite"></div>
+          <div id="map-data-source" class="hj-pill hidden pointer-events-none absolute top-safe-14 left-1/2 z-[401] -translate-x-1/2 px-3 py-1.5 text-[10px] font-semibold tracking-wide text-white/80" role="status" aria-live="polite"></div>
           
           <!-- LOCATE ME BUTTON -->
-          <button id="locate-me-btn" class="absolute bottom-6 right-4 z-[401] bg-blue-600/90 text-white p-3 rounded-full shadow-lg shadow-blue-900/40 border border-white/20 active:scale-95 hover:bg-blue-500 transition" aria-label="Locate Me">
-            <svg class="w-6 h-6 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          <button id="locate-me-btn" class="hj-fab hj-fab-aqua absolute bottom-10 right-4 z-[401]" aria-label="Locate Me">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           </button>
 
           <!-- EDIT BUTTON (Initial Hidden) -->
-          <button id="edit-mode-btn" class="hidden absolute bottom-6 left-4 z-[401] bg-white/90 text-gray-800 p-3 rounded-full shadow-lg border border-gray-200 active:scale-95 hover:bg-white transition" aria-label="Edit Mode">
-            <svg class="w-6 h-6 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+          <button id="edit-mode-btn" class="hj-fab hidden absolute bottom-10 left-4 z-[401]" aria-label="Edit Mode">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
           </button>
 
           <!-- CLOSE FULLSCREEN BUTTON (Hidden) -->
-          <button id="close-fullscreen-btn" class="hidden absolute top-safe-4 left-4 z-[402] bg-black/50 text-white p-3 rounded-full shadow-lg backdrop-blur-md border border-white/20 active:scale-95 hover:bg-black/70 transition" aria-label="Close Map">
-            <svg class="w-6 h-6 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          <button id="close-fullscreen-btn" class="hj-fab hidden absolute top-safe-4 left-4 z-[402]" aria-label="Close Map">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
 
-          <!-- Gradient Overlay -->
-          <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-[400]"></div>
+          <!-- Vignettes: soften the map into the status bar and the sheet -->
+          <div class="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-ink-950/55 to-transparent pointer-events-none z-[400]"></div>
+          <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink-950/70 to-transparent pointer-events-none z-[400]"></div>
       </div>
 
       <!-- Bottom Sheet Content - Auto Height, Stacked -->
-      <div class="w-full shrink-0 z-10 bg-black flex flex-col items-center px-6 pb-8 pt-2 rounded-t-3xl -mt-6 relative shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
+      <div class="hj-sheet w-full shrink-0 z-10 flex flex-col items-center px-5 pb-safe pt-3 -mt-7 relative">
          
          <!-- Drag Handle / Visual Indicator -->
-         <div class="w-12 h-1.5 bg-gray-800 rounded-full mb-6"></div>
+         <div class="hj-grabber mb-5"></div>
 
          <!-- Hero Title -->
-         <div class="text-center mb-6 w-full">
-             <h1 class="text-4xl font-extrabold text-white mb-2 tracking-tight drop-shadow-xl">
-                Hydranten <span class="text-red-500">Jäger</span>
+         <div class="text-center mb-5 w-full">
+             <h1 class="hj-wordmark text-[2.5rem] text-white">
+                Hydranten <span class="hj-ember-text">Jäger</span>
              </h1>
-             ${lang !== 'de' ? `<p class="text-sm text-gray-400 font-medium tracking-wide uppercase opacity-80 mt-1">${t('intro.title_pre')} ${t('intro.title_post')}</p>` : ''}
+             ${lang !== 'de' ? `<p class="hj-eyebrow mt-2">${t('intro.title_pre')} ${t('intro.title_post')}</p>` : ''}
          </div>
 
-         <!-- Instructions Card -->
-         <div class="w-full max-w-md bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 space-y-4 text-base text-gray-300 shadow-xl mb-6">
-             <div class="flex items-center gap-4">
-                <span class="text-2xl bg-white/10 p-2 rounded-lg">📏</span> <p class="leading-snug"><span class="text-white font-bold text-lg">${t('intro.step1_bold')}</span><br>${t('intro.step1').replace(t('intro.step1_bold'), '')}</p>
-             </div>
-             <div class="flex items-center gap-4">
-                <span class="text-2xl bg-white/10 p-2 rounded-lg">📸</span> <p class="leading-snug"><span class="text-white font-bold text-lg">${t('intro.step2_bold')}</span><br>${t('intro.step2').replace(t('intro.step2_bold'), '')}</p>
-             </div>
-             <div class="flex items-center gap-4">
-                <span class="text-2xl bg-white/10 p-2 rounded-lg">✏️</span> <p class="leading-snug"><span class="text-white font-bold text-lg">${t('intro.step3_bold')}</span><br>${t('intro.step3').replace(t('intro.step3_bold'), '')}</p>
-             </div>
-             <div class="flex items-center gap-4">
-                <span class="text-2xl bg-white/10 p-2 rounded-lg">☁️</span> <p class="leading-snug"><span class="text-white font-bold text-lg">${t('intro.step4_bold')}</span><br>${t('intro.step4').replace(t('intro.step4_bold'), '')}</p>
-             </div>
-         </div>
+         <!-- Steps -->
+         <ol class="hj-card w-full max-w-md grid grid-cols-4 gap-1 px-2 py-4 mb-5 list-none">
+             ${stepsHtml}
+         </ol>
 
          <!-- Start Button -->
-         <button id="start-btn" class="w-full max-w-md py-5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-2xl font-bold text-xl shadow-xl shadow-red-900/30 active:scale-95 transition-all flex items-center justify-center gap-2 mb-6">
-             ${t('intro.start_btn')}
+         <button id="start-btn" class="hj-btn hj-btn-primary w-full max-w-md min-h-[4rem] text-lg tracking-[0.12em] mb-4">
+             <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>
+             <span>${t('intro.start_btn')}</span>
          </button>
           
          <!-- Footer Actions -->
-         <div class="flex items-center gap-3 w-full max-w-md">
-              <button id="lang-btn" class="w-14 h-12 shrink-0 rounded-xl bg-white/5 text-3xl hover:bg-white/10 transition flex items-center justify-center border border-white/10" aria-label="${t('intro.lang_btn_aria') || 'Language / Sprache'}">
+         <div class="flex items-center gap-2 w-full max-w-md">
+              <button id="lang-btn" class="hj-btn hj-btn-ghost w-14 shrink-0 px-0 min-h-[3rem]" aria-label="${t('intro.lang_btn_aria') || 'Language / Sprache'}">
                 🇩🇪
               </button>
 
-              <button id="intro-settings-btn" class="flex-grow h-12 flex items-center justify-center gap-2 ${loginClass} transition-colors text-base font-medium hover:bg-white/5 rounded-xl border border-transparent hover:border-white/10">
-                 ${!loginText.includes('<img') ? `<svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>` : ''}
+              <button id="intro-settings-btn" class="hj-btn hj-btn-ghost flex-grow min-w-0 min-h-[3rem] text-sm ${loginClass}">
+                 ${!loginText.includes('<img') ? `<svg aria-hidden="true" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>` : ''}
                  ${loginText}
               </button>
-              <button id="intro-info-btn" class="w-12 h-12 shrink-0 rounded-xl bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition flex items-center justify-center border border-white/10" aria-label="Information & Legal">
-                <span class="font-serif italic font-bold text-xl" aria-hidden="true">i</span>
+              <button id="intro-info-btn" class="hj-btn hj-btn-ghost w-14 shrink-0 px-0 min-h-[3rem]" aria-label="Information & Legal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.01"/></svg>
               </button>
          </div>
           
-         <div class="mt-4 text-center">
-             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-[10px] text-gray-600 hover:text-gray-400 transition no-underline block">
+         <div class="mt-3 mb-2 text-center">
+             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-[10px] text-white/30 hover:text-white/60 transition no-underline block">
                 © OpenStreetMap contributors
              </a>
          </div>
@@ -219,11 +232,11 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 
          // Adjust Buttons for Safe Area (Fullscreen only)
          if (locateBtn) {
-            locateBtn.classList.remove('bottom-6');
+            locateBtn.classList.remove('bottom-10');
             locateBtn.classList.add('bottom-safe-6');
          }
          // editBtn is hidden, so no need to adjust its bottom, but good practice if resurrected
-         editBtn.classList.remove('bottom-6');
+         editBtn.classList.remove('bottom-10');
          editBtn.classList.add('bottom-safe-6');
 
          // Force Map Resize
@@ -248,10 +261,10 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 
          // Restore Button Positions
          if (locateBtn) {
-            locateBtn.classList.add('bottom-6');
+            locateBtn.classList.add('bottom-10');
             locateBtn.classList.remove('bottom-safe-6');
          }
-         editBtn.classList.add('bottom-6');
+         editBtn.classList.add('bottom-10');
          editBtn.classList.remove('bottom-safe-6');
 
          setTimeout(() => {
@@ -266,22 +279,22 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       // ... existing info modal logic ...
       infoBtn.onclick = () => {
          const modal = document.createElement('dialog');
-         modal.className = "m-0 p-0 absolute inset-0 z-[100] flex items-center justify-center bg-black/90 p-6 backdrop-blur-md w-full h-full max-w-full max-h-full bg-transparent";
+         modal.className = "hj-backdrop m-0 absolute inset-0 z-[100] flex items-center justify-center p-5 w-full h-full max-w-full max-h-full";
          modal.setAttribute('aria-modal', 'true');
          modal.innerHTML = `
-             <div class="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl overflow-y-auto max-h-[80vh]">
-                 <h3 class="text-xl font-bold text-white mb-4">${t('intro.info_legal')}</h3>
+             <div class="hj-dialog custom-scrollbar p-6 max-w-sm w-full overflow-y-auto max-h-[80vh]">
+                 <h3 class="text-xl font-extrabold tracking-tight text-white mb-4">${t('intro.info_legal')}</h3>
                  
                  <div class="space-y-4 text-sm text-gray-300">
                      <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v${APP_VERSION})</p>
                      
                      <!-- Disclaimer Moved Here -->
-                     <div class="bg-red-900/20 border border-red-500/30 p-3 rounded-xl text-red-200 text-xs mb-4">
+                     <div class="rounded-2xl border border-ember-500/30 bg-ember-500/10 p-3 text-xs text-ember-300 mb-4">
                          <strong>${t('legal.important_header')}</strong><br>
                          ${t('intro.disclaimer_text')}
                      </div>
                     
-                    <div class="border-l-2 border-gray-600 pl-3 py-1">
+                    <div class="border-l-2 border-white/15 pl-3 py-1">
                         <h4 class="font-bold text-white mb-1">${t('intro.info_impressum')}</h4>
                         <p class="text-xs text-gray-400 mb-1">${t('legal.tmg_header')}</p>
                         <p>Frank März</p>
@@ -317,7 +330,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                      </div>
                  </div>
 
-                 <button id="close-intro-info-btn" class="w-full mt-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition">
+                 <button id="close-intro-info-btn" class="hj-btn hj-btn-primary w-full mt-6">
                      OK
                  </button>
              </div>
@@ -348,7 +361,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
 
       langBtn.onclick = () => {
          const modal = document.createElement('dialog');
-         modal.className = "m-0 p-0 absolute inset-0 z-[100] flex items-center justify-center bg-black/90 p-6 backdrop-blur-md w-full h-full max-w-full max-h-full bg-transparent";
+         modal.className = "hj-backdrop m-0 absolute inset-0 z-[100] flex items-center justify-center p-5 w-full h-full max-w-full max-h-full";
          modal.setAttribute('aria-modal', 'true');
 
          const langs = [
@@ -370,17 +383,17 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          ];
 
          modal.innerHTML = `
-               <div class="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl">
-                   <h3 class="text-xl font-bold text-white mb-4 text-center">Language / Sprache</h3>
+               <div class="hj-dialog custom-scrollbar p-6 max-w-sm w-full max-h-[86vh] overflow-y-auto">
+                   <h3 class="text-xl font-extrabold tracking-tight text-white mb-4 text-center">Language / Sprache</h3>
                    <div class="grid grid-cols-2 gap-3">
                        ${langs.map(l => `
-                           <button class="lang-option p-3 min-h-[44px] rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/10 flex items-center gap-3 ${lang === l.code ? 'border-green-500 bg-green-900/20' : ''}" data-code="${l.code}">
+                           <button class="lang-option hj-option p-3 min-h-[44px] flex items-center gap-3 ${lang === l.code ? 'is-selected' : ''}" data-code="${l.code}">
                                <span class="text-2xl">${l.flag}</span>
                                <span class="text-white font-bold text-sm">${l.label}</span>
                            </button>
                        `).join('')}
                    </div>
-                   <button id="close-lang-btn" class="w-full mt-6 py-3 min-h-[44px] bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-xl font-bold transition">
+                   <button id="close-lang-btn" class="hj-btn hj-btn-ghost w-full mt-6">
                        Cancel
                    </button>
                </div>
@@ -436,12 +449,13 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    let userMarker = null; // Re-introduced
 
    if (mapContainer && !map) {
-      mapContainer.innerHTML = `<div class="flex flex-col h-full w-full items-center justify-center bg-gray-900 z-50 relative"><svg class="animate-spin h-10 w-10 text-blue-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="text-white font-medium text-lg">${t('messages.locating_position') || 'GPS wird gesucht...'}</span></div>`;
+      mapContainer.innerHTML = `<div class="hj-screen flex flex-col h-full w-full items-center justify-center z-50 relative"><svg class="animate-spin h-10 w-10 text-ember-400 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="text-white/80 font-semibold">${t('messages.locating_position') || 'GPS wird gesucht...'}</span></div>`;
 
       // Toast Helper
       const showToast = (msg, isError = false) => {
          const toast = document.createElement('div');
-         toast.className = `fixed bottom-24 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded shadow-lg z-[1000] text-sm font-medium transition-opacity duration-300 ${isError ? 'bg-red-600/90 text-white' : 'bg-gray-800/90 text-white'}`;
+         toast.className = `hj-toast fixed top-safe-4 left-1/2 -translate-x-1/2 z-[1000] ${isError ? 'hj-toast-error' : ''}`;
+         toast.setAttribute('role', isError ? 'alert' : 'status');
          toast.innerText = msg;
          document.body.appendChild(toast);
          // Fade in
@@ -859,7 +873,7 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
                // Visual feedback
                const btn = m.getElement()?.querySelector('.hydrant-marker-visual');
                if (btn) {
-                  btn.style.backgroundColor = '#3b82f6';
+                  btn.style.backgroundColor = '#1fa8d8';
                   btn.style.transform = 'scale(1.2)';
                   btn.style.borderWidth = '4px';
                }

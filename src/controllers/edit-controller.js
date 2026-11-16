@@ -16,25 +16,25 @@ function createButton(label, className, onClick) {
 
 function renderLoading(app, nodeId, onCancel) {
     const container = document.createElement('section');
-    container.className = 'h-full w-full bg-slate-950 text-white flex flex-col items-center justify-center gap-5 p-8 text-center animate-fade-in';
+    container.className = 'hj-screen h-full w-full flex flex-col items-center justify-center gap-5 p-8 text-center animate-fade-in';
     container.setAttribute('role', 'status');
     container.setAttribute('aria-live', 'polite');
 
     const spinner = document.createElement('div');
-    spinner.className = 'h-12 w-12 rounded-full border-4 border-blue-400 border-t-transparent animate-spin';
+    spinner.className = 'hj-spinner h-12 w-12';
     spinner.setAttribute('aria-hidden', 'true');
 
     const heading = document.createElement('h1');
-    heading.className = 'text-xl font-bold';
+    heading.className = 'hj-wordmark text-2xl';
     heading.textContent = t('confirm.title_edit');
 
     const message = document.createElement('p');
-    message.className = 'max-w-xs text-sm text-slate-300';
+    message.className = 'max-w-xs text-sm text-white/60';
     message.textContent = t('messages.loading_hydrant').replace('{id}', nodeId);
 
     const cancel = createButton(
         t('confirm.cancel_btn'),
-        'min-h-11 rounded-xl border border-white/15 bg-white/10 px-5 font-semibold transition hover:bg-white/15',
+        'hj-btn hj-btn-ghost px-6',
         onCancel
     );
 
@@ -44,7 +44,7 @@ function renderLoading(app, nodeId, onCancel) {
 
 function renderLoadError(app, nodeId, error, { onRetry, onCancel }) {
     const container = document.createElement('section');
-    container.className = 'h-full w-full bg-slate-950 text-white flex flex-col items-center justify-center gap-5 p-8 text-center animate-fade-in';
+    container.className = 'hj-screen h-full w-full flex flex-col items-center justify-center gap-5 p-8 text-center animate-fade-in';
 
     const icon = document.createElement('div');
     icon.className = 'text-5xl';
@@ -52,11 +52,11 @@ function renderLoadError(app, nodeId, error, { onRetry, onCancel }) {
     icon.setAttribute('aria-hidden', 'true');
 
     const heading = document.createElement('h1');
-    heading.className = 'text-2xl font-bold text-amber-300';
+    heading.className = 'hj-wordmark text-2xl text-amber-300';
     heading.textContent = error.message === 'NODE_DELETED' ? t('error.node_deleted') : t('error.load_failed');
 
     const message = document.createElement('p');
-    message.className = 'max-w-sm text-sm leading-relaxed text-slate-300';
+    message.className = 'max-w-sm text-sm leading-relaxed text-white/60';
     message.textContent = error.message === 'NODE_DELETED'
         ? t('messages.edit_node_deleted_hint')
         : t('messages.edit_load_retry').replace('{id}', nodeId);
@@ -66,13 +66,13 @@ function renderLoadError(app, nodeId, error, { onRetry, onCancel }) {
     if (error.message !== 'NODE_DELETED') {
         actions.append(createButton(
             t('general.retry'),
-            'min-h-12 rounded-xl bg-blue-600 px-5 font-bold transition hover:bg-blue-500 active:scale-[0.99]',
+            'hj-btn hj-btn-primary w-full',
             onRetry
         ));
     }
     actions.append(createButton(
         t('error.back_to_map'),
-        'min-h-12 rounded-xl border border-white/15 bg-white/10 px-5 font-semibold transition hover:bg-white/15',
+        'hj-btn hj-btn-ghost w-full',
         onCancel
     ));
 

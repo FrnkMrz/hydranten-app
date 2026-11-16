@@ -13,7 +13,7 @@ import { t } from '../services/i18n.js';
  */
 export function showProcessOverlay(parentElement, title, promiseAction, options = {}) {
     const overlay = document.createElement('div');
-    overlay.className = "absolute inset-0 bg-black/90 z-[100] flex items-center justify-center p-6 animate-fade-in backdrop-blur-sm";
+    overlay.className = "hj-backdrop absolute inset-0 z-[100] flex items-center justify-center p-5 transition-opacity duration-200";
 
     // Ensure parent is relative or static so absolute works, but usually we attach to #app which is relative/static.
     // Ideally parent should be relative if we want it strictly inside. 
@@ -26,30 +26,30 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
 
     const render = (result = null, error = null) => {
         const linesHtml = logs.map(line =>
-            `<div class="text-sm font-mono ${LOG_LEVEL_CLASSES[line?.level] || 'text-gray-400'} border-l-2 ${error ? 'border-red-900 icon-shake' : 'border-gray-700'} pl-3 py-1 text-left break-all">
+            `<div class="text-sm font-mono ${LOG_LEVEL_CLASSES[line?.level] || 'text-gray-400'} border-l-2 ${error ? 'border-red-500/40' : 'border-white/10'} pl-3 py-1 text-left break-all">
                 ${escapeHtml(line?.text ?? line)}
             </div>`
         ).join('');
 
         let content = `
-            <div class="flex flex-col w-full max-w-sm bg-gray-900 border ${error ? 'border-red-500/50' : 'border-gray-700'} rounded-2xl p-6 shadow-2xl transition-all duration-300">
-                <h2 class="text-xl font-bold ${error ? 'text-red-500' : 'text-white'} mb-4 flex items-center justify-center gap-2">
+            <div class="hj-dialog ${error ? 'hj-dialog-error' : ''} flex flex-col w-full max-w-sm p-6">
+                <h2 class="text-xl font-extrabold tracking-tight ${error ? 'text-red-400' : 'text-white'} mb-4 flex items-center justify-center gap-2">
                    ${getHeaderIcon(result, error)} 
                    <span>${getHeaderText(title, result, error)}</span>
                 </h2>
                 
-                <div class="space-y-1 mb-6 max-h-60 overflow-y-auto custom-scrollbar bg-black/20 p-2 rounded-lg">
+                <div class="space-y-1 mb-6 max-h-60 overflow-y-auto custom-scrollbar bg-black/30 border border-white/5 p-3 rounded-2xl">
                    ${linesHtml}
-                   ${!result && !error ? '<div class="h-2 w-2 bg-blue-500 rounded-full animate-ping mt-2"></div>' : ''}
+                   ${!result && !error ? '<div class="h-2 w-2 bg-ember-400 rounded-full animate-ping mt-2"></div>' : ''}
                 </div>
         `;
 
         if (error) {
             content += `
-                <div class="bg-red-900/20 text-red-200 p-3 rounded-lg text-xs font-mono mb-4 break-words custom-scrollbar overflow-auto max-h-32 border border-red-500/20">
+                <div class="bg-red-500/10 text-red-200 p-3 rounded-2xl text-xs font-mono mb-4 break-words custom-scrollbar overflow-auto max-h-32 border border-red-500/25">
                    ${escapeHtml(error.message || String(error))}
                 </div>
-                <button id="overlay-close-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition shadow-lg shadow-red-900/20 active:scale-95">
+                <button id="overlay-close-btn" class="hj-btn hj-btn-danger-solid w-full">
                     ${t('general.close')}
                 </button>
             `;
@@ -58,13 +58,13 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
             if (result.id) {
                 // Show Node Info if available (OSM specific)
                 content += `
-                   <div class="w-full bg-gray-800 rounded-lg p-3 mb-4 text-left space-y-2 border border-green-500/30">
+                   <div class="w-full bg-emerald-500/[0.08] rounded-2xl p-4 mb-4 text-left space-y-2 border border-emerald-400/30">
                       <div class="flex justify-between text-xs">
-                           <span class="text-gray-400">${t('messages.node_id') || 'Node ID'}</span>
+                           <span class="text-white/50">${t('messages.node_id') || 'Node ID'}</span>
                            <span class="text-white font-mono font-bold select-all">#${escapeHtml(result.id)}</span>
                       </div>
                        <div class="flex justify-between text-xs">
-                           <span class="text-gray-400">${t('messages.changeset') || 'Changeset'}</span>
+                           <span class="text-white/50">${t('messages.changeset') || 'Changeset'}</span>
                            <span class="text-white font-mono select-all">#${escapeHtml(result.changeset || '?')}</span>
                       </div>
                    </div>
@@ -72,7 +72,7 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
             }
 
             content += `
-                <button id="overlay-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition border border-white/10 active:scale-95">
+                <button id="overlay-close-btn" class="hj-btn hj-btn-success w-full">
                     ${t('general.done')}
                 </button>
             `;
@@ -80,7 +80,7 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
             // Loading State
             content += `
                 <div class="flex justify-center py-2">
-                    <div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    <div class="hj-spinner w-9 h-9"></div>
                 </div>
              `;
         }
@@ -180,36 +180,36 @@ function escapeHtml(text) {
  */
 export function showMessageOverlay(parentElement, title, message, type = 'info', onClose = null) {
     const overlay = document.createElement('div');
-    overlay.className = "absolute inset-0 bg-black/80 z-[100] flex items-center justify-center p-6 animate-fade-in backdrop-blur-sm";
+    overlay.className = "hj-backdrop absolute inset-0 z-[100] flex items-center justify-center p-5 transition-opacity duration-200";
 
     parentElement.appendChild(overlay);
 
     let icon = 'ℹ️';
     let titleColor = 'text-white';
-    let borderColor = 'border-gray-700';
+    let borderColor = '';
 
     if (type === 'error') {
         icon = '❌';
-        titleColor = 'text-red-500';
-        borderColor = 'border-red-500/50';
+        titleColor = 'text-red-400';
+        borderColor = 'hj-dialog-error';
     } else if (type === 'success') {
         icon = '✅';
-        titleColor = 'text-green-500';
-        borderColor = 'border-green-500/50';
+        titleColor = 'text-emerald-300';
+        borderColor = '';
     }
 
     const content = `
-        <div class="flex flex-col w-full max-w-sm bg-gray-900 border ${borderColor} rounded-2xl p-6 shadow-2xl transition-all duration-300 transform scale-100">
-            <h2 class="text-xl font-bold ${titleColor} mb-4 flex items-center justify-center gap-2">
+        <div class="hj-dialog ${borderColor} flex flex-col w-full max-w-sm p-6">
+            <h2 class="text-xl font-extrabold tracking-tight ${titleColor} mb-4 flex items-center justify-center gap-2">
                 <span class="text-2xl">${icon}</span>
                 <span>${escapeHtml(title)}</span>
             </h2>
             
-            <div class="text-gray-300 text-center mb-6 text-sm leading-relaxed">
+            <div class="text-white/70 text-center mb-6 text-sm leading-relaxed">
                 ${escapeHtml(message)}
             </div>
 
-            <button id="msg-overlay-close-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition border border-white/10 active:scale-95">
+            <button id="msg-overlay-close-btn" class="hj-btn hj-btn-ghost w-full">
                 ${t('general.close')}
             </button>
         </div>
@@ -239,26 +239,26 @@ export function showMessageOverlay(parentElement, title, message, type = 'info',
  */
 export function showConfirmOverlay(parentElement, title, message, onConfirm, onCancel = null) {
     const overlay = document.createElement('div');
-    overlay.className = "absolute inset-0 bg-black/90 z-[100] flex items-center justify-center p-6 animate-fade-in backdrop-blur-sm";
+    overlay.className = "hj-backdrop absolute inset-0 z-[100] flex items-center justify-center p-5 transition-opacity duration-200";
 
     parentElement.appendChild(overlay);
 
     const content = `
-        <div class="flex flex-col w-full max-w-sm bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl transition-all duration-300 transform scale-100">
-            <h2 class="text-xl font-bold text-white mb-4 flex items-center justify-center gap-2">
+        <div class="hj-dialog flex flex-col w-full max-w-sm p-6">
+            <h2 class="text-xl font-extrabold tracking-tight text-white mb-4 flex items-center justify-center gap-2">
                 <span class="text-2xl">⚠️</span>
                 <span>${escapeHtml(title)}</span>
             </h2>
             
-            <div class="text-gray-300 text-center mb-8 text-sm leading-relaxed">
+            <div class="text-white/70 text-center mb-7 text-sm leading-relaxed">
                 ${escapeHtml(message)}
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-                <button id="confirm-no-btn" class="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition border border-gray-600 active:scale-95">
+                <button id="confirm-no-btn" class="hj-btn hj-btn-ghost w-full">
                     ${t('general.cancel')}
                 </button>
-                <button id="confirm-yes-btn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition shadow-lg shadow-red-900/20 active:scale-95">
+                <button id="confirm-yes-btn" class="hj-btn hj-btn-danger-solid w-full">
                     ${t('general.ok') || 'OK'}
                 </button>
             </div>

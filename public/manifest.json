@@ -3,8 +3,8 @@
   "short_name": "Hydranten Jäger",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#111827",
-  "theme_color": "#000000",
+  "background_color": "#0b0d13",
+  "theme_color": "#0b0d13",
   "orientation": "portrait",
   "icons": [
     {
