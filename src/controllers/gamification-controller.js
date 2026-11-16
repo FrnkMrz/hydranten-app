@@ -18,7 +18,18 @@ export function initGamificationWidget(element, username, onShowRankList) {
     const rankMsg = element.querySelector('#rank-message');
 
     if (gameContainer) {
+        // Settings renders once from the cached name and again after the network
+        // check. Only the newest request may paint, so a slow answer for a
+        // previous account can never overwrite the current user's rank.
+        const requestId = String(Date.now() + Math.random());
+        gameContainer.dataset.rankRequest = requestId;
+        if (gameContainer.dataset.rankUser !== username) {
+            gameContainer.dataset.rankUser = username;
+            gameContainer.classList.add('hidden');
+        }
+
         fetchUserHydrantCount(username).then(count => {
+            if (gameContainer.dataset.rankRequest !== requestId) return;
             const rank = getRank(count);
             rankName.innerText = rank.current.name;
             rankCurrent.innerText = count;
