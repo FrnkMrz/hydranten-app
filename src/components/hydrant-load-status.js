@@ -6,16 +6,16 @@ const DEFAULT_TIMINGS = {
     successDurationMs: 1600
 };
 
-const BASE_CLASSES = 'absolute top-safe-4 left-1/2 z-[401] flex max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-2 rounded-2xl border px-3 py-2 text-xs font-medium text-white shadow-lg backdrop-blur-md transition-all pointer-events-none';
+const BASE_CLASSES = 'absolute top-safe-4 left-1/2 z-[401] flex max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-2 hj-pill px-3.5 py-2 text-xs font-semibold text-white transition-all pointer-events-none';
 
 function createIndicator(state) {
     const indicator = document.createElement('span');
     indicator.setAttribute('aria-hidden', 'true');
 
     if (state === 'loading') {
-        indicator.className = 'h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-blue-300 border-t-transparent';
+        indicator.className = 'h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-aqua-300 border-t-transparent';
     } else {
-        const color = state === 'success' ? 'bg-green-400' : 'bg-amber-400';
+        const color = state === 'success' ? 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.9)]' : 'bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.8)]';
         indicator.className = `h-2.5 w-2.5 shrink-0 rounded-full ${color}`;
     }
 
@@ -49,10 +49,10 @@ export function createHydrantLoadStatus(root, onRetry, timings = {}) {
         if (!root) return;
 
         const stateClasses = state === 'success'
-            ? 'border-green-400/30 bg-gray-900/90'
+            ? 'border-emerald-400/40'
             : state === 'loading'
-                ? 'border-blue-400/25 bg-gray-900/85'
-                : 'border-amber-400/30 bg-gray-900/90';
+                ? 'border-aqua-400/30'
+                : 'border-amber-400/40';
 
         root.className = `${BASE_CLASSES} ${stateClasses}`;
         root.dataset.state = state;

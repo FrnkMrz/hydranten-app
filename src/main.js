@@ -131,9 +131,9 @@ async function showCamera() {
       // Loading State UI
       // Loading State UI
       const overlay = document.createElement('div');
-      overlay.className = "absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 text-white animate-fade-in";
+      overlay.className = "hj-backdrop absolute inset-0 flex flex-col items-center justify-center z-50 text-white animate-fade-in";
       const spinner = document.createElement('div');
-      spinner.className = "w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mb-4";
+      spinner.className = "hj-spinner w-12 h-12 mb-4";
       const text = document.createElement('span');
       text.className = "font-bold";
       text.textContent = t('messages.locating_position');
@@ -321,19 +321,19 @@ function showConfirm() {
       if (!auth.authenticated()) {
         // Error Overlay
         const overlay = document.createElement('div');
-        overlay.className = "absolute inset-0 z-50 flex items-center justify-center bg-gray-900/95 animate-fade-in px-4 text-center";
+        overlay.className = "hj-backdrop absolute inset-0 z-50 flex items-center justify-center animate-fade-in px-5 text-center";
         overlay.innerHTML = `
-           <div class="flex flex-col items-center max-w-xs">
-              <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-red-900/40">
-                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+           <div class="hj-dialog hj-dialog-error flex flex-col items-center w-full max-w-xs p-6">
+              <div class="w-16 h-16 rounded-full flex items-center justify-center mb-5 bg-gradient-to-br from-red-700 to-red-500 shadow-[0_16px_32px_-12px_rgba(239,68,68,0.8)]">
+                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
               </div>
-              <h2 class="text-2xl font-bold text-white mb-2">${t('general.error')}!</h2>
-              <p class="text-gray-400 mb-6 text-sm">${t('messages.no_osm_credentials')}</p>
+              <h2 class="text-2xl font-extrabold tracking-tight text-white mb-2">${t('general.error')}!</h2>
+              <p class="text-white/60 mb-6 text-sm">${t('messages.no_osm_credentials')}</p>
               
-              <button id="error-settings-btn" class="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white font-bold transition">
+              <button id="error-settings-btn" class="hj-btn hj-btn-primary w-full">
                  ${t('messages.to_settings')}
               </button>
-              <button id="error-close-btn" class="mt-4 text-sm text-gray-400 hover:text-white transition">
+              <button id="error-close-btn" class="mt-3 min-h-11 px-4 text-sm font-semibold text-white/55 hover:text-white transition">
                  ${t('general.cancel')}
               </button>
            </div>
