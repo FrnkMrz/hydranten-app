@@ -150,8 +150,11 @@ export const auth = {
             data.expires_at = Date.now() + (expiresIn * 1000);
         }
 
-        // Save Token Data
+        // Save Token Data. A fresh login may belong to a different account, so
+        // drop the cached profile of the previous one before anything renders it.
         try {
+            localStorage.removeItem('osm_user_name');
+            localStorage.removeItem('osm_user_img');
             localStorage.setItem('osm-auth', JSON.stringify(data));
         } catch (_e) {
             console.error("Failed to save token:", _e);
