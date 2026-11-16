@@ -83,6 +83,11 @@ export async function fetchUserHydrantCount(username) {
         if (!res.ok) throw new Error("Overpass Error " + res.status);
 
         const data = await res.json();
+        // Overpass reports timeouts and overload as HTTP 200 with a "remark" and
+        // no count. Treat that as a failure so a bogus 0 is never cached.
+        if (typeof data.remark === 'string' && /error|timed out|runtime/i.test(data.remark)) {
+            throw new Error("Overpass remark: " + data.remark);
+        }
         // Overpass "out count" returns an element with "tags": { "nodes": "123", ... }
         // Or sometimes in the elements array depending on format. 
         // Usually: elements[0].tags.nodes (as string)
@@ -90,7 +95,7 @@ export async function fetchUserHydrantCount(username) {
         let count = 0;
         if (data.elements && data.elements.length > 0) {
             // Look for the counting element
-            const stats = data.elements.find(e => e.tags && e.tags.nodes);
+            const stats = data.elements.find(e => e.tags && e.tags.nodes !== undefined);
             if (stats) {
                 const parsed = parseInt(stats.tags.nodes, 10);
                 count = Number.isSafeInteger(parsed) && parsed >= 0 ? parsed : 0;
