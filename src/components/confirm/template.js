@@ -1,4 +1,5 @@
 import { t } from '../../services/i18n.js';
+import { icon } from '../icons.js';
 
 export function renderConfirmView() {
    return `
@@ -10,7 +11,7 @@ export function renderConfirmView() {
         <div id="map" class="w-full h-full z-0"></div>
 
         <!-- OVERLAY: Photo (Thumbnail - Smaller) -->
-        <div class="absolute bottom-4 right-4 w-20 h-28 rounded-2xl border-2 border-white/70 shadow-2xl overflow-hidden bg-black z-50 transition transform origin-bottom-right hover:scale-[2.5] active:scale-[2.5] cursor-pointer group">
+        <div class="absolute bottom-4 right-4 w-20 h-28 rounded-2xl border border-ivory/80 shadow-2xl overflow-hidden bg-black z-50 transition transform origin-bottom-right hover:scale-[2.5] active:scale-[2.5] cursor-pointer group">
             <img id="preview-img" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" alt="${t('confirm.preview_alt')}" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
         </div>
@@ -18,7 +19,7 @@ export function renderConfirmView() {
         <!-- Back Button (Floating) - Ensuring correct z-index -->
         <div class="absolute left-4 z-50" style="top: calc(0.75rem + env(safe-area-inset-top, 20px));">
            <button id="retake-btn" class="hj-fab" aria-label="${t('confirm.back_btn_aria') || 'Back to Camera'}">
-              <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+              ${icon('arrowLeft')}
            </button>
         </div>
 
@@ -31,15 +32,15 @@ export function renderConfirmView() {
            </div>
            -->
            
-           <button id="gps-retry-btn" class="hj-pill min-h-9 px-3.5 py-2 text-[11px] font-bold text-aqua-300 active:scale-95 transition hidden" aria-label="${t('confirm.retry_gps_aria')}">
-              🔄 GPS neu laden
+           <button id="gps-retry-btn" class="hj-pill min-h-9 px-3.5 py-2 text-[11px] font-medium text-ivory active:scale-95 transition hidden flex items-center gap-1.5" aria-label="${t('confirm.retry_gps_aria')}">
+              ${icon('refresh', 'w-3.5 h-3.5')}<span>GPS</span>
            </button>
         </div>
 
         <!-- Expand Button (Bottom Left) -->
         <div class="absolute bottom-4 left-4 z-50">
                        <button id="map-expand-btn" class="hj-fab" aria-label="${t('confirm.position_adjustable')}">
-              <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+              ${icon('expand')}
            </button>
         </div>
       </div>
@@ -48,7 +49,7 @@ export function renderConfirmView() {
       <div class="custom-scrollbar flex-grow overflow-y-auto px-4 pt-6 pb-48 space-y-7">
          
          <div class="relative mb-4 flex items-center justify-center gap-3">
-            <h2 id="confirm-title" class="hj-wordmark text-2xl text-white">${t('confirm.title')}</h2>
+            <h2 id="confirm-title" class="hj-wordmark text-[2.2rem]">${t('confirm.title')}</h2>
             
             <!-- Delete Button Container (injected via JS if edit mode) -->
             <!-- Delete Button Container REMOVED from header -->
@@ -60,7 +61,7 @@ export function renderConfirmView() {
              <h3 class="hj-eyebrow ml-1">${t('confirm.type_label')}</h3>
              
              <!-- Row 1: Main Types -->
-             <div id="type-grid-main" class="grid grid-cols-2 gap-2">
+             <div id="type-grid-main" class="grid grid-cols-3 gap-2">
                  <!-- JS Populated Main -->
              </div>
              
@@ -73,14 +74,14 @@ export function renderConfirmView() {
              <div id="sign-container" class="hidden mt-3 animate-fade-in">
                  <label class="hj-eyebrow block mb-1.5">${t('confirm.sign_label')}</label>
                  <div class="hj-seg grid grid-cols-3 gap-1">
-                     <button type="button" class="sign-option-btn hj-seg-btn min-h-[44px] px-1 text-xs flex items-center justify-center gap-1" data-value="yes">
-                        ✅ ${t('confirm.sign_options.yes')}
+                     <button type="button" class="sign-option-btn hj-seg-btn min-h-[44px] px-1 text-xs flex items-center justify-center gap-1.5" data-value="yes">
+                        ${icon('check', 'w-4 h-4')} ${t('confirm.sign_options.yes')}
                      </button>
-                     <button type="button" class="sign-option-btn hj-seg-btn min-h-[44px] px-1 text-xs flex items-center justify-center gap-1" data-value="no">
-                        ❌ ${t('confirm.sign_options.no')}
+                     <button type="button" class="sign-option-btn hj-seg-btn min-h-[44px] px-1 text-xs flex items-center justify-center gap-1.5" data-value="no">
+                        ${icon('close', 'w-4 h-4')} ${t('confirm.sign_options.no')}
                      </button>
-                     <button type="button" class="sign-option-btn hj-seg-btn min-h-[44px] px-1 text-xs flex items-center justify-center gap-1" data-value="unknown">
-                        ❓ ${t('confirm.sign_options.unknown')}
+                     <button type="button" class="sign-option-btn hj-seg-btn min-h-[44px] px-1 text-xs flex items-center justify-center gap-1.5" data-value="unknown">
+                        ${icon('question', 'w-4 h-4')} ${t('confirm.sign_options.unknown')}
                      </button>
                  </div>
                  <input type="hidden" id="hydrant-sign" value="unknown">
@@ -93,27 +94,27 @@ export function renderConfirmView() {
          <div id="position-container" class="space-y-3">
              <h3 class="hj-eyebrow ml-1">${t('confirm.position_label')}</h3>
              <div class="hj-seg grid grid-cols-5 gap-1">
-                 <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-0.5 py-1.5" data-value="">
-                    <span class="text-base leading-none" aria-hidden="true">🚫</span><span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.none')}</span>
+                 <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-1.5 py-2.5" data-value="">
+                    ${icon('posNone', 'w-5 h-5')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.none')}</span>
                  </button>
-                <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-0.5 py-1.5" data-value="sidewalk">
-                   <span class="text-base leading-none" aria-hidden="true">🚶</span><span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.sidewalk')}</span>
+                <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-1.5 py-2.5" data-value="sidewalk">
+                   ${icon('posSidewalk', 'w-5 h-5')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.sidewalk')}</span>
                 </button>
-                <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-0.5 py-1.5" data-value="lane">
-                   <span class="text-base leading-none" aria-hidden="true">🚗</span><span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.street')}</span>
+                <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-1.5 py-2.5" data-value="lane">
+                   ${icon('posLane', 'w-5 h-5')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.street')}</span>
                 </button>
-                <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-0.5 py-1.5" data-value="parking_lane">
-                   <span class="text-base leading-none" aria-hidden="true">🅿️</span><span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.parking')}</span>
+                <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-1.5 py-2.5" data-value="parking_lane">
+                   ${icon('posParking', 'w-5 h-5')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.parking')}</span>
                 </button>
-                <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-0.5 py-1.5" data-value="green">
-                   <span class="text-base leading-none" aria-hidden="true">🌳</span><span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.green')}</span>
+                <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-1.5 py-2.5" data-value="green">
+                   ${icon('posGreen', 'w-5 h-5')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.green')}</span>
                 </button>
              </div>
              <input type="hidden" id="hydrant-position" value="sidewalk">
          </div>
 
          <!-- Details (Visible) -->
-         <div class="hj-card space-y-4 p-4">
+         <div class="space-y-5 pt-6 border-t border-ivory/10">
             
             <!-- Diameter / Volume -->
              <div id="diameter-container">
@@ -127,8 +128,8 @@ export function renderConfirmView() {
                 <input type="text" id="hydrant-volume" placeholder="${t('confirm.volume_placeholder')}" class="hj-input">
             </div>
 
-            <div id="aed-details-container" class="hidden space-y-4 rounded-2xl border border-emerald-400/25 bg-emerald-500/[0.07] p-4">
-                <h3 class="hj-eyebrow text-emerald-300">${t('confirm.aed_details')}</h3>
+            <div id="aed-details-container" class="hidden space-y-4 hj-card p-4">
+                <h3 class="hj-eyebrow text-ivory">${t('confirm.aed_details')}</h3>
                 <div>
                     <label for="aed-access" class="hj-eyebrow block mb-1.5">${t('confirm.aed_access')}</label>
                     <select id="aed-access" class="hj-input">
@@ -177,8 +178,8 @@ export function renderConfirmView() {
                         <option value="reservoir">${t('confirm.water_source_reservoir')}</option>
                       </select>
                       <!-- Custom Arrow -->
-                      <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-white/50">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                      <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-ivory/50">
+                        ${icon('chevronDown', 'w-4 h-4')}
                       </div>
                    </div>
                </div>
@@ -193,7 +194,7 @@ export function renderConfirmView() {
           <!-- DELETE BUTTON SECTION (New) -->
           <div id="delete-section" class="pt-8 pb-4 hidden">
              <button id="delete-hydrant-btn" class="hj-btn hj-btn-danger w-full">
-                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                ${icon('trash', 'w-[1.125rem] h-[1.125rem]')}
                 <span>${t('confirm.delete_btn')}</span>
              </button>
           </div>
@@ -201,7 +202,7 @@ export function renderConfirmView() {
 
       <!-- Submit Footer (Raised) -->
       <div class="fixed bottom-0 left-0 right-0 p-4 pb-20 bg-gradient-to-t from-ink-900 via-ink-900/95 to-transparent z-50 max-w-sm mx-auto">
-         <button id="submit-img-btn" class="hj-btn hj-btn-success w-full min-h-[3.75rem] text-lg">
+         <button id="submit-img-btn" class="hj-btn hj-btn-light w-full min-h-[3.75rem] text-[0.8125rem] uppercase tracking-[0.2em]">
             <span>${t('confirm.upload_btn')}</span>
          </button>
       </div>

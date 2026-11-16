@@ -1,4 +1,5 @@
 import { t } from '../services/i18n.js';
+import { icon } from './icons.js';
 
 /**
  * Shows a generic overlay for async processes with logging, success, and error states.
@@ -26,30 +27,30 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
 
     const render = (result = null, error = null) => {
         const linesHtml = logs.map(line =>
-            `<div class="text-sm font-mono ${LOG_LEVEL_CLASSES[line?.level] || 'text-gray-400'} border-l-2 ${error ? 'border-red-500/40' : 'border-white/10'} pl-3 py-1 text-left break-all">
+            `<div class="hj-log-line text-xs leading-relaxed font-mono ${LOG_LEVEL_CLASSES[line?.level] || 'text-ivory/60'} border-l ${error ? 'border-ember-400/50' : 'border-ivory/15'} pl-3 py-0.5 text-left [overflow-wrap:anywhere]">
                 ${escapeHtml(line?.text ?? line)}
             </div>`
         ).join('');
 
         let content = `
-            <div class="hj-dialog ${error ? 'hj-dialog-error' : ''} flex flex-col w-full max-w-sm p-6">
-                <h2 class="text-xl font-extrabold tracking-tight ${error ? 'text-red-400' : 'text-white'} mb-4 flex items-center justify-center gap-2">
-                   ${getHeaderIcon(result, error)} 
+            <div class="hj-dialog ${error ? 'hj-dialog-error' : ''} flex flex-col items-center w-full max-w-sm p-6">
+                ${getHeaderIcon(result, error)}
+                <h2 class="hj-wordmark text-[1.9rem] mb-5 text-center">
                    <span>${getHeaderText(title, result, error)}</span>
                 </h2>
                 
-                <div class="space-y-1 mb-6 max-h-60 overflow-y-auto custom-scrollbar bg-black/30 border border-white/5 p-3 rounded-2xl">
+                <div class="w-full space-y-1.5 mb-6 max-h-60 overflow-y-auto custom-scrollbar border border-ivory/10 p-4 rounded-2xl">
                    ${linesHtml}
-                   ${!result && !error ? '<div class="h-2 w-2 bg-ember-400 rounded-full animate-ping mt-2"></div>' : ''}
+                   ${!result && !error ? '<div class="h-1.5 w-1.5 bg-ember-400 rounded-full animate-pulse mt-2 ml-3"></div>' : ''}
                 </div>
         `;
 
         if (error) {
             content += `
-                <div class="bg-red-500/10 text-red-200 p-3 rounded-2xl text-xs font-mono mb-4 break-words custom-scrollbar overflow-auto max-h-32 border border-red-500/25">
+                <div class="w-full text-ember-300 p-4 rounded-2xl text-xs leading-relaxed font-mono mb-5 break-words custom-scrollbar overflow-auto max-h-32 border border-ember-400/35">
                    ${escapeHtml(error.message || String(error))}
                 </div>
-                <button id="overlay-close-btn" class="hj-btn hj-btn-danger-solid w-full">
+                <button id="overlay-close-btn" class="hj-btn hj-btn-ghost w-full">
                     ${t('general.close')}
                 </button>
             `;
@@ -58,21 +59,21 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
             if (result.id) {
                 // Show Node Info if available (OSM specific)
                 content += `
-                   <div class="w-full bg-emerald-500/[0.08] rounded-2xl p-4 mb-4 text-left space-y-2 border border-emerald-400/30">
-                      <div class="flex justify-between text-xs">
-                           <span class="text-white/50">${t('messages.node_id') || 'Node ID'}</span>
-                           <span class="text-white font-mono font-bold select-all">#${escapeHtml(result.id)}</span>
+                   <div class="w-full rounded-2xl p-4 mb-5 text-left space-y-2.5 border border-ivory/15">
+                      <div class="flex items-center justify-between text-xs">
+                           <span class="hj-eyebrow">${t('messages.node_id') || 'Node ID'}</span>
+                           <span class="text-ivory font-mono select-all">#${escapeHtml(result.id)}</span>
                       </div>
-                       <div class="flex justify-between text-xs">
-                           <span class="text-white/50">${t('messages.changeset') || 'Changeset'}</span>
-                           <span class="text-white font-mono select-all">#${escapeHtml(result.changeset || '?')}</span>
+                       <div class="flex items-center justify-between text-xs">
+                           <span class="hj-eyebrow">${t('messages.changeset') || 'Changeset'}</span>
+                           <span class="text-ivory font-mono select-all">#${escapeHtml(result.changeset || '?')}</span>
                       </div>
                    </div>
                  `;
             }
 
             content += `
-                <button id="overlay-close-btn" class="hj-btn hj-btn-success w-full">
+                <button id="overlay-close-btn" class="hj-btn hj-btn-light w-full">
                     ${t('general.done')}
                 </button>
             `;
@@ -80,7 +81,7 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
             // Loading State
             content += `
                 <div class="flex justify-center py-2">
-                    <div class="hj-spinner w-9 h-9"></div>
+                    <div class="hj-spinner w-7 h-7"></div>
                 </div>
              `;
         }
@@ -134,11 +135,11 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
 // Log lines may be plain strings or `{ level, text }` objects. The level only
 // selects one of these fixed class names; the text is always escaped.
 const LOG_LEVEL_CLASSES = {
-    req: 'text-blue-400 font-bold',
-    res: 'text-purple-400 font-bold',
-    info: 'text-yellow-400',
-    success: 'text-green-400 font-bold',
-    err: 'text-red-500 font-bold'
+    req: 'text-ivory/40',
+    res: 'text-ivory/80',
+    info: 'text-ivory/60',
+    success: 'text-ivory',
+    err: 'text-ember-300'
 };
 
 function closeOverlay(overlay, onCloseCallback, error, result) {
@@ -150,15 +151,15 @@ function closeOverlay(overlay, onCloseCallback, error, result) {
 }
 
 function getHeaderIcon(result, error) {
-    if (error) return '❌';
-    if (result) return '✅';
+    if (error) return `<div class="hj-medallion hj-medallion-ember mb-4">${icon('close', 'w-6 h-6')}</div>`;
+    if (result) return `<div class="hj-medallion mb-4">${icon('check', 'w-6 h-6')}</div>`;
     return '';
 }
 
 function getHeaderText(title, result, error) {
     if (error) return t('general.error');
-    if (result) return t('general.success') + '!';
-    return title + '...';
+    if (result) return t('general.success');
+    return title;
 }
 
 function escapeHtml(text) {
@@ -184,32 +185,30 @@ export function showMessageOverlay(parentElement, title, message, type = 'info',
 
     parentElement.appendChild(overlay);
 
-    let icon = 'ℹ️';
-    let titleColor = 'text-white';
+    let iconName = 'info';
+    let medallion = '';
     let borderColor = '';
 
     if (type === 'error') {
-        icon = '❌';
-        titleColor = 'text-red-400';
+        iconName = 'alert';
+        medallion = 'hj-medallion-ember';
         borderColor = 'hj-dialog-error';
     } else if (type === 'success') {
-        icon = '✅';
-        titleColor = 'text-emerald-300';
-        borderColor = '';
+        iconName = 'check';
     }
 
     const content = `
-        <div class="hj-dialog ${borderColor} flex flex-col w-full max-w-sm p-6">
-            <h2 class="text-xl font-extrabold tracking-tight ${titleColor} mb-4 flex items-center justify-center gap-2">
-                <span class="text-2xl">${icon}</span>
+        <div class="hj-dialog ${borderColor} flex flex-col items-center w-full max-w-sm p-6">
+            <div class="hj-medallion ${medallion} mb-4">${icon(iconName, 'w-6 h-6')}</div>
+            <h2 class="hj-wordmark text-[1.9rem] mb-3 text-center">
                 <span>${escapeHtml(title)}</span>
             </h2>
             
-            <div class="text-white/70 text-center mb-6 text-sm leading-relaxed">
+            <div class="text-ivory/65 text-center mb-6 text-sm leading-relaxed">
                 ${escapeHtml(message)}
             </div>
 
-            <button id="msg-overlay-close-btn" class="hj-btn hj-btn-ghost w-full">
+            <button id="msg-overlay-close-btn" class="hj-btn hj-btn-light w-full">
                 ${t('general.close')}
             </button>
         </div>
@@ -244,22 +243,22 @@ export function showConfirmOverlay(parentElement, title, message, onConfirm, onC
     parentElement.appendChild(overlay);
 
     const content = `
-        <div class="hj-dialog flex flex-col w-full max-w-sm p-6">
-            <h2 class="text-xl font-extrabold tracking-tight text-white mb-4 flex items-center justify-center gap-2">
-                <span class="text-2xl">⚠️</span>
+        <div class="hj-dialog flex flex-col items-center w-full max-w-sm p-6">
+            <div class="hj-medallion hj-medallion-ember mb-4">${icon('alert', 'w-6 h-6')}</div>
+            <h2 class="hj-wordmark text-[1.9rem] mb-3 text-center">
                 <span>${escapeHtml(title)}</span>
             </h2>
             
-            <div class="text-white/70 text-center mb-7 text-sm leading-relaxed">
+            <div class="text-ivory/65 text-center mb-7 text-sm leading-relaxed">
                 ${escapeHtml(message)}
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2 w-full">
                 <button id="confirm-no-btn" class="hj-btn hj-btn-ghost w-full">
                     ${t('general.cancel')}
                 </button>
-                <button id="confirm-yes-btn" class="hj-btn hj-btn-danger-solid w-full">
-                    ${t('general.ok') || 'OK'}
+                <button id="confirm-yes-btn" class="hj-btn hj-btn-primary w-full">
+                    OK
                 </button>
             </div>
         </div>

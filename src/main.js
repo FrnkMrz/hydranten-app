@@ -1,3 +1,8 @@
+import { icon } from './components/icons.js';
+// Display typeface, self-hosted. Imported here (not via CSS @import) so Vite
+// rewrites the font URLs and emits the files into the build.
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/instrument-serif/400-italic.css';
 import './style.css'
 import { renderCameraView, initCamera } from './components/camera-view.js';
 import { renderConfirmView, initConfirmView } from './components/confirm-view.js';
@@ -133,9 +138,9 @@ async function showCamera() {
       const overlay = document.createElement('div');
       overlay.className = "hj-backdrop absolute inset-0 flex flex-col items-center justify-center z-50 text-white animate-fade-in";
       const spinner = document.createElement('div');
-      spinner.className = "hj-spinner w-12 h-12 mb-4";
+      spinner.className = "hj-spinner w-9 h-9 mb-5";
       const text = document.createElement('span');
-      text.className = "font-bold";
+      text.className = "hj-eyebrow";
       text.textContent = t('messages.locating_position');
       overlay.append(spinner, text);
       app.appendChild(overlay);
@@ -324,16 +329,16 @@ function showConfirm() {
         overlay.className = "hj-backdrop absolute inset-0 z-50 flex items-center justify-center animate-fade-in px-5 text-center";
         overlay.innerHTML = `
            <div class="hj-dialog hj-dialog-error flex flex-col items-center w-full max-w-xs p-6">
-              <div class="w-16 h-16 rounded-full flex items-center justify-center mb-5 bg-gradient-to-br from-red-700 to-red-500 shadow-[0_16px_32px_-12px_rgba(239,68,68,0.8)]">
-                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+              <div class="hj-medallion hj-medallion-ember mb-4">
+                 ${icon('user', 'w-6 h-6')}
               </div>
-              <h2 class="text-2xl font-extrabold tracking-tight text-white mb-2">${t('general.error')}!</h2>
-              <p class="text-white/60 mb-6 text-sm">${t('messages.no_osm_credentials')}</p>
+              <h2 class="hj-wordmark text-[1.9rem] mb-3">${t('general.error')}</h2>
+              <p class="text-ivory/65 mb-6 text-sm leading-relaxed">${t('messages.no_osm_credentials')}</p>
               
-              <button id="error-settings-btn" class="hj-btn hj-btn-primary w-full">
+              <button id="error-settings-btn" class="hj-btn hj-btn-light w-full">
                  ${t('messages.to_settings')}
               </button>
-              <button id="error-close-btn" class="mt-3 min-h-11 px-4 text-sm font-semibold text-white/55 hover:text-white transition">
+              <button id="error-close-btn" class="mt-3 min-h-11 px-4 text-sm font-medium text-ivory/55 hover:text-ivory transition">
                  ${t('general.cancel')}
               </button>
            </div>

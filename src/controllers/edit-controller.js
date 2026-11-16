@@ -2,6 +2,7 @@ import { auth } from '../services/auth.js';
 import { fetchNodeData, updateHydrant, deleteHydrant } from '../services/osm.js';
 import { renderConfirmView, initConfirmView } from '../components/confirm-view.js';
 import { t } from '../services/i18n.js';
+import { icon as renderIcon } from '../components/icons.js';
 
 const EDIT_LOAD_TIMEOUT_MS = 15000;
 
@@ -21,15 +22,15 @@ function renderLoading(app, nodeId, onCancel) {
     container.setAttribute('aria-live', 'polite');
 
     const spinner = document.createElement('div');
-    spinner.className = 'hj-spinner h-12 w-12';
+    spinner.className = 'hj-spinner h-9 w-9';
     spinner.setAttribute('aria-hidden', 'true');
 
     const heading = document.createElement('h1');
-    heading.className = 'hj-wordmark text-2xl';
+    heading.className = 'hj-wordmark text-[2.2rem]';
     heading.textContent = t('confirm.title_edit');
 
     const message = document.createElement('p');
-    message.className = 'max-w-xs text-sm text-white/60';
+    message.className = 'max-w-xs text-sm text-ivory/65';
     message.textContent = t('messages.loading_hydrant').replace('{id}', nodeId);
 
     const cancel = createButton(
@@ -47,16 +48,17 @@ function renderLoadError(app, nodeId, error, { onRetry, onCancel }) {
     container.className = 'hj-screen h-full w-full flex flex-col items-center justify-center gap-5 p-8 text-center animate-fade-in';
 
     const icon = document.createElement('div');
-    icon.className = 'text-5xl';
-    icon.textContent = error.message === 'NODE_DELETED' ? '🗺️' : '⚠️';
+    icon.className = 'hj-medallion hj-medallion-ember';
+    // Static markup from the icon set.
+    icon.innerHTML = renderIcon(error.message === 'NODE_DELETED' ? 'pin' : 'alert', 'w-6 h-6');
     icon.setAttribute('aria-hidden', 'true');
 
     const heading = document.createElement('h1');
-    heading.className = 'hj-wordmark text-2xl text-amber-300';
+    heading.className = 'hj-wordmark text-[2.2rem]';
     heading.textContent = error.message === 'NODE_DELETED' ? t('error.node_deleted') : t('error.load_failed');
 
     const message = document.createElement('p');
-    message.className = 'max-w-sm text-sm leading-relaxed text-white/60';
+    message.className = 'max-w-sm text-sm leading-relaxed text-ivory/65';
     message.textContent = error.message === 'NODE_DELETED'
         ? t('messages.edit_node_deleted_hint')
         : t('messages.edit_load_retry').replace('{id}', nodeId);
@@ -66,7 +68,7 @@ function renderLoadError(app, nodeId, error, { onRetry, onCancel }) {
     if (error.message !== 'NODE_DELETED') {
         actions.append(createButton(
             t('general.retry'),
-            'hj-btn hj-btn-primary w-full',
+            'hj-btn hj-btn-light w-full',
             onRetry
         ));
     }

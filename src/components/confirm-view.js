@@ -1,3 +1,4 @@
+import { icon } from './icons.js';
 import { t } from '../services/i18n.js';
 import { prepareHydrantTags } from '../services/hydrant-logic.js';
 import { renderConfirmView } from './confirm/template.js';
@@ -45,7 +46,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         retakeBtn.style.display = 'flex';
         retakeBtn.style.zIndex = '50';
         retakeBtn.setAttribute('aria-label', t('confirm.cancel_btn') || "Abbrechen");
-        retakeBtn.innerHTML = `<svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+        retakeBtn.innerHTML = icon('close');
       }
 
       retakeBtn.addEventListener('click', (e) => {
@@ -93,7 +94,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
 
     if (submitBtn) {
       if (editMode) {
-        submitBtn.innerHTML = `<span>💾 ${t('confirm.save_btn') || 'Speichern'}</span>`;
+        submitBtn.innerHTML = `<span>${t('confirm.save_btn') || 'Speichern'}</span>`;
       }
 
       const submitHandler = (e) => {

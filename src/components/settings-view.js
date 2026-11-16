@@ -3,6 +3,7 @@ import { t } from '../services/i18n.js';
 import { APP_VERSION, APP_NAME } from '../version.js';
 import { initMapStyleControls } from '../controllers/map-style-controller.js';
 import { initGamificationWidget } from '../controllers/gamification-controller.js';
+import { icon } from './icons.js';
 
 export function renderSettingsView() {
   // Check Login Status for Dynamic UI
@@ -11,26 +12,28 @@ export function renderSettingsView() {
                 <p class="hj-eyebrow mb-3">${t('settings.account')}</p>
                 <div class="flex flex-col items-center justify-center gap-3">
                     <div id="user-avatar-container" class="hidden">
-                        <img id="user-avatar" src="" alt="Avatar" class="w-20 h-20 rounded-full ring-2 ring-emerald-400/80 ring-offset-4 ring-offset-ink-800 shadow-xl object-cover">
+                        <img id="user-avatar" src="" alt="Avatar" class="w-20 h-20 rounded-full ring-1 ring-ivory/50 ring-offset-4 ring-offset-ink-900 object-cover">
                     </div>
-                    <p id="user-display" class="text-xl font-extrabold tracking-tight text-white">...</p>
+                    <p id="user-display" class="hj-wordmark text-3xl">...</p>
                 </div>
             </div>
 
-            <p class="text-sm text-white/50 mb-6 leading-relaxed" id="auth-help">
+            <p class="text-sm text-ivory/50 mb-6 leading-relaxed" id="auth-help">
                ${t('intro.login_osm')}
             </p>
 
-            <button id="login-btn" class="hj-btn hj-btn-success w-full">
-               <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-1.07 3.97-2.9 5.39z"/></svg>
+            <button id="login-btn" class="hj-btn hj-btn-light w-full">
+               ${icon('globe')}
                <span>${t('settings.connect_btn')}</span>
             </button>
             
             <div id="logout-btn" class="grid grid-cols-2 gap-2 w-full mt-2 hidden transition">
-               <button id="history-btn" class="hj-btn hj-btn-ghost w-full text-sm">
+               <button id="history-btn" class="hj-btn hj-btn-ghost w-full px-3 text-sm font-medium">
+                  ${icon('clock', 'w-4 h-4')}
                   ${t('settings.history_btn')}
                </button>
-               <button id="real-logout-btn" class="hj-btn hj-btn-danger w-full text-sm">
+               <button id="real-logout-btn" class="hj-btn hj-btn-danger w-full px-3 text-sm font-medium">
+                  ${icon('logout', 'w-4 h-4')}
                   ${t('settings.disconnect_btn')}
                </button>
             </div>
@@ -43,11 +46,11 @@ export function renderSettingsView() {
       <div class="flex items-end justify-between w-full mt-4 mb-5 z-10">
          <div class="min-w-0">
              <p class="hj-eyebrow mb-1">Hydranten <span class="hj-ember-text">Jäger</span></p>
-             <h1 class="hj-wordmark text-3xl text-white truncate">${t('settings.title')}</h1>
+             <h1 class="hj-wordmark text-[2.6rem] truncate">${t('settings.title')}</h1>
          </div>
          <!-- Info Button (Always Visible) -->
          <button id="info-btn" class="hj-fab shrink-0 ml-4" aria-label="Information">
-            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.01"/></svg>
+            ${icon('info')}
          </button>
       </div>
 
@@ -55,63 +58,59 @@ export function renderSettingsView() {
       <div class="custom-scrollbar flex-grow z-10 text-center flex flex-col items-center justify-start overflow-y-auto w-full pb-4">
          
          <!-- Map Style Section -->
-         <div class="hj-card p-3 w-full max-w-sm mb-4">
+         <div class="w-full max-w-sm mb-4">
              <div class="grid grid-cols-3 gap-2" id="map-style-options">
-                <button class="map-style-btn hj-option flex flex-col items-center gap-2 p-3" data-style="osm">
-                   <div class="w-11 h-11 rounded-2xl bg-aqua-400/15 text-aqua-300 flex items-center justify-center" aria-hidden="true"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m9 4-6 2.5v13L9 17l6 3 6-2.5v-13L15 7z"/><path d="M9 4v13M15 7v13"/></svg></div>
-                   <span class="text-xs font-bold">Standard</span>
+                <button class="map-style-btn hj-option flex flex-col items-center gap-2.5 px-2 py-4" data-style="osm">
+                   ${icon('map', 'w-6 h-6')}
+                   <span class="text-xs font-medium tracking-wide">Standard</span>
                 </button>
-                <button class="map-style-btn hj-option flex flex-col items-center gap-2 p-3" data-style="satellite">
-                   <div class="w-11 h-11 rounded-2xl bg-emerald-400/15 text-emerald-300 flex items-center justify-center" aria-hidden="true"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
-                   <span class="text-xs font-bold">Satellit</span>
+                <button class="map-style-btn hj-option flex flex-col items-center gap-2.5 px-2 py-4" data-style="satellite">
+                   ${icon('orbit', 'w-6 h-6')}
+                   <span class="text-xs font-medium tracking-wide">Satellit</span>
                 </button>
-                <button class="map-style-btn hj-option flex flex-col items-center gap-2 p-3" data-style="topo">
-                   <div class="w-11 h-11 rounded-2xl bg-ember-400/15 text-ember-300 flex items-center justify-center" aria-hidden="true"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m3 19 6-11 4 7 2-3 6 7z"/></svg></div>
-                   <span class="text-xs font-bold">Topo</span>
+                <button class="map-style-btn hj-option flex flex-col items-center gap-2.5 px-2 py-4" data-style="topo">
+                   ${icon('mountain', 'w-6 h-6')}
+                   <span class="text-xs font-medium tracking-wide">Topo</span>
                 </button>
              </div>
          </div>
 
          <div class="hj-card p-6 w-full max-w-sm" id="login-container">
-            <h2 class="hj-eyebrow mb-4 flex items-center justify-center gap-2">
-               ${t('intro.login_osm')}
-            </h2>
-            
             ${loginStatusHTML}
          </div>
 
          <!-- Rank / Gamification Section (Separate Box) -->
-         <div id="gamification-container" class="hj-card hidden w-full max-w-sm mt-4 p-3">
+         <div id="gamification-container" class="hidden w-full max-w-sm mt-6">
               <h3 class="hj-eyebrow mt-2 mb-3 text-center">${t('gamification.level_title')}</h3>
               
-              <div class="bg-[radial-gradient(120%_80%_at_50%_0%,rgba(255,90,43,0.32),transparent_65%)] bg-ink-950/60 p-6 rounded-[1.25rem] border border-ember-500/30 relative overflow-hidden flex flex-col items-center">
+              <div class="hj-card bg-[radial-gradient(110%_70%_at_50%_0%,rgba(232,71,43,0.16),transparent_70%)] p-6 relative overflow-hidden flex flex-col items-center">
                  
                  <!-- Badge (Larger & Centered) -->
-                 <div class="w-32 h-32 mb-4 bg-transparent flex items-center justify-center filter drop-shadow-[0_0_22px_rgba(255,106,43,0.55)]" id="rank-badge">
+                 <div class="w-32 h-32 mb-4 bg-transparent flex items-center justify-center filter drop-shadow-[0_10px_24px_rgba(0,0,0,0.6)]" id="rank-badge">
                     <!-- SVG inserted here -->
                  </div>
 
                  <!-- Rank Name -->
-                 <div class="hj-wordmark text-2xl text-white mb-6 text-center" id="rank-name">Feuerwehranwärter</div>
+                 <div class="hj-wordmark text-[2rem] mb-6 text-center" id="rank-name">Feuerwehranwärter</div>
                  
                  <!-- Progress Bar -->
-                 <div class="relative w-full h-2.5 bg-white/10 rounded-full overflow-hidden mb-2">
-                     <div id="rank-progress" class="absolute top-0 left-0 h-full rounded-full bg-gradient-to-r from-ember-600 via-ember-500 to-ember-300 w-0 transition-all duration-1000 shadow-[0_0_12px_rgba(255,106,43,0.7)]"></div>
+                 <div class="relative w-full h-[3px] bg-ivory/15 rounded-full overflow-hidden mb-2.5">
+                     <div id="rank-progress" class="absolute top-0 left-0 h-full rounded-full bg-ember-400 w-0 transition-all duration-1000"></div>
                  </div>
                  
-                 <div class="flex justify-between w-full text-xs text-white/50 font-mono tabular-nums px-1">
+                 <div class="flex justify-between w-full text-xs text-ivory/50 font-mono tabular-nums px-1">
                      <span id="rank-current-count">0</span>
                      <span id="rank-next-count">10</span>
                  </div>
                  
-                 <p class="text-sm text-center mt-4 text-white/70 font-medium" id="rank-message">
+                 <p class="text-sm text-center mt-4 text-ivory/70 font-medium" id="rank-message">
                     Noch 10 bis zum nächsten Level!
                  </p>
               </div>
          </div>
          
          <!-- Force Reset Button -->
-         <button id="reset-btn" class="w-full max-w-sm min-h-11 py-3 text-red-400/80 hover:text-red-300 rounded-xl font-semibold mt-6 transition text-xs underline underline-offset-4 decoration-red-400/30">
+         <button id="reset-btn" class="w-full max-w-sm min-h-11 py-3 text-ivory/40 hover:text-ember-300 font-medium mt-6 transition text-xs underline underline-offset-4 decoration-ivory/20">
              ${t('settings.app_reset')}
          </button>
       </div>
@@ -120,7 +119,7 @@ export function renderSettingsView() {
          <button id="back-btn" class="hj-btn hj-btn-ghost w-full">
             ${t('settings.back_btn')}
          </button>
-         <p class="text-center text-[10px] text-white/30 mt-3">Version ${APP_VERSION} (Stable) • ${APP_NAME}</p>
+         <p class="text-center text-[10px] text-ivory/30 mt-3">Version ${APP_VERSION} (Stable) • ${APP_NAME}</p>
       </div>
     </div>
   `;
@@ -204,14 +203,14 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
       modal.setAttribute('aria-modal', 'true');
       modal.innerHTML = `
             <div class="hj-dialog custom-scrollbar p-6 max-w-sm w-full overflow-y-auto max-h-[80vh]">
-                <h3 class="text-xl font-extrabold tracking-tight text-white mb-4">${t('intro.info_legal')}</h3>
+                <h3 class="hj-wordmark text-[1.9rem] mb-5">${t('intro.info_legal')}</h3>
                 
-                <div class="space-y-4 text-sm text-gray-300">
+                <div class="space-y-5 text-sm leading-relaxed text-ivory/70">
                     <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v${APP_VERSION})</p>
                     
-                    <div class="border-l-2 border-white/15 pl-3 py-1">
-                        <h4 class="font-bold text-white mb-1">${t('intro.info_impressum')}</h4>
-                        <p class="text-xs text-gray-400 mb-1">${t('legal.tmg_header')}</p>
+                    <div class="border-l border-ivory/20 pl-4 py-1">
+                        <h4 class="hj-eyebrow mb-2">${t('intro.info_impressum')}</h4>
+                        <p class="text-xs text-ivory/50 mb-1">${t('legal.tmg_header')}</p>
                         <p>Frank März</p>
                         <p>Kersbacher Weg 3</p>
                         <p>91220 Schnaittach</p>
@@ -223,21 +222,21 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
                     </div>
 
                     <div>
-                        <h4 class="font-bold text-white">${t('intro.info_data')}</h4>
+                        <h4 class="hj-eyebrow mb-2">${t('intro.info_data')}</h4>
                         <p>${t('intro.info_data_text')}</p>
                     </div>
 
                     <div>
-                        <h4 class="font-bold text-white">${t('intro.info_license')}</h4>
-                        <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-aqua-300 hover:text-aqua-400 underline">© OpenStreetMap contributors</a>.</p>
+                        <h4 class="hj-eyebrow mb-2">${t('intro.info_license')}</h4>
+                        <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-ivory underline underline-offset-4 decoration-ivory/30">© OpenStreetMap contributors</a>.</p>
                         <p>Code: MIT License</p>
-                        <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" rel="noopener noreferrer" class="text-aqua-300 hover:text-aqua-400 underline mt-1 block">
-                            📂 ${t('intro.info_github')}
+                        <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-3 text-ivory underline underline-offset-4 decoration-ivory/30">
+                            ${icon('external', 'w-4 h-4')} ${t('intro.info_github')}
                         </a>
                     </div>
                 </div>
 
-                <button id="close-info-btn" class="hj-btn hj-btn-primary w-full mt-6">
+                <button id="close-info-btn" class="hj-btn hj-btn-light w-full mt-6">
                     OK
                 </button>
             </div>
@@ -263,7 +262,7 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
       }
 
       userDisplay.innerText = diffName;
-      userDisplay.className = username.startsWith("Error") ? "text-xs font-mono text-red-400 break-words" : "text-xl font-extrabold tracking-tight text-white";
+      userDisplay.className = username.startsWith("Error") ? "text-xs font-mono text-ember-300 break-words" : "hj-wordmark text-3xl";
 
       const img = localStorage.getItem('osm_user_img');
       const avatarContainer = element.querySelector('#user-avatar-container');
