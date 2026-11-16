@@ -77,6 +77,59 @@ describe('Auth Service', () => {
         await expect(auth.exchangeCode('bad-code', STATE)).rejects.toThrow('Token Exchange Failed (400)');
     });
 
+    it('consumes state and verifier once the exchange starts', async () => {
+        localStorage.setItem('osm_auth_state', 'valid-state');
+        localStorage.setItem('osm_pkce_verifier', 'test-verifier');
+        fetch.mockResolvedValueOnce({ ok: false, status: 400, text: async () => 'Bad Request' });
+
+        await expect(auth.exchangeCode('code', 'valid-state')).rejects.toThrow('Token Exchange Failed');
+
+        expect(localStorage.getItem('osm_auth_state')).toBeNull();
+        expect(localStorage.getItem('osm_pkce_verifier')).toBeNull();
+        await expect(auth.exchangeCode('code', 'valid-state')).rejects.toThrow('State mismatch');
+    });
+
+    it('rejects a token response without an access token', async () => {
+        localStorage.setItem('osm_auth_state', 'valid-state');
+        localStorage.setItem('osm_pkce_verifier', 'test-verifier');
+        fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ error: 'nope' }) });
+
+        await expect(auth.exchangeCode('code', 'valid-state')).rejects.toThrow('access token');
+        expect(localStorage.getItem('osm-auth')).toBeNull();
+    });
+
+    it('never logs the OAuth state or redirect URL', async () => {
+        const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+        const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        await auth.login();
+        const state = localStorage.setItem.mock.calls.find(([key]) => key === 'osm_auth_state')[1];
+        await expect(auth.exchangeCode('code', 'wrong-state')).rejects.toThrow('State mismatch');
+
+        const logged = JSON.stringify([...logSpy.mock.calls, ...errorSpy.mock.calls]);
+        expect(state).toHaveLength(32);
+        expect(logged).not.toContain(state);
+        expect(logged).not.toContain('wrong-state');
+        logSpy.mockRestore();
+        errorSpy.mockRestore();
+    });
+
+    it('stores only https avatar URLs', async () => {
+        localStorage.setItem('osm-auth', JSON.stringify({ access_token: 'token' }));
+        const details = href => ({
+            ok: true,
+            text: async () => `<osm><user display_name="Tester"><img href="${href}"/></user></osm>`
+        });
+
+        fetch.mockResolvedValueOnce(details('javascript:alert(1)'));
+        await checkLogin();
+        expect(localStorage.getItem('osm_user_img')).toBeNull();
+
+        fetch.mockResolvedValueOnce(details('/avatar.png'));
+        await checkLogin();
+        expect(localStorage.getItem('osm_user_img')).toBe('https://www.openstreetmap.org/avatar.png');
+    });
+
     it('handles state mismatch', async () => {
         localStorage.setItem('osm_auth_state', 'state-A');
 

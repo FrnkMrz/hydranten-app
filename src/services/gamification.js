@@ -64,11 +64,13 @@ export async function fetchUserHydrantCount(username) {
 
     // Fetch from Overpass
     console.log("Fetching hydrant count from Overpass for:", username);
+    // Escape the display name so quotes/backslashes cannot alter the query.
+    const user = String(username).replace(/[\\"]/g, '\\$&').replace(/[\r\n]/g, ' ');
     const query = `[out:json][timeout:25];
     (
-      node(user:"${username}")["emergency"="fire_hydrant"];
-      node(user:"${username}")["emergency"="suction_point"];
-      node(user:"${username}")["emergency"="water_tank"];
+      node(user:"${user}")["emergency"="fire_hydrant"];
+      node(user:"${user}")["emergency"="suction_point"];
+      node(user:"${user}")["emergency"="water_tank"];
     );
     out count;`;
 
@@ -90,7 +92,8 @@ export async function fetchUserHydrantCount(username) {
             // Look for the counting element
             const stats = data.elements.find(e => e.tags && e.tags.nodes);
             if (stats) {
-                count = parseInt(stats.tags.nodes);
+                const parsed = parseInt(stats.tags.nodes, 10);
+                count = Number.isSafeInteger(parsed) && parsed >= 0 ? parsed : 0;
             }
             // Fallback: If query returned actual nodes (shouldn't with 'out count'), count length
             // But 'out count' structure is specific.

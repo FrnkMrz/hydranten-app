@@ -699,9 +699,17 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
       let localCreated = [];
       let localUpdated = [];
       try {
-         localDeleted = JSON.parse(localStorage.getItem('deleted_hydrants') || '[]');
-         localCreated = JSON.parse(localStorage.getItem('created_hydrants') || '[]');
-         localUpdated = JSON.parse(localStorage.getItem('updated_hydrants') || '[]');
+         // Stored caches may be corrupt or written by an older version: accept
+         // only arrays of usable entries so one bad value cannot break the map.
+         const readList = key => {
+            const value = JSON.parse(localStorage.getItem(key) || '[]');
+            return Array.isArray(value) ? value : [];
+         };
+         const isNode = n => n && typeof n === 'object' && n.id !== null && n.id !== undefined &&
+            Number.isFinite(n.lat) && Number.isFinite(n.lon);
+         localDeleted = readList('deleted_hydrants').map(String);
+         localCreated = readList('created_hydrants').filter(isNode);
+         localUpdated = readList('updated_hydrants').filter(isNode);
 
          // Cleanup Created: Remove items older than 15 minutes or arguably if they appear in API (handled below)
          const now = Date.now();

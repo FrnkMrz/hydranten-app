@@ -26,8 +26,8 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
 
     const render = (result = null, error = null) => {
         const linesHtml = logs.map(line =>
-            `<div class="text-sm font-mono text-gray-400 border-l-2 ${error ? 'border-red-900 icon-shake' : 'border-gray-700'} pl-3 py-1 text-left break-all">
-                ${escapeHtml(line)}
+            `<div class="text-sm font-mono ${LOG_LEVEL_CLASSES[line?.level] || 'text-gray-400'} border-l-2 ${error ? 'border-red-900 icon-shake' : 'border-gray-700'} pl-3 py-1 text-left break-all">
+                ${escapeHtml(line?.text ?? line)}
             </div>`
         ).join('');
 
@@ -130,6 +130,16 @@ export function showProcessOverlay(parentElement, title, promiseAction, options 
                 .catch(() => { });
         });
 }
+
+// Log lines may be plain strings or `{ level, text }` objects. The level only
+// selects one of these fixed class names; the text is always escaped.
+const LOG_LEVEL_CLASSES = {
+    req: 'text-blue-400 font-bold',
+    res: 'text-purple-400 font-bold',
+    info: 'text-yellow-400',
+    success: 'text-green-400 font-bold',
+    err: 'text-red-500 font-bold'
+};
 
 function closeOverlay(overlay, onCloseCallback, error, result) {
     overlay.classList.add('opacity-0'); // Fade out effect if CSS supports it
