@@ -21,10 +21,10 @@ export function handleAuthCallback(locationSearch, locationHash, app, callbacks)
             container.className = "hj-screen absolute inset-0 flex flex-col items-center justify-center animate-fade-in";
 
             const spinner = document.createElement('div');
-            spinner.className = "hj-spinner w-12 h-12 mb-4";
+            spinner.className = "hj-spinner w-9 h-9 mb-6";
 
             const title = document.createElement('h2');
-            title.className = "hj-wordmark text-2xl";
+            title.className = "hj-wordmark text-[2.2rem] text-center px-6";
             title.textContent = t('messages.verifying_login');
 
             const logContainer = document.createElement('div');
@@ -32,7 +32,7 @@ export function handleAuthCallback(locationSearch, locationHash, app, callbacks)
 
             const logDiv = document.createElement('div');
             logDiv.id = "pkce-log";
-            logDiv.className = "custom-scrollbar text-xs font-mono text-emerald-300 bg-black/30 border border-white/5 p-3 rounded-2xl h-32 overflow-auto";
+            logDiv.className = "custom-scrollbar text-xs leading-relaxed font-mono text-ivory/60 border border-ivory/10 p-4 rounded-2xl h-32 overflow-auto";
             logDiv.textContent = "INIT...";
 
             logContainer.appendChild(logDiv);
@@ -66,7 +66,7 @@ export function handleAuthCallback(locationSearch, locationHash, app, callbacks)
                     btn.onclick = () => {
                         showIntro();
                     };
-                    btn.className = "hj-btn hj-btn-primary w-full mt-4";
+                    btn.className = "hj-btn hj-btn-light w-full mt-4";
                     btn.textContent = t('messages.back_to_start');
                     div.appendChild(btn);
 

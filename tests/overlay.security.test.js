@@ -28,11 +28,12 @@ describe('process overlay security', () => {
             return new Promise(resolve => { finish = resolve; });
         });
 
-        const lines = document.body.querySelectorAll('.font-mono.border-l-2');
+        const lines = document.body.querySelectorAll('.hj-log-line');
         expect(lines).toHaveLength(2);
-        expect(lines[0].className).toContain('text-green-400');
+        expect(lines[0].className).toContain('text-ivory');
+        expect(lines[0].className).not.toContain('text-ivory/');
         expect(lines[0].textContent.trim()).toBe('Standort: <img src=x onerror=alert(1)>');
-        expect(lines[1].className).toContain('text-gray-400');
+        expect(lines[1].className).toContain('text-ivory/60');
         expect(document.body.querySelector('img, b')).toBeNull();
         finish();
     });

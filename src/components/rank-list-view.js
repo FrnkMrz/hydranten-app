@@ -1,6 +1,7 @@
 import { t } from '../services/i18n.js';
 import { RANKS, getRank } from '../services/gamification.js';
 import { getRankBadgeSVG } from '../services/rank-graphics.js';
+import { icon } from './icons.js';
 
 export function renderRankListView() {
     return `
@@ -9,10 +10,10 @@ export function renderRankListView() {
         <!-- Header -->
         <div class="flex items-center justify-between w-full mt-4 mb-5 z-10">
             <button id="rank-list-back-btn" class="hj-fab" aria-label="${t('settings.back_btn')}">
-                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7"></path></svg>
+                ${icon('arrowLeft')}
             </button>
-            <h1 class="hj-wordmark text-2xl text-white">${t('gamification.list_title')}</h1>
-            <div class="w-12"></div> <!-- Spacer -->
+            <h1 class="hj-wordmark text-[2rem]">${t('gamification.list_title')}</h1>
+            <div class="w-[2.875rem]"></div> <!-- Spacer -->
         </div>
 
         <!-- List -->
@@ -39,9 +40,9 @@ export function initRankListView(element, onBack, currentHydrantCount = 0) {
         const badge = getRankBadgeSVG(rank.id).replace('width="64"', 'width="48"').replace('height="64"', 'height="48"');
 
         // Style Logic
-        let bgClass = "bg-white/[0.03] border-white/5";
-        if (isCurrent) bgClass = "bg-gradient-to-br from-ember-500/25 to-ink-950/40 border-ember-400 shadow-[0_18px_36px_-20px_rgba(255,90,43,0.9)]";
-        else if (isUnlocked) bgClass = "bg-white/[0.07] border-white/10";
+        let bgClass = "border-ivory/5";
+        if (isCurrent) bgClass = "border-ivory/80 bg-ivory/[0.06]";
+        else if (isUnlocked) bgClass = "border-ivory/15";
 
         let opacityClass = isUnlocked ? "opacity-100" : "opacity-50 grayscale";
         if (isCurrent) opacityClass = "opacity-100"; // Ensure current is fully visible
@@ -53,10 +54,10 @@ export function initRankListView(element, onBack, currentHydrantCount = 0) {
                 </div>
                 <div class="flex-grow">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-lg tracking-tight ${isCurrent ? 'text-white' : 'text-white/80'}">${rank.name}</h3>
+                        <h3 class="hj-wordmark text-[1.4rem] ${isCurrent ? '' : 'text-ivory/80'}">${rank.name}</h3>
                         ${isCurrent ? '' : ''}
                     </div>
-                    <p class="text-xs text-white/45 font-mono">${t('gamification.from_hydrants').replace('{count}', rank.min)}</p>
+                    <p class="hj-eyebrow mt-1 text-[9px]">${t('gamification.from_hydrants').replace('{count}', rank.min)}</p>
                 </div>
             </div>
         `;

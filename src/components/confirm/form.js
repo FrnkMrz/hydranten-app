@@ -1,6 +1,6 @@
 import { t } from '../../services/i18n.js';
 import { determineHydrantType } from '../../services/hydrant-logic.js';
-import { renderAedMarkerSymbol } from '../aed-marker.js';
+import { typeIcon } from '../icons.js';
 
 export function initFormLogic(element, location, editMode, initialData) {
     const typeInput = element.querySelector('#hydrant-type');
@@ -28,36 +28,15 @@ export function initFormLogic(element, location, editMode, initialData) {
 
     // --- GRID SETUP ---
     const mainTypes = [
-        {
-            id: 'pillar',
-            label: t('confirm.types.pillar'),
-            icon: `<svg viewBox="0 0 24 24" class="w-10 h-10 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M7 21H17V19H15V11H17C17.55 11 18 10.55 18 10V8C18 7.45 17.55 7 17 7H15V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V7H7C6.45 7 6 7.45 6 8V10C6 10.55 6.45 11 7 11H9V19H7V21ZM11 5C11 4.45 11.45 4 12 4C12.55 4 13 4.45 13 5V7H11V5ZM7 8H9V10H7V8ZM15 8H17V10H15V8Z" fill="#DC2626"/>
-               </svg>`
-        },
-        { id: 'underground', label: t('confirm.types.underground'), icon: '<span class="text-4xl mb-1">🕳️</span>' },
-        { id: 'aed', label: t('confirm.types.aed'), icon: `<span class="mb-1 flex h-10 w-10 overflow-hidden rounded-md">${renderAedMarkerSymbol()}</span>` }
+        { id: 'pillar', label: t('confirm.types.pillar'), icon: typeIcon('pillar', 'w-11 h-11') },
+        { id: 'underground', label: t('confirm.types.underground'), icon: typeIcon('underground', 'w-11 h-11') },
+        { id: 'aed', label: t('confirm.types.aed'), icon: typeIcon('aed', 'w-11 h-11') }
     ];
     const subTypes = [
-        { id: 'dry_hydrant', label: t('confirm.types.dry_hydrant'), icon: '<span class="text-xl">🌵</span>' },
-        {
-            id: 'wall',
-            label: t('confirm.types.wall'),
-            icon: `<svg viewBox="0 0 24 24" class="w-8 h-8 drop-shadow-md" fill="none" class="text-gray-400" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M4 22H20V2H4V22ZM13 14H16V17H13V14Z" fill="currentColor"/>
-                 <path d="M12 12V19H17V12H12Z" stroke="#EF4444" stroke-width="2"/>
-               </svg>`
-        },
-        { id: 'cistern', label: t('confirm.types.cistern'), icon: '<span class="text-xl">🛢️</span>' },
-        {
-            id: 'suction_point',
-            label: t('confirm.types.suction'),
-            icon: `<svg viewBox="0 0 24 24" class="w-8 h-8 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M22 17C22 17 19 14 15 14C11 14 9 17 5 17C2.5 17 2 15.5 2 15.5V19C2 19 4 21 8 21C12 21 14 18 18 18C21 18 22 19 22 19V17Z" fill="#3B82F6"/>
-                 <path d="M22 13C22 13 19 10 15 10C11 10 9 13 5 13C2.5 13 2 11.5 2 11.5V9.5C2 9.5 4 11 8 11C12 11 14 8 18 8C21 8 22 9 22 9V13Z" fill="#60A5FA"/>
-                 <circle cx="17" cy="5" r="2" fill="#FCD34D"/>
-               </svg>`
-        }
+        { id: 'dry_hydrant', label: t('confirm.types.dry_hydrant'), icon: typeIcon('dry_hydrant', 'w-8 h-8') },
+        { id: 'wall', label: t('confirm.types.wall'), icon: typeIcon('wall', 'w-8 h-8') },
+        { id: 'cistern', label: t('confirm.types.cistern'), icon: typeIcon('cistern', 'w-8 h-8') },
+        { id: 'suction_point', label: t('confirm.types.suction'), icon: typeIcon('suction_point', 'w-8 h-8') }
     ];
 
     const gridMain = element.querySelector('#type-grid-main');
@@ -66,17 +45,17 @@ export function initFormLogic(element, location, editMode, initialData) {
     if (gridMain && gridSub) {
         // Render Main
         gridMain.innerHTML = mainTypes.map(opt => `
-             <button type="button" class="option-btn hj-option h-24 flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
+             <button type="button" class="option-btn hj-option h-[7.25rem] flex flex-col items-center justify-center gap-2.5" data-value="${opt.id}" aria-label="${opt.label}">
                 <span aria-hidden="true">${opt.icon}</span>
-                <span class="text-sm font-bold uppercase tracking-tight" aria-hidden="true">${opt.label}</span>
+                <span class="max-w-full px-1 text-center text-[9.5px] leading-tight font-semibold uppercase tracking-[0.1em] hyphens-auto [overflow-wrap:anywhere]" aria-hidden="true">${opt.label}</span>
              </button>
        `).join('');
 
         // Render Sub
         gridSub.innerHTML = subTypes.map(opt => `
-             <button type="button" class="option-btn hj-option h-[4.5rem] flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
+             <button type="button" class="option-btn hj-option h-[5.25rem] flex flex-col items-center justify-center gap-2" data-value="${opt.id}" aria-label="${opt.label}">
                 <span aria-hidden="true">${opt.icon}</span>
-                <span class="max-w-full px-0.5 text-center text-[8px] leading-[1.1] font-bold uppercase tracking-tighter hyphens-auto [overflow-wrap:anywhere]" aria-hidden="true">${opt.label}</span>
+                <span class="max-w-full px-0.5 text-center text-[8px] leading-[1.15] font-semibold uppercase tracking-[0.04em] hyphens-auto [overflow-wrap:anywhere]" aria-hidden="true">${opt.label}</span>
              </button>
        `).join('');
     }
@@ -153,12 +132,12 @@ export function initFormLogic(element, location, editMode, initialData) {
         // Update UI
         if (submitBtn) {
             if (hasChanges) {
-                submitBtn.innerHTML = `<span>☁️ ${t('confirm.update_btn')}</span>`;
+                submitBtn.innerHTML = `<span>${t('confirm.update_btn')}</span>`;
                 submitBtn.classList.remove('hj-btn-ghost');
-                submitBtn.classList.add('hj-btn-success');
+                submitBtn.classList.add('hj-btn-light');
             } else {
                 submitBtn.innerHTML = `<span>${t('confirm.back_btn_label')}</span>`;
-                submitBtn.classList.remove('hj-btn-success');
+                submitBtn.classList.remove('hj-btn-light');
                 submitBtn.classList.add('hj-btn-ghost');
             }
         }

@@ -37,7 +37,7 @@ export default defineConfig({
             workbox: {
                 // Critical: This pattern matches the hashed assets Vite generates.
                 // Without this, your JS/CSS is NOT cached, and offline mode fails.
-                globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+                globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
 
                 // Increase the limit for caching (e.g., Leaflet chunks can be large)
                 maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3 MiB

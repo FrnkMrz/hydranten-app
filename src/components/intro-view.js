@@ -24,12 +24,12 @@ let hydrantLayer = null;
 
 import { t, lang, setLanguage } from '../services/i18n.js';
 import { escapeHTML } from '../utils/security.js';
+import { icon } from './icons.js';
 import { APP_VERSION } from '../version.js';
 
 export function renderIntroView() {
    // Check Login Status
    let loginText = t('intro.login_osm');
-   let loginClass = "";
 
    try {
       const token = JSON.parse(localStorage.getItem('osm-auth') || '{}');
@@ -46,108 +46,105 @@ export function renderIntroView() {
 
          if (img) {
             // Show Avatar
-            loginText = `<img src="${escapeHTML(img)}" class="w-7 h-7 shrink-0 rounded-full ring-2 ring-emerald-400/70 object-cover" alt=""> <span class="truncate">${name}</span>`;
+            loginText = `<img src="${escapeHTML(img)}" class="w-6 h-6 shrink-0 rounded-full ring-1 ring-ivory/60 object-cover" alt=""> <span class="truncate">${name}</span>`;
          } else {
             loginText = `<span class="truncate">${name}</span>`;
          }
 
-         loginClass = "text-emerald-300";
       }
    } catch (_e) { /* ignore */ }
 
-   // Line icons for the four steps (stroke uses the tile's ember colour).
-   const stepIcon = path => `<span class="hj-step-icon" aria-hidden="true"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">${path}</svg></span>`;
    const steps = [
-      { key: 'step1', icon: '<path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/>' },
-      { key: 'step2', icon: '<path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>' },
-      { key: 'step3', icon: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>' },
-      { key: 'step4', icon: '<path d="M7 18a4 4 0 0 1-.6-7.95A5.5 5.5 0 0 1 17.2 9.1 4.5 4.5 0 0 1 17 18"/><path d="M12 19v-7m0 0-3 3m3-3 3 3"/>' }
+      { key: 'step1', icon: 'distance' },
+      { key: 'step2', icon: 'camera' },
+      { key: 'step3', icon: 'pencil' },
+      { key: 'step4', icon: 'cloudUp' }
    ];
-   const stepsHtml = steps.map(({ key, icon }, index) => {
+   const stepsHtml = steps.map(({ key, icon: name }, index) => {
       const bold = t(`intro.${key}_bold`);
       const rest = t(`intro.${key}`).replace(bold, '').trim();
       return `
-             <li class="relative flex min-w-0 flex-col items-center gap-2 text-center">
-                ${index > 0 ? '<span class="absolute top-[1.35rem] right-[calc(50%+1.6rem)] h-px w-[calc(100%-3.2rem)] bg-gradient-to-r from-white/5 to-white/20" aria-hidden="true"></span>' : ''}
-                ${stepIcon(icon)}
+             <li class="hj-step">
+                <span class="hj-step-num" aria-hidden="true">${index + 1}</span>
+                ${icon(name, 'w-6 h-6 text-ivory')}
                 <p class="min-w-0 max-w-full leading-tight">
-                   <span class="block text-[13px] font-bold text-white break-words">${bold}</span>
-                   <span class="block text-[11px] text-white/50 break-words">${rest}</span>
+                   <span class="block text-[13px] font-semibold text-ivory break-words">${bold}</span>
+                   <span class="block mt-0.5 text-[11px] text-ivory/50 break-words">${rest}</span>
                 </p>
              </li>`;
    }).join('');
 
    return `
-    <div class="h-full w-full bg-ink-900 text-white flex flex-col relative overflow-hidden">
+    <div class="h-full w-full bg-ink-900 text-ivory flex flex-col relative overflow-hidden">
       
       <!-- Map - Fills remaining space (flex-1) -->
       <div class="w-full flex-1 min-h-[34%] relative z-0">
           <div id="intro-map" class="absolute inset-0 z-0"></div>
           <div id="hydrant-data-status" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
-          <div id="map-data-source" class="hj-pill hidden pointer-events-none absolute top-safe-14 left-1/2 z-[401] -translate-x-1/2 px-3 py-1.5 text-[10px] font-semibold tracking-wide text-white/80" role="status" aria-live="polite"></div>
+          <div id="map-data-source" class="hj-pill hidden pointer-events-none absolute top-safe-14 left-1/2 z-[401] -translate-x-1/2 px-3.5 py-1.5 text-[10px] font-medium tracking-wide text-ivory/80" role="status" aria-live="polite"></div>
           
           <!-- LOCATE ME BUTTON -->
-          <button id="locate-me-btn" class="hj-fab hj-fab-aqua absolute bottom-10 right-4 z-[401]" aria-label="Locate Me">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          <button id="locate-me-btn" class="hj-fab hj-fab-light absolute bottom-10 right-4 z-[401]" aria-label="Locate Me">
+            ${icon('locate', 'w-[1.375rem] h-[1.375rem]')}
           </button>
 
           <!-- EDIT BUTTON (Initial Hidden) -->
           <button id="edit-mode-btn" class="hj-fab hidden absolute bottom-10 left-4 z-[401]" aria-label="Edit Mode">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+            ${icon('pencil')}
           </button>
 
           <!-- CLOSE FULLSCREEN BUTTON (Hidden) -->
           <button id="close-fullscreen-btn" class="hj-fab hidden absolute top-safe-4 left-4 z-[402]" aria-label="Close Map">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            ${icon('close')}
           </button>
 
           <!-- Vignettes: soften the map into the status bar and the sheet -->
-          <div class="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-ink-950/55 to-transparent pointer-events-none z-[400]"></div>
-          <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink-950/70 to-transparent pointer-events-none z-[400]"></div>
+          <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-ink-950/45 to-transparent pointer-events-none z-[400]"></div>
+          <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink-950/75 to-transparent pointer-events-none z-[400]"></div>
       </div>
 
       <!-- Bottom Sheet Content - Auto Height, Stacked -->
-      <div class="hj-sheet w-full shrink-0 z-10 flex flex-col items-center px-5 pb-safe pt-3 -mt-7 relative">
+      <div class="hj-sheet w-full shrink-0 z-10 flex flex-col items-center px-6 pb-safe pt-3 -mt-7 relative">
          
          <!-- Drag Handle / Visual Indicator -->
-         <div class="hj-grabber mb-5"></div>
+         <div class="hj-grabber mb-6"></div>
 
          <!-- Hero Title -->
-         <div class="text-center mb-5 w-full">
-             <h1 class="hj-wordmark text-[2.5rem] text-white">
+         <div class="text-center w-full">
+             <h1 class="hj-wordmark text-[3.2rem]">
                 Hydranten <span class="hj-ember-text">Jäger</span>
              </h1>
-             ${lang !== 'de' ? `<p class="hj-eyebrow mt-2">${t('intro.title_pre')} ${t('intro.title_post')}</p>` : ''}
+             ${lang !== 'de' ? `<p class="hj-eyebrow mt-3">${t('intro.title_pre')} ${t('intro.title_post')}</p>` : ''}
          </div>
 
          <!-- Steps -->
-         <ol class="hj-card w-full max-w-md grid grid-cols-4 gap-1 px-2 py-4 mb-5 list-none">
+         <ol class="hj-steps w-full max-w-md mt-6 mb-6 list-none p-0">
              ${stepsHtml}
          </ol>
 
          <!-- Start Button -->
-         <button id="start-btn" class="hj-btn hj-btn-primary w-full max-w-md min-h-[4rem] text-lg tracking-[0.12em] mb-4">
-             <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>
+         <button id="start-btn" class="hj-btn hj-btn-primary w-full max-w-md min-h-[3.75rem] text-[0.8125rem] uppercase tracking-[0.24em] mb-3">
              <span>${t('intro.start_btn')}</span>
+             <span class="hj-btn-disc" aria-hidden="true">${icon('arrowRight')}</span>
          </button>
           
          <!-- Footer Actions -->
          <div class="flex items-center gap-2 w-full max-w-md">
-              <button id="lang-btn" class="hj-btn hj-btn-ghost w-14 shrink-0 px-0 min-h-[3rem]" aria-label="${t('intro.lang_btn_aria') || 'Language / Sprache'}">
-                🇩🇪
+              <button id="lang-btn" class="hj-btn hj-btn-ghost shrink-0 px-4 min-h-[3rem]" aria-label="${t('intro.lang_btn_aria') || 'Language / Sprache'}">
+                ${icon('globe', 'w-[1.125rem] h-[1.125rem]')}
               </button>
 
-              <button id="intro-settings-btn" class="hj-btn hj-btn-ghost flex-grow min-w-0 min-h-[3rem] text-sm ${loginClass}">
-                 ${!loginText.includes('<img') ? `<svg aria-hidden="true" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>` : ''}
+              <button id="intro-settings-btn" class="hj-btn hj-btn-ghost flex-grow min-w-0 min-h-[3rem] text-sm font-medium">
+                 ${!loginText.includes('<img') ? icon('user', 'w-[1.125rem] h-[1.125rem]') : ''}
                  ${loginText}
               </button>
-              <button id="intro-info-btn" class="hj-btn hj-btn-ghost w-14 shrink-0 px-0 min-h-[3rem]" aria-label="Information & Legal">
-                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.01"/></svg>
+              <button id="intro-info-btn" class="hj-btn hj-btn-ghost w-[3rem] shrink-0 px-0 min-h-[3rem]" aria-label="Information & Legal">
+                ${icon('info', 'w-[1.125rem] h-[1.125rem]')}
               </button>
          </div>
           
-         <div class="mt-3 mb-2 text-center">
-             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-[10px] text-white/30 hover:text-white/60 transition no-underline block">
+         <div class="mt-4 mb-2 text-center">
+             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-[10px] tracking-wide text-ivory/30 hover:text-ivory/60 transition no-underline block">
                 © OpenStreetMap contributors
              </a>
          </div>
@@ -177,7 +174,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
       btn.onclick = () => {
          // UI Feedback
          // const originalText = btn.innerHTML;
-         btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ' + btn.innerText;
+         btn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ' + btn.innerText;
          btn.classList.add('opacity-75', 'cursor-wait', 'pointer-events-none');
 
          const startApp = () => {
@@ -283,20 +280,20 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          modal.setAttribute('aria-modal', 'true');
          modal.innerHTML = `
              <div class="hj-dialog custom-scrollbar p-6 max-w-sm w-full overflow-y-auto max-h-[80vh]">
-                 <h3 class="text-xl font-extrabold tracking-tight text-white mb-4">${t('intro.info_legal')}</h3>
+                 <h3 class="hj-wordmark text-[1.9rem] mb-5">${t('intro.info_legal')}</h3>
                  
-                 <div class="space-y-4 text-sm text-gray-300">
+                 <div class="space-y-5 text-sm leading-relaxed text-ivory/70">
                      <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v${APP_VERSION})</p>
                      
                      <!-- Disclaimer Moved Here -->
-                     <div class="rounded-2xl border border-ember-500/30 bg-ember-500/10 p-3 text-xs text-ember-300 mb-4">
+                     <div class="rounded-2xl border border-ember-400/35 p-4 text-xs leading-relaxed text-ember-300">
                          <strong>${t('legal.important_header')}</strong><br>
                          ${t('intro.disclaimer_text')}
                      </div>
                     
-                    <div class="border-l-2 border-white/15 pl-3 py-1">
-                        <h4 class="font-bold text-white mb-1">${t('intro.info_impressum')}</h4>
-                        <p class="text-xs text-gray-400 mb-1">${t('legal.tmg_header')}</p>
+                    <div class="border-l border-ivory/20 pl-4 py-1">
+                        <h4 class="hj-eyebrow mb-2">${t('intro.info_impressum')}</h4>
+                        <p class="text-xs text-ivory/50 mb-1">${t('legal.tmg_header')}</p>
                         <p>Frank März</p>
                         <p>Kersbacher Weg 3</p>
                         <p>91220 Schnaittach</p>
@@ -308,29 +305,29 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                     </div>
                      
                      <div>
-                         <h4 class="font-bold text-white">${t('intro.info_data')}</h4>
+                         <h4 class="hj-eyebrow mb-2">${t('intro.info_data')}</h4>
                          <p>${t('intro.info_data_text')}</p>
                      </div>
 
                      <div>
-                         <h4 class="font-bold text-white">${t('intro.info_license')}</h4>
-                         <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">© OpenStreetMap contributors</a>.</p>
+                         <h4 class="hj-eyebrow mb-2">${t('intro.info_license')}</h4>
+                         <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-ivory underline underline-offset-4 decoration-ivory/30">© OpenStreetMap contributors</a>.</p>
                          <p>Code: MIT License</p>
                          
-                         <p class="mt-3 text-xs font-bold text-gray-400">Map Tiles:</p>
-                         <p class="text-[10px] text-gray-400 leading-tight">
+                         <p class="mt-3 text-xs font-bold text-ivory/50">Map Tiles:</p>
+                         <p class="text-[10px] text-ivory/50 leading-tight">
                             Basemap: © OpenStreetMap contributors<br>
                             Satellite: Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community<br>
                             Topo: Map style: © OpenTopoMap (CC-BY-SA)
                          </p>
 
-                         <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline mt-2 block">
-                             📂 ${t('intro.info_github')}
+                         <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-3 text-ivory underline underline-offset-4 decoration-ivory/30">
+                             ${icon('external', 'w-4 h-4')} ${t('intro.info_github')}
                          </a>
                      </div>
                  </div>
 
-                 <button id="close-intro-info-btn" class="hj-btn hj-btn-primary w-full mt-6">
+                 <button id="close-intro-info-btn" class="hj-btn hj-btn-light w-full mt-6">
                      OK
                  </button>
              </div>
@@ -348,16 +345,8 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    // Language Switcher Logic
    const langBtn = element.querySelector('#lang-btn');
    if (langBtn) {
-      const flags = {
-         'de': '🇩🇪', 'en': '🇬🇧', 'pl': '🇵🇱', 'cs': '🇨🇿',
-         'fr': '🇫🇷', 'nl': '🇳🇱', 'es': '🇪🇸', 'pt': '🇵🇹',
-         'hr': '🇭🇷', 'it': '🇮🇹', 'ja': '🇯🇵', 'ko': '🇰🇷', 'zh': '🇨🇳', 'tr': '🇹🇷', 'ar': '🇸🇦'
-      };
-
-      // Use innerHTML to ensure emojis render correctly on all devices
-      const flagIcon = flags[lang] || '🌐';
-      // Force system-ui / emoji fonts
-      langBtn.innerHTML = `<span style="font-family: 'Apple Color Emoji','Segoe UI Emoji', system-ui; font-size: 1.5rem; line-height: 1;">${flagIcon}</span>`;
+      // Globe plus the active language code instead of a flag.
+      langBtn.innerHTML = `${icon('globe', 'w-[1.125rem] h-[1.125rem]')}<span class="text-xs font-semibold uppercase tracking-[0.16em]">${escapeHTML(lang)}</span>`;
 
       langBtn.onclick = () => {
          const modal = document.createElement('dialog');
@@ -365,36 +354,36 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
          modal.setAttribute('aria-modal', 'true');
 
          const langs = [
-            { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-            { code: 'en', label: 'English', flag: '🇬🇧' },
-            { code: 'pl', label: 'Polski', flag: '🇵🇱' },
-            { code: 'cs', label: 'Čeština', flag: '🇨🇿' },
-            { code: 'fr', label: 'Français', flag: '🇫🇷' },
-            { code: 'nl', label: 'Nederlands', flag: '🇳🇱' },
-            { code: 'es', label: 'Español', flag: '🇪🇸' },
-            { code: 'pt', label: 'Português', flag: '🇵🇹' },
-            { code: 'hr', label: 'Hrvatski', flag: '🇭🇷' },
-            { code: 'it', label: 'Italiano', flag: '🇮🇹' },
-            { code: 'ja', label: '日本語', flag: '🇯🇵' },
-            { code: 'ko', label: '한국어', flag: '🇰🇷' },
-            { code: 'zh', label: '中文', flag: '🇨🇳' },
-            { code: 'tr', label: 'Türkçe', flag: '🇹🇷' },
-            { code: 'ar', label: 'العربية', flag: '🇸🇦' }
+            { code: 'de', label: 'Deutsch' },
+            { code: 'en', label: 'English' },
+            { code: 'pl', label: 'Polski' },
+            { code: 'cs', label: 'Čeština' },
+            { code: 'fr', label: 'Français' },
+            { code: 'nl', label: 'Nederlands' },
+            { code: 'es', label: 'Español' },
+            { code: 'pt', label: 'Português' },
+            { code: 'hr', label: 'Hrvatski' },
+            { code: 'it', label: 'Italiano' },
+            { code: 'ja', label: '日本語' },
+            { code: 'ko', label: '한국어' },
+            { code: 'zh', label: '中文' },
+            { code: 'tr', label: 'Türkçe' },
+            { code: 'ar', label: 'العربية' }
          ];
 
          modal.innerHTML = `
                <div class="hj-dialog custom-scrollbar p-6 max-w-sm w-full max-h-[86vh] overflow-y-auto">
-                   <h3 class="text-xl font-extrabold tracking-tight text-white mb-4 text-center">Language / Sprache</h3>
-                   <div class="grid grid-cols-2 gap-3">
+                   <h3 class="hj-wordmark text-[1.9rem] mb-5 text-center">Language</h3>
+                   <div class="grid grid-cols-2 gap-2">
                        ${langs.map(l => `
-                           <button class="lang-option hj-option p-3 min-h-[44px] flex items-center gap-3 ${lang === l.code ? 'is-selected' : ''}" data-code="${l.code}">
-                               <span class="text-2xl">${l.flag}</span>
-                               <span class="text-white font-bold text-sm">${l.label}</span>
+                           <button class="lang-option hj-option px-4 py-3 min-h-[3.25rem] flex flex-col items-start justify-center text-start ${lang === l.code ? 'is-selected' : ''}" data-code="${l.code}" lang="${l.code}">
+                               <span class="text-sm font-medium text-ivory">${l.label}</span>
+                               <span class="hj-eyebrow mt-0.5 text-[9px]" aria-hidden="true">${l.code}</span>
                            </button>
                        `).join('')}
                    </div>
                    <button id="close-lang-btn" class="hj-btn hj-btn-ghost w-full mt-6">
-                       Cancel
+                       ${t('general.cancel')}
                    </button>
                </div>
            `;
@@ -449,7 +438,7 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
    let userMarker = null; // Re-introduced
 
    if (mapContainer && !map) {
-      mapContainer.innerHTML = `<div class="hj-screen flex flex-col h-full w-full items-center justify-center z-50 relative"><svg class="animate-spin h-10 w-10 text-ember-400 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="text-white/80 font-semibold">${t('messages.locating_position') || 'GPS wird gesucht...'}</span></div>`;
+      mapContainer.innerHTML = `<div class="hj-screen flex flex-col h-full w-full items-center justify-center z-50 relative"><svg class="animate-spin h-8 w-8 text-ivory/70 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="hj-eyebrow">${t('messages.locating_position') || 'GPS wird gesucht...'}</span></div>`;
 
       // Toast Helper
       const showToast = (msg, isError = false) => {
@@ -873,7 +862,7 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
                // Visual feedback
                const btn = m.getElement()?.querySelector('.hydrant-marker-visual');
                if (btn) {
-                  btn.style.backgroundColor = '#1fa8d8';
+                  btn.style.backgroundColor = '#0e0d0c';
                   btn.style.transform = 'scale(1.2)';
                   btn.style.borderWidth = '4px';
                }

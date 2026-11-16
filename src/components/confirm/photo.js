@@ -127,12 +127,12 @@ export function initPhoto(element, imageBlob, location, editMode) {
         zoomOverlay = document.createElement('div');
         zoomOverlay.className = 'hj-backdrop fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 animate-fade-in';
         zoomOverlay.innerHTML = `
-          <img src="${blobUrl}" class="max-w-[90vw] max-h-[70vh] rounded-3xl border border-white/15 shadow-2xl object-contain mb-6" alt="${t('confirm.preview_alt')}" />
+          <img src="${blobUrl}" class="max-w-[90vw] max-h-[70vh] rounded-3xl border border-ivory/20 shadow-2xl object-contain mb-6" alt="${t('confirm.preview_alt')}" />
           <div class="flex gap-3">
             <button id="zoom-back-btn" class="hj-btn hj-btn-ghost px-8">
               ${t('confirm.cancel_btn')}
             </button>
-            <button id="zoom-save-btn" class="hj-btn hj-btn-success px-8">
+            <button id="zoom-save-btn" class="hj-btn hj-btn-light px-8">
               ${t('confirm.save_btn')}
             </button>
           </div>
