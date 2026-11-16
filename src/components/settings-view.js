@@ -7,77 +7,73 @@ import { initGamificationWidget } from '../controllers/gamification-controller.j
 export function renderSettingsView() {
   // Check Login Status for Dynamic UI
   let loginStatusHTML = `
-            <div id="auth-status" class="mb-6 text-center py-4 bg-black/20 rounded-xl hidden relative">
-                <p class="text-gray-400 text-sm mb-2">${t('settings.account')}</p>
+            <div id="auth-status" class="mb-5 text-center py-4 hidden relative">
+                <p class="hj-eyebrow mb-3">${t('settings.account')}</p>
                 <div class="flex flex-col items-center justify-center gap-3">
                     <div id="user-avatar-container" class="hidden">
-                        <img id="user-avatar" src="" alt="Avatar" class="w-16 h-16 rounded-full border-2 border-green-400 shadow-lg object-cover">
+                        <img id="user-avatar" src="" alt="Avatar" class="w-20 h-20 rounded-full ring-2 ring-emerald-400/80 ring-offset-4 ring-offset-ink-800 shadow-xl object-cover">
                     </div>
-                    <p id="user-display" class="text-xl font-bold text-green-400">...</p>
+                    <p id="user-display" class="text-xl font-extrabold tracking-tight text-white">...</p>
                 </div>
             </div>
 
-            <p class="text-sm text-gray-400 mb-8 leading-relaxed" id="auth-help">
+            <p class="text-sm text-white/50 mb-6 leading-relaxed" id="auth-help">
                ${t('intro.login_osm')}
             </p>
 
-            <button id="login-btn" class="w-full py-4 bg-[#7EBC6F] hover:bg-[#6CAE5D] text-white rounded-xl font-bold shadow-lg shadow-green-900/20 active:scale-95 transition flex items-center justify-center gap-3">
+            <button id="login-btn" class="hj-btn hj-btn-success w-full">
                <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-1.07 3.97-2.9 5.39z"/></svg>
                <span>${t('settings.connect_btn')}</span>
             </button>
             
-            <div id="logout-btn" class="grid grid-cols-2 gap-2 w-full mt-4 hidden transition">
-               <button id="history-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-bold shadow-lg border border-gray-700 flex items-center justify-center gap-2">
+            <div id="logout-btn" class="grid grid-cols-2 gap-2 w-full mt-2 hidden transition">
+               <button id="history-btn" class="hj-btn hj-btn-ghost w-full text-sm">
                   ${t('settings.history_btn')}
                </button>
-               <button id="real-logout-btn" class="w-full py-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold">
+               <button id="real-logout-btn" class="hj-btn hj-btn-danger w-full text-sm">
                   ${t('settings.disconnect_btn')}
                </button>
             </div>
   `;
 
   return `
-    <div class="h-full w-full bg-slate-900 text-white flex flex-col p-6 pt-safe animate-fade-in relative overflow-hidden">
-      <!-- Background Decorative -->
-      <div class="absolute -top-20 -right-20 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="hj-screen h-full w-full flex flex-col px-5 pb-5 pt-safe animate-fade-in relative overflow-hidden">
 
       <!-- Header -->
-      <div class="flex items-center justify-between w-full mb-8 z-10">
-         <div class="flex items-center gap-4">
-             <div class="bg-gray-800 p-3 rounded-2xl shadow-lg border border-gray-700">
-                 <span class="text-3xl">⚙️</span>
-             </div>
-             <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">${t('settings.title')}</h1>
+      <div class="flex items-end justify-between w-full mt-4 mb-5 z-10">
+         <div class="min-w-0">
+             <p class="hj-eyebrow mb-1">Hydranten <span class="hj-ember-text">Jäger</span></p>
+             <h1 class="hj-wordmark text-3xl text-white truncate">${t('settings.title')}</h1>
          </div>
          <!-- Info Button (Always Visible) -->
-         <button id="info-btn" class="w-10 h-10 rounded-full bg-gray-800/80 text-gray-300 hover:text-white hover:bg-gray-700 transition flex items-center justify-center border border-gray-700 ml-4" aria-label="Information">
-            <span class="font-serif italic font-bold text-lg" aria-hidden="true">i</span>
+         <button id="info-btn" class="hj-fab shrink-0 ml-4" aria-label="Information">
+            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.01"/></svg>
          </button>
       </div>
 
       <!-- Login Section -->
-      <div class="flex-grow z-10 text-center flex flex-col items-center justify-start overflow-y-auto w-full px-4 pb-4">
+      <div class="custom-scrollbar flex-grow z-10 text-center flex flex-col items-center justify-start overflow-y-auto w-full pb-4">
          
          <!-- Map Style Section -->
-         <div class="bg-gray-800/80 backdrop-blur-md p-6 rounded-3xl border border-gray-700 shadow-xl w-full max-w-sm mb-6 mt-4">
-             <div class="grid grid-cols-3 gap-3" id="map-style-options">
-                <button class="map-style-btn flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition active:scale-95 text-gray-400" data-style="osm">
-                   <div class="w-10 h-10 rounded-full bg-blue-500/20 border-2 border-blue-400 flex items-center justify-center text-xl">🚗</div>
+         <div class="hj-card p-3 w-full max-w-sm mb-4">
+             <div class="grid grid-cols-3 gap-2" id="map-style-options">
+                <button class="map-style-btn hj-option flex flex-col items-center gap-2 p-3" data-style="osm">
+                   <div class="w-11 h-11 rounded-2xl bg-aqua-400/15 text-aqua-300 flex items-center justify-center" aria-hidden="true"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m9 4-6 2.5v13L9 17l6 3 6-2.5v-13L15 7z"/><path d="M9 4v13M15 7v13"/></svg></div>
                    <span class="text-xs font-bold">Standard</span>
                 </button>
-                <button class="map-style-btn flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition active:scale-95 text-gray-400" data-style="satellite">
-                   <div class="w-10 h-10 rounded-full bg-green-500/20 border-2 border-green-400 flex items-center justify-center text-xl">🛰️</div>
+                <button class="map-style-btn hj-option flex flex-col items-center gap-2 p-3" data-style="satellite">
+                   <div class="w-11 h-11 rounded-2xl bg-emerald-400/15 text-emerald-300 flex items-center justify-center" aria-hidden="true"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
                    <span class="text-xs font-bold">Satellit</span>
                 </button>
-                <button class="map-style-btn flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition active:scale-95 text-gray-400" data-style="topo">
-                   <div class="w-10 h-10 rounded-full bg-orange-500/20 border-2 border-orange-400 flex items-center justify-center text-xl">🏔️</div>
+                <button class="map-style-btn hj-option flex flex-col items-center gap-2 p-3" data-style="topo">
+                   <div class="w-11 h-11 rounded-2xl bg-ember-400/15 text-ember-300 flex items-center justify-center" aria-hidden="true"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m3 19 6-11 4 7 2-3 6 7z"/></svg></div>
                    <span class="text-xs font-bold">Topo</span>
                 </button>
              </div>
          </div>
 
-         <div class="bg-gray-800/80 backdrop-blur-md p-8 rounded-3xl border border-gray-700 shadow-xl w-full max-w-sm" id="login-container">
-            <h2 class="text-xl font-bold mb-6 flex items-center justify-center gap-2">
+         <div class="hj-card p-6 w-full max-w-sm" id="login-container">
+            <h2 class="hj-eyebrow mb-4 flex items-center justify-center gap-2">
                ${t('intro.login_osm')}
             </h2>
             
@@ -85,48 +81,46 @@ export function renderSettingsView() {
          </div>
 
          <!-- Rank / Gamification Section (Separate Box) -->
-         <div id="gamification-container" class="hidden w-full max-w-sm mt-4 bg-gray-800/80 backdrop-blur-md p-6 rounded-3xl border border-gray-700 shadow-xl">
-              <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 text-center">${t('gamification.level_title')}</h3>
+         <div id="gamification-container" class="hj-card hidden w-full max-w-sm mt-4 p-3">
+              <h3 class="hj-eyebrow mt-2 mb-3 text-center">${t('gamification.level_title')}</h3>
               
-              <div class="bg-gradient-to-br from-red-900/40 to-black p-6 rounded-3xl border border-red-500/30 relative overflow-hidden flex flex-col items-center">
-                 <!-- Background Icon -->
-                 <div class="absolute -right-4 -bottom-4 text-9xl opacity-10 pointer-events-none">🚒</div>
+              <div class="bg-[radial-gradient(120%_80%_at_50%_0%,rgba(255,90,43,0.32),transparent_65%)] bg-ink-950/60 p-6 rounded-[1.25rem] border border-ember-500/30 relative overflow-hidden flex flex-col items-center">
                  
                  <!-- Badge (Larger & Centered) -->
-                 <div class="w-32 h-32 mb-4 bg-transparent flex items-center justify-center filter drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" id="rank-badge">
+                 <div class="w-32 h-32 mb-4 bg-transparent flex items-center justify-center filter drop-shadow-[0_0_22px_rgba(255,106,43,0.55)]" id="rank-badge">
                     <!-- SVG inserted here -->
                  </div>
 
                  <!-- Rank Name -->
-                 <div class="text-2xl font-bold text-white mb-6 text-center tracking-wide" id="rank-name">Feuerwehranwärter</div>
+                 <div class="hj-wordmark text-2xl text-white mb-6 text-center" id="rank-name">Feuerwehranwärter</div>
                  
                  <!-- Progress Bar -->
-                 <div class="relative w-full h-4 bg-gray-800 rounded-full overflow-hidden mb-2 border border-gray-700">
-                     <div id="rank-progress" class="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-500 via-red-500 to-red-600 w-0 transition-all duration-1000 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
+                 <div class="relative w-full h-2.5 bg-white/10 rounded-full overflow-hidden mb-2">
+                     <div id="rank-progress" class="absolute top-0 left-0 h-full rounded-full bg-gradient-to-r from-ember-600 via-ember-500 to-ember-300 w-0 transition-all duration-1000 shadow-[0_0_12px_rgba(255,106,43,0.7)]"></div>
                  </div>
                  
-                 <div class="flex justify-between w-full text-xs text-gray-400 font-mono px-1">
+                 <div class="flex justify-between w-full text-xs text-white/50 font-mono tabular-nums px-1">
                      <span id="rank-current-count">0</span>
                      <span id="rank-next-count">10</span>
                  </div>
                  
-                 <p class="text-sm text-center mt-4 text-gray-300 font-medium" id="rank-message">
+                 <p class="text-sm text-center mt-4 text-white/70 font-medium" id="rank-message">
                     Noch 10 bis zum nächsten Level!
                  </p>
               </div>
          </div>
          
          <!-- Force Reset Button -->
-         <button id="reset-btn" class="w-full max-w-sm py-3 bg-red-900/10 text-red-600 rounded-xl font-bold mt-8 border border-red-500/10 hover:bg-red-900/20 transition text-sm">
+         <button id="reset-btn" class="w-full max-w-sm min-h-11 py-3 text-red-400/80 hover:text-red-300 rounded-xl font-semibold mt-6 transition text-xs underline underline-offset-4 decoration-red-400/30">
              ${t('settings.app_reset')}
          </button>
       </div>
 
-      <div class="z-10 mt-auto">
-         <button id="back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
+      <div class="z-10 mt-auto pt-3">
+         <button id="back-btn" class="hj-btn hj-btn-ghost w-full">
             ${t('settings.back_btn')}
          </button>
-         <p class="text-center text-[10px] text-gray-600 mt-4">Version ${APP_VERSION} (Stable) • ${APP_NAME}</p>
+         <p class="text-center text-[10px] text-white/30 mt-3">Version ${APP_VERSION} (Stable) • ${APP_NAME}</p>
       </div>
     </div>
   `;
@@ -206,16 +200,16 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
   if (infoBtn) {
     infoBtn.onclick = () => {
       const modal = document.createElement('dialog');
-      modal.className = "m-0 p-0 absolute inset-0 z-[100] flex items-center justify-center bg-black/90 p-6 backdrop-blur-md w-full h-full max-w-full max-h-full bg-transparent";
+      modal.className = "hj-backdrop m-0 absolute inset-0 z-[100] flex items-center justify-center p-5 w-full h-full max-w-full max-h-full";
       modal.setAttribute('aria-modal', 'true');
       modal.innerHTML = `
-            <div class="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl overflow-y-auto max-h-[80vh]">
-                <h3 class="text-xl font-bold text-white mb-4">${t('intro.info_legal')}</h3>
+            <div class="hj-dialog custom-scrollbar p-6 max-w-sm w-full overflow-y-auto max-h-[80vh]">
+                <h3 class="text-xl font-extrabold tracking-tight text-white mb-4">${t('intro.info_legal')}</h3>
                 
                 <div class="space-y-4 text-sm text-gray-300">
                     <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v${APP_VERSION})</p>
                     
-                    <div class="border-l-2 border-gray-600 pl-3 py-1">
+                    <div class="border-l-2 border-white/15 pl-3 py-1">
                         <h4 class="font-bold text-white mb-1">${t('intro.info_impressum')}</h4>
                         <p class="text-xs text-gray-400 mb-1">${t('legal.tmg_header')}</p>
                         <p>Frank März</p>
@@ -235,15 +229,15 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
 
                     <div>
                         <h4 class="font-bold text-white">${t('intro.info_license')}</h4>
-                        <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">© OpenStreetMap contributors</a>.</p>
+                        <p>Data <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-aqua-300 hover:text-aqua-400 underline">© OpenStreetMap contributors</a>.</p>
                         <p>Code: MIT License</p>
-                        <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline mt-1 block">
+                        <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" rel="noopener noreferrer" class="text-aqua-300 hover:text-aqua-400 underline mt-1 block">
                             📂 ${t('intro.info_github')}
                         </a>
                     </div>
                 </div>
 
-                <button id="close-info-btn" class="w-full mt-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition">
+                <button id="close-info-btn" class="hj-btn hj-btn-primary w-full mt-6">
                     OK
                 </button>
             </div>
@@ -269,7 +263,7 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
       }
 
       userDisplay.innerText = diffName;
-      userDisplay.className = username.startsWith("Error") ? "text-xs font-mono text-red-400 break-words" : "text-xl font-bold text-green-400";
+      userDisplay.className = username.startsWith("Error") ? "text-xs font-mono text-red-400 break-words" : "text-xl font-extrabold tracking-tight text-white";
 
       const img = localStorage.getItem('osm_user_img');
       const avatarContainer = element.querySelector('#user-avatar-container');

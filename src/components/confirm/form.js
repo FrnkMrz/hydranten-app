@@ -66,7 +66,7 @@ export function initFormLogic(element, location, editMode, initialData) {
     if (gridMain && gridSub) {
         // Render Main
         gridMain.innerHTML = mainTypes.map(opt => `
-             <button type="button" class="option-btn h-24 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-[1.02] active:scale-95 transition flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
+             <button type="button" class="option-btn hj-option h-24 flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
                 <span aria-hidden="true">${opt.icon}</span>
                 <span class="text-sm font-bold uppercase tracking-tight" aria-hidden="true">${opt.label}</span>
              </button>
@@ -74,9 +74,9 @@ export function initFormLogic(element, location, editMode, initialData) {
 
         // Render Sub
         gridSub.innerHTML = subTypes.map(opt => `
-             <button type="button" class="option-btn h-16 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
+             <button type="button" class="option-btn hj-option h-[4.5rem] flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
                 <span aria-hidden="true">${opt.icon}</span>
-                <span class="text-[9px] font-bold uppercase tracking-tight" aria-hidden="true">${opt.label}</span>
+                <span class="max-w-full px-0.5 text-center text-[8px] leading-[1.1] font-bold uppercase tracking-tighter hyphens-auto [overflow-wrap:anywhere]" aria-hidden="true">${opt.label}</span>
              </button>
        `).join('');
     }
@@ -154,12 +154,12 @@ export function initFormLogic(element, location, editMode, initialData) {
         if (submitBtn) {
             if (hasChanges) {
                 submitBtn.innerHTML = `<span>☁️ ${t('confirm.update_btn')}</span>`;
-                submitBtn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
-                submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                submitBtn.classList.remove('hj-btn-ghost');
+                submitBtn.classList.add('hj-btn-success');
             } else {
                 submitBtn.innerHTML = `<span>${t('confirm.back_btn_label')}</span>`;
-                submitBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                submitBtn.classList.add('bg-gray-700', 'hover:bg-gray-600');
+                submitBtn.classList.remove('hj-btn-success');
+                submitBtn.classList.add('hj-btn-ghost');
             }
         }
     };
@@ -172,13 +172,9 @@ export function initFormLogic(element, location, editMode, initialData) {
         if (typeInput) typeInput.value = val;
 
         optionBtns.forEach(btn => {
-            if (btn.dataset.value === val) {
-                btn.classList.add('border-green-500', 'bg-green-900/30', 'text-white', 'shadow-md');
-                btn.classList.remove('border-transparent', 'bg-gray-800', 'text-gray-400');
-            } else {
-                btn.classList.remove('border-green-500', 'bg-green-900/30', 'text-white', 'shadow-md');
-                btn.classList.add('border-transparent', 'bg-gray-800', 'text-gray-400');
-            }
+            const isSelected = btn.dataset.value === val;
+            btn.classList.toggle('is-selected', isSelected);
+            btn.setAttribute('aria-pressed', String(isSelected));
         });
 
         // Visibility Toggles
@@ -251,13 +247,9 @@ export function initFormLogic(element, location, editMode, initialData) {
     const updatePos = (val) => {
         if (posInput) posInput.value = val;
         posBtns.forEach(btn => {
-            if (btn.dataset.value === val) {
-                btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
-                btn.classList.remove('text-gray-400');
-            } else {
-                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
-                btn.classList.add('text-gray-400');
-            }
+            const isSelected = btn.dataset.value === val;
+            btn.classList.toggle('is-selected', isSelected);
+            btn.setAttribute('aria-pressed', String(isSelected));
         });
         checkChanges();
     };
@@ -270,13 +262,9 @@ export function initFormLogic(element, location, editMode, initialData) {
     const updateSign = (val) => {
         if (signInput) signInput.value = val;
         signBtns.forEach(btn => {
-            if (btn.dataset.value === val) {
-                btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
-                btn.classList.remove('text-gray-400', 'bg-gray-800');
-            } else {
-                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
-                btn.classList.add('text-gray-400');
-            }
+            const isSelected = btn.dataset.value === val;
+            btn.classList.toggle('is-selected', isSelected);
+            btn.setAttribute('aria-pressed', String(isSelected));
         });
         checkChanges();
     };

@@ -1,14 +1,38 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------ */
+/* Design tokens: "Ember & Ink"                                         */
+/* Deep ink surfaces, an ember gradient for actions, aqua for location. */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-ink-950: #06070b;
+  --color-ink-900: #0b0d13;
+  --color-ink-800: #12151d;
+  --color-ink-700: #1a1e29;
+  --color-ink-600: #262b38;
+  --color-ember-300: #ffb37a;
+  --color-ember-400: #ff8a3d;
+  --color-ember-500: #ff5a2b;
+  --color-ember-600: #f0321e;
+  --color-aqua-300: #8adcf7;
+  --color-aqua-400: #4cc9f0;
+  --color-aqua-500: #1fa8d8;
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --hj-ember: linear-gradient(135deg, #ff3d2e 0%, #ff6a2b 55%, #ff9a3d 100%);
+  --hj-hairline: rgba(255, 255, 255, 0.09);
+  --hj-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  font-family: var(--font-sans);
   line-height: 1.5;
   font-weight: 400;
+  font-feature-settings: "ss01", "cv11";
 
   color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: rgba(255, 255, 255, 0.9);
   background-color: #000;
-  /* Black background for desktop frame */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -20,11 +44,16 @@ body {
   margin: 0;
   width: 100%;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   display: flex;
   /* Center the app on desktop */
   align-items: center;
   justify-content: center;
+  background:
+    radial-gradient(60% 50% at 20% 10%, rgba(255, 90, 43, 0.16), transparent 70%),
+    radial-gradient(50% 50% at 85% 90%, rgba(76, 201, 240, 0.1), transparent 70%),
+    #040507;
 }
 
 #app {
@@ -34,11 +63,13 @@ body {
   /* Mobile constraint */
   max-height: 900px;
   /* Optional height constraint for ultra-wide monitors */
-  background-color: #1a1a1a;
+  background-color: var(--color-ink-900);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-  /* Shadow for pop feeling */
+  border-radius: 2.25rem;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 40px 120px -20px rgba(0, 0, 0, 0.9);
 }
 
 /* Mobile-first override: Tablets & Phones up to 768px */
@@ -53,7 +84,7 @@ body {
 /* Force full screen when installed as PWA (standalone) */
 @media all and (display-mode: standalone) {
   body {
-    background-color: #1a1a1a;
+    background: var(--color-ink-900);
     /* Match app bg */
   }
 
@@ -78,7 +109,7 @@ body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fadeIn 0.4s var(--hj-ease) both;
 }
 
 /* Safe Area Utilities */
@@ -112,8 +143,439 @@ textarea {
 }
 
 :focus-visible {
-  outline: 3px solid #60a5fa;
+  outline: 3px solid var(--color-aqua-400);
   outline-offset: 3px;
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Components                                                           */
+/* ------------------------------------------------------------------ */
+@layer components {
+  /* Full-screen page background with a soft ember and aqua glow. */
+  .hj-screen {
+    color: #f4f5f7;
+    background:
+      radial-gradient(110% 55% at 100% 0%, rgba(255, 90, 43, 0.16), transparent 62%),
+      radial-gradient(90% 45% at 0% 100%, rgba(76, 201, 240, 0.09), transparent 62%),
+      var(--color-ink-900);
+  }
+
+  .hj-card {
+    border-radius: 1.5rem;
+    border: 1px solid var(--hj-hairline);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 24px 48px -28px rgba(0, 0, 0, 0.9);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+  }
+
+  /* Bottom sheet on the home screen. */
+  .hj-sheet {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 2rem 2rem 0 0;
+    background:
+      radial-gradient(120% 70% at 50% 0%, rgba(255, 90, 43, 0.1), transparent 60%),
+      linear-gradient(180deg, #141821 0%, var(--color-ink-900) 55%);
+    box-shadow: 0 -24px 60px -10px rgba(0, 0, 0, 0.75);
+    animation: hj-rise 0.6s var(--hj-ease) both;
+  }
+
+  .hj-grabber {
+    width: 2.5rem;
+    height: 0.3rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .hj-wordmark {
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  .hj-ember-text {
+    background: var(--hj-ember);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hj-eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Buttons ---------------------------------------------------------- */
+  .hj-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3.25rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 1.125rem;
+    border: 1px solid transparent;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.18s var(--hj-ease), filter 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hj-btn:active {
+    transform: scale(0.97);
+  }
+
+  .hj-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  .hj-btn-primary {
+    overflow: hidden;
+    background: var(--hj-ember);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      inset 0 -2px 0 rgba(120, 20, 0, 0.25),
+      0 18px 36px -14px rgba(255, 80, 40, 0.75);
+    text-shadow: 0 1px 1px rgba(120, 20, 0, 0.35);
+  }
+
+  .hj-btn-primary:hover {
+    filter: brightness(1.07);
+  }
+
+  /* Slow light sweep across the main call to action. */
+  .hj-btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.32) 50%, transparent 65%);
+    transform: translateX(-120%);
+    animation: hj-sheen 4.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .hj-btn-success {
+    background: linear-gradient(135deg, #047857 0%, #059669 55%, #10b981 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 18px 36px -16px rgba(16, 185, 129, 0.7);
+  }
+
+  .hj-btn-success:hover {
+    filter: brightness(1.08);
+  }
+
+  .hj-btn-ghost {
+    color: #e7e9ee;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .hj-btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .hj-btn-danger {
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.32);
+  }
+
+  .hj-btn-danger:hover {
+    background: rgba(239, 68, 68, 0.18);
+  }
+
+  .hj-btn-danger-solid {
+    background: linear-gradient(135deg, #b91c1c, #ef4444);
+    box-shadow: 0 16px 32px -16px rgba(239, 68, 68, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  /* Round floating buttons on maps and the camera. */
+  .hj-fab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(11, 13, 19, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    backdrop-filter: blur(14px) saturate(160%);
+    transition: transform 0.18s var(--hj-ease), background-color 0.2s ease;
+  }
+
+  .hj-fab:hover {
+    background: rgba(11, 13, 19, 0.86);
+  }
+
+  .hj-fab:active {
+    transform: scale(0.92);
+  }
+
+  .hj-fab-aqua {
+    background: linear-gradient(135deg, #1fa8d8, #4cc9f0);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #04202b;
+    box-shadow: 0 12px 26px -8px rgba(31, 168, 216, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  }
+
+  .hj-fab-aqua:hover {
+    background: linear-gradient(135deg, #2bb5e4, #6ad4f4);
+  }
+
+  /* Small glass status pill. */
+  .hj-pill {
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(11, 13, 19, 0.74);
+    box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.7);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    backdrop-filter: blur(14px) saturate(160%);
+  }
+
+  .hj-toast {
+    max-width: calc(100% - 2rem);
+    padding: 0.7rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(18, 21, 29, 0.92);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: center;
+    box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.8);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .hj-toast-error {
+    border-color: rgba(255, 90, 43, 0.5);
+    background: linear-gradient(180deg, rgba(64, 18, 10, 0.95), rgba(34, 12, 10, 0.95));
+    color: #ffd9cc;
+  }
+
+  /* Home screen step strip. */
+  .hj-step-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.95rem;
+    color: var(--color-ember-300);
+    background: linear-gradient(160deg, rgba(255, 106, 43, 0.22), rgba(255, 106, 43, 0.06));
+    border: 1px solid rgba(255, 138, 61, 0.28);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  /* Form controls ---------------------------------------------------- */
+  .hj-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+
+  .hj-input::placeholder {
+    color: rgba(255, 255, 255, 0.32);
+  }
+
+  .hj-input:focus {
+    border-color: rgba(255, 138, 61, 0.75);
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 0 4px rgba(255, 106, 43, 0.16);
+  }
+
+  select.hj-input option {
+    background: var(--color-ink-800);
+    color: #fff;
+  }
+
+  /* Selectable tiles (hydrant type, map style, language). */
+  .hj-option {
+    border-radius: 1.125rem;
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.045);
+    color: rgba(255, 255, 255, 0.62);
+    transition: transform 0.18s var(--hj-ease), border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hj-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .hj-option:active {
+    transform: scale(0.96);
+  }
+
+  .hj-option.is-selected {
+    color: #fff;
+    border-color: var(--color-ember-400);
+    background: linear-gradient(160deg, rgba(255, 106, 43, 0.26), rgba(255, 61, 46, 0.08));
+    box-shadow: 0 14px 28px -16px rgba(255, 90, 43, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  }
+
+  /* Segmented control. */
+  .hj-seg {
+    padding: 0.25rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(0, 0, 0, 0.28);
+  }
+
+  .hj-seg-btn {
+    border-radius: 0.75rem;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 700;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hj-seg-btn.is-selected {
+    color: #fff;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.1));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 6px 14px -8px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Dialogs ---------------------------------------------------------- */
+  .hj-backdrop {
+    background: rgba(4, 5, 8, 0.74);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    backdrop-filter: blur(14px) saturate(120%);
+  }
+
+  .hj-dialog {
+    border-radius: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background:
+      radial-gradient(120% 60% at 50% 0%, rgba(255, 255, 255, 0.07), transparent 60%),
+      var(--color-ink-800);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 40px 80px -20px rgba(0, 0, 0, 0.9);
+    animation: hj-pop 0.35s var(--hj-ease) both;
+  }
+
+  .hj-dialog-error {
+    border-color: rgba(239, 68, 68, 0.45);
+  }
+
+  .hj-spinner {
+    border-radius: 999px;
+    border: 3px solid rgba(255, 255, 255, 0.14);
+    border-top-color: var(--color-ember-400);
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+/* Thin scrollbars inside cards and logs. */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Leaflet polish ----------------------------------------------------- */
+.leaflet-container {
+  background: var(--color-ink-800);
+  font-family: inherit;
+}
+
+.leaflet-container .leaflet-control-attribution {
+  margin: 0 0.5rem 0.5rem 0;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(11, 13, 19, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 9px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.leaflet-container .leaflet-control-attribution a {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.leaflet-bar {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 0.9rem !important;
+  box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.7) !important;
+}
+
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  background: rgba(11, 13, 19, 0.82);
+  color: #fff;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.hydrant-marker-visual {
+  box-shadow: 0 0 0 3px rgba(11, 13, 19, 0.28), 0 6px 14px -4px rgba(0, 0, 0, 0.65);
+}
+
+@keyframes hj-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hj-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes hj-sheen {
+  0%,
+  55% {
+    transform: translateX(-120%);
+  }
+
+  85%,
+  100% {
+    transform: translateX(120%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
