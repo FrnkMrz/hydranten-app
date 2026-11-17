@@ -148,7 +148,14 @@ describe('hydrant-logic', () => {
         it('removes hydrant-only tags when an object becomes an AED', () => {
             const current = { emergency: 'fire_hydrant', 'fire_hydrant:type': 'pillar', 'fire_hydrant:diameter': '100', ref: 'H1', water_source: 'main', name: 'x' };
             const tags = prepareHydrantTags(current, 'aed', '', '', '', '', '', '', 'unknown', {});
-            expect(tags).toEqual({ emergency: 'defibrillator', name: 'x' });
+            // ref stays: the AED mask shows it as an existing value and nothing is ever deleted silently
+            expect(tags).toEqual({ emergency: 'defibrillator', name: 'x', ref: 'H1' });
+        });
+
+        it('keeps ref, note and description when a hydrant becomes an AED', () => {
+            const current = { emergency: 'fire_hydrant', 'fire_hydrant:type': 'pillar', ref: 'H1', note: 'N', description: 'D' };
+            const tags = prepareHydrantTags(current, 'aed', '', '', '', '', '', '', 'unknown', {});
+            expect(tags).toEqual({ emergency: 'defibrillator', ref: 'H1', note: 'N', description: 'D' });
         });
 
         it('does not change hydrant tags (regression)', () => {

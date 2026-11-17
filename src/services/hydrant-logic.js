@@ -35,12 +35,28 @@ const HYDRANT_FORM_KEYS = [
 ];
 
 /**
+ * Keys that only make sense for a hydrant. They are removed when an object becomes an AED.
+ * `ref`, `note` and `description` are NOT in this list: the AED mask shows `ref` and `description`
+ * as existing values and this app never deletes data, so these three stay.
+ */
+const HYDRANT_ONLY_KEYS = [
+    'fire_hydrant:type',
+    'fire_hydrant:position',
+    'fire_hydrant:diameter',
+    'fire_hydrant:diameter:signed',
+    'ref:signed',
+    'water_source',
+    'water_tank:volume'
+];
+
+/**
  * Builds the tags for an AED.
  *
  * - Existing AED: ALL existing tags stay. Only the planned additions and corrections are applied.
  *   Nothing is deleted, so an unknown or empty field never removes data from OpenStreetMap.
- * - Object that was something else (for example a hydrant) and becomes an AED: the hydrant form keys
- *   are removed first, because they do not belong to an AED.
+ * - Object that was something else (for example a hydrant) and becomes an AED: the hydrant-only keys
+ *   (type, position, diameter, water source, ...) are removed, because they do not belong to an AED.
+ *   `ref`, `note` and `description` stay, because the AED mask shows them as existing values.
  *
  * @param {Object} currentTags - The tags the object has now ({} for a new AED).
  * @param {Object} aedTags - The checked AED detail tags to write (from planAedChanges).
@@ -49,7 +65,7 @@ const HYDRANT_FORM_KEYS = [
 function prepareAedTags(currentTags, aedTags) {
     const tags = { ...currentTags };
     if (currentTags?.emergency !== 'defibrillator') {
-        HYDRANT_FORM_KEYS.forEach(key => delete tags[key]);
+        HYDRANT_ONLY_KEYS.forEach(key => delete tags[key]);
     }
     tags['emergency'] = 'defibrillator';
     Object.assign(tags, aedTags);

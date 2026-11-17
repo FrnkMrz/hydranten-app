@@ -471,10 +471,16 @@ export function initAedForm(root, { editMode, initialData, onChange }) {
     return {
         /** The current plan: {ok, additions, corrections, tags} or {ok: false, key, problem}. */
         getPlan: () => planAedChanges(form, existing, 'correct'),
-        /** Did the person change anything that would be written? (Edit mode dirty check.) */
+        /**
+         * Did the person change anything? (Edit mode dirty check.)
+         * An INVALID entry counts as a change too: otherwise one bad field would make the whole form look
+         * unchanged, the save button would silently leave the screen and all other edits would be lost.
+         * With the change flag set, saving runs the validation and jumps to the field with the problem.
+         */
         hasChanges: () => {
             const plan = planAedChanges(form, existing, 'correct');
-            return plan.ok && (Object.keys(plan.additions).length > 0 || plan.corrections.length > 0);
+            if (!plan.ok) return true;
+            return Object.keys(plan.additions).length > 0 || plan.corrections.length > 0;
         },
         /** Shows the problem of a failed plan and jumps to the field. */
         showProblem: plan => showProblem(plan, true)

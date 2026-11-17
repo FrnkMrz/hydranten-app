@@ -206,6 +206,38 @@ describe('AED mask: edit existing AED', () => {
         expect(window.__pwned).toBeUndefined();
     });
 
+    it('counts an invalid entry as a change, so saving cannot silently drop the other edits', () => {
+        const { element, logic } = mount({
+            editMode: true,
+            initialData: node({ emergency: 'defibrillator' })
+        });
+        expect(logic.hasChanges()).toBe(false);
+        const location = element.querySelector('#aed-location');
+        location.value = 'Foyer';
+        location.dispatchEvent(new Event('input'));
+        element.querySelector('#aed-more').open = true;
+        const phone = element.querySelector('#aed-phone');
+        phone.value = 'abc';
+        phone.dispatchEvent(new Event('input'));
+        expect(logic.aedForm.getPlan().ok).toBe(false);
+        expect(logic.aedForm.hasChanges()).toBe(true);
+        expect(logic.hasChanges()).toBe(true);
+    });
+
+    it('a hydrant converted to an AED keeps its reference when saving', () => {
+        const current = { emergency: 'fire_hydrant', 'fire_hydrant:type': 'pillar', ref: 'H1' };
+        const { element, logic } = mount({ editMode: true, initialData: node(current) });
+        click(element, '#type-grid-aed .option-btn');
+        // the AED mask shows the reference as an existing value ...
+        expect(element.querySelector('#aed-ref').value).toBe('H1');
+        // ... and saving keeps it
+        const plan = logic.aedForm.getPlan();
+        const saved = prepareHydrantTags(current, 'aed', '', '', '', '', '', '', 'unknown', plan.tags);
+        expect(saved.ref).toBe('H1');
+        expect(saved.emergency).toBe('defibrillator');
+        expect(saved['fire_hydrant:type']).toBeUndefined();
+    });
+
     it('marks a hydrant as unchanged by the AED mask (hydrant dirty check is untouched)', () => {
         const { logic } = mount({
             editMode: true,
