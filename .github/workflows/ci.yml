@@ -26,7 +26,8 @@ jobs:
       run: npm ci
 
     - name: Audit npm Dependencies
-      run: npm audit --audit-level=high
+      # High/critical advisories fail the build; documented exceptions live in scripts/audit-check.js.
+      run: node scripts/audit-check.js
       
     - name: Lint (ESLint)
       run: npm run lint
