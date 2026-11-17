@@ -30,7 +30,14 @@ describe('Taginfo project metadata', () => {
                 'ref',
                 'ref:signed',
                 'note',
-                'description'
+                'description',
+                'defibrillator:location',
+                'level',
+                'operator',
+                'phone',
+                'access',
+                'indoor',
+                'opening_hours'
             ].map(key => expect.objectContaining({ key, object_types: ['node'], description: expect.any(String) }))
         ]));
     });

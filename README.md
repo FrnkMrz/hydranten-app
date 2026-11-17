@@ -22,9 +22,9 @@ Version 1.7.0 mit AED-Unterstützung, verbessertem Edit-Modus und den zugehörig
 ### AED mit der App erfassen
 
 1. Bei OpenStreetMap anmelden und **Starten** wählen.
-2. Ein Foto des AED aufnehmen. Auf der Bestätigungsseite **Defibrillator** auswählen.
-3. Den Standort auf der kleinen Karte prüfen oder anpassen und bekannte Angaben zu Zugang, Innen-/Außenlage, Öffnungszeiten und Referenz ergänzen.
-4. Angaben prüfen und zu OpenStreetMap hochladen. Bestehende AEDs lassen sich über ihren Kartenmarker öffnen und bearbeiten.
+2. Ein Foto des AED aufnehmen. Auf der Bestätigungsseite ganz unten **Defibrillator** auswählen (unter den Hydranten-Typen). Es erscheint eine eigene AED-Maske; die Hydranten-Felder sind dann ausgeblendet.
+3. Den Standort auf der kleinen Karte prüfen oder anpassen. In der AED-Maske sind alle Angaben freiwillig; „Keine Angabe“ speichert nichts: Standortbeschreibung (mit Schnellwahl), Zugang, Zugangszeiten, Innenraum, Ebene (nur bei „Drinnen“) und unter „Mehr Angaben“ Betreiber, Telefon, Notiz und Nummer am Gerät.
+4. Die Zusammenfassung „Das wird gespeichert“ prüfen und zu OpenStreetMap hochladen. Bestehende AEDs lassen sich über ihren Kartenmarker öffnen und bearbeiten: Die Maske zeigt die bisherigen Werte, Änderungen erscheinen als „alt → neu“. Es wird nie ein Tag gelöscht, ein leeres Feld ändert nichts, fremde Tags und ein vorhandener Zugangscode (`defibrillator:code`) bleiben unberührt.
 
 ### Release-Kandidat 1.8.0: Regionale Datenversorgung
 
@@ -37,6 +37,14 @@ Die regionale Datenversorgung ist in den Release-Kandidaten 1.8.0 aufgenommen, a
 **Betrieb:** Der öffentliche R2-Endpunkt muss CORS-Anfragen vom App-Origin `https://hydrantenjaeger.de` erlauben. Falls die regionale Quelle nicht erreichbar ist, bleibt Overpass als Fallback verfügbar.
 
 ## 📋 Changelog
+
+### Unreleased - Eigene AED-Eingabemaske
+*   **AED ganz unten:** Die Typwahl zeigt in der ersten Reihe nur noch Überflur und Unterflur, darunter die Reihe mit Trockenhydrant, Wandhydrant, Zisterne und Saugstelle. Der Defibrillator ist eine eigene, schlanke Option ganz unten. Die Hydranten-Felder und ihr Verhalten bleiben unverändert.
+*   **Eigene AED-Maske:** Wer „Defibrillator“ wählt, sieht statt der Hydranten-Felder eine eigene Maske mit Standortbeschreibung (`defibrillator:location`), Zugang, Zugangszeiten, Innenraum, Ebene sowie unter „Mehr Angaben“ Betreiber, Telefon, Notiz (`description`) und Nummer am Gerät (`ref`). „Keine Angabe“ ist überall die Vorgabe und schreibt kein Tag; `24/7` nur nach ausdrücklicher Wahl; die Ebene nur bei „Drinnen“.
+*   **Bestehende AEDs bearbeiten:** Die Maske ist mit den OSM-Werten vorbelegt, eine Zusammenfassung zeigt Änderungen als „alt → neu“. Es wird nie ein Tag gelöscht, fremde Tags bleiben unverändert, nicht darstellbare Werte (zum Beispiel `access=permissive`) bleiben gesperrt. Ein alter Ebenenwert bleibt nach „Draußen“ stehen, die Maske sagt das offen.
+*   **Prüfregeln:** Neue Datei `src/services/aed-details.js` mit fester Schlüsselliste, Längengrenzen und Zeichenprüfung (Datenvertrag wie im Schwesterprojekt AEDjaeger). Der Zugangscode `defibrillator:code` wird nie erfasst.
+*   **Sprachen:** 26 neue Texte in allen 15 Sprachen. Die Übersetzungen sind nicht muttersprachlich geprüft.
+*   **Taginfo:** `public/taginfo.json` nennt die neuen Schlüssel `defibrillator:location`, `level`, `operator` und `phone`.
 
 ### v1.8.0 (Release-Kandidat, 15.10.2026) - Regionale Datenversorgung
 *   **Schneller Kartenstart:** Für DACHLiLu werden vorberechnete OpenFireMap-PMTiles zuerst angezeigt; der Overpass-Live-Abgleich ergänzt anschließend neue und geänderte Objekte.

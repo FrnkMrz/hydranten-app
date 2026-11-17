@@ -69,22 +69,42 @@
     {
       "key": "access",
       "object_types": ["node"],
-      "description": "Reads and edits AED access conditions."
+      "description": "Reads and edits AED access conditions (yes, customers, private; other existing values are kept unchanged)."
     },
     {
       "key": "indoor",
       "object_types": ["node"],
-      "description": "Reads and edits whether an AED is located indoors."
+      "description": "Reads and edits whether an AED is located indoors (yes or no)."
+    },
+    {
+      "key": "defibrillator:location",
+      "object_types": ["node"],
+      "description": "Reads and edits the free-text description of where exactly an AED is located."
+    },
+    {
+      "key": "level",
+      "object_types": ["node"],
+      "description": "Reads and edits the level (floor) of an AED that is located indoors."
+    },
+    {
+      "key": "operator",
+      "object_types": ["node"],
+      "description": "Reads and edits the operator of an AED."
+    },
+    {
+      "key": "phone",
+      "object_types": ["node"],
+      "description": "Reads and edits the phone number printed on an AED or its sign."
     },
     {
       "key": "opening_hours",
       "object_types": ["node"],
-      "description": "Reads and edits the opening hours that apply to an AED."
+      "description": "Reads and edits the opening hours that apply to an AED (24/7 only after an explicit choice)."
     },
     {
       "key": "ref",
       "object_types": ["node"],
-      "description": "Reads and edits the hydrant or water tank reference."
+      "description": "Reads and edits the hydrant, water tank or AED reference."
     },
     {
       "key": "ref:signed",
@@ -100,7 +120,7 @@
     {
       "key": "description",
       "object_types": ["node"],
-      "description": "Reads legacy descriptions into the note field when editing; new edits are saved as note."
+      "description": "Reads legacy descriptions into the note field when editing; hydrant notes are saved as note. For AEDs the note for other mappers is saved as description."
     }
   ]
 }
