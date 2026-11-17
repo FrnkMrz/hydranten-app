@@ -75,7 +75,7 @@ a {
 
 .skip-link {
   position: absolute;
-  left: 1rem;
+  inset-inline-start: 1rem;
   top: -4rem;
   z-index: 100;
   padding: 0.6rem 1rem;
@@ -192,7 +192,7 @@ a {
 }
 
 .btn-primary {
-  padding-right: 4.25rem;
+  padding-inline-end: 4.25rem;
   color: #fff;
   background: linear-gradient(180deg, #ee5a3d 0%, #dc3f24 100%);
   box-shadow:
@@ -209,7 +209,7 @@ a {
 
 .btn-disc {
   position: absolute;
-  right: 0.375rem;
+  inset-inline-end: 0.375rem;
   top: 50%;
   display: grid;
   place-items: center;
@@ -571,7 +571,7 @@ a {
 }
 
 .step + .step {
-  border-left: 1px solid var(--hairline);
+  border-inline-start: 1px solid var(--hairline);
 }
 
 .step-top {
@@ -623,7 +623,7 @@ a {
   }
 
   .step:nth-child(3) {
-    border-left: 0;
+    border-inline-start: 0;
   }
 
   .step:nth-child(n + 3) {
@@ -641,7 +641,7 @@ a {
   }
 
   .step + .step {
-    border-left: 0;
+    border-inline-start: 0;
     border-top: 1px solid var(--hairline);
   }
 
@@ -762,7 +762,7 @@ a {
 
 .type-aed .tag {
   display: inline-block;
-  margin-left: 0.5rem;
+  margin-inline-start: 0.5rem;
   padding: 0.1rem 0.55rem;
   border-radius: 999px;
   border: 1px solid rgba(124, 196, 216, 0.35);
@@ -969,7 +969,8 @@ a {
 }
 
 .faq-list .answer {
-  padding: 0 2.5rem 1.4rem 0.25rem;
+  padding-block: 0 1.4rem;
+  padding-inline: 0.25rem 2.5rem;
   color: var(--muted);
 }
 
@@ -991,7 +992,7 @@ a {
   }
 
   .faq-list .answer {
-    padding-right: 0.25rem;
+    padding-inline-end: 0.25rem;
   }
 }
 
@@ -1078,6 +1079,162 @@ a {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Languages                                                            */
+/* ------------------------------------------------------------------ */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.lang-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-inline: 0.25rem;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.lang-switch[hidden] {
+  display: none;
+}
+
+.lang-switch:hover,
+.lang-switch:focus-within {
+  color: var(--ivory);
+}
+
+.lang-switch .icon {
+  position: absolute;
+  inset-inline-start: 0.75rem;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: none;
+}
+
+.lang-switch .chevron {
+  inset-inline-start: auto;
+  inset-inline-end: 0.7rem;
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.lang-switch select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 2.5rem;
+  padding-block: 0.4rem;
+  padding-inline: 2.15rem 1.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(244, 239, 230, 0.18);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.lang-switch select:hover {
+  border-color: rgba(244, 239, 230, 0.3);
+  background: rgba(244, 239, 230, 0.04);
+}
+
+.lang-switch select:focus-visible {
+  outline: 2px solid var(--ivory);
+  outline-offset: 2px;
+}
+
+.lang-switch option {
+  background: var(--ink-800);
+  color: var(--ivory);
+}
+
+/* Labels never wrap inside the bar or in buttons, in any language. */
+.brand-name,
+.btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  /* Brand and language switcher share the bar on phones; the hero and the
+     closing section carry the big "open the app" buttons. */
+  .topnav .btn-sm {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand-name {
+    font-size: 1.2rem;
+  }
+
+  .brand img {
+    width: 1.85rem;
+    height: 1.85rem;
+  }
+
+  .lang-switch select {
+    padding-inline: 2rem 1.6rem;
+    max-width: 9.5rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .brand-name {
+    display: none;
+  }
+}
+
+/* Right-to-left: arrows point the other way. */
+[dir="rtl"] .btn-disc .icon {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .btn-primary:hover .btn-disc {
+  transform: translateX(-3px);
+}
+
+/* Scripts without italics: keep the accent colour, drop the slant, and let
+   the system's own serif carry the display type. */
+:lang(ar) .display em,
+:lang(ja) .display em,
+:lang(ko) .display em,
+:lang(zh) .display em,
+:lang(ar) .brand-name em,
+:lang(ja) .brand-name em,
+:lang(ko) .brand-name em,
+:lang(zh) .brand-name em {
+  font-style: normal;
+}
+
+:lang(ja) .display,
+:lang(ko) .display,
+:lang(zh) .display {
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+:lang(ar) .display {
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+:lang(ar) .eyebrow,
+:lang(ar) .footer h2 {
+  letter-spacing: 0;
 }
 
 /* ------------------------------------------------------------------ */
