@@ -143,7 +143,11 @@ export function renderIntroView() {
               </button>
          </div>
           
-         <div class="mt-4 mb-2 text-center">
+         <div class="mt-3 mb-2 flex flex-col items-center gap-2 text-center">
+             <a id="intro-help-link" href="./help/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-ivory/60 hover:text-ivory transition no-underline">
+                ${icon('question', 'w-4 h-4')}
+                ${t('intro.help_link')}
+             </a>
              <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-[10px] tracking-wide text-ivory/30 hover:text-ivory/60 transition no-underline block">
                 © OpenStreetMap contributors
              </a>
@@ -284,7 +288,10 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                  
                  <div class="space-y-5 text-sm leading-relaxed text-ivory/70">
                      <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v${APP_VERSION})</p>
-                     
+                     <a href="./help/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-ivory underline underline-offset-4 decoration-ivory/30">
+                         ${icon('question', 'w-4 h-4')} ${t('intro.help_link')}
+                     </a>
+
                      <!-- Disclaimer Moved Here -->
                      <div class="rounded-2xl border border-ember-400/35 p-4 text-xs leading-relaxed text-ember-300">
                          <strong>${t('legal.important_header')}</strong><br>

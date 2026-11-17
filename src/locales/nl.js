@@ -20,6 +20,7 @@ export default {
         info_license: "Licentie & Code",
         disclaimer_text: "Niet voor noodgevallen. Geen garantie.\nStart impliceert toestemming voor gegevensgebruik.",
         info_github: "Bekijk op GitHub",
+        help_link: "Handleiding & hulp (Duits)",
         lang_btn_aria: "Taal / Language"
     },
     pwa: {

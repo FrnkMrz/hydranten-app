@@ -207,7 +207,10 @@ export function initSettingsView(element, onBack, onHistory, onShowRankList) {
                 
                 <div class="space-y-5 text-sm leading-relaxed text-ivory/70">
                     <p><strong>${t('intro.title_pre')} ${t('intro.title_post')}</strong> (v${APP_VERSION})</p>
-                    
+                    <a href="./help/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-ivory underline underline-offset-4 decoration-ivory/30">
+                        ${icon('question', 'w-4 h-4')} ${t('intro.help_link')}
+                    </a>
+
                     <div class="border-l border-ivory/20 pl-4 py-1">
                         <h4 class="hj-eyebrow mb-2">${t('intro.info_impressum')}</h4>
                         <p class="text-xs text-ivory/50 mb-1">${t('legal.tmg_header')}</p>

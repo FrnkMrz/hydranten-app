@@ -20,6 +20,7 @@ export default {
         info_license: "许可与代码",
         disclaimer_text: "请勿在紧急情况下使用。无担保。\n开始即表示同意数据使用。",
         info_github: "在GitHub上查看",
+        help_link: "使用指南与帮助（德语）",
         lang_btn_aria: "语言 / Language"
     },
     pwa: {

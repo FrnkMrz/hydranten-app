@@ -20,6 +20,7 @@ export default {
         info_license: "Licenca i kod",
         disclaimer_text: "Ne koristiti u hitnim slučajevima. Nema jamstva.\nPočetak podrazumijeva pristanak na korištenje podataka.",
         info_github: "Pogledaj na GitHubu",
+        help_link: "Upute i pomoć (na njemačkom)",
         lang_btn_aria: "Jezik / Language"
     },
     pwa: {
