@@ -93,7 +93,7 @@ export default {
     },
     legal: {
         important_header: "⚠️ WICHTIG:",
-        tmg_header: "Angaben gemäß § 5 TMG:"
+        tmg_header: "Angaben gemäß § 5 DDG:"
     },
     upload_log: {
         locating_nominatim: "Ermittle Standort-Namen (Nominatim)...",
