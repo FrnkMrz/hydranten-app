@@ -20,6 +20,7 @@ export default {
         info_license: "Lizenz & Code",
         disclaimer_text: "Nicht für Notfälle nutzen. Keine Garantie.\nMit Start werden Daten zu OSM geladen.",
         info_github: "Projekt auf GitHub ansehen",
+        help_link: "Anleitung & Hilfe",
         lang_btn_aria: "Sprache / Language"
     },
     pwa: {

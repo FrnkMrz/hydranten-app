@@ -20,6 +20,7 @@ export default {
         info_license: "라이선스 및 코드",
         disclaimer_text: "비상시 사용 금지. 보증 없음.\n시작은 데이터 사용 동의를 의미합니다。",
         info_github: "GitHub에서 보기",
+        help_link: "사용법 및 도움말 (독일어)",
         lang_btn_aria: "언어 / Language"
     },
     pwa: {
@@ -183,6 +184,8 @@ export default {
         locating_position: "위치 찾는 중...",
         please_login: "편집하려면 로그인하세요.",
         loading_hydrant: "소화전 #{id} 로딩 중...",
+        edit_load_retry: "객체 #{id}을(를) 불러올 수 없습니다. 연결을 확인하고 다시 시도하세요.",
+        edit_node_deleted_hint: "선택한 객체가 OpenStreetMap에서 삭제되었습니다.",
         saving_data: "저장 중...",
         deleting_data: "삭제 중...",
         internal_error_reload: "내부 오류. 새로고침하세요.",

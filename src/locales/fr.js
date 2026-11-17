@@ -20,6 +20,7 @@ export default {
         info_license: "Licence & Code",
         disclaimer_text: "Ne pas utiliser en cas d'urgence. Aucune garantie.\nLe démarrage implique le consentement à l'utilisation des données.",
         info_github: "Voir sur GitHub",
+        help_link: "Guide et aide (en allemand)",
         lang_btn_aria: "Langue / Language"
     },
     pwa: {
@@ -183,6 +184,8 @@ export default {
         locating_position: "Localisation...",
         please_login: "Veuillez vous connecter pour modifier les informations.",
         loading_hydrant: "Chargement de la borne #{id}...",
+        edit_load_retry: "Impossible de charger l'objet #{id}. Vérifiez votre connexion et réessayez.",
+        edit_node_deleted_hint: "L'objet sélectionné a été supprimé d'OpenStreetMap.",
         saving_data: "Enregistrement...",
         deleting_data: "Suppression...",
         internal_error_reload: "Erreur interne : Fonction indisponible. Veuillez recharger la page.",

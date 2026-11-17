@@ -20,6 +20,7 @@ export default {
         info_license: "Licentie & Code",
         disclaimer_text: "Niet voor noodgevallen. Geen garantie.\nStart impliceert toestemming voor gegevensgebruik.",
         info_github: "Bekijk op GitHub",
+        help_link: "Handleiding & hulp (Duits)",
         lang_btn_aria: "Taal / Language"
     },
     pwa: {
@@ -183,6 +184,8 @@ export default {
         locating_position: "Locatie bepalen...",
         please_login: "Log in om te bewerken.",
         loading_hydrant: "Hydrant #{id} laden...",
+        edit_load_retry: "Object #{id} kon niet worden geladen. Controleer je verbinding en probeer het opnieuw.",
+        edit_node_deleted_hint: "Het geselecteerde object is uit OpenStreetMap verwijderd.",
         saving_data: "Opslaan...",
         deleting_data: "Verwijderen...",
         internal_error_reload: "Interne fout. Herlaad de pagina.",

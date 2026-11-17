@@ -20,6 +20,7 @@ export default {
         info_license: "Licence a Kód",
         disclaimer_text: "Nepoužívejte v nouzi. Bez záruky.\nSpuštění znamená souhlas s použitím dat.",
         info_github: "Zobrazit na GitHubu",
+        help_link: "Návod a nápověda (německy)",
         lang_btn_aria: "Jazyk / Language"
     },
     pwa: {
@@ -184,6 +185,8 @@ export default {
         locating_position: "Hledám pozici...",
         please_login: "Pro úpravy se prosím přihlaste.",
         loading_hydrant: "Načítám hydrant v.{id}...",
+        edit_load_retry: "Objekt #{id} se nepodařilo načíst. Zkontrolujte připojení a zkuste to znovu.",
+        edit_node_deleted_hint: "Vybraný objekt byl z OpenStreetMap smazán.",
         saving_data: "Ukládám...",
         deleting_data: "Mažu...",
         internal_error_reload: "Interní chyba. Obnovte stránku.",

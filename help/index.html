@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="referrer" content="strict-origin" />
+  <title>Hilfe · Hydranten Jäger</title>
+  <meta name="description" content="So erfasst du mit Hydranten Jäger einen Hydranten in OpenStreetMap: 3 Meter Abstand, Foto, Daten ergänzen, hochladen. Mit Typen-Übersicht und FAQ.">
+  <meta name="theme-color" content="#0e0d0c">
+  <link rel="icon" type="image/png" href="/icon-v3-192.png" />
+  <link rel="apple-touch-icon" href="/icon-v3-192.png">
+  <link rel="canonical" href="https://hydrantenjaeger.de/help/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Hydranten Jäger">
+  <meta property="og:title" content="Hilfe · Hydranten Jäger">
+  <meta property="og:description" content="Einen Hydranten in OpenStreetMap erfassen – in unter 20 Sekunden, direkt vor Ort.">
+  <meta property="og:url" content="https://hydrantenjaeger.de/help/">
+  <meta property="og:image" content="https://hydrantenjaeger.de/icon-v3-512.png">
+  <meta property="og:locale" content="de_DE">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src 'self';
+    img-src 'self' data:;
+    object-src 'none';
+    frame-src 'none';
+    form-action 'none';
+    base-uri 'self';
+  ">
+  <script type="module" src="./help.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+  <!-- Icon sprite: the app's line icons (src/components/icons.js). -->
+  <svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+    <symbol id="i-distance" viewBox="0 0 24 24"><path d="M3.5 7v10M20.5 7v10"/><path d="M7 12h10"/><path d="m9.5 9.5-2.5 2.5 2.5 2.5M14.5 9.5 17 12l-2.5 2.5"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 9a2 2 0 0 1 2-2h1.7a1 1 0 0 0 .8-.4l1-1.3a1 1 0 0 1 .8-.4h4.4a1 1 0 0 1 .8.4l1 1.3a1 1 0 0 0 .8.4h1.7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.25"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20l1-4.5L16.2 4.3a1.5 1.5 0 0 1 2.1 0l1.4 1.4a1.5 1.5 0 0 1 0 2.1L8.5 19z"/><path d="m14.5 6 3.5 3.5"/></symbol>
+    <symbol id="i-cloud-up" viewBox="0 0 24 24"><path d="M7 18.5a4.5 4.5 0 0 1-.6-8.96 5.5 5.5 0 0 1 10.7-1.04 5 5 0 0 1 .4 10"/><path d="M12 20v-7.5"/><path d="m9 15 3-3 3 3"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.6-3.6 3.4-5.5 7-5.5s6.4 1.9 7 5.5"/></symbol>
+    <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="1.75" fill="currentColor" stroke="none"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.3 2.8 2.8L16 9.5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4.5 20.5 19h-17z"/><path d="M12 10.5v4"/><path d="M12 16.7v.1"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s6.5-5.6 6.5-11a6.5 6.5 0 0 0-13 0c0 5.4 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.25"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15"/><path d="M9.5 7V5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2"/><path d="m6.5 7 .8 11.6a1.5 1.5 0 0 0 1.5 1.4h6.4a1.5 1.5 0 0 0 1.5-1.4L17.5 7"/><path d="M10 11v5M14 11v5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5 19 6v5.5c0 4.3-3 7.6-7 9-4-1.4-7-4.7-7-9V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5"/><path d="m19 5-8 8"/><path d="M18 14v4a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 5 18V8a1.5 1.5 0 0 1 1.5-1.5h4"/></symbol>
+
+    <!-- Hydrant types, 32 × 32 grid -->
+    <symbol id="t-pillar" viewBox="0 0 32 32"><path d="M11 10a5 5 0 0 1 10 0"/><path d="M16 5V3.5"/><path d="M9.5 10h13"/><path d="M11.5 10v15M20.5 10v15"/><path d="M11.5 14.5h-3v4h3M20.5 14.5h3v4h-3"/><circle cx="16" cy="16.5" r="2.25" class="accent"/><path d="M8.5 25h15"/><path d="M10.5 25v3h11v-3"/></symbol>
+    <symbol id="t-underground" viewBox="0 0 32 32"><path d="M16 3.5v6"/><path d="m13.3 7 2.7 2.7L18.7 7"/><ellipse cx="16" cy="19" rx="11.5" ry="6.5"/><ellipse cx="16" cy="19" rx="6.5" ry="3.5" class="accent"/><path d="M13.7 19h4.6"/></symbol>
+    <symbol id="t-wall" viewBox="0 0 32 32"><rect x="7" y="5" width="18" height="22" rx="2.5"/><path d="M12.5 9h7"/><circle cx="16" cy="18.5" r="4.75" class="accent"/><circle cx="16" cy="18.5" r="1.2"/></symbol>
+    <symbol id="t-dry" viewBox="0 0 32 32"><path d="M6.5 6.5v7"/><path d="M6.5 10H15a3 3 0 0 1 3 3v9"/><path d="M15.5 22h5v4h-5z"/><path d="M4 20c1.7 0 1.7-1.4 3.4-1.4S9.1 20 10.8 20s1.7-1.4 3.4-1.4M21.8 20c1.7 0 1.7-1.4 3.4-1.4S26.9 20 28 20" class="accent"/></symbol>
+    <symbol id="t-cistern" viewBox="0 0 32 32"><path d="M3 9.5h9M20 9.5h9"/><path d="M12.5 6.5h7"/><path d="M13.5 6.5V13M18.5 6.5V13"/><rect x="5" y="13" width="22" height="12.5" rx="6.25"/><path d="M8.5 20c1.3 0 1.3-1.2 2.6-1.2s1.3 1.2 2.6 1.2 1.3-1.2 2.6-1.2 1.3 1.2 2.6 1.2 1.3-1.2 2.6-1.2 1.3 1.2 2 1.2" class="accent"/></symbol>
+    <symbol id="t-suction" viewBox="0 0 32 32"><path d="M22 3.5V9a4 4 0 0 1-4 4h-1.5a3.5 3.5 0 0 0-3.5 3.5V18"/><path d="M10.7 18h4.6v3.5h-4.6z"/><path d="M3.5 24.5c2.1 0 2.1-1.6 4.2-1.6s2.1 1.6 4.2 1.6 2.1-1.6 4.2-1.6 2.1 1.6 4.2 1.6 2.1-1.6 4.2-1.6 2.1 1.6 4 1.6" class="accent"/><path d="M3.5 28.5c2.1 0 2.1-1.6 4.2-1.6s2.1 1.6 4.2 1.6 2.1-1.6 4.2-1.6 2.1 1.6 4.2 1.6 2.1-1.6 4.2-1.6 2.1 1.6 4 1.6"/></symbol>
+    <symbol id="t-aed" viewBox="0 0 32 32"><path d="M16 26.5S5.5 20.3 5.5 12.8A5.8 5.8 0 0 1 16 9.5a5.8 5.8 0 0 1 10.5 3.3c0 7.5-10.5 13.7-10.5 13.7z"/><path d="m17.5 11.5-4 5.5h4.5l-2.5 5" class="accent"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="../" aria-label="Hydranten Jäger – zur App">
+        <img src="/icon-v3-192.png" alt="" width="34" height="34">
+        <span class="brand-name">Hydranten <em>Jäger</em></span>
+      </a>
+      <nav class="topnav" aria-label="Hilfe-Navigation">
+        <a class="navlink" href="#anleitung">Anleitung</a>
+        <a class="navlink" href="#typen">Typen</a>
+        <a class="navlink" href="#wichtig">Wichtig</a>
+        <a class="navlink" href="#faq">FAQ</a>
+        <a class="btn btn-ghost btn-sm" href="../">Zur App</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap">
+        <div class="hero-copy">
+          <p class="eyebrow">Hilfe &amp; Anleitung</p>
+          <h1 class="display" id="hero-title">Einen Hydranten mappen <em>in unter 20&nbsp;Sekunden.</em></h1>
+          <p class="lead">Finde Hydranten in deiner Umgebung, prüfe sie direkt vor Ort und trage fehlende schnell in OpenStreetMap ein – damit die Feuerwehr im Ernstfall weiß, wo das Wasser ist.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="../">
+              Jetzt Hydrant mappen
+              <span class="btn-disc"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+            </a>
+            <a class="btn btn-ghost" href="#anleitung">So geht’s</a>
+          </div>
+          <p class="hero-note">
+            <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+            Dein Foto bleibt auf deinem Handy – es wird nicht hochgeladen.
+          </p>
+        </div>
+
+        <div class="radar" aria-hidden="true">
+          <span class="radar-ring"></span>
+          <span class="radar-ring"></span>
+          <span class="radar-ring"></span>
+          <span class="radar-sweep"></span>
+          <span class="radar-dot d1"></span>
+          <span class="radar-dot d2"></span>
+          <span class="radar-dot d3"></span>
+          <span class="radar-dot d4"></span>
+          <span class="radar-core"><svg class="icon"><use href="#t-pillar"/></svg></span>
+          <span class="radar-pill p1"><svg class="icon ember"><use href="#i-distance"/></svg>3 m voraus</span>
+          <span class="radar-pill p2"><svg class="icon aqua"><use href="#i-compass"/></svg>Überflur · Gehweg</span>
+          <span class="radar-pill p3"><svg class="icon ok"><use href="#i-check-circle"/></svg>In OSM gespeichert</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Steps -->
+    <section class="section" id="anleitung" aria-labelledby="steps-title">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Anleitung</p>
+          <h2 class="display" id="steps-title">So einfach <em>geht’s.</em></h2>
+          <p>Du brauchst ein OpenStreetMap-Konto, dein Handy und einen Hydranten vor dir.</p>
+        </div>
+
+        <ul class="prereq reveal" aria-label="Bevor du losgehst">
+          <li>
+            <svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>
+            <span><strong>OSM-Konto</strong>Kostenlos auf <a href="https://www.openstreetmap.org/user/new" target="_blank" rel="noopener noreferrer">openstreetmap.org</a></span>
+          </li>
+          <li>
+            <svg class="icon" aria-hidden="true"><use href="#i-locate"/></svg>
+            <span><strong>Standort &amp; Kompass</strong>Beim ersten Start erlauben</span>
+          </li>
+          <li>
+            <svg class="icon" aria-hidden="true"><use href="#i-camera"/></svg>
+            <span><strong>Kamera</strong>Für das Kontrollfoto</span>
+          </li>
+        </ul>
+
+        <ol class="steps">
+          <li class="step reveal">
+            <div class="step-top">
+              <span class="step-num" aria-hidden="true">01</span>
+              <span class="step-icon"><svg class="icon" aria-hidden="true"><use href="#i-distance"/></svg></span>
+            </div>
+            <h3>3 Meter Abstand</h3>
+            <p>Stell dich etwa <em>3&nbsp;Meter vor den Hydranten</em> und richte das Handy auf ihn. Die App setzt den Marker automatisch dorthin.</p>
+          </li>
+          <li class="step reveal">
+            <div class="step-top">
+              <span class="step-num" aria-hidden="true">02</span>
+              <span class="step-icon"><svg class="icon" aria-hidden="true"><use href="#i-camera"/></svg></span>
+            </div>
+            <h3>Foto machen</h3>
+            <p>Fotografiere den Hydranten zur Kontrolle. Das Foto <em>wird nicht hochgeladen</em> und lässt sich optional auf dem Handy speichern.</p>
+          </li>
+          <li class="step reveal">
+            <div class="step-top">
+              <span class="step-num" aria-hidden="true">03</span>
+              <span class="step-icon"><svg class="icon" aria-hidden="true"><use href="#i-pencil"/></svg></span>
+            </div>
+            <h3>Daten ergänzen</h3>
+            <p>Prüfe die Position auf der Karte, wähle <em>Typ und Lage</em>. Durchmesser, Nummer &amp; Co. nur, wenn du sie sicher weißt.</p>
+          </li>
+          <li class="step reveal">
+            <div class="step-top">
+              <span class="step-num" aria-hidden="true">04</span>
+              <span class="step-icon"><svg class="icon" aria-hidden="true"><use href="#i-cloud-up"/></svg></span>
+            </div>
+            <h3>Hochladen zu OSM</h3>
+            <p>Tippe auf <em>„Hochladen zu OSM“</em>. Koordinaten und Hydrantenangaben werden an OpenStreetMap übertragen – fertig.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 3 metre explainer -->
+    <section class="section" aria-labelledby="offset-title">
+      <div class="wrap feature">
+        <div class="feature-copy reveal">
+          <p class="eyebrow">Der Trick</p>
+          <h2 class="display" id="offset-title">Warum <em>3&nbsp;Meter?</em></h2>
+          <p>Wer einen Hydranten fotografiert, steht nicht auf ihm, sondern davor. Deshalb nimmt die App deine <strong>GPS-Position</strong>, schaut per <strong>Kompass</strong>, wohin du blickst, und setzt den Marker <strong>3&nbsp;Meter voraus</strong> – genau dorthin, wo der Hydrant steht.</p>
+          <ul class="tips">
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Handy aufrecht halten und direkt auf den Hydranten zielen.</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Abstand zu Autos, Laternen und Metallzäunen halten – sie stören den Kompass.</span></li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Passt es nicht ganz? Den Marker vor dem Hochladen einfach verschieben.</span></li>
+          </ul>
+        </div>
+
+        <figure class="panel reveal" aria-label="Skizze: Du stehst 3 Meter vor dem Hydranten, der Marker landet beim Hydranten.">
+          <svg class="diagram" viewBox="0 0 360 170" role="img" aria-hidden="true">
+            <defs>
+              <linearGradient id="cone" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0" stop-color="#f0683a" stop-opacity="0.45" />
+                <stop offset="1" stop-color="#f0683a" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <text x="160" y="28" text-anchor="middle" font-size="11" letter-spacing="2">BLICKRICHTUNG · KOMPASS</text>
+            <path d="M60 90 L270 38 L270 142 Z" fill="url(#cone)" />
+            <circle cx="60" cy="90" r="19" fill="none" stroke="rgba(244,239,230,0.18)" />
+            <circle cx="60" cy="90" r="9" fill="#f4efe6" />
+            <line x1="84" y1="90" x2="266" y2="90" stroke="rgba(244,239,230,0.55)" stroke-width="1.5" stroke-dasharray="3 6" stroke-linecap="round" />
+            <line x1="84" y1="82" x2="84" y2="98" stroke="rgba(244,239,230,0.55)" stroke-width="1.5" stroke-linecap="round" />
+            <line x1="266" y1="82" x2="266" y2="98" stroke="rgba(244,239,230,0.55)" stroke-width="1.5" stroke-linecap="round" />
+            <text class="measure" x="175" y="78" text-anchor="middle" font-size="26">3 m</text>
+            <circle cx="292" cy="90" r="22" fill="rgba(232,71,43,0.12)" stroke="rgba(240,104,58,0.5)" />
+            <circle class="pulse" cx="292" cy="90" r="9" fill="none" stroke="#f0683a" stroke-width="1.5" />
+            <circle cx="292" cy="90" r="8" fill="#e8472b" />
+            <text class="label-strong" x="60" y="136" text-anchor="middle" font-size="14">Du</text>
+            <text x="60" y="154" text-anchor="middle" font-size="12">GPS-Position</text>
+            <text class="label-strong" x="292" y="136" text-anchor="middle" font-size="14">Hydrant</text>
+            <text x="292" y="154" text-anchor="middle" font-size="12">hier landet der Marker</text>
+          </svg>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Types -->
+    <section class="section" id="typen" aria-labelledby="types-title">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Typen</p>
+          <h2 class="display" id="types-title">Welcher Typ <em>ist das?</em></h2>
+          <p>In Schritt 3 wählst du die Art der Löschwasserstelle. Im Zweifel lieber den Typ angeben, den du sicher erkennst, und Details weglassen.</p>
+        </div>
+
+        <div class="types">
+          <article class="type reveal">
+            <svg class="icon" aria-hidden="true"><use href="#t-pillar"/></svg>
+            <div><h3>Überflur</h3><p>Steht als Säule über dem Boden, meist rot oder gelb mit seitlichen Abgängen.</p></div>
+          </article>
+          <article class="type reveal">
+            <svg class="icon" aria-hidden="true"><use href="#t-underground"/></svg>
+            <div><h3>Unterflur</h3><p>Deckel im Boden, oft mit Hinweisschild an Wand oder Pfosten in der Nähe.</p></div>
+          </article>
+          <article class="type reveal">
+            <svg class="icon" aria-hidden="true"><use href="#t-wall"/></svg>
+            <div><h3>Wandhydrant</h3><p>Anschluss in oder an einer Gebäudewand, häufig hinter einer Klappe.</p></div>
+          </article>
+          <article class="type reveal">
+            <svg class="icon" aria-hidden="true"><use href="#t-dry"/></svg>
+            <div><h3>Trockenhydrant</h3><p>Fest verlegtes Rohr ohne Wasserdruck – die Feuerwehr saugt darüber Wasser an.</p></div>
+          </article>
+          <article class="type reveal">
+            <svg class="icon" aria-hidden="true"><use href="#t-suction"/></svg>
+            <div><h3>Saugstelle</h3><p>Ausgebaute Stelle an Teich, See oder Fluss zum direkten Ansaugen.</p></div>
+          </article>
+          <article class="type reveal">
+            <svg class="icon" aria-hidden="true"><use href="#t-cistern"/></svg>
+            <div><h3>Zisterne</h3><p>Unterirdischer Löschwasserbehälter, meist mit Schild und Sauganschluss.</p></div>
+          </article>
+          <article class="type type-aed reveal">
+            <svg class="icon" aria-hidden="true"><use href="#t-aed"/></svg>
+            <div><h3>Defibrillator <span class="tag">Auch möglich</span></h3><p>Kein Wasser, aber genauso wichtig: Öffentlich zugängliche AEDs kannst du ebenfalls erfassen – mit Zugang, Zeiten und Standort im Gebäude.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Edit existing -->
+    <section class="section" aria-labelledby="edit-title">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Prüfen</p>
+          <h2 class="display" id="edit-title">Schon da? <em>Dann prüf ihn.</em></h2>
+          <p>Viele Hydranten sind bereits erfasst. Auch das Korrigieren hilft – oft sogar mehr als ein neuer Eintrag.</p>
+        </div>
+        <div class="edit-grid">
+          <article class="card reveal">
+            <svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>
+            <h3>Auf der Karte antippen</h3>
+            <p>Bekannte Hydranten erscheinen als Marker. Ein Tipp öffnet die gespeicherten Angaben.</p>
+          </article>
+          <article class="card reveal">
+            <svg class="icon" aria-hidden="true"><use href="#i-pencil"/></svg>
+            <h3>Korrigieren</h3>
+            <p>Typ, Lage oder Position falsch? Ändern und mit „OSM aktualisieren“ speichern.</p>
+          </article>
+          <article class="card reveal">
+            <svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg>
+            <h3>Nur löschen, wenn er weg ist</h3>
+            <p>Lösche einen Eintrag nur, wenn du vor Ort sicher bist, dass es den Hydranten nicht mehr gibt.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Important -->
+    <section class="section" id="wichtig" aria-labelledby="important-title">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Wichtig</p>
+          <h2 class="display" id="important-title">Gut <em>zu wissen.</em></h2>
+        </div>
+        <div class="notes">
+          <article class="note reveal">
+            <svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>
+            <div><h3>OSM-Konto</h3><p>Zum Erfassen oder Bearbeiten meldest du dich mit deinem OpenStreetMap-Konto an. Deine Änderungen erscheinen unter deinem OSM-Namen.</p></div>
+          </article>
+          <article class="note reveal">
+            <svg class="icon" aria-hidden="true"><use href="#i-camera"/></svg>
+            <div><h3>Foto</h3><p>Das Foto wird nur lokal im Browser verarbeitet. Speicherst oder teilst du eine Kopie, enthält sie die GPS-Position als Metadaten.</p></div>
+          </article>
+          <article class="note reveal">
+            <svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg>
+            <div><h3>Sorgfalt</h3><p>Erfasse nur Hydranten, die du wirklich vor Ort siehst, und prüfe die Position, bevor du hochlädst.</p></div>
+          </article>
+          <article class="note reveal">
+            <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+            <div><h3>Privatsphäre</h3><p>Keine Personen, Kennzeichen oder Hausnummern fotografieren und private Grundstücke nicht ohne Erlaubnis betreten.</p></div>
+          </article>
+          <article class="note note-alert reveal">
+            <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>
+            <div><h3>Im Notfall</h3><p>Immer den Notruf <span class="big">112</span> wählen. Hydranten Jäger ist ein Mapping-Werkzeug und kein Einsatzmittel – die Daten können unvollständig oder veraltet sein.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap faq">
+        <div class="section-head reveal">
+          <p class="eyebrow">FAQ</p>
+          <h2 class="display" id="faq-title">Häufige <em>Fragen.</em></h2>
+          <p>Deine Frage ist nicht dabei? Schreib uns an <a href="mailto:info@openfiremap.org">info@openfiremap.org</a>.</p>
+        </div>
+        <div class="faq-list reveal">
+          <details>
+            <summary>Wann sehen andere meinen Hydranten?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer">
+              <p>In der App siehst du ihn sofort. In OpenStreetMap ist er direkt nach dem Upload gespeichert; Karten und Dienste, die OSM-Daten nutzen, übernehmen ihn meist innerhalb von Minuten bis wenigen Stunden.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Der Marker sitzt nicht genau. Was tun?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer">
+              <p>Vor dem Hochladen kannst du den Marker auf der Karte verschieben. Liegt er oft daneben, stört meist Metall in der Nähe den Kompass: ein paar Schritte zur Seite gehen und das Handy in einer liegenden Acht bewegen.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Wird mein Foto irgendwo gespeichert?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer">
+              <p>Nein. Das Foto wird nur vorübergehend im Browser verarbeitet und weder hochgeladen noch analysiert. Nur wenn du ausdrücklich „Teilen“ oder „Download“ wählst, wird eine Kopie mit GPS-Position auf deinem Gerät gespeichert.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Was bedeuten die Dienstgrade?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer">
+              <p>Je mehr Hydranten du erfasst, desto höher steigst du in den Dienstgraden der bayerischen Feuerwehr – vom Feuerwehranwärter bis zum Kreisbrandrat. Eine kleine Motivation, mehr nicht.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Muss ich etwas installieren?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer">
+              <p>Nein, die App läuft im Browser. Für schnellen Zugriff kannst du sie über „Zum Home-Bildschirm“ wie eine normale App ablegen.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Ist das eine offizielle Feuerwehr-App?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer">
+              <p>Nein. Hydranten Jäger ist ein freies Community-Projekt rund um OpenStreetMap. Die erfassten Daten stehen allen offen zur Verfügung, ersetzen aber keine amtlichen Hydrantenpläne.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Outro -->
+    <section class="section" aria-labelledby="outro-title">
+      <div class="wrap">
+        <div class="outro reveal">
+          <h2 class="display" id="outro-title">Bereit für den <em>ersten Fund?</em></h2>
+          <p>Der nächste Hydrant ist meist nur ein paar Schritte entfernt.</p>
+          <a class="btn btn-primary" href="../">
+            App öffnen
+            <span class="btn-disc"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <h2>Impressum</h2>
+          <p>Angaben gemäß § 5 DDG</p>
+          <address>
+            Frank März<br>
+            Kersbacher Weg 3<br>
+            91220 Schnaittach<br>
+            Deutschland<br><br>
+            Tel: <a href="tel:+4991539229501">+49 9153 9229501</a><br>
+            E-Mail: <a href="mailto:info@openfiremap.org">info@openfiremap.org</a>
+          </address>
+        </div>
+        <div>
+          <h2>Datenschutz</h2>
+          <p>Diese Hilfeseite setzt keine Cookies, lädt keine externen Inhalte und erfasst keine Statistiken. Der Hoster (GitHub Pages) verarbeitet beim Aufruf technisch bedingt deine IP-Adresse.</p>
+          <p>In der App werden Fotos nur lokal verarbeitet. An OpenStreetMap gehen erst beim ausdrücklichen Upload Koordinaten und Hydrantenangaben. Bei Kartendiensten, Overpass, Nominatim und OpenStreetMap wird technisch bedingt die IP-Adresse übertragen.</p>
+        </div>
+        <div>
+          <h2>Lizenz &amp; Code</h2>
+          <p>Kartendaten <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap-Mitwirkende</a> (ODbL).</p>
+          <p>Code unter MIT-Lizenz – <a href="https://github.com/FrnkMrz/hydranten-app" target="_blank" rel="noopener noreferrer">Projekt auf GitHub</a>.</p>
+        </div>
+      </div>
+      <div class="footer-base">
+        <span>Hydranten Jäger · Mitmachen bei OpenStreetMap</span>
+        <a href="../">hydrantenjaeger.de</a>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

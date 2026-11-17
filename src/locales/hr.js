@@ -20,6 +20,7 @@ export default {
         info_license: "Licenca i kod",
         disclaimer_text: "Ne koristiti u hitnim slučajevima. Nema jamstva.\nPočetak podrazumijeva pristanak na korištenje podataka.",
         info_github: "Pogledaj na GitHubu",
+        help_link: "Upute i pomoć (na njemačkom)",
         lang_btn_aria: "Jezik / Language"
     },
     pwa: {
@@ -183,6 +184,8 @@ export default {
         locating_position: "Lociranje...",
         please_login: "Prijavite se za uređivanje.",
         loading_hydrant: "Učitavanje hidranta #{id}...",
+        edit_load_retry: "Objekt #{id} nije moguće učitati. Provjerite vezu i pokušajte ponovno.",
+        edit_node_deleted_hint: "Odabrani objekt izbrisan je s OpenStreetMapa.",
         saving_data: "Spremanje...",
         deleting_data: "Brisanje...",
         internal_error_reload: "Interna greška. Ponovno učitajte.",

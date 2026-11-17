@@ -20,6 +20,7 @@ export default {
         info_license: "Licencja i kod",
         disclaimer_text: "Nie używać w nagłych wypadkach. Brak gwarancji.\nStart oznacza zgodę na użycie danych.",
         info_github: "Zobacz na GitHub",
+        help_link: "Instrukcja i pomoc (po niemiecku)",
         lang_btn_aria: "Język / Language"
     },
     pwa: {
@@ -180,6 +181,8 @@ export default {
         locating_position: "Ustalanie lokalizacji...",
         please_login: "Zaloguj się, aby edytować.",
         loading_hydrant: "Ładowanie hydrantu #{id}...",
+        edit_load_retry: "Nie udało się wczytać obiektu #{id}. Sprawdź połączenie i spróbuj ponownie.",
+        edit_node_deleted_hint: "Wybrany obiekt został usunięty z OpenStreetMap.",
         saving_data: "Zapisywanie...",
         deleting_data: "Usuwanie...",
         internal_error_reload: "Błąd wewnętrzny. Odśwież.",

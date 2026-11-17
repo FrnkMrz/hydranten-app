@@ -20,6 +20,7 @@ export default {
         info_license: "许可与代码",
         disclaimer_text: "请勿在紧急情况下使用。无担保。\n开始即表示同意数据使用。",
         info_github: "在GitHub上查看",
+        help_link: "使用指南与帮助（德语）",
         lang_btn_aria: "语言 / Language"
     },
     pwa: {
@@ -183,6 +184,8 @@ export default {
         locating_position: "定位中...",
         please_login: "请登录以编辑。",
         loading_hydrant: "加载消火栓 #{id}...",
+        edit_load_retry: "无法加载对象 #{id}。请检查网络连接后重试。",
+        edit_node_deleted_hint: "所选对象已从 OpenStreetMap 中删除。",
         saving_data: "保存中...",
         deleting_data: "删除中...",
         internal_error_reload: "内部错误。请刷新。",
