@@ -184,6 +184,8 @@ export default {
         locating_position: "위치 찾는 중...",
         please_login: "편집하려면 로그인하세요.",
         loading_hydrant: "소화전 #{id} 로딩 중...",
+        edit_load_retry: "객체 #{id}을(를) 불러올 수 없습니다. 연결을 확인하고 다시 시도하세요.",
+        edit_node_deleted_hint: "선택한 객체가 OpenStreetMap에서 삭제되었습니다.",
         saving_data: "저장 중...",
         deleting_data: "삭제 중...",
         internal_error_reload: "내부 오류. 새로고침하세요.",

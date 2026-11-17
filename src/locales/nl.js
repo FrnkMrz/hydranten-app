@@ -184,6 +184,8 @@ export default {
         locating_position: "Locatie bepalen...",
         please_login: "Log in om te bewerken.",
         loading_hydrant: "Hydrant #{id} laden...",
+        edit_load_retry: "Object #{id} kon niet worden geladen. Controleer je verbinding en probeer het opnieuw.",
+        edit_node_deleted_hint: "Het geselecteerde object is uit OpenStreetMap verwijderd.",
         saving_data: "Opslaan...",
         deleting_data: "Verwijderen...",
         internal_error_reload: "Interne fout. Herlaad de pagina.",

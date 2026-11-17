@@ -183,6 +183,8 @@ export default {
         locating_position: "تحديد الموقع...",
         please_login: "يرجى تسجيل الدخول للتحرير.",
         loading_hydrant: "تحميل صنبور #{id}...",
+        edit_load_retry: "تعذّر تحميل العنصر #{id}. تحقق من اتصالك وحاول مرة أخرى.",
+        edit_node_deleted_hint: "تم حذف العنصر المحدد من OpenStreetMap.",
         saving_data: "جار الحفظ...",
         deleting_data: "جار الحذف...",
         internal_error_reload: "خطأ داخلي. يرجى إعادة التحميل.",

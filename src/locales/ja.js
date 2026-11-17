@@ -184,6 +184,8 @@ export default {
         locating_position: "位置を特定中...",
         please_login: "編集するにはログインしてください。",
         loading_hydrant: "消火栓 #{id} を読み込み中...",
+        edit_load_retry: "オブジェクト #{id} を読み込めませんでした。接続を確認して、もう一度お試しください。",
+        edit_node_deleted_hint: "選択したオブジェクトは OpenStreetMap から削除されました。",
         saving_data: "保存中...",
         deleting_data: "削除中...",
         internal_error_reload: "内部エラー。リロードしてください。",

@@ -184,6 +184,8 @@ export default {
         locating_position: "定位中...",
         please_login: "请登录以编辑。",
         loading_hydrant: "加载消火栓 #{id}...",
+        edit_load_retry: "无法加载对象 #{id}。请检查网络连接后重试。",
+        edit_node_deleted_hint: "所选对象已从 OpenStreetMap 中删除。",
         saving_data: "保存中...",
         deleting_data: "删除中...",
         internal_error_reload: "内部错误。请刷新。",

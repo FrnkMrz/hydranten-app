@@ -184,6 +184,8 @@ export default {
         locating_position: "Konum belirleniyor...",
         please_login: "Düzenlemek için giriş yapın.",
         loading_hydrant: "Hidrant #{id} yükleniyor...",
+        edit_load_retry: "#{id} numaralı nesne yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
+        edit_node_deleted_hint: "Seçilen nesne OpenStreetMap'ten silindi.",
         saving_data: "Kaydediliyor...",
         deleting_data: "Siliniyor...",
         internal_error_reload: "Dahili hata. Lütfen yenileyin.",

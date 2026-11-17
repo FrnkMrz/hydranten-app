@@ -184,6 +184,8 @@ export default {
         locating_position: "Localizzazione...",
         please_login: "Accedi per modificare.",
         loading_hydrant: "Caricamento idrante #{id}...",
+        edit_load_retry: "Impossibile caricare l'oggetto #{id}. Controlla la connessione e riprova.",
+        edit_node_deleted_hint: "L'oggetto selezionato è stato eliminato da OpenStreetMap.",
         saving_data: "Salvataggio...",
         deleting_data: "Eliminazione...",
         internal_error_reload: "Errore interno. Ricarica.",
