@@ -116,14 +116,20 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
         const sourceInput = element.querySelector('#hydrant-water-source');
         const volumeInput = element.querySelector('#hydrant-volume');
         const signInput = element.querySelector('#hydrant-sign');
-        const aedAttributes = {
-          access: element.querySelector('#aed-access')?.value || '',
-          indoor: element.querySelector('#aed-indoor')?.value || '',
-          openingHours: element.querySelector('#aed-opening-hours')?.value || ''
-        };
-
         const selectedType = typeInput ? typeInput.value : '';
         const selectedPos = posInput ? posInput.value : '';
+
+        // AED: the AED mask plans which tags are written (additions and corrections, never deletions).
+        // If a value is invalid, saving stops and the mask jumps to the field with the problem.
+        let aedTags = {};
+        if (selectedType === 'aed' && formLogic && formLogic.aedForm) {
+          const plan = formLogic.aedForm.getPlan();
+          if (!plan.ok) {
+            formLogic.aedForm.showProblem(plan);
+            return;
+          }
+          aedTags = plan.tags;
+        }
 
         // Prepare Tags using Service
         const tags = prepareHydrantTags(
@@ -136,7 +142,7 @@ export function initConfirmView(element, imageBlob, location, onRetake, onSubmit
           sourceInput ? sourceInput.value : null,
           volumeInput ? volumeInput.value : null,
           signInput ? signInput.value : 'unknown',
-          aedAttributes
+          aedTags
         );
 
         onSubmit({

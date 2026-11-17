@@ -1,6 +1,7 @@
 import { t } from '../../services/i18n.js';
 import { determineHydrantType } from '../../services/hydrant-logic.js';
 import { typeIcon } from '../icons.js';
+import { initAedForm } from './aed-form.js';
 
 export function initFormLogic(element, location, editMode, initialData) {
     const typeInput = element.querySelector('#hydrant-type');
@@ -11,15 +12,13 @@ export function initFormLogic(element, location, editMode, initialData) {
     const volumeInput = element.querySelector('#hydrant-volume');
     const signInput = element.querySelector('#hydrant-sign');
     const sourceInput = element.querySelector('#hydrant-water-source');
-    const aedAccessInput = element.querySelector('#aed-access');
-    const aedIndoorInput = element.querySelector('#aed-indoor');
-    const aedOpeningHoursInput = element.querySelector('#aed-opening-hours');
 
     const volumeContainer = element.querySelector('#volume-container');
     const diameterContainer = element.querySelector('#diameter-container');
     const signContainer = element.querySelector('#sign-container');
     const refContainer = element.querySelector('#ref-container');
-    const aedDetailsContainer = element.querySelector('#aed-details-container');
+    const aedFormContainer = element.querySelector('#aed-form-container');
+    const hydrantDetailsContainer = element.querySelector('#hydrant-details-container');
     const waterSourceContainer = element.querySelector('#water-source-container');
     const positionContainer = element.querySelector('#position-container');
     const refLabel = element.querySelector('#hydrant-ref-label');
@@ -29,8 +28,7 @@ export function initFormLogic(element, location, editMode, initialData) {
     // --- GRID SETUP ---
     const mainTypes = [
         { id: 'pillar', label: t('confirm.types.pillar'), icon: typeIcon('pillar', 'w-11 h-11') },
-        { id: 'underground', label: t('confirm.types.underground'), icon: typeIcon('underground', 'w-11 h-11') },
-        { id: 'aed', label: t('confirm.types.aed'), icon: typeIcon('aed', 'w-11 h-11') }
+        { id: 'underground', label: t('confirm.types.underground'), icon: typeIcon('underground', 'w-11 h-11') }
     ];
     const subTypes = [
         { id: 'dry_hydrant', label: t('confirm.types.dry_hydrant'), icon: typeIcon('dry_hydrant', 'w-8 h-8') },
@@ -41,6 +39,7 @@ export function initFormLogic(element, location, editMode, initialData) {
 
     const gridMain = element.querySelector('#type-grid-main');
     const gridSub = element.querySelector('#type-grid-secondary');
+    const gridAed = element.querySelector('#type-grid-aed');
 
     if (gridMain && gridSub) {
         // Render Main
@@ -60,6 +59,25 @@ export function initFormLogic(element, location, editMode, initialData) {
        `).join('');
     }
 
+    // Render AED: a slim option at the very bottom of the type selection. It uses the same
+    // "option-btn" class as the hydrant types, so selecting it works through the same code path.
+    if (gridAed) {
+        const aedLabel = t('confirm.types.aed');
+        gridAed.innerHTML = `
+             <button type="button" class="option-btn hj-option h-[3.5rem] w-full flex flex-row items-center justify-center gap-3" data-value="aed" aria-label="${aedLabel}">
+                <span aria-hidden="true">${typeIcon('aed', 'w-7 h-7')}</span>
+                <span class="px-1 text-center text-[10px] leading-tight font-semibold uppercase tracking-[0.1em]" aria-hidden="true">${aedLabel}</span>
+             </button>`;
+    }
+
+    // The AED has its own input mask (see aed-form.js). It is created once; it stays hidden until
+    // the AED type is selected. `checkChanges` is declared further down (hoisted by the arrow wrapper).
+    const aedForm = initAedForm(element, {
+        editMode,
+        initialData,
+        onChange: () => checkChanges()
+    });
+
     // --- DIRTY CHECKING LOGIC ---
     let hasChanges = false;
     const checkChanges = () => {
@@ -73,9 +91,6 @@ export function initFormLogic(element, location, editMode, initialData) {
         const currentNote = noteInput ? noteInput.value : '';
         const currentSign = signInput ? signInput.value : 'unknown';
         const currentSource = sourceInput ? sourceInput.value : '';
-        const currentAedAccess = aedAccessInput ? aedAccessInput.value : '';
-        const currentAedIndoor = aedIndoorInput ? aedIndoorInput.value : '';
-        const currentAedOpeningHours = aedOpeningHoursInput ? aedOpeningHoursInput.value.trim() : '';
 
         // Helper to safely get tag
         const getTag = (k) => initialData.tags[k] || '';
@@ -97,16 +112,13 @@ export function initFormLogic(element, location, editMode, initialData) {
         const posChanged = currentType !== 'aed' && (getTag('fire_hydrant:position') !== currentPos);
         const diaChanged = currentType !== 'aed' && currentType !== 'cistern' && currentType !== 'suction_point' && (getTag('fire_hydrant:diameter') !== currentDiameter);
         const volumeChanged = currentType === 'cistern' && (getTag('water_tank:volume') !== currentVolume);
-        const refChanged = (getTag('ref') !== currentRef);
-        const noteChanged = ((getTag('note') || getTag('description')) !== currentNote);
+        // ref and note belong to the hydrant fields; AEDs have their own fields in the AED mask.
+        const refChanged = currentType !== 'aed' && (getTag('ref') !== currentRef);
+        const noteChanged = currentType !== 'aed' && ((getTag('note') || getTag('description')) !== currentNote);
 
         const originalSource = getTag('water_source') || '';
         const sourceChanged = currentType !== 'aed' && (originalSource !== (currentSource || ''));
-        const aedAttributesChanged = currentType === 'aed' && (
-            getTag('access') !== currentAedAccess ||
-            getTag('indoor') !== currentAedIndoor ||
-            getTag('opening_hours') !== currentAedOpeningHours
-        );
+        const aedAttributesChanged = currentType === 'aed' && !!aedForm && aedForm.hasChanges();
 
         // Sign check logic
         let signChanged;
@@ -175,10 +187,12 @@ export function initFormLogic(element, location, editMode, initialData) {
             if (refContainer) refContainer.classList.remove('hidden');
         }
 
-        if (aedDetailsContainer) aedDetailsContainer.classList.toggle('hidden', val !== 'aed');
+        // AED: show its own mask and hide ALL hydrant fields. Everything else: hydrant fields as before.
+        if (aedFormContainer) aedFormContainer.classList.toggle('hidden', val !== 'aed');
+        if (hydrantDetailsContainer) hydrantDetailsContainer.classList.toggle('hidden', val === 'aed');
         if (waterSourceContainer) waterSourceContainer.classList.toggle('hidden', val === 'aed');
         if (positionContainer) positionContainer.classList.toggle('hidden', val === 'aed');
-        if (refLabel) refLabel.textContent = t(val === 'aed' ? 'confirm.aed_ref_label' : 'confirm.number_label');
+        if (refLabel) refLabel.textContent = t('confirm.number_label');
 
         if (signContainer) {
             if (val === 'underground') {
@@ -270,18 +284,6 @@ export function initFormLogic(element, location, editMode, initialData) {
         if (volumeInput && nodeTags['water_tank:volume']) volumeInput.value = nodeTags['water_tank:volume'];
         if (refInput && nodeTags['ref']) refInput.value = nodeTags['ref'];
         if (noteInput && (nodeTags['note'] || nodeTags['description'])) noteInput.value = nodeTags['note'] || nodeTags['description'];
-        if (aedAccessInput && nodeTags.access) {
-            if (![...aedAccessInput.options].some(option => option.value === nodeTags.access)) {
-                const existingOption = document.createElement('option');
-                existingOption.value = nodeTags.access;
-                existingOption.textContent = `${nodeTags.access} (${t('confirm.aed_existing_value')})`;
-                aedAccessInput.append(existingOption);
-            }
-            aedAccessInput.value = nodeTags.access;
-        }
-        if (aedIndoorInput && nodeTags.indoor) aedIndoorInput.value = nodeTags.indoor;
-        if (aedOpeningHoursInput && nodeTags.opening_hours) aedOpeningHoursInput.value = nodeTags.opening_hours;
-
         if (sourceInput && nodeTags['water_source']) {
             // Need to set value AFTER options populated by updateGrid
             // We called updateGrid above, so options should be there
@@ -305,12 +307,12 @@ export function initFormLogic(element, location, editMode, initialData) {
 
     // Attach Listeners
     if (editMode) {
-        [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput, signInput, sourceInput, aedAccessInput, aedIndoorInput, aedOpeningHoursInput].forEach(el => {
+        [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput, signInput, sourceInput].forEach(el => {
             if (el) el.addEventListener('input', checkChanges);
             if (el) el.addEventListener('change', checkChanges);
         });
         setTimeout(checkChanges, 300);
     }
 
-    return { checkChanges, hasChanges: () => hasChanges };
+    return { checkChanges, hasChanges: () => hasChanges, aedForm };
 }

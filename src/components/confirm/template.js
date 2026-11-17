@@ -1,5 +1,6 @@
 import { t } from '../../services/i18n.js';
 import { icon } from '../icons.js';
+import { renderAedFormMarkup } from './aed-form.js';
 
 export function renderConfirmView() {
    return `
@@ -60,14 +61,19 @@ export function renderConfirmView() {
           <div class="space-y-3">
              <h3 class="hj-eyebrow ml-1">${t('confirm.type_label')}</h3>
              
-             <!-- Row 1: Main Types -->
-             <div id="type-grid-main" class="grid grid-cols-3 gap-2">
+             <!-- Row 1: Main Types (above-ground / underground hydrant) -->
+             <div id="type-grid-main" class="grid grid-cols-2 gap-2">
                  <!-- JS Populated Main -->
              </div>
              
              <!-- Row 2: Secondary Types -->
              <div id="type-grid-secondary" class="grid grid-cols-4 gap-2">
                  <!-- JS Populated Secondary -->
+             </div>
+
+             <!-- Row 3: AED (separate option at the very bottom, opens its own mask) -->
+             <div id="type-grid-aed" class="pt-1">
+                 <!-- JS Populated AED -->
              </div>
              
              <!-- SIGN Container (Moved here for proximity) -->
@@ -113,8 +119,11 @@ export function renderConfirmView() {
              <input type="hidden" id="hydrant-position" value="sidewalk">
          </div>
 
-         <!-- Details (Visible) -->
-         <div class="space-y-5 pt-6 border-t border-ivory/10">
+         <!-- AED mask (own input mask, only visible when the AED type is selected) -->
+         ${renderAedFormMarkup()}
+
+         <!-- Hydrant details (hidden completely when the AED type is selected) -->
+         <div id="hydrant-details-container" class="space-y-5 pt-6 border-t border-ivory/10">
             
             <!-- Diameter / Volume -->
              <div id="diameter-container">
@@ -126,34 +135,6 @@ export function renderConfirmView() {
             <div id="volume-container" class="hidden">
                 <label for="hydrant-volume" class="hj-eyebrow block mb-1.5">Volumen (m³)</label>
                 <input type="text" id="hydrant-volume" placeholder="${t('confirm.volume_placeholder')}" class="hj-input">
-            </div>
-
-            <div id="aed-details-container" class="hidden space-y-4 hj-card p-4">
-                <h3 class="hj-eyebrow text-ivory">${t('confirm.aed_details')}</h3>
-                <div>
-                    <label for="aed-access" class="hj-eyebrow block mb-1.5">${t('confirm.aed_access')}</label>
-                    <select id="aed-access" class="hj-input">
-                        <option value="">${t('confirm.aed_unspecified')}</option>
-                        <option value="yes">${t('confirm.aed_access_public')}</option>
-                        <option value="no">${t('confirm.aed_access_no')}</option>
-                        <option value="permissive">${t('confirm.aed_access_permissive')}</option>
-                        <option value="customers">${t('confirm.aed_access_customers')}</option>
-                        <option value="destination">${t('confirm.aed_access_destination')}</option>
-                        <option value="private">${t('confirm.aed_access_private')}</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="aed-indoor" class="hj-eyebrow block mb-1.5">${t('confirm.aed_indoor')}</label>
-                    <select id="aed-indoor" class="hj-input">
-                        <option value="">${t('confirm.aed_unspecified')}</option>
-                        <option value="yes">${t('confirm.sign_options.yes')}</option>
-                        <option value="no">${t('confirm.sign_options.no')}</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="aed-opening-hours" class="hj-eyebrow block mb-1.5">${t('confirm.aed_opening_hours')}</label>
-                    <input type="text" id="aed-opening-hours" placeholder="${t('confirm.aed_opening_hours_placeholder')}" maxlength="120" class="hj-input">
-                </div>
             </div>
 
             <div class="space-y-4">
