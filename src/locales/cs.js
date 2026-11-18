@@ -20,7 +20,7 @@ export default {
         info_license: "Licence a Kód",
         disclaimer_text: "Nepoužívejte v nouzi. Bez záruky.\nSpuštění znamená souhlas s použitím dat.",
         info_github: "Zobrazit na GitHubu",
-        help_link: "Návod a nápověda (německy)",
+        help_link: "Návod a nápověda",
         lang_btn_aria: "Jazyk / Language"
     },
     pwa: {

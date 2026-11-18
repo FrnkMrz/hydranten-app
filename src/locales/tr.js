@@ -20,7 +20,7 @@ export default {
         info_license: "Lisans ve Kod",
         disclaimer_text: "Acil durumlarda kullanmayın. Garanti yoktur.\nBaşlatma, veri kullanım onayını ifade eder.",
         info_github: "GitHub'da Görüntüle",
-        help_link: "Kılavuz ve yardım (Almanca)",
+        help_link: "Kılavuz ve yardım",
         lang_btn_aria: "Dil / Language"
     },
     pwa: {

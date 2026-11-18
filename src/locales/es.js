@@ -20,7 +20,7 @@ export default {
         info_license: "Licencia y Código",
         disclaimer_text: "No usar en emergencias. Sin garantía.\nIniciar implica consentimiento de uso de datos.",
         info_github: "Ver en GitHub",
-        help_link: "Guía y ayuda (en alemán)",
+        help_link: "Guía y ayuda",
         lang_btn_aria: "Idioma / Language"
     },
     pwa: {

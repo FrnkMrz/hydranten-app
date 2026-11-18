@@ -20,7 +20,7 @@ export default {
         info_license: "الترخيص والكود",
         disclaimer_text: "لا تستخدم في حالات الطوارئ. لا ضمانات.\nالبدء يعني الموافقة على استخدام البيانات.",
         info_github: "عرض على GitHub",
-        help_link: "الدليل والمساعدة (بالألمانية)",
+        help_link: "الدليل والمساعدة",
         lang_btn_aria: "اللغة / Language"
     },
     pwa: {
