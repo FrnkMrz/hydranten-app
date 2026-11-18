@@ -101,19 +101,19 @@ export function renderConfirmView() {
              <h3 class="hj-eyebrow ml-1">${t('confirm.position_label')}</h3>
              <div class="hj-seg grid grid-cols-5 gap-1">
                  <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-1.5 py-2.5" data-value="">
-                    ${icon('posNone', 'w-5 h-5')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.none')}</span>
+                    ${icon('posNone', 'w-6 h-6')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.none')}</span>
                  </button>
                 <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-1.5 py-2.5" data-value="sidewalk">
-                   ${icon('posSidewalk', 'w-5 h-5')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.sidewalk')}</span>
+                   ${icon('posSidewalk', 'w-6 h-6')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.sidewalk')}</span>
                 </button>
                 <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-1.5 py-2.5" data-value="lane">
-                   ${icon('posLane', 'w-5 h-5')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.street')}</span>
+                   ${icon('posLane', 'w-6 h-6')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.street')}</span>
                 </button>
                 <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-1.5 py-2.5" data-value="parking_lane">
-                   ${icon('posParking', 'w-5 h-5')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.parking')}</span>
+                   ${icon('posParking', 'w-6 h-6')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.parking')}</span>
                 </button>
                 <button type="button" class="pos-option-btn hj-seg-btn min-h-[44px] min-w-0 px-0.5 text-[10px] tracking-tight leading-tight flex flex-col items-center justify-center gap-1.5 py-2.5" data-value="green">
-                   ${icon('posGreen', 'w-5 h-5')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.green')}</span>
+                   ${icon('posGreen', 'w-6 h-6')}<span class="max-w-full hyphens-auto [overflow-wrap:anywhere]">${t('confirm.locations.green')}</span>
                 </button>
              </div>
              <input type="hidden" id="hydrant-position" value="sidewalk">

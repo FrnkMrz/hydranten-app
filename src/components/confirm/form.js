@@ -27,14 +27,14 @@ export function initFormLogic(element, location, editMode, initialData) {
 
     // --- GRID SETUP ---
     const mainTypes = [
-        { id: 'pillar', label: t('confirm.types.pillar'), icon: typeIcon('pillar', 'w-11 h-11') },
-        { id: 'underground', label: t('confirm.types.underground'), icon: typeIcon('underground', 'w-11 h-11') }
+        { id: 'pillar', label: t('confirm.types.pillar'), icon: typeIcon('pillar', 'w-14 h-14') },
+        { id: 'underground', label: t('confirm.types.underground'), icon: typeIcon('underground', 'w-14 h-14') }
     ];
     const subTypes = [
-        { id: 'dry_hydrant', label: t('confirm.types.dry_hydrant'), icon: typeIcon('dry_hydrant', 'w-8 h-8') },
-        { id: 'wall', label: t('confirm.types.wall'), icon: typeIcon('wall', 'w-8 h-8') },
-        { id: 'cistern', label: t('confirm.types.cistern'), icon: typeIcon('cistern', 'w-8 h-8') },
-        { id: 'suction_point', label: t('confirm.types.suction'), icon: typeIcon('suction_point', 'w-8 h-8') }
+        { id: 'dry_hydrant', label: t('confirm.types.dry_hydrant'), icon: typeIcon('dry_hydrant', 'w-10 h-10') },
+        { id: 'wall', label: t('confirm.types.wall'), icon: typeIcon('wall', 'w-10 h-10') },
+        { id: 'cistern', label: t('confirm.types.cistern'), icon: typeIcon('cistern', 'w-10 h-10') },
+        { id: 'suction_point', label: t('confirm.types.suction'), icon: typeIcon('suction_point', 'w-10 h-10') }
     ];
 
     const gridMain = element.querySelector('#type-grid-main');
@@ -65,7 +65,7 @@ export function initFormLogic(element, location, editMode, initialData) {
         const aedLabel = t('confirm.types.aed');
         gridAed.innerHTML = `
              <button type="button" class="option-btn hj-option h-[3.5rem] w-full flex flex-row items-center justify-center gap-3" data-value="aed" aria-label="${aedLabel}">
-                <span aria-hidden="true">${typeIcon('aed', 'w-7 h-7')}</span>
+                <span aria-hidden="true">${typeIcon('aed', 'w-8 h-8')}</span>
                 <span class="px-1 text-center text-[10px] leading-tight font-semibold uppercase tracking-[0.1em]" aria-hidden="true">${aedLabel}</span>
              </button>`;
     }

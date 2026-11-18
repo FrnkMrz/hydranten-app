@@ -65,8 +65,10 @@ export function renderIntroView() {
       const rest = t(`intro.${key}`).replace(bold, '').trim();
       return `
              <li class="hj-step">
-                <span class="hj-step-num" aria-hidden="true">${index + 1}</span>
-                ${icon(name, 'w-6 h-6 text-ivory')}
+                <span class="hj-step-icon" aria-hidden="true">
+                   <span class="hj-step-num">${index + 1}</span>
+                   ${icon(name, 'w-6 h-6')}
+                </span>
                 <p class="min-w-0 max-w-full leading-tight">
                    <span class="block text-[13px] font-semibold text-ivory break-words">${bold}</span>
                    <span class="block mt-0.5 text-[11px] text-ivory/50 break-words">${rest}</span>
@@ -101,10 +103,13 @@ export function renderIntroView() {
           <!-- Vignettes: soften the map into the status bar and the sheet -->
           <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-ink-950/45 to-transparent pointer-events-none z-[400]"></div>
           <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink-950/75 to-transparent pointer-events-none z-[400]"></div>
+
+          <!-- Map credit: small, on the map, clear of the buttons and the sheet -->
+          <a id="map-credit" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="absolute bottom-9 left-1/2 -translate-x-1/2 z-[401] whitespace-nowrap rounded-full bg-ink-950/55 px-2 py-0.5 text-[9px] tracking-wide text-ivory/75 hover:text-ivory transition no-underline">© OpenStreetMap</a>
       </div>
 
       <!-- Bottom Sheet Content - Auto Height, Stacked -->
-      <div class="hj-sheet w-full shrink-0 z-10 flex flex-col items-center px-6 pb-safe pt-3 -mt-7 relative">
+      <div class="hj-sheet w-full shrink-0 z-10 flex flex-col items-center px-6 pb-safe-min pt-3 -mt-7 relative">
          
          <!-- Drag Handle / Visual Indicator -->
          <div class="hj-grabber mb-6"></div>
@@ -141,16 +146,6 @@ export function renderIntroView() {
               <button id="intro-info-btn" class="hj-btn hj-btn-ghost w-[3rem] shrink-0 px-0 min-h-[3rem]" aria-label="Information & Legal">
                 ${icon('info', 'w-[1.125rem] h-[1.125rem]')}
               </button>
-         </div>
-          
-         <div class="mt-3 mb-2 flex flex-col items-center gap-2 text-center">
-             <a id="intro-help-link" href="./help/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-ivory/60 hover:text-ivory transition no-underline">
-                ${icon('question', 'w-4 h-4')}
-                ${t('intro.help_link')}
-             </a>
-             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-[10px] tracking-wide text-ivory/30 hover:text-ivory/60 transition no-underline block">
-                © OpenStreetMap contributors
-             </a>
          </div>
       </div>
     </div>
@@ -497,6 +492,14 @@ export function initIntroView(element, onStart, onSettings, onEdit) {
                tileUrl = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
                attribution = 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)';
                maxNativeZoom = 16; // Topo reliable max zoom (scaled up to 19)
+            }
+
+            const credit = element.querySelector('#map-credit');
+            if (credit) {
+               credit.textContent = {
+                  satellite: '© Esri · OpenStreetMap',
+                  topo: '© OpenStreetMap · OpenTopoMap'
+               }[style] || '© OpenStreetMap';
             }
 
             L.tileLayer(tileUrl, {
