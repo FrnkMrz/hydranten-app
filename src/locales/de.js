@@ -57,7 +57,9 @@ export default {
         legend: "Dienstgrade & Abzeichen",
         list_title: "Alle Dienstgrade",
         from_hydrants: "ab {count} Hydranten",
-        level_title: "Hydranten Jäger Rang"
+        level_title: "Hydranten Jäger Rang",
+        rank_loading: "Dienstgrad wird ermittelt …",
+        rank_unavailable: "Dienstgrad gerade nicht abrufbar – die OSM-Server sind ausgelastet. Tippen zum erneut Versuchen."
     },
     history: {
         title: "Verlauf",

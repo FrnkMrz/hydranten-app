@@ -56,7 +56,9 @@ export default {
         legend: "Grades & Insignes",
         list_title: "Tous les grades",
         from_hydrants: "à partir de {count} Hydrants",
-        level_title: "Rang Chasseur d'Hydrantes"
+        level_title: "Rang Chasseur d'Hydrantes",
+        rank_loading: "Récupération du rang …",
+        rank_unavailable: "Rang indisponible pour le moment – les serveurs OSM sont surchargés. Touchez pour réessayer."
     },
     history: {
         title: "Historique",

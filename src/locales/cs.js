@@ -57,7 +57,9 @@ export default {
         legend: "Hodnosti a odznaky",
         list_title: "Všechny Hodnosti",
         from_hydrants: "od {count} Hydrantů",
-        level_title: "Hodnost Lovce Hydrantů"
+        level_title: "Hodnost Lovce Hydrantů",
+        rank_loading: "Zjišťuji hodnost …",
+        rank_unavailable: "Hodnost teď nelze načíst – servery OSM jsou přetížené. Klepnutím to zkusíte znovu."
     },
     history: {
         title: "Historie",

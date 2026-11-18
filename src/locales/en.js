@@ -56,7 +56,9 @@ export default {
         legend: "Ranks & Badges",
         list_title: "All Ranks",
         from_hydrants: "from {count} Hydrants",
-        level_title: "Hydrant Hunter Rank"
+        level_title: "Hydrant Hunter Rank",
+        rank_loading: "Fetching your rank …",
+        rank_unavailable: "Rank not available right now – the OSM servers are busy. Tap to try again."
     },
     history: {
         title: "History",

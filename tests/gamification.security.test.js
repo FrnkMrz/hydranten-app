@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fetchUserHydrantCount } from '../src/services/gamification.js';
+import { fetchUserHydrantCount, getCachedHydrantCount } from '../src/services/gamification.js';
 
 const countResponse = nodes => ({
     ok: true,
@@ -63,5 +63,49 @@ describe('gamification Overpass query', () => {
         fetch.mockRejectedValue(new Error('network'));
 
         expect(await fetchUserHydrantCount('tester')).toBe(83);
+    });
+
+    it('shares one request when the rank is asked for twice at once', async () => {
+        let answer;
+        fetch.mockReturnValueOnce(new Promise(resolve => { answer = resolve; }));
+
+        const first = fetchUserHydrantCount('tester');
+        const second = fetchUserHydrantCount('tester');
+        answer(countResponse(42));
+
+        expect(await first).toBe(42);
+        expect(await second).toBe(42);
+        expect(fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('tries every server again once when they report being busy', async () => {
+        vi.useFakeTimers();
+        try {
+            for (let i = 0; i < 4; i++) fetch.mockResolvedValueOnce({ ok: false, status: 502 });
+            fetch.mockResolvedValueOnce(countResponse(12));
+
+            const pending = fetchUserHydrantCount('tester');
+            await vi.runAllTimersAsync();
+
+            expect(await pending).toBe(12);
+            expect(fetch).toHaveBeenCalledTimes(5);
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    it('does not retry when the answers are broken rather than busy', async () => {
+        fetch.mockResolvedValue({ ok: false, status: 500 });
+
+        expect(await fetchUserHydrantCount('tester')).toBeNull();
+        expect(fetch).toHaveBeenCalledTimes(4);
+    });
+
+    it('reports a stored count as stale once it is older than an hour', () => {
+        localStorage.setItem('hydrant_count_tester', '83');
+        localStorage.setItem('hydrant_count_ts_tester', String(Date.now() - 2 * 60 * 60 * 1000));
+
+        expect(getCachedHydrantCount('tester')).toEqual({ count: 83, fresh: false });
+        expect(getCachedHydrantCount('nobody')).toBeNull();
     });
 });

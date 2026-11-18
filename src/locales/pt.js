@@ -56,7 +56,9 @@ export default {
         legend: "Classificações e Insígnias",
         list_title: "Todas as Classificações",
         from_hydrants: "de {count} Hidrantes",
-        level_title: "Classificação de Caçador de Hidrantes"
+        level_title: "Classificação de Caçador de Hidrantes",
+        rank_loading: "A obter a tua classificação …",
+        rank_unavailable: "Classificação indisponível de momento – os servidores OSM estão sobrecarregados. Toca para tentar novamente."
     },
     history: {
         title: "Histórico",

@@ -56,7 +56,9 @@ export default {
         legend: "Rangos e Insignias",
         list_title: "Todos los Rangos",
         from_hydrants: "desde {count} Hidrantes",
-        level_title: "Rango de Cazador de Hidrantes"
+        level_title: "Rango de Cazador de Hidrantes",
+        rank_loading: "Obteniendo tu rango …",
+        rank_unavailable: "Rango no disponible ahora – los servidores de OSM están saturados. Toca para reintentar."
     },
     history: {
         title: "Historial",

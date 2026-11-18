@@ -1,16 +1,20 @@
-# 🚒 Hydranten Jäger APP (v1.8.0)
+# 🚒 Hydranten Jäger APP (v1.9.0)
 
 **🌐 Live App:** [https://hydrantenjaeger.de](https://hydrantenjaeger.de)
 
 Eine moderne, mobil-optimierte Progressive Web App (PWA) zum Erfassen und Pflegen von Hydranten, Löschwasserstellen und AEDs in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
-> **Status**: Release-Kandidat 1.8.0 – Veröffentlichung nach Merge und erfolgreichen Pflichtprüfungen
-> *Features: regionale PMTiles-Daten für DACHLiLu, AED-Unterstützung, verbesserter Edit-Modus und kontrollierte PWA-Updates.*
+> **Status**: Release-Kandidat 1.9.0 – Veröffentlichung nach Merge und erfolgreichen Pflichtprüfungen
+> *Features: neues Design „Ember & Ink“, gehärtete OSM-Uploads, Anmeldung und Content Security Policy, zuverlässiger Rang nach Kontowechsel, Sprachflaggen, eigene AED-Eingabemaske und Hilfeseite.*
 
-### Version 1.7.0 (live seit 15.10.2026)
+### Version 1.8.0 (live seit 15.10.2026)
 
-Version 1.7.0 mit AED-Unterstützung, verbessertem Edit-Modus und den zugehörigen Stabilitätsverbesserungen ist auf [hydrantenjaeger.de](https://hydrantenjaeger.de) verfügbar.
+Version 1.8.0 mit regionaler Datenversorgung für DACHLiLu ist auf [hydrantenjaeger.de](https://hydrantenjaeger.de) verfügbar. Version 1.9.0 (neues Design, Sicherheitshärtung, Rang-Korrekturen) ist als Release-Kandidat vorbereitet.
+
+### Version 1.7.0 (15.10.2026)
+
+Version 1.7.0 brachte AED-Unterstützung, einen verbesserten Edit-Modus und die zugehörigen Stabilitätsverbesserungen.
 
 **Enthalten:**
 
@@ -26,9 +30,9 @@ Version 1.7.0 mit AED-Unterstützung, verbessertem Edit-Modus und den zugehörig
 3. Den Standort auf der kleinen Karte prüfen oder anpassen. In der AED-Maske sind alle Angaben freiwillig; „Keine Angabe“ speichert nichts: Standortbeschreibung (mit Schnellwahl), Zugang, Zugangszeiten, Innenraum, Ebene (nur bei „Drinnen“) und unter „Mehr Angaben“ Betreiber, Telefon, Notiz und Nummer am Gerät.
 4. Die Zusammenfassung „Das wird gespeichert“ prüfen und zu OpenStreetMap hochladen. Bestehende AEDs lassen sich über ihren Kartenmarker öffnen und bearbeiten: Die Maske zeigt die bisherigen Werte, Änderungen erscheinen als „alt → neu“. Es wird nie ein Tag gelöscht, ein leeres Feld ändert nichts, fremde Tags und ein vorhandener Zugangscode (`defibrillator:code`) bleiben unberührt.
 
-### Release-Kandidat 1.8.0: Regionale Datenversorgung
+### Regionale Datenversorgung (seit 1.8.0)
 
-Die regionale Datenversorgung ist in den Release-Kandidaten 1.8.0 aufgenommen, aber noch nicht durch diesen Release veröffentlicht. Innerhalb der vollständigen DACHLiLu-Abdeckung (Deutschland, Österreich, Schweiz, Liechtenstein und Luxemburg) zeigt die App zuerst die vorberechneten PMTiles-Kacheln von OpenFireMap. Anschließend fragt sie neue oder geänderte Objekte seit dem OSM-Datenstand des Quellextrakts über Overpass ab und ergänzt die Karte. Der Live-Abgleich hält die erste Anzeige der PMTiles nicht zurück. Außerhalb der exakten Abdeckung und bei Pipeline-Fehlern nutzt die App Overpass direkt.
+Innerhalb der vollständigen DACHLiLu-Abdeckung (Deutschland, Österreich, Schweiz, Liechtenstein und Luxemburg) zeigt die App zuerst die vorberechneten PMTiles-Kacheln von OpenFireMap. Anschließend fragt sie neue oder geänderte Objekte seit dem OSM-Datenstand des Quellextrakts über Overpass ab und ergänzt die Karte. Der Live-Abgleich hält die erste Anzeige der PMTiles nicht zurück. Außerhalb der exakten Abdeckung und bei Pipeline-Fehlern nutzt die App Overpass direkt.
 
 **Datenstand und Grenzen:** `generated_at` kennzeichnet den Pipeline-Build; für den Overpass-Abgleich zählt `osm_data_until`, der OSM-Datenstand der Quellextrakte. Die Abfrage `newer:` findet neue und geänderte Objekte, aber keine Löschungen oder Änderungen, durch die ein Objekt aus den abgefragten Tags herausfällt. Solche Objekte können bis zum nächsten Pipeline-Build auf der Karte bleiben. Erfolgreiche eigene Bearbeitungen werden lokal überlagert, bis derselbe Stand aus der Datenversorgung zurückkommt.
 
@@ -38,15 +42,27 @@ Die regionale Datenversorgung ist in den Release-Kandidaten 1.8.0 aufgenommen, a
 
 ## 📋 Changelog
 
-### Unreleased - Eigene AED-Eingabemaske
-*   **AED ganz unten:** Die Typwahl zeigt in der ersten Reihe nur noch Überflur und Unterflur, darunter die Reihe mit Trockenhydrant, Wandhydrant, Zisterne und Saugstelle. Der Defibrillator ist eine eigene, schlanke Option ganz unten. Die Hydranten-Felder und ihr Verhalten bleiben unverändert.
+### v1.9.0 (Release-Kandidat, 16.11.2026) - Neues Design, Sicherheitshärtung & Rang-Korrekturen
+*   **Neues Design „Ember & Ink“:** Überarbeitete Oberfläche mit warmen dunklen Flächen, Ember-Akzent, Serifenschrift Instrument Serif (selbst gehostet und vorab gecacht) für Überschriften und Wortmarke sowie einer eigenen Familie feiner Linien-Icons. Startseite mit mehr Kartenfläche und nummeriertem Vier-Schritte-Ablauf; Erfassungsformular mit drei Haupttypen in einer Zeile; Einstellungen, Verlauf, Rangliste, Kamera, Ladebildschirme, Dialoge und Overlays angepasst. Hinweise (Toasts) erscheinen oben statt über dem Start-Knopf; Theme- und Manifest-Farben passen zum neuen Hintergrund.
+*   **Sprachflaggen:** Der Sprachknopf zeigt wieder die aktive Flagge samt Sprachcode; die Auswahl listet jede Sprache mit Flagge.
+*   **AED-Eingabemaske – AED ganz unten:** Die Typwahl zeigt in der ersten Reihe nur noch Überflur und Unterflur, darunter die Reihe mit Trockenhydrant, Wandhydrant, Zisterne und Saugstelle. Der Defibrillator ist eine eigene, schlanke Option ganz unten. Die Hydranten-Felder und ihr Verhalten bleiben unverändert.
 *   **Eigene AED-Maske:** Wer „Defibrillator“ wählt, sieht statt der Hydranten-Felder eine eigene Maske mit Standortbeschreibung (`defibrillator:location`), Zugang, Zugangszeiten, Innenraum, Ebene sowie unter „Mehr Angaben“ Betreiber, Telefon, Notiz (`description`) und Nummer am Gerät (`ref`). „Keine Angabe“ ist überall die Vorgabe und schreibt kein Tag; `24/7` nur nach ausdrücklicher Wahl; die Ebene nur bei „Drinnen“.
 *   **Bestehende AEDs bearbeiten:** Die Maske ist mit den OSM-Werten vorbelegt, eine Zusammenfassung zeigt Änderungen als „alt → neu“. Es wird nie ein Tag gelöscht, fremde Tags bleiben unverändert, nicht darstellbare Werte (zum Beispiel `access=permissive`) bleiben gesperrt. Ein alter Ebenenwert bleibt nach „Draußen“ stehen, die Maske sagt das offen.
 *   **Prüfregeln:** Neue Datei `src/services/aed-details.js` mit fester Schlüsselliste, Längengrenzen und Zeichenprüfung (Datenvertrag wie im Schwesterprojekt AEDjaeger). Der Zugangscode `defibrillator:code` wird nie erfasst.
 *   **Sprachen:** 26 neue Texte in allen 15 Sprachen. Die Übersetzungen sind nicht muttersprachlich geprüft.
 *   **Taginfo:** `public/taginfo.json` nennt die neuen Schlüssel `defibrillator:location`, `level`, `operator` und `phone`.
+*   **Hilfeseite:** Neue Seite unter `/help/` im Design der App (Ablauf, 3-Meter-Abstand, Typen, FAQ, Impressum), in allen 15 Sprachen und von Startseite und Info-Dialogen verlinkt.
+*   **Rang-Anzeige:** Nach einem Wechsel des OSM-Kontos wird nicht mehr der Rang des vorherigen Kontos angezeigt: Benutzername und Avatar werden bei jedem Login zurückgesetzt, und nur die jeweils neueste Rang-Abfrage darf das Widget aktualisieren.
+*   **Rang nie fälschlich 0:** Overpass-Antworten mit `remark` (Timeout/Überlast als HTTP 200) gelten als Fehler und werden nicht mehr eine Stunde lang als „0“ zwischengespeichert. Die Zählung probiert nacheinander alle vier Overpass-Instanzen, bricht hängende Anfragen ab und greift bei Ausfall auf einen abgelaufenen Cache-Wert zurück. Der zuletzt bekannte Rang erscheint sofort und wird im Hintergrund aktualisiert; gleichzeitige Abfragen teilen sich eine Anfrage, und bei ausgelasteten Servern folgt nach kurzer Pause ein zweiter Durchgang. Ist die Anzahl unbekannt, zeigt das Rang-Feld einen Hinweis mit „Tippen zum erneut Versuchen“ statt eines falschen Rangs.
+*   **Karte:** Die Datenstand-Pille in der Kartenmitte ist entfallen.
+*   **OSM-Uploads gehärtet:** Knoten-IDs, Versionen sowie vom Server zurückgegebene Changeset- und Knoten-IDs werden validiert; Upload-Logzeilen werden als Level und Text ausgegeben, gelöschte Knoten-IDs als Zeichenketten gespeichert (passend zum Kartenfilter) und beschädigte Einträge im optimistischen Cache ignoriert. Der OSM-Anzeigename wird in der Rang-Abfrage maskiert.
+*   **Anmeldung:** OAuth-State und Redirect-URL werden nicht mehr geloggt; der State wird mit 32 Zeichen ohne Verteilungsverzerrung erzeugt. OAuth-Rückgabedaten werden früh aus der URL entfernt, Referrer senden nur den Ursprung, und der Callback nutzt lokalisierte Meldungen ohne Geheimnisse in Logs.
+*   **Content Security Policy:** Zusätzlich `frame-src 'none'` und `form-action 'self'`; Stylesheets sind auf die App beschränkt, Inline-Styles nur für Style-Attribute erlaubt, und Vite darf `<style>`-Elemente nur im lokalen Entwicklungsserver einfügen.
+*   **Abhängigkeiten & CI:** GitHub Actions auf unveränderliche Commit-SHAs gepinnt (mit Prüftest), automatisierte Dependency-Sicherheitsprüfungen, `npm audit fix` gegen die Vite-Sicherheitswarnung; neue Abhängigkeit `@fontsource/instrument-serif`.
+*   **Tests:** Neue Tests für Auth, CSP, Gamification-Rang und Prozess-Overlay; OSM-Tests erweitert.
+*   **Dokumentation:** Hosting-Entscheidung (GitHub Pages statt Cloudflare-Proxy) in `NOTIZEN.md` festgehalten.
 
-### v1.8.0 (Release-Kandidat, 15.10.2026) - Regionale Datenversorgung
+### v1.8.0 (15.10.2026) - Regionale Datenversorgung
 *   **Schneller Kartenstart:** Für DACHLiLu werden vorberechnete OpenFireMap-PMTiles zuerst angezeigt; der Overpass-Live-Abgleich ergänzt anschließend neue und geänderte Objekte.
 *   **Robuster Fallback:** Außerhalb der vollständigen PMTiles-Abdeckung und bei Fehlern der regionalen Quelle lädt die App Daten direkt über Overpass.
 *   **Datenstand:** Die Dokumentation erklärt die Zeitstempel `generated_at` und `osm_data_until` sowie die Grenzen des `newer:`-Abgleichs.
