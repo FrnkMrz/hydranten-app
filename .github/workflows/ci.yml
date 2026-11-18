@@ -67,7 +67,10 @@ jobs:
     name: 📱 Mobile E2E Tests
     runs-on: ubuntu-latest
     needs: quality
-    timeout-minutes: 20
+    # A normal run takes about 3 minutes, but installing the Playwright
+    # browsers has taken over 18 minutes on a slow runner. 40 leaves room
+    # for that while still stopping a truly hung job.
+    timeout-minutes: 40
     steps:
     - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
