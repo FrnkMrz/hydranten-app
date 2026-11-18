@@ -25,6 +25,12 @@ export function initFormLogic(element, location, editMode, initialData) {
 
     const submitBtn = element.querySelector('#submit-img-btn');
 
+    // Hydrant types that normally hang on the water main (water_source=main).
+    const MAINS_FED_TYPES = new Set(['pillar', 'underground', 'wall']);
+    // Once the user picks a water source by hand, type changes no longer apply the default.
+    let sourceTouched = false;
+    if (sourceInput) sourceInput.addEventListener('change', () => { sourceTouched = true; });
+
     // --- GRID SETUP ---
     const mainTypes = [
         { id: 'pillar', label: t('confirm.types.pillar'), icon: typeIcon('pillar', 'w-14 h-14') },
@@ -223,11 +229,14 @@ export function initFormLogic(element, location, editMode, initialData) {
             sourceInput.innerHTML = options.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('');
 
             // Try to keep value if valid
-            if (options.some(o => o.value === currentVal)) {
-                sourceInput.value = currentVal;
-            } else {
-                sourceInput.value = "";
+            let nextVal = options.some(o => o.value === currentVal) ? currentVal : "";
+
+            // New hydrants: until the user picks a source, it follows the type.
+            // Mains-fed types get "main"; dry hydrants draw from open water, so none.
+            if (!editMode && !sourceTouched) {
+                nextVal = MAINS_FED_TYPES.has(val) ? "main" : "";
             }
+            sourceInput.value = nextVal;
         }
     };
 
