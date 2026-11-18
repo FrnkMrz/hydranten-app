@@ -73,11 +73,11 @@ Created and deleted hydrants are cached in localStorage (`created_hydrants`, `de
 Translations in `src/locales/*.js`. Access via `t('key.path')` from `services/i18n.js`. The `en.js` file is the reference — `scripts/verify-i18n.js` checks all locales for missing keys. German and English are critical (fail build if incomplete).
 
 ### Overpass Failover
-Queries cycle through 3 servers (overpass-api.de → kumi.systems → maps.mail.ru) on network/server errors, timeouts, rate limits and HTTP errors. HTTP 400 is returned immediately because a malformed query will fail on every instance.
+Queries cycle through 4 instances (overpass-api.de, lz4.overpass-api.de, z.overpass-api.de, overpass.kumi.systems) on network/server errors, timeouts, rate limits and HTTP errors. HTTP 400 is returned immediately because a malformed query will fail on every instance.
 
 ## Testing
 
-Tests use Vitest with jsdom. Run `npm test` which also verifies i18n completeness. Currently only `hydrant-logic.test.js` has unit tests.
+Tests use Vitest with jsdom. Run `npm test` which also verifies i18n completeness. Unit and integration tests live in `tests/` (plus Playwright E2E in `tests/e2e/`).
 
 ## Deployment
 
