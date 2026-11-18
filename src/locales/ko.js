@@ -56,7 +56,9 @@ export default {
         legend: "계급 및 배지",
         list_title: "모든 등급",
         from_hydrants: "{count} 소화전부터",
-        level_title: "소화전 사냥꾼 등급"
+        level_title: "소화전 사냥꾼 등급",
+        rank_loading: "등급을 불러오는 중 …",
+        rank_unavailable: "지금은 등급을 불러올 수 없습니다 – OSM 서버가 혼잡합니다. 탭하여 다시 시도하세요."
     },
     history: {
         title: "기록",

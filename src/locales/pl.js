@@ -56,7 +56,9 @@ export default {
         legend: "Stopnie i odznaki",
         list_title: "Wszystkie stopnie",
         from_hydrants: "od {count} hydrantów",
-        level_title: "Ranga Łowcy Hydrantów"
+        level_title: "Ranga Łowcy Hydrantów",
+        rank_loading: "Ustalanie rangi …",
+        rank_unavailable: "Ranga jest teraz niedostępna – serwery OSM są przeciążone. Dotknij, aby spróbować ponownie."
     },
     history: {
         title: "Historia",

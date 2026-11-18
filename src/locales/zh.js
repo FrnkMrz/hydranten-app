@@ -56,7 +56,9 @@ export default {
         legend: "等级与徽章",
         list_title: "所有等级",
         from_hydrants: "从 {count} 个消防栓起",
-        level_title: "消防栓猎人等级"
+        level_title: "消防栓猎人等级",
+        rank_loading: "正在获取等级 …",
+        rank_unavailable: "暂时无法获取等级 – OSM 服务器繁忙。点击重试。"
     },
     history: {
         title: "历史记录",

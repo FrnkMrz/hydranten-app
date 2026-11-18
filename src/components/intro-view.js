@@ -83,7 +83,6 @@ export function renderIntroView() {
       <div class="w-full flex-1 min-h-[34%] relative z-0">
           <div id="intro-map" class="absolute inset-0 z-0"></div>
           <div id="hydrant-data-status" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
-          <div id="map-data-source" class="hj-pill hidden pointer-events-none absolute top-safe-14 left-1/2 z-[401] -translate-x-1/2 px-3.5 py-1.5 text-[10px] font-medium tracking-wide text-ivory/80" role="status" aria-live="polite"></div>
           
           <!-- LOCATE ME BUTTON -->
           <button id="locate-me-btn" class="hj-fab hj-fab-light absolute bottom-10 right-4 z-[401]" aria-label="Locate Me">
@@ -690,26 +689,6 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
    const renderHydrants = (elements, { preview = false } = {}) => {
       if (requestId !== requestState.latestRequestId) return;
       if (!hydrantLayer) return;
-
-      const sourceStatus = document.getElementById('map-data-source');
-      if (sourceStatus) {
-         const source = elements.dataSource;
-         if (source?.type === 'regional') {
-            const dataTimestamp = source.osmDataUntil;
-            const parsedDate = dataTimestamp ? new Date(dataTimestamp) : null;
-            const date = parsedDate && !Number.isNaN(parsedDate.getTime()) ? parsedDate.toLocaleDateString(lang) : '–';
-            sourceStatus.textContent = t('hydrant_data.source_regional').replace('{date}', date);
-            sourceStatus.title = source.liveDelta == null
-               ? sourceStatus.textContent
-               : source.liveDelta === false
-                  ? t('hydrant_data.source_regional_no_delta')
-                  : t('hydrant_data.source_regional_live_delta');
-         } else {
-            sourceStatus.textContent = t('hydrant_data.source_overpass');
-            sourceStatus.title = t('hydrant_data.source_overpass');
-         }
-         sourceStatus.classList.remove('hidden');
-      }
 
       // Optimistic Filter: Remove hydrants that we know are deleted locally
       let localDeleted = [];

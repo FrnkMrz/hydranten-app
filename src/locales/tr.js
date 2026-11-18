@@ -56,7 +56,9 @@ export default {
         legend: "Rütbeler ve Rozetler",
         list_title: "Tüm Rütbeler",
         from_hydrants: "{count} Hidranttan itibaren",
-        level_title: "Hidrant Avcısı Rütbesi"
+        level_title: "Hidrant Avcısı Rütbesi",
+        rank_loading: "Rütbe alınıyor …",
+        rank_unavailable: "Rütbe şu anda alınamıyor – OSM sunucuları yoğun. Tekrar denemek için dokunun."
     },
     history: {
         title: "Geçmiş",

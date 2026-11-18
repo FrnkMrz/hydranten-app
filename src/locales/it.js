@@ -56,7 +56,9 @@ export default {
         legend: "Gradi & Distintivi",
         list_title: "Tutti i Gradi",
         from_hydrants: "da {count} Idranti",
-        level_title: "Grado Cacciatore di Idranti"
+        level_title: "Grado Cacciatore di Idranti",
+        rank_loading: "Recupero del grado …",
+        rank_unavailable: "Grado non disponibile al momento – i server OSM sono sovraccarichi. Tocca per riprovare."
     },
     history: {
         title: "Cronologia",

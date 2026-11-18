@@ -56,7 +56,9 @@ export default {
         legend: "Činovi i Značke",
         list_title: "Svi Činovi",
         from_hydrants: "od {count} Hidranata",
-        level_title: "Čin Lovca na Hidrante"
+        level_title: "Čin Lovca na Hidrante",
+        rank_loading: "Dohvaćam čin …",
+        rank_unavailable: "Čin trenutno nije dostupan – OSM poslužitelji su preopterećeni. Dodirni za ponovni pokušaj."
     },
     history: {
         title: "Povijest",

@@ -56,7 +56,9 @@ export default {
         legend: "Rangen & Badges",
         list_title: "Alle Rangen",
         from_hydrants: "vanaf {count} Hydranten",
-        level_title: "Hydranten Jager Rang"
+        level_title: "Hydranten Jager Rang",
+        rank_loading: "Rang wordt opgehaald …",
+        rank_unavailable: "Rang nu niet beschikbaar – de OSM-servers zijn overbelast. Tik om het opnieuw te proberen."
     },
     history: {
         title: "Geschiedenis",

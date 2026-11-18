@@ -56,7 +56,9 @@ export default {
         legend: "الرتب والشارات",
         list_title: "كل الرتب",
         from_hydrants: "من {count} صنابير",
-        level_title: "رتبة صائد الصنابير"
+        level_title: "رتبة صائد الصنابير",
+        rank_loading: "جارٍ جلب الرتبة …",
+        rank_unavailable: "الرتبة غير متاحة حاليًا – خوادم OSM مشغولة. اضغط لإعادة المحاولة."
     },
     history: {
         title: "السجل",

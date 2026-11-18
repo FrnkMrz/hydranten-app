@@ -56,7 +56,9 @@ export default {
         legend: "ランクとバッジ",
         list_title: "すべてのランク",
         from_hydrants: "{count} 消火栓から",
-        level_title: "消火栓ハンターランク"
+        level_title: "消火栓ハンターランク",
+        rank_loading: "ランクを取得中 …",
+        rank_unavailable: "現在ランクを取得できません – OSMサーバーが混雑しています。タップして再試行してください。"
     },
     history: {
         title: "履歴",
