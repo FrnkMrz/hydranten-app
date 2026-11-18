@@ -5,12 +5,16 @@
 Eine moderne, mobil-optimierte Progressive Web App (PWA) zum Erfassen und Pflegen von Hydranten, Löschwasserstellen und AEDs in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
-> **Status**: Release-Kandidat 1.9.0 – Veröffentlichung nach Merge und erfolgreichen Pflichtprüfungen
+> **Status**: Version 1.9.0, veröffentlicht am 18.11.2026 ([Release-Notes](https://github.com/FrnkMrz/hydranten-app/releases/tag/v1.9.0))
 > *Features: neues Design „Ember & Ink“, gehärtete OSM-Uploads, Anmeldung und Content Security Policy, zuverlässiger Rang nach Kontowechsel, Sprachflaggen, eigene AED-Eingabemaske und Hilfeseite.*
 
-### Version 1.8.0 (live seit 15.10.2026)
+### Version 1.9.0 (live seit 18.11.2026)
 
-Version 1.8.0 mit regionaler Datenversorgung für DACHLiLu ist auf [hydrantenjaeger.de](https://hydrantenjaeger.de) verfügbar. Version 1.9.0 (neues Design, Sicherheitshärtung, Rang-Korrekturen) ist als Release-Kandidat vorbereitet.
+Version 1.9.0 ist auf [hydrantenjaeger.de](https://hydrantenjaeger.de) verfügbar: neues Design, eigene AED-Eingabemaske, Hilfeseite in 15 Sprachen, Sicherheitshärtung und eine robustere Rang-Anzeige. Details stehen im Changelog unten und in den [Release-Notes](https://github.com/FrnkMrz/hydranten-app/releases/tag/v1.9.0).
+
+### Version 1.8.0 (15.10.2026)
+
+Version 1.8.0 brachte die regionale Datenversorgung für DACHLiLu.
 
 ### Version 1.7.0 (15.10.2026)
 
@@ -42,7 +46,7 @@ Innerhalb der vollständigen DACHLiLu-Abdeckung (Deutschland, Österreich, Schwe
 
 ## 📋 Changelog
 
-### v1.9.0 (Release-Kandidat, 16.11.2026) - Neues Design, Sicherheitshärtung & Rang-Korrekturen
+### v1.9.0 (18.11.2026) - Neues Design, Sicherheitshärtung & Rang-Korrekturen
 *   **Neues Design „Ember & Ink“:** Überarbeitete Oberfläche mit warmen dunklen Flächen, Ember-Akzent, Serifenschrift Instrument Serif (selbst gehostet und vorab gecacht) für Überschriften und Wortmarke sowie einer eigenen Familie feiner Linien-Icons. Startseite mit mehr Kartenfläche und nummeriertem Vier-Schritte-Ablauf; Erfassungsformular mit drei Haupttypen in einer Zeile; Einstellungen, Verlauf, Rangliste, Kamera, Ladebildschirme, Dialoge und Overlays angepasst. Hinweise (Toasts) erscheinen oben statt über dem Start-Knopf; Theme- und Manifest-Farben passen zum neuen Hintergrund.
 *   **Sprachflaggen:** Der Sprachknopf zeigt wieder die aktive Flagge samt Sprachcode; die Auswahl listet jede Sprache mit Flagge.
 *   **AED-Eingabemaske – AED ganz unten:** Die Typwahl zeigt in der ersten Reihe nur noch Überflur und Unterflur, darunter die Reihe mit Trockenhydrant, Wandhydrant, Zisterne und Saugstelle. Der Defibrillator ist eine eigene, schlanke Option ganz unten. Die Hydranten-Felder und ihr Verhalten bleiben unverändert.
@@ -54,12 +58,14 @@ Innerhalb der vollständigen DACHLiLu-Abdeckung (Deutschland, Österreich, Schwe
 *   **Hilfeseite:** Neue Seite unter `/help/` im Design der App (Ablauf, 3-Meter-Abstand, Typen, FAQ, Impressum), in allen 15 Sprachen und von Startseite und Info-Dialogen verlinkt.
 *   **Rang-Anzeige:** Nach einem Wechsel des OSM-Kontos wird nicht mehr der Rang des vorherigen Kontos angezeigt: Benutzername und Avatar werden bei jedem Login zurückgesetzt, und nur die jeweils neueste Rang-Abfrage darf das Widget aktualisieren.
 *   **Rang nie fälschlich 0:** Overpass-Antworten mit `remark` (Timeout/Überlast als HTTP 200) gelten als Fehler und werden nicht mehr eine Stunde lang als „0“ zwischengespeichert. Die Zählung probiert nacheinander alle vier Overpass-Instanzen, bricht hängende Anfragen ab und greift bei Ausfall auf einen abgelaufenen Cache-Wert zurück. Der zuletzt bekannte Rang erscheint sofort und wird im Hintergrund aktualisiert; gleichzeitige Abfragen teilen sich eine Anfrage, und bei ausgelasteten Servern folgt nach kurzer Pause ein zweiter Durchgang. Ist die Anzahl unbekannt, zeigt das Rang-Feld einen Hinweis mit „Tippen zum erneut Versuchen“ statt eines falschen Rangs.
-*   **Karte:** Die Datenstand-Pille in der Kartenmitte ist entfallen.
+*   **Karte:** Die Datenstand-Pille in der Kartenmitte ist entfallen. Hilfe-Link und OSM-Hinweis unter den Buttons sind weg: Die Hilfe steht im Info-Dialog, die Quellenangabe klein auf der Karte. Dadurch bekommt die Karte mehr Höhe.
+*   **Icons:** Kräftigere Linien und farbige Akzente (Ember für das Motiv, Blau für Wasser, Grün für Grünfläche und AED); die vier Schritte auf der Startseite stehen auf Ember-Kacheln; Typ- und Positionsauswahl zeigen größere Icons. Das AED-Kartensymbol folgt dem ISO-Grün mit gut sichtbarem Kreuz.
 *   **OSM-Uploads gehärtet:** Knoten-IDs, Versionen sowie vom Server zurückgegebene Changeset- und Knoten-IDs werden validiert; Upload-Logzeilen werden als Level und Text ausgegeben, gelöschte Knoten-IDs als Zeichenketten gespeichert (passend zum Kartenfilter) und beschädigte Einträge im optimistischen Cache ignoriert. Der OSM-Anzeigename wird in der Rang-Abfrage maskiert.
 *   **Anmeldung:** OAuth-State und Redirect-URL werden nicht mehr geloggt; der State wird mit 32 Zeichen ohne Verteilungsverzerrung erzeugt. OAuth-Rückgabedaten werden früh aus der URL entfernt, Referrer senden nur den Ursprung, und der Callback nutzt lokalisierte Meldungen ohne Geheimnisse in Logs.
 *   **Content Security Policy:** Zusätzlich `frame-src 'none'` und `form-action 'self'`; Stylesheets sind auf die App beschränkt, Inline-Styles nur für Style-Attribute erlaubt, und Vite darf `<style>`-Elemente nur im lokalen Entwicklungsserver einfügen.
 *   **Abhängigkeiten & CI:** GitHub Actions auf unveränderliche Commit-SHAs gepinnt (mit Prüftest), automatisierte Dependency-Sicherheitsprüfungen, `npm audit fix` gegen die Vite-Sicherheitswarnung; neue Abhängigkeit `@fontsource/instrument-serif`.
 *   **Tests:** Neue Tests für Auth, CSP, Gamification-Rang und Prozess-Overlay; OSM-Tests erweitert.
+*   **Schnellere CI:** Die E2E-Tests laufen im offiziellen Playwright-Container, parallel zu den übrigen Prüfungen und mit zwei Workern. Ein Lauf dauert rund 1,5 statt 3 Minuten, und langsame apt-Spiegel können ihn nicht mehr blockieren.
 *   **Dokumentation:** Hosting-Entscheidung (GitHub Pages statt Cloudflare-Proxy) in `NOTIZEN.md` festgehalten.
 
 ### v1.8.0 (15.10.2026) - Regionale Datenversorgung
