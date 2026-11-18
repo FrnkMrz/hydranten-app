@@ -22,9 +22,9 @@ Version 1.7.0 mit AED-Unterstützung, verbessertem Edit-Modus und den zugehörig
 ### AED mit der App erfassen
 
 1. Bei OpenStreetMap anmelden und **Starten** wählen.
-2. Ein Foto des AED aufnehmen. Auf der Bestätigungsseite **Defibrillator** auswählen.
-3. Den Standort auf der kleinen Karte prüfen oder anpassen und bekannte Angaben zu Zugang, Innen-/Außenlage, Öffnungszeiten und Referenz ergänzen.
-4. Angaben prüfen und zu OpenStreetMap hochladen. Bestehende AEDs lassen sich über ihren Kartenmarker öffnen und bearbeiten.
+2. Ein Foto des AED aufnehmen. Auf der Bestätigungsseite ganz unten **Defibrillator** auswählen (unter den Hydranten-Typen). Es erscheint eine eigene AED-Maske; die Hydranten-Felder sind dann ausgeblendet.
+3. Den Standort auf der kleinen Karte prüfen oder anpassen. In der AED-Maske sind alle Angaben freiwillig; „Keine Angabe“ speichert nichts: Standortbeschreibung (mit Schnellwahl), Zugang, Zugangszeiten, Innenraum, Ebene (nur bei „Drinnen“) und unter „Mehr Angaben“ Betreiber, Telefon, Notiz und Nummer am Gerät.
+4. Die Zusammenfassung „Das wird gespeichert“ prüfen und zu OpenStreetMap hochladen. Bestehende AEDs lassen sich über ihren Kartenmarker öffnen und bearbeiten: Die Maske zeigt die bisherigen Werte, Änderungen erscheinen als „alt → neu“. Es wird nie ein Tag gelöscht, ein leeres Feld ändert nichts, fremde Tags und ein vorhandener Zugangscode (`defibrillator:code`) bleiben unberührt.
 
 ### Release-Kandidat 1.8.0: Regionale Datenversorgung
 
@@ -37,6 +37,14 @@ Die regionale Datenversorgung ist in den Release-Kandidaten 1.8.0 aufgenommen, a
 **Betrieb:** Der öffentliche R2-Endpunkt muss CORS-Anfragen vom App-Origin `https://hydrantenjaeger.de` erlauben. Falls die regionale Quelle nicht erreichbar ist, bleibt Overpass als Fallback verfügbar.
 
 ## 📋 Changelog
+
+### Unreleased - Eigene AED-Eingabemaske
+*   **AED ganz unten:** Die Typwahl zeigt in der ersten Reihe nur noch Überflur und Unterflur, darunter die Reihe mit Trockenhydrant, Wandhydrant, Zisterne und Saugstelle. Der Defibrillator ist eine eigene, schlanke Option ganz unten. Die Hydranten-Felder und ihr Verhalten bleiben unverändert.
+*   **Eigene AED-Maske:** Wer „Defibrillator“ wählt, sieht statt der Hydranten-Felder eine eigene Maske mit Standortbeschreibung (`defibrillator:location`), Zugang, Zugangszeiten, Innenraum, Ebene sowie unter „Mehr Angaben“ Betreiber, Telefon, Notiz (`description`) und Nummer am Gerät (`ref`). „Keine Angabe“ ist überall die Vorgabe und schreibt kein Tag; `24/7` nur nach ausdrücklicher Wahl; die Ebene nur bei „Drinnen“.
+*   **Bestehende AEDs bearbeiten:** Die Maske ist mit den OSM-Werten vorbelegt, eine Zusammenfassung zeigt Änderungen als „alt → neu“. Es wird nie ein Tag gelöscht, fremde Tags bleiben unverändert, nicht darstellbare Werte (zum Beispiel `access=permissive`) bleiben gesperrt. Ein alter Ebenenwert bleibt nach „Draußen“ stehen, die Maske sagt das offen.
+*   **Prüfregeln:** Neue Datei `src/services/aed-details.js` mit fester Schlüsselliste, Längengrenzen und Zeichenprüfung (Datenvertrag wie im Schwesterprojekt AEDjaeger). Der Zugangscode `defibrillator:code` wird nie erfasst.
+*   **Sprachen:** 26 neue Texte in allen 15 Sprachen. Die Übersetzungen sind nicht muttersprachlich geprüft.
+*   **Taginfo:** `public/taginfo.json` nennt die neuen Schlüssel `defibrillator:location`, `level`, `operator` und `phone`.
 
 ### v1.8.0 (Release-Kandidat, 15.10.2026) - Regionale Datenversorgung
 *   **Schneller Kartenstart:** Für DACHLiLu werden vorberechnete OpenFireMap-PMTiles zuerst angezeigt; der Overpass-Live-Abgleich ergänzt anschließend neue und geänderte Objekte.
@@ -53,6 +61,7 @@ Die regionale Datenversorgung ist in den Release-Kandidaten 1.8.0 aufgenommen, a
 *   **GPS-Sicherheit:** Neue Erfassungen benötigen einen höchstens 20 Sekunden alten Geräte-Fix mit maximal 40 m angegebener Ungenauigkeit. Veraltete, nicht verifizierbare Cache-Einträge werden abgewiesen.
 *   **Deployment:** GitHub Pages wird nach einem Push auf `main` erst veröffentlicht, wenn Produktions-Build und mobile E2E-Prüfungen erfolgreich waren.
 *   **Overpass-Failover:** Ungültige Abfragen (HTTP 400) werden sofort gemeldet. Bei anderen HTTP-Fehlern sowie Netzwerk-, Server-, Timeout- und Rate-Limit-Fehlern wird die nächste Instanz versucht.
+*   **OSM-Kacheln:** Standard-Karten verwenden nun den offiziellen zentralen Tile-Endpunkt `https://tile.openstreetmap.org/{z}/{x}/{y}.png`.
 
 ### v1.6.0 (28.06.2026) - Konsolidierung & automatisierte Browser-Tests
 *   **Release-Konsolidierung:** Die größeren Stabilitäts-, Datenschutz-, PWA- und Toolchain-Verbesserungen der jüngsten Wartungsrunde werden als neues Minor Release gebündelt.
@@ -152,8 +161,8 @@ The app's Taginfo project file is published at [hydrantenjaeger.de/taginfo.json]
 *   **Client-Side Only**: Die App besitzt kein eigenes Backend. Fotos werden lokal verarbeitet; nur ausdrücklich ausgelöste OSM-Bearbeitungen und technisch notwendige Anfragen gehen an externe Dienste.
 *   **OAuth 2.0 (PKCE)**: Sicherer Login via OpenStreetMap ohne Passwort-Weitergabe.
 *   **Referrer-Schutz**: Seitenanfragen senden nur den Ursprung; OAuth-Codes und andere URL-Parameter werden nicht als Referrer offengelegt.
-*   **Content Security Policy**: Strikte Richtlinien gegen XSS-Angriffe.
-*   **Abhängigkeiten**: Dependabot prüft npm-Pakete und GitHub Actions wöchentlich; CI blockiert bekannte hohe und kritische npm-Sicherheitslücken.
+*   **Content Security Policy**: Strikte Richtlinien gegen XSS-Angriffe; Stylesheets sind auf die App beschränkt, Inline-Styles sind nur für benötigte Style-Attribute erlaubt. Vite darf CSS-`<style>`-Elemente ausschließlich im lokalen Entwicklungsserver einfügen.
+*   **Abhängigkeiten**: Dependabot erstellt wöchentliche Updates für npm und GitHub Actions; Actions sind auf unveränderliche Commit-SHAs gepinnt, CI blockiert bekannte hohe und kritische npm-Sicherheitslücken.
 *   **Auto-Sanitization**: Alle Inputs werden vor dem Rendern bereinigt (`escapeHTML`).
 
 ### 🏆 Gamification

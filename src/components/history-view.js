@@ -5,27 +5,28 @@ import { escapeHTML } from '../utils/security.js';
 
 export function renderHistoryView() {
   return `
-    <div class="h-full w-full bg-slate-900 text-white flex flex-col p-6 pt-safe animate-fade-in relative overflow-hidden">
+    <div class="hj-screen h-full w-full flex flex-col px-5 pb-5 pt-safe animate-fade-in relative overflow-hidden">
       <!-- Header -->
-      <div class="flex items-center justify-between mb-8 z-10">
-        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+      <div class="mt-4 mb-5 z-10">
+        <p class="hj-eyebrow mb-1">OpenStreetMap</p>
+        <h1 class="hj-wordmark text-[2.6rem]">
           ${t('history.title')}
         </h1>
       </div>
 
       <!-- Content Area -->
-      <div id="history-content" class="flex-1 overflow-auto custom-scrollbar flex flex-col gap-4 z-10">
-         <div class="flex items-center justify-center h-full text-gray-400">
+      <div id="history-content" class="flex-1 overflow-auto custom-scrollbar flex flex-col gap-3 z-10">
+         <div class="flex items-center justify-center h-full text-ivory/50">
             <span class="animate-pulse">${t('history.loading')}</span>
          </div>
       </div>
 
       <!-- Footer / Back Button -->
-      <div class="z-10 mt-auto pt-4 border-t border-gray-800 text-center">
-         <p class="text-[10px] text-gray-600 mb-2 font-mono">
+      <div class="z-10 mt-auto pt-3 text-center">
+         <p class="text-[10px] text-ivory/30 mb-2 font-mono">
             Source: api.openstreetmap.org
          </p>
-         <button id="history-back-btn" class="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold transition">
+         <button id="history-back-btn" class="hj-btn hj-btn-ghost w-full">
             ${t('history.back_btn')}
          </button>
       </div>
@@ -49,7 +50,7 @@ async function loadHistory(container) {
   try {
     const username = await checkLogin();
     if (!username || username.startsWith('Error')) {
-      container.innerHTML = `<div class="text-red-400 text-center">${t('history.not_logged_in')}</div>`;
+      container.innerHTML = `<div class="text-ember-300 text-center">${t('history.not_logged_in')}</div>`;
       return;
     }
 
@@ -71,18 +72,19 @@ async function loadHistory(container) {
       const date = new Date(cs.createdAt).toLocaleString();
       const comment = cs.comment || '(Kein Kommentar)';
       const isMyApp = (cs.createdBy || '').includes('Hydranten');
-      const bgClass = isMyApp ? 'bg-blue-900/20 border-blue-500/30' : 'bg-gray-800/50 border-gray-700';
+      const bgClass = isMyApp ? 'border-ivory/25' : 'border-ivory/10';
 
       return `
-                <div class="p-4 rounded-xl border ${bgClass} text-sm">
+                <div class="relative p-4 rounded-2xl border ${bgClass} text-sm">
+                    ${isMyApp ? '<span class="absolute top-4 -left-px h-5 w-px bg-ember-400" aria-hidden="true"></span>' : ''}
                     <div class="flex justify-between mb-1">
-                        <a href="https://www.openstreetmap.org/changeset/${cs.id}" target="_blank" rel="noopener noreferrer" class="font-bold text-blue-400 hover:text-blue-300 underline underline-offset-2">#${cs.id} ↗</a>
-                        <span class="text-gray-400 text-xs">${date}</span>
+                        <a href="https://www.openstreetmap.org/changeset/${cs.id}" target="_blank" rel="noopener noreferrer" class="font-mono text-ivory underline underline-offset-4 decoration-ivory/30">#${cs.id}</a>
+                        <span class="text-ivory/45 text-xs tabular-nums">${date}</span>
                     </div>
-                    <div class="text-gray-200 break-words mb-2">
+                    <div class="text-ivory/85 break-words mb-2 leading-snug">
                         ${escapeHTML(comment)}
                     </div>
-                    <div class="text-xs text-gray-600 font-mono truncate">
+                    <div class="text-[11px] text-ivory/35 font-mono truncate">
                         ${escapeHTML(cs.createdBy || '')}
                     </div>
                 </div>
@@ -93,7 +95,7 @@ async function loadHistory(container) {
 
   } catch (err) {
     console.error("[History] Load Error:", err);
-    container.innerHTML = `<div class="text-red-400 text-center p-4">${t('history.error')}<br>${escapeHTML(err?.message || String(err))}</div>`;
+    container.innerHTML = `<div class="text-ember-300 text-center p-4">${t('history.error')}<br>${escapeHTML(err?.message || String(err))}</div>`;
   }
 }
 

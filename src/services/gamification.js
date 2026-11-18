@@ -42,68 +42,101 @@ export function getRank(count) {
     };
 }
 
+// Same public instances the map uses. The count query is global (no bounding
+// box), so it is slow on a busy server and has to survive one of them failing.
+const COUNT_SERVERS = [
+    'https://overpass-api.de/api/interpreter',
+    'https://lz4.overpass-api.de/api/interpreter',
+    'https://z.overpass-api.de/api/interpreter',
+    'https://overpass.kumi.systems/api/interpreter'
+];
+const COUNT_REQUEST_TIMEOUT_MS = 50000;
+const COUNT_CACHE_TTL_MS = 60 * 60 * 1000;
+
+/** Asks one Overpass server for the count. Throws unless it returns a real number. */
+async function requestHydrantCount(server, query) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), COUNT_REQUEST_TIMEOUT_MS);
+    try {
+        const res = await fetch(server, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            body: new URLSearchParams({ data: query }).toString(),
+            signal: controller.signal
+        });
+        if (!res.ok) throw new Error("Overpass Error " + res.status);
+
+        const data = await res.json();
+        // Overpass reports timeouts and overload as HTTP 200 with a "remark" and
+        // no usable count. That must never be read as "0 hydrants".
+        if (typeof data.remark === 'string' && /error|timed out|runtime/i.test(data.remark)) {
+            throw new Error("Overpass remark: " + data.remark);
+        }
+
+        // "out count" returns one element: { type: "count", tags: { nodes: "123", ... } }
+        const stats = Array.isArray(data.elements)
+            ? data.elements.find(e => e.tags && e.tags.nodes !== undefined)
+            : null;
+        const parsed = stats ? parseInt(stats.tags.nodes, 10) : NaN;
+        if (!Number.isSafeInteger(parsed) || parsed < 0) {
+            throw new Error("Overpass returned no count");
+        }
+        return parsed;
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 /**
- * Fetch hydrant count for a user from Overpass API
- * Caches result for 1 hour to avoid spamming the API
+ * Fetch hydrant count for a user from Overpass API.
+ * Caches the result for 1 hour to avoid spamming the API.
+ *
+ * Returns `null` when the count is unknown (every server failed and nothing
+ * is cached). Callers must not treat that as zero: showing the lowest rank to
+ * someone with many hydrants is worse than showing no rank for a moment.
  */
 export async function fetchUserHydrantCount(username) {
-    if (!username) return 0;
+    if (!username) return null;
 
     const CACHE_KEY = `hydrant_count_${username}`;
     const CACHE_TIME_KEY = `hydrant_count_ts_${username}`;
 
-    // Check Cache (1 Hour)
-    const cached = localStorage.getItem(CACHE_KEY);
-    const ts = localStorage.getItem(CACHE_TIME_KEY);
+    const readCached = () => {
+        const value = parseInt(localStorage.getItem(CACHE_KEY), 10);
+        return Number.isSafeInteger(value) && value >= 0 ? value : null;
+    };
+
+    const cached = readCached();
+    const ts = parseInt(localStorage.getItem(CACHE_TIME_KEY), 10);
     const now = Date.now();
 
-    if (cached && ts && (now - parseInt(ts)) < 3600000) { // 1h in ms
-        console.log("Using cached hydrant count:", cached);
-        return parseInt(cached);
+    if (cached !== null && Number.isFinite(ts) && (now - ts) < COUNT_CACHE_TTL_MS) {
+        return cached;
     }
 
-    // Fetch from Overpass
-    console.log("Fetching hydrant count from Overpass for:", username);
-    const query = `[out:json][timeout:25];
+    // Escape the display name so quotes/backslashes cannot alter the query.
+    const user = String(username).replace(/[\\"]/g, '\\$&').replace(/[\r\n]/g, ' ');
+    const query = `[out:json][timeout:45];
     (
-      node(user:"${username}")["emergency"="fire_hydrant"];
-      node(user:"${username}")["emergency"="suction_point"];
-      node(user:"${username}")["emergency"="water_tank"];
+      node(user:"${user}")["emergency"="fire_hydrant"];
+      node(user:"${user}")["emergency"="suction_point"];
+      node(user:"${user}")["emergency"="water_tank"];
     );
     out count;`;
 
-    try {
-        const res = await fetch('https://overpass-api.de/api/interpreter', {
-            method: 'POST',
-            body: query
-        });
-
-        if (!res.ok) throw new Error("Overpass Error " + res.status);
-
-        const data = await res.json();
-        // Overpass "out count" returns an element with "tags": { "nodes": "123", ... }
-        // Or sometimes in the elements array depending on format. 
-        // Usually: elements[0].tags.nodes (as string)
-
-        let count = 0;
-        if (data.elements && data.elements.length > 0) {
-            // Look for the counting element
-            const stats = data.elements.find(e => e.tags && e.tags.nodes);
-            if (stats) {
-                count = parseInt(stats.tags.nodes);
-            }
-            // Fallback: If query returned actual nodes (shouldn't with 'out count'), count length
-            // But 'out count' structure is specific.
-            // Direct 'out count' returns a single element with id:0 and tags.
+    for (const server of COUNT_SERVERS) {
+        try {
+            const count = await requestHydrantCount(server, query);
+            try {
+                localStorage.setItem(CACHE_KEY, count);
+                localStorage.setItem(CACHE_TIME_KEY, now);
+            } catch (_e) { /* storage full: the count is still valid */ }
+            return count;
+        } catch (err) {
+            console.warn("Hydrant count failed on", server, err?.message || err);
         }
-
-        // Cache it
-        localStorage.setItem(CACHE_KEY, count);
-        localStorage.setItem(CACHE_TIME_KEY, now);
-
-        return count;
-    } catch (err) {
-        console.error("Failed to fetch stats:", err);
-        return cached ? parseInt(cached) : 0; // Fallback to cache if error, or 0
     }
+
+    // Unknown. An older cached value is still better than nothing.
+    return cached;
 }

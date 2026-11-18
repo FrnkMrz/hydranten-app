@@ -1,6 +1,7 @@
 import { t } from '../../services/i18n.js';
 import { determineHydrantType } from '../../services/hydrant-logic.js';
-import { renderAedMarkerSymbol } from '../aed-marker.js';
+import { typeIcon } from '../icons.js';
+import { initAedForm } from './aed-form.js';
 
 export function initFormLogic(element, location, editMode, initialData) {
     const typeInput = element.querySelector('#hydrant-type');
@@ -11,15 +12,13 @@ export function initFormLogic(element, location, editMode, initialData) {
     const volumeInput = element.querySelector('#hydrant-volume');
     const signInput = element.querySelector('#hydrant-sign');
     const sourceInput = element.querySelector('#hydrant-water-source');
-    const aedAccessInput = element.querySelector('#aed-access');
-    const aedIndoorInput = element.querySelector('#aed-indoor');
-    const aedOpeningHoursInput = element.querySelector('#aed-opening-hours');
 
     const volumeContainer = element.querySelector('#volume-container');
     const diameterContainer = element.querySelector('#diameter-container');
     const signContainer = element.querySelector('#sign-container');
     const refContainer = element.querySelector('#ref-container');
-    const aedDetailsContainer = element.querySelector('#aed-details-container');
+    const aedFormContainer = element.querySelector('#aed-form-container');
+    const hydrantDetailsContainer = element.querySelector('#hydrant-details-container');
     const waterSourceContainer = element.querySelector('#water-source-container');
     const positionContainer = element.querySelector('#position-container');
     const refLabel = element.querySelector('#hydrant-ref-label');
@@ -28,58 +27,56 @@ export function initFormLogic(element, location, editMode, initialData) {
 
     // --- GRID SETUP ---
     const mainTypes = [
-        {
-            id: 'pillar',
-            label: t('confirm.types.pillar'),
-            icon: `<svg viewBox="0 0 24 24" class="w-10 h-10 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M7 21H17V19H15V11H17C17.55 11 18 10.55 18 10V8C18 7.45 17.55 7 17 7H15V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V7H7C6.45 7 6 7.45 6 8V10C6 10.55 6.45 11 7 11H9V19H7V21ZM11 5C11 4.45 11.45 4 12 4C12.55 4 13 4.45 13 5V7H11V5ZM7 8H9V10H7V8ZM15 8H17V10H15V8Z" fill="#DC2626"/>
-               </svg>`
-        },
-        { id: 'underground', label: t('confirm.types.underground'), icon: '<span class="text-4xl mb-1">🕳️</span>' },
-        { id: 'aed', label: t('confirm.types.aed'), icon: `<span class="mb-1 flex h-10 w-10 overflow-hidden rounded-md">${renderAedMarkerSymbol()}</span>` }
+        { id: 'pillar', label: t('confirm.types.pillar'), icon: typeIcon('pillar', 'w-14 h-14') },
+        { id: 'underground', label: t('confirm.types.underground'), icon: typeIcon('underground', 'w-14 h-14') }
     ];
     const subTypes = [
-        { id: 'dry_hydrant', label: t('confirm.types.dry_hydrant'), icon: '<span class="text-xl">🌵</span>' },
-        {
-            id: 'wall',
-            label: t('confirm.types.wall'),
-            icon: `<svg viewBox="0 0 24 24" class="w-8 h-8 drop-shadow-md" fill="none" class="text-gray-400" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M4 22H20V2H4V22ZM13 14H16V17H13V14Z" fill="currentColor"/>
-                 <path d="M12 12V19H17V12H12Z" stroke="#EF4444" stroke-width="2"/>
-               </svg>`
-        },
-        { id: 'cistern', label: t('confirm.types.cistern'), icon: '<span class="text-xl">🛢️</span>' },
-        {
-            id: 'suction_point',
-            label: t('confirm.types.suction'),
-            icon: `<svg viewBox="0 0 24 24" class="w-8 h-8 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M22 17C22 17 19 14 15 14C11 14 9 17 5 17C2.5 17 2 15.5 2 15.5V19C2 19 4 21 8 21C12 21 14 18 18 18C21 18 22 19 22 19V17Z" fill="#3B82F6"/>
-                 <path d="M22 13C22 13 19 10 15 10C11 10 9 13 5 13C2.5 13 2 11.5 2 11.5V9.5C2 9.5 4 11 8 11C12 11 14 8 18 8C21 8 22 9 22 9V13Z" fill="#60A5FA"/>
-                 <circle cx="17" cy="5" r="2" fill="#FCD34D"/>
-               </svg>`
-        }
+        { id: 'dry_hydrant', label: t('confirm.types.dry_hydrant'), icon: typeIcon('dry_hydrant', 'w-10 h-10') },
+        { id: 'wall', label: t('confirm.types.wall'), icon: typeIcon('wall', 'w-10 h-10') },
+        { id: 'cistern', label: t('confirm.types.cistern'), icon: typeIcon('cistern', 'w-10 h-10') },
+        { id: 'suction_point', label: t('confirm.types.suction'), icon: typeIcon('suction_point', 'w-10 h-10') }
     ];
 
     const gridMain = element.querySelector('#type-grid-main');
     const gridSub = element.querySelector('#type-grid-secondary');
+    const gridAed = element.querySelector('#type-grid-aed');
 
     if (gridMain && gridSub) {
         // Render Main
         gridMain.innerHTML = mainTypes.map(opt => `
-             <button type="button" class="option-btn h-24 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-[1.02] active:scale-95 transition flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
+             <button type="button" class="option-btn hj-option h-[7.25rem] flex flex-col items-center justify-center gap-2.5" data-value="${opt.id}" aria-label="${opt.label}">
                 <span aria-hidden="true">${opt.icon}</span>
-                <span class="text-sm font-bold uppercase tracking-tight" aria-hidden="true">${opt.label}</span>
+                <span class="max-w-full px-1 text-center text-[9.5px] leading-tight font-semibold uppercase tracking-[0.1em] hyphens-auto [overflow-wrap:anywhere]" aria-hidden="true">${opt.label}</span>
              </button>
        `).join('');
 
         // Render Sub
         gridSub.innerHTML = subTypes.map(opt => `
-             <button type="button" class="option-btn h-16 rounded-xl border-2 border-transparent bg-gray-800 text-gray-400 hover:bg-gray-700 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-1" data-value="${opt.id}" aria-label="${opt.label}">
+             <button type="button" class="option-btn hj-option h-[5.25rem] flex flex-col items-center justify-center gap-2" data-value="${opt.id}" aria-label="${opt.label}">
                 <span aria-hidden="true">${opt.icon}</span>
-                <span class="text-[9px] font-bold uppercase tracking-tight" aria-hidden="true">${opt.label}</span>
+                <span class="max-w-full px-0.5 text-center text-[8px] leading-[1.15] font-semibold uppercase tracking-[0.04em] hyphens-auto [overflow-wrap:anywhere]" aria-hidden="true">${opt.label}</span>
              </button>
        `).join('');
     }
+
+    // Render AED: a slim option at the very bottom of the type selection. It uses the same
+    // "option-btn" class as the hydrant types, so selecting it works through the same code path.
+    if (gridAed) {
+        const aedLabel = t('confirm.types.aed');
+        gridAed.innerHTML = `
+             <button type="button" class="option-btn hj-option h-[3.5rem] w-full flex flex-row items-center justify-center gap-3" data-value="aed" aria-label="${aedLabel}">
+                <span aria-hidden="true">${typeIcon('aed', 'w-8 h-8')}</span>
+                <span class="px-1 text-center text-[10px] leading-tight font-semibold uppercase tracking-[0.1em]" aria-hidden="true">${aedLabel}</span>
+             </button>`;
+    }
+
+    // The AED has its own input mask (see aed-form.js). It is created once; it stays hidden until
+    // the AED type is selected. `checkChanges` is declared further down (hoisted by the arrow wrapper).
+    const aedForm = initAedForm(element, {
+        editMode,
+        initialData,
+        onChange: () => checkChanges()
+    });
 
     // --- DIRTY CHECKING LOGIC ---
     let hasChanges = false;
@@ -94,9 +91,6 @@ export function initFormLogic(element, location, editMode, initialData) {
         const currentNote = noteInput ? noteInput.value : '';
         const currentSign = signInput ? signInput.value : 'unknown';
         const currentSource = sourceInput ? sourceInput.value : '';
-        const currentAedAccess = aedAccessInput ? aedAccessInput.value : '';
-        const currentAedIndoor = aedIndoorInput ? aedIndoorInput.value : '';
-        const currentAedOpeningHours = aedOpeningHoursInput ? aedOpeningHoursInput.value.trim() : '';
 
         // Helper to safely get tag
         const getTag = (k) => initialData.tags[k] || '';
@@ -118,16 +112,13 @@ export function initFormLogic(element, location, editMode, initialData) {
         const posChanged = currentType !== 'aed' && (getTag('fire_hydrant:position') !== currentPos);
         const diaChanged = currentType !== 'aed' && currentType !== 'cistern' && currentType !== 'suction_point' && (getTag('fire_hydrant:diameter') !== currentDiameter);
         const volumeChanged = currentType === 'cistern' && (getTag('water_tank:volume') !== currentVolume);
-        const refChanged = (getTag('ref') !== currentRef);
-        const noteChanged = ((getTag('note') || getTag('description')) !== currentNote);
+        // ref and note belong to the hydrant fields; AEDs have their own fields in the AED mask.
+        const refChanged = currentType !== 'aed' && (getTag('ref') !== currentRef);
+        const noteChanged = currentType !== 'aed' && ((getTag('note') || getTag('description')) !== currentNote);
 
         const originalSource = getTag('water_source') || '';
         const sourceChanged = currentType !== 'aed' && (originalSource !== (currentSource || ''));
-        const aedAttributesChanged = currentType === 'aed' && (
-            getTag('access') !== currentAedAccess ||
-            getTag('indoor') !== currentAedIndoor ||
-            getTag('opening_hours') !== currentAedOpeningHours
-        );
+        const aedAttributesChanged = currentType === 'aed' && !!aedForm && aedForm.hasChanges();
 
         // Sign check logic
         let signChanged;
@@ -153,13 +144,13 @@ export function initFormLogic(element, location, editMode, initialData) {
         // Update UI
         if (submitBtn) {
             if (hasChanges) {
-                submitBtn.innerHTML = `<span>☁️ ${t('confirm.update_btn')}</span>`;
-                submitBtn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
-                submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                submitBtn.innerHTML = `<span>${t('confirm.update_btn')}</span>`;
+                submitBtn.classList.remove('hj-btn-ghost');
+                submitBtn.classList.add('hj-btn-light');
             } else {
                 submitBtn.innerHTML = `<span>${t('confirm.back_btn_label')}</span>`;
-                submitBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                submitBtn.classList.add('bg-gray-700', 'hover:bg-gray-600');
+                submitBtn.classList.remove('hj-btn-light');
+                submitBtn.classList.add('hj-btn-ghost');
             }
         }
     };
@@ -172,13 +163,9 @@ export function initFormLogic(element, location, editMode, initialData) {
         if (typeInput) typeInput.value = val;
 
         optionBtns.forEach(btn => {
-            if (btn.dataset.value === val) {
-                btn.classList.add('border-green-500', 'bg-green-900/30', 'text-white', 'shadow-md');
-                btn.classList.remove('border-transparent', 'bg-gray-800', 'text-gray-400');
-            } else {
-                btn.classList.remove('border-green-500', 'bg-green-900/30', 'text-white', 'shadow-md');
-                btn.classList.add('border-transparent', 'bg-gray-800', 'text-gray-400');
-            }
+            const isSelected = btn.dataset.value === val;
+            btn.classList.toggle('is-selected', isSelected);
+            btn.setAttribute('aria-pressed', String(isSelected));
         });
 
         // Visibility Toggles
@@ -200,10 +187,12 @@ export function initFormLogic(element, location, editMode, initialData) {
             if (refContainer) refContainer.classList.remove('hidden');
         }
 
-        if (aedDetailsContainer) aedDetailsContainer.classList.toggle('hidden', val !== 'aed');
+        // AED: show its own mask and hide ALL hydrant fields. Everything else: hydrant fields as before.
+        if (aedFormContainer) aedFormContainer.classList.toggle('hidden', val !== 'aed');
+        if (hydrantDetailsContainer) hydrantDetailsContainer.classList.toggle('hidden', val === 'aed');
         if (waterSourceContainer) waterSourceContainer.classList.toggle('hidden', val === 'aed');
         if (positionContainer) positionContainer.classList.toggle('hidden', val === 'aed');
-        if (refLabel) refLabel.textContent = t(val === 'aed' ? 'confirm.aed_ref_label' : 'confirm.number_label');
+        if (refLabel) refLabel.textContent = t('confirm.number_label');
 
         if (signContainer) {
             if (val === 'underground') {
@@ -251,13 +240,9 @@ export function initFormLogic(element, location, editMode, initialData) {
     const updatePos = (val) => {
         if (posInput) posInput.value = val;
         posBtns.forEach(btn => {
-            if (btn.dataset.value === val) {
-                btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
-                btn.classList.remove('text-gray-400');
-            } else {
-                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
-                btn.classList.add('text-gray-400');
-            }
+            const isSelected = btn.dataset.value === val;
+            btn.classList.toggle('is-selected', isSelected);
+            btn.setAttribute('aria-pressed', String(isSelected));
         });
         checkChanges();
     };
@@ -270,13 +255,9 @@ export function initFormLogic(element, location, editMode, initialData) {
     const updateSign = (val) => {
         if (signInput) signInput.value = val;
         signBtns.forEach(btn => {
-            if (btn.dataset.value === val) {
-                btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
-                btn.classList.remove('text-gray-400', 'bg-gray-800');
-            } else {
-                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
-                btn.classList.add('text-gray-400');
-            }
+            const isSelected = btn.dataset.value === val;
+            btn.classList.toggle('is-selected', isSelected);
+            btn.setAttribute('aria-pressed', String(isSelected));
         });
         checkChanges();
     };
@@ -303,18 +284,6 @@ export function initFormLogic(element, location, editMode, initialData) {
         if (volumeInput && nodeTags['water_tank:volume']) volumeInput.value = nodeTags['water_tank:volume'];
         if (refInput && nodeTags['ref']) refInput.value = nodeTags['ref'];
         if (noteInput && (nodeTags['note'] || nodeTags['description'])) noteInput.value = nodeTags['note'] || nodeTags['description'];
-        if (aedAccessInput && nodeTags.access) {
-            if (![...aedAccessInput.options].some(option => option.value === nodeTags.access)) {
-                const existingOption = document.createElement('option');
-                existingOption.value = nodeTags.access;
-                existingOption.textContent = `${nodeTags.access} (${t('confirm.aed_existing_value')})`;
-                aedAccessInput.append(existingOption);
-            }
-            aedAccessInput.value = nodeTags.access;
-        }
-        if (aedIndoorInput && nodeTags.indoor) aedIndoorInput.value = nodeTags.indoor;
-        if (aedOpeningHoursInput && nodeTags.opening_hours) aedOpeningHoursInput.value = nodeTags.opening_hours;
-
         if (sourceInput && nodeTags['water_source']) {
             // Need to set value AFTER options populated by updateGrid
             // We called updateGrid above, so options should be there
@@ -338,12 +307,12 @@ export function initFormLogic(element, location, editMode, initialData) {
 
     // Attach Listeners
     if (editMode) {
-        [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput, signInput, sourceInput, aedAccessInput, aedIndoorInput, aedOpeningHoursInput].forEach(el => {
+        [typeInput, posInput, diameterInput, refInput, noteInput, volumeInput, signInput, sourceInput].forEach(el => {
             if (el) el.addEventListener('input', checkChanges);
             if (el) el.addEventListener('change', checkChanges);
         });
         setTimeout(checkChanges, 300);
     }
 
-    return { checkChanges, hasChanges: () => hasChanges };
+    return { checkChanges, hasChanges: () => hasChanges, aedForm };
 }

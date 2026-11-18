@@ -1,3 +1,4 @@
+import { icon } from '../icons.js';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { t } from '../../services/i18n.js';
@@ -151,7 +152,7 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
                 mapParent.classList.add('fixed', 'inset-0', 'z-[60]', 'h-full', 'w-full'); // z-60 to be above everything
 
                 // Update Icon to Minimize
-                expandBtn.innerHTML = `<svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 16h4m0 0v4m-4-4l5 5M15 8h4m0 0V4m0 4l-5-5M15 16h4m0 0v4m-4-4l5 5M5 8h4m0 0V4m0 4l-5-5"></path></svg>`;
+                expandBtn.innerHTML = icon('collapse');
 
                 // Allow zooming out more in fullscreen for context
                 map.setMinZoom(16);
@@ -161,7 +162,7 @@ export function initMap(element, location, editMode, initialData, onRetake, chec
                 mapParent.classList.remove('fixed', 'inset-0', 'z-[60]', 'h-full', 'w-full');
 
                 // Update Icon to Expand
-                expandBtn.innerHTML = `<svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>`;
+                expandBtn.innerHTML = icon('expand');
 
                 // Reset Zoom Limit
                 map.setMinZoom(17);

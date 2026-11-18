@@ -8,13 +8,9 @@ export function initMapStyleControls(element) {
     const updateMapStyleUI = () => {
         const currentStyle = localStorage.getItem('map_style') || 'osm';
         mapStyleBtns.forEach(btn => {
-            if (btn.dataset.style === currentStyle) {
-                btn.classList.add('bg-blue-600/30', 'border-blue-400', 'shadow-lg');
-                btn.classList.remove('bg-white/5', 'border-white/10');
-            } else {
-                btn.classList.remove('bg-blue-600/30', 'border-blue-400', 'shadow-lg');
-                btn.classList.add('bg-white/5', 'border-white/10');
-            }
+            const isSelected = btn.dataset.style === currentStyle;
+            btn.classList.toggle('is-selected', isSelected);
+            btn.setAttribute('aria-pressed', String(isSelected));
         });
     };
 
