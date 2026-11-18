@@ -152,7 +152,7 @@ function closeOverlay(overlay, onCloseCallback, error, result) {
 
 function getHeaderIcon(result, error) {
     if (error) return `<div class="hj-medallion hj-medallion-ember mb-4">${icon('close', 'w-6 h-6')}</div>`;
-    if (result) return `<div class="hj-medallion mb-4">${icon('check', 'w-6 h-6')}</div>`;
+    if (result) return `<div class="hj-medallion hj-medallion-aqua mb-4">${icon('check', 'w-6 h-6')}</div>`;
     return '';
 }
 

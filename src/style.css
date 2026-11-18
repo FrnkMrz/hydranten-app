@@ -18,6 +18,8 @@
   --color-aqua-300: #a9d6e2;
   --color-aqua-400: #7cc4d8;
   --color-aqua-500: #4fa6bd;
+  --color-leaf-300: #b5dca0;
+  --color-leaf-400: #8cc474;
   --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   --font-display: "Instrument Serif", ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
 }
@@ -125,6 +127,11 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 
+/* Bottom sheets: never flush with the screen edge, even without a home bar. */
+.pb-safe-min {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
 /* Increased to avoid status bar overlap */
 .top-safe-4 {
   top: calc(3rem + env(safe-area-inset-top, 30px));
@@ -163,6 +170,31 @@ textarea {
 
   .hj-icon-accent {
     stroke: var(--color-ember-400);
+  }
+
+  .hj-icon-water {
+    stroke: var(--color-aqua-400);
+  }
+
+  .hj-icon-leaf {
+    stroke: var(--color-leaf-400);
+  }
+
+  .hj-icon-dot {
+    fill: var(--color-ember-500);
+  }
+
+  /* Soft fill behind accented closed shapes: two-tone instead of hairline. */
+  .hj-icon-tint {
+    fill: rgba(240, 104, 58, 0.24);
+  }
+
+  .hj-icon-water.hj-icon-tint {
+    fill: rgba(124, 196, 216, 0.22);
+  }
+
+  .hj-icon-leaf.hj-icon-tint {
+    fill: rgba(140, 196, 116, 0.24);
   }
 
   /* Flag emoji: force the emoji font so flags render on every device. */
@@ -418,12 +450,42 @@ textarea {
     border-right: 1px solid var(--hj-hairline);
   }
 
+  /* Icon tile with the step number tucked into its corner. */
+  .hj-step-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.95rem;
+    color: var(--hj-ivory);
+    background: linear-gradient(160deg, rgba(240, 104, 58, 0.26), rgba(240, 104, 58, 0.07));
+    border: 1px solid rgba(240, 104, 58, 0.34);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .hj-step-icon .hj-icon-accent {
+    stroke: var(--color-ember-300);
+  }
+
   .hj-step-num {
+    position: absolute;
+    top: -0.45rem;
+    inset-inline-start: -0.45rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 999px;
+    background: var(--color-ink-900);
+    border: 1px solid rgba(240, 104, 58, 0.45);
     font-family: var(--font-display);
     font-style: italic;
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
     line-height: 1;
-    color: var(--color-ember-400);
+    color: var(--color-ember-300);
   }
 
   /* Form controls ---------------------------------------------------- */
@@ -470,19 +532,22 @@ textarea {
     transform: scale(0.97);
   }
 
-  .hj-option .hj-icon-accent {
-    stroke: currentColor;
-    transition: stroke 0.25s ease;
+  /* Icons keep their colour on every tile; the chosen one lights up. */
+  .hj-option .hj-icon {
+    color: var(--hj-ivory);
+    opacity: 0.9;
+    transition: opacity 0.25s ease, transform 0.25s var(--hj-ease);
   }
 
   .hj-option.is-selected {
     color: var(--hj-ivory);
     border-color: rgba(244, 239, 230, 0.85);
-    background: rgba(244, 239, 230, 0.07);
+    background: linear-gradient(160deg, rgba(240, 104, 58, 0.16), rgba(240, 104, 58, 0.04));
   }
 
-  .hj-option.is-selected .hj-icon-accent {
-    stroke: var(--color-ember-400);
+  .hj-option.is-selected .hj-icon {
+    opacity: 1;
+    transform: scale(1.06);
   }
 
   /* Small ember dot marking the chosen tile. */
@@ -522,6 +587,10 @@ textarea {
     background: var(--hj-ivory);
   }
 
+  .hj-seg-btn:not(.is-selected) .hj-icon {
+    color: var(--hj-ivory);
+  }
+
   /* Dialogs ---------------------------------------------------------- */
   .hj-backdrop {
     background: rgba(5, 5, 4, 0.72);
@@ -552,12 +621,20 @@ textarea {
     flex-shrink: 0;
     border-radius: 999px;
     border: 1px solid rgba(244, 239, 230, 0.2);
+    background: rgba(244, 239, 230, 0.06);
     color: var(--hj-ivory);
   }
 
   .hj-medallion-ember {
     border-color: rgba(240, 104, 58, 0.55);
-    color: var(--color-ember-400);
+    background: radial-gradient(circle at 50% 35%, rgba(240, 104, 58, 0.3), rgba(240, 104, 58, 0.08));
+    color: var(--color-ember-300);
+  }
+
+  .hj-medallion-aqua {
+    border-color: rgba(124, 196, 216, 0.55);
+    background: radial-gradient(circle at 50% 35%, rgba(124, 196, 216, 0.28), rgba(124, 196, 216, 0.07));
+    color: var(--color-aqua-300);
   }
 
   .hj-spinner {
