@@ -125,14 +125,14 @@ export function initPhoto(element, imageBlob, location, editMode) {
     const showPhotoZoom = () => {
         // Create Overlay
         zoomOverlay = document.createElement('div');
-        zoomOverlay.className = 'fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 animate-fade-in';
+        zoomOverlay.className = 'hj-backdrop fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 animate-fade-in';
         zoomOverlay.innerHTML = `
-          <img src="${blobUrl}" class="max-w-[90vw] max-h-[70vh] rounded-lg shadow-2xl object-contain mb-6" alt="${t('confirm.preview_alt')}" />
-          <div class="flex gap-4">
-            <button id="zoom-back-btn" class="px-8 py-3 bg-gray-700/80 backdrop-blur text-white rounded-xl font-semibold hover:bg-gray-600/80 active:scale-95 transition">
+          <img src="${blobUrl}" class="max-w-[90vw] max-h-[70vh] rounded-3xl border border-ivory/20 shadow-2xl object-contain mb-6" alt="${t('confirm.preview_alt')}" />
+          <div class="flex gap-3">
+            <button id="zoom-back-btn" class="hj-btn hj-btn-ghost px-8">
               ${t('confirm.cancel_btn')}
             </button>
-            <button id="zoom-save-btn" class="px-8 py-3 bg-green-600/90 backdrop-blur text-white rounded-xl font-semibold hover:bg-green-500/90 active:scale-95 transition">
+            <button id="zoom-save-btn" class="hj-btn hj-btn-light px-8">
               ${t('confirm.save_btn')}
             </button>
           </div>
