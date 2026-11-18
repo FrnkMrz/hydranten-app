@@ -821,8 +821,6 @@ function updateHydrants(map, onEdit, loadStatus, requestState, { immediate = fal
 
             if (isSuction) {
                fillColor = BLUE;
-            } else if (isAed) {
-               fillColor = '#16A34A';
             }
 
             const markerLabel = isAed ? t('confirm.aed_marker_aria') : t('confirm.title_edit');
