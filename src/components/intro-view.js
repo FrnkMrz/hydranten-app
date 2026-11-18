@@ -143,12 +143,14 @@ export function renderIntroView() {
               </button>
          </div>
           
-         <div class="mt-3 mb-2 flex flex-col items-center gap-2 text-center">
-             <a id="intro-help-link" href="./help/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-ivory/60 hover:text-ivory transition no-underline">
-                ${icon('question', 'w-4 h-4')}
+         <!-- Help and map credit share one line so the map keeps the height -->
+         <div class="mt-1.5 mb-1 flex flex-wrap items-center justify-center gap-x-2.5 text-center">
+             <a id="intro-help-link" href="./help/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 min-h-6 py-1 text-[11px] font-medium text-ivory/60 hover:text-ivory transition no-underline">
+                ${icon('question', 'w-3.5 h-3.5')}
                 ${t('intro.help_link')}
              </a>
-             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="text-[10px] tracking-wide text-ivory/30 hover:text-ivory/60 transition no-underline block">
+             <span class="text-ivory/20 text-[10px] max-[359px]:hidden" aria-hidden="true">·</span>
+             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" class="inline-flex items-center min-h-6 py-1 text-[10px] tracking-wide text-ivory/30 hover:text-ivory/60 transition no-underline">
                 © OpenStreetMap contributors
              </a>
          </div>
