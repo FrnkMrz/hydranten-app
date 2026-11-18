@@ -66,11 +66,21 @@ jobs:
   e2e:
     name: 📱 Mobile E2E Tests
     runs-on: ubuntu-latest
-    needs: quality
-    # A normal run takes about 3 minutes, but installing the Playwright
-    # browsers has taken over 18 minutes on a slow runner. 40 leaves room
-    # for that while still stopping a truly hung job.
+    # No "needs": E2E runs alongside the quality job. Deploy still waits for
+    # quality, because build needs it.
+    #
+    # The official Playwright image already contains the browsers and their
+    # system libraries. Installing them with "--with-deps" pulled 139 MB of
+    # Ubuntu packages through apt on every run, which once took 18 minutes.
+    # Keep the tag in step with @playwright/test in package-lock.json; the
+    # check below warns and falls back to a download if they drift apart.
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.1-noble@sha256:5b8f294aff9041b7191c34a4bab3ac270157a28774d4b0660e9743297b697e48
+    # A normal run takes 1 to 2 minutes; 40 leaves room for a slow image pull
+    # while still stopping a truly hung job.
     timeout-minutes: 40
+    env:
+      PLAYWRIGHT_IMAGE_VERSION: 1.61.1
     steps:
     - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
@@ -83,8 +93,13 @@ jobs:
     - name: Install Dependencies
       run: npm ci
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps chromium webkit
+    - name: Check Playwright Browsers
+      run: |
+        installed=$(node -p "require('@playwright/test/package.json').version")
+        if [ "$installed" != "$PLAYWRIGHT_IMAGE_VERSION" ]; then
+          echo "::warning::@playwright/test is $installed but the E2E image is $PLAYWRIGHT_IMAGE_VERSION. Update the image tag in ci.yml. Downloading matching browsers for now."
+          npx playwright install chromium webkit
+        fi
 
     - name: Run Mobile E2E Tests
       run: npm run test:e2e
