@@ -1,34 +1,57 @@
-# 🚒 Hydranten Jäger APP (v1.7.0)
+# 🚒 Hydranten Jäger APP (v1.8.0)
 
 **🌐 Live App:** [https://hydrantenjaeger.de](https://hydrantenjaeger.de)
 
 Eine moderne, mobil-optimierte Progressive Web App (PWA) zum Erfassen und Pflegen von Hydranten, Löschwasserstellen und AEDs in OpenStreetMap (OSM).
 Entwickelt für Geschwindigkeit, Einhand-Bedienung und Robustheit im Feld.
 
-> **Status**: Release-Kandidat 1.7.0 – Release nach Review und erfolgreichen Pflichtprüfungen
-> *Features: AED-Unterstützung, schnellere Kartendaten, verbesserter Edit-Modus, GPS-Sicherheit, zuverlässige OSM-Abläufe und PWA-Updates.*
+> **Status**: Release-Kandidat 1.8.0 – Veröffentlichung nach Merge und erfolgreichen Pflichtprüfungen
+> *Features: regionale PMTiles-Daten für DACHLiLu, AED-Unterstützung, verbesserter Edit-Modus und kontrollierte PWA-Updates.*
 
-### Weiterentwicklung (live seit 15.10.2026)
+### Version 1.7.0 (live seit 15.10.2026)
 
-Der Änderungssatz wurde nach dem Merge am 15.10.2026 auf [hydrantenjaeger.de](https://hydrantenjaeger.de) ausgerollt. Dieser Release-Kandidat vergibt dafür die neue Versionskennung 1.7.0. Das Release ist erst nach Review, Merge und erfolgreichen Pflichtprüfungen abgeschlossen.
+Version 1.7.0 mit AED-Unterstützung, verbessertem Edit-Modus und den zugehörigen Stabilitätsverbesserungen ist auf [hydrantenjaeger.de](https://hydrantenjaeger.de) verfügbar.
 
 **Enthalten:**
 
 * **AEDs / Defibrillatoren:** AEDs lassen sich über den Erfassungsablauf der App neu eintragen, auf der Karte finden und bearbeiten. Die Kartensuche findet OSM-Knoten mit `emergency=defibrillator`; Marker und Typauswahl zeigen das standardisierte Piktogramm ISO 7010 E010. Zugang, Innen-/Außenlage und Öffnungszeiten können ebenfalls gepflegt werden.
-* **Wiederverwendung geladener Kartendaten:** Erfolgreich geladene Kartenausschnitte werden für drei Minuten im Arbeitsspeicher zwischengespeichert (höchstens zwölf Ausschnitte). Wenn ein späterer Kartenausschnitt vollständig darin liegt, entfällt die erneute Overpass-Anfrage. Das ist eine sitzungsgebundene Cache-Optimierung; eine vorberechnete oder regional gehostete Datenversorgung ist damit noch nicht umgesetzt.
+* **Wiederverwendung geladener Kartendaten:** Erfolgreich geladene Kartenausschnitte werden für drei Minuten im Arbeitsspeicher zwischengespeichert (höchstens zwölf Ausschnitte). Wenn ein späterer Kartenausschnitt vollständig darin liegt, entfällt die erneute Overpass-Anfrage.
 * **Edit-Modus:** Beim Laden gibt es Abbrechen, bei vorübergehenden Fehlern Wiederholen und bei fehlgeschlagenem Laden eine Rückkehr zur Karte. Ladeabbrüche und Zeitüberschreitungen werden behandelt; AEDs erhalten einen passenden Bearbeitungstitel.
 * **Bedienbarkeit:** Fokusdarstellung und reduzierte Animation bei entsprechender Systemeinstellung sind ergänzt.
 
 ### AED mit der App erfassen
 
 1. Bei OpenStreetMap anmelden und **Starten** wählen.
-2. Ein Foto des AED aufnehmen. Auf der Bestätigungsseite **Defibrillator** auswählen.
-3. Den Standort auf der kleinen Karte prüfen oder anpassen und bekannte Angaben zu Zugang, Innen-/Außenlage, Öffnungszeiten und Referenz ergänzen.
-4. Angaben prüfen und zu OpenStreetMap hochladen. Bestehende AEDs lassen sich über ihren Kartenmarker öffnen und bearbeiten.
+2. Ein Foto des AED aufnehmen. Auf der Bestätigungsseite ganz unten **Defibrillator** auswählen (unter den Hydranten-Typen). Es erscheint eine eigene AED-Maske; die Hydranten-Felder sind dann ausgeblendet.
+3. Den Standort auf der kleinen Karte prüfen oder anpassen. In der AED-Maske sind alle Angaben freiwillig; „Keine Angabe“ speichert nichts: Standortbeschreibung (mit Schnellwahl), Zugang, Zugangszeiten, Innenraum, Ebene (nur bei „Drinnen“) und unter „Mehr Angaben“ Betreiber, Telefon, Notiz und Nummer am Gerät.
+4. Die Zusammenfassung „Das wird gespeichert“ prüfen und zu OpenStreetMap hochladen. Bestehende AEDs lassen sich über ihren Kartenmarker öffnen und bearbeiten: Die Maske zeigt die bisherigen Werte, Änderungen erscheinen als „alt → neu“. Es wird nie ein Tag gelöscht, ein leeres Feld ändert nichts, fremde Tags und ein vorhandener Zugangscode (`defibrillator:code`) bleiben unberührt.
 
-**Noch geplant:** Eine vorberechnete bzw. regional bereitgestellte Kartendatenversorgung für Deutschland, Österreich, die Schweiz, Liechtenstein und Luxemburg. Sie ist nicht Teil dieses Release-Kandidaten.
+### Release-Kandidat 1.8.0: Regionale Datenversorgung
+
+Die regionale Datenversorgung ist in den Release-Kandidaten 1.8.0 aufgenommen, aber noch nicht durch diesen Release veröffentlicht. Innerhalb der vollständigen DACHLiLu-Abdeckung (Deutschland, Österreich, Schweiz, Liechtenstein und Luxemburg) zeigt die App zuerst die vorberechneten PMTiles-Kacheln von OpenFireMap. Anschließend fragt sie neue oder geänderte Objekte seit dem OSM-Datenstand des Quellextrakts über Overpass ab und ergänzt die Karte. Der Live-Abgleich hält die erste Anzeige der PMTiles nicht zurück. Außerhalb der exakten Abdeckung und bei Pipeline-Fehlern nutzt die App Overpass direkt.
+
+**Datenstand und Grenzen:** `generated_at` kennzeichnet den Pipeline-Build; für den Overpass-Abgleich zählt `osm_data_until`, der OSM-Datenstand der Quellextrakte. Die Abfrage `newer:` findet neue und geänderte Objekte, aber keine Löschungen oder Änderungen, durch die ein Objekt aus den abgefragten Tags herausfällt. Solche Objekte können bis zum nächsten Pipeline-Build auf der Karte bleiben. Erfolgreiche eigene Bearbeitungen werden lokal überlagert, bis derselbe Stand aus der Datenversorgung zurückkommt.
+
+**Overpass-Endpunkte und Zeitlimits:** Verwendet werden `overpass-api.de`, `lz4.overpass-api.de`, `z.overpass-api.de` und `overpass.kumi.systems`; `maps.mail.ru` wird nicht mehr genutzt. Verfügbare Instanzen werden gemischt abgefragt; nach Fehlern oder Rate-Limits gehen Instanzen kurzzeitig in Abkühlung. Das Client-Limit beträgt 12 Sekunden je Anfrage, 15 Sekunden für den Live-Abgleich und 30 Sekunden für den vollständigen Overpass-Fallback. Das serverseitige Query-Limit bleibt bei 25 Sekunden.
+
+**Betrieb:** Der öffentliche R2-Endpunkt muss CORS-Anfragen vom App-Origin `https://hydrantenjaeger.de` erlauben. Falls die regionale Quelle nicht erreichbar ist, bleibt Overpass als Fallback verfügbar.
 
 ## 📋 Changelog
+
+### Unreleased - Eigene AED-Eingabemaske
+*   **AED ganz unten:** Die Typwahl zeigt in der ersten Reihe nur noch Überflur und Unterflur, darunter die Reihe mit Trockenhydrant, Wandhydrant, Zisterne und Saugstelle. Der Defibrillator ist eine eigene, schlanke Option ganz unten. Die Hydranten-Felder und ihr Verhalten bleiben unverändert.
+*   **Eigene AED-Maske:** Wer „Defibrillator“ wählt, sieht statt der Hydranten-Felder eine eigene Maske mit Standortbeschreibung (`defibrillator:location`), Zugang, Zugangszeiten, Innenraum, Ebene sowie unter „Mehr Angaben“ Betreiber, Telefon, Notiz (`description`) und Nummer am Gerät (`ref`). „Keine Angabe“ ist überall die Vorgabe und schreibt kein Tag; `24/7` nur nach ausdrücklicher Wahl; die Ebene nur bei „Drinnen“.
+*   **Bestehende AEDs bearbeiten:** Die Maske ist mit den OSM-Werten vorbelegt, eine Zusammenfassung zeigt Änderungen als „alt → neu“. Es wird nie ein Tag gelöscht, fremde Tags bleiben unverändert, nicht darstellbare Werte (zum Beispiel `access=permissive`) bleiben gesperrt. Ein alter Ebenenwert bleibt nach „Draußen“ stehen, die Maske sagt das offen.
+*   **Prüfregeln:** Neue Datei `src/services/aed-details.js` mit fester Schlüsselliste, Längengrenzen und Zeichenprüfung (Datenvertrag wie im Schwesterprojekt AEDjaeger). Der Zugangscode `defibrillator:code` wird nie erfasst.
+*   **Sprachen:** 26 neue Texte in allen 15 Sprachen. Die Übersetzungen sind nicht muttersprachlich geprüft.
+*   **Taginfo:** `public/taginfo.json` nennt die neuen Schlüssel `defibrillator:location`, `level`, `operator` und `phone`.
+
+### v1.8.0 (Release-Kandidat, 15.10.2026) - Regionale Datenversorgung
+*   **Schneller Kartenstart:** Für DACHLiLu werden vorberechnete OpenFireMap-PMTiles zuerst angezeigt; der Overpass-Live-Abgleich ergänzt anschließend neue und geänderte Objekte.
+*   **Robuster Fallback:** Außerhalb der vollständigen PMTiles-Abdeckung und bei Fehlern der regionalen Quelle lädt die App Daten direkt über Overpass.
+*   **Datenstand:** Die Dokumentation erklärt die Zeitstempel `generated_at` und `osm_data_until` sowie die Grenzen des `newer:`-Abgleichs.
+*   **Overpass-Failover:** Verwendet werden die vier Instanzen `overpass-api.de`, `lz4.overpass-api.de`, `z.overpass-api.de` und `overpass.kumi.systems`; Fehler- und Rate-Limit-Instanzen werden zeitweise pausiert.
+*   **Zeitlimits und Betrieb:** 12 Sekunden pro Anfrage, 15 Sekunden für den Live-Abgleich und 30 Sekunden für den vollständigen Fallback; die R2-Quelle benötigt CORS für `https://hydrantenjaeger.de`.
 
 ### v1.7.0 (15.10.2026) - AEDs, Kartendaten & Bearbeitungsmodus
 *   **AEDs / Defibrillatoren:** AEDs über den Erfassungsablauf der App eintragen sowie auf der Karte finden und bearbeiten; ISO-7010-E010-Piktogramm und Felder für Zugang, Innen-/Außenlage und Öffnungszeiten.
@@ -38,6 +61,7 @@ Der Änderungssatz wurde nach dem Merge am 15.10.2026 auf [hydrantenjaeger.de](h
 *   **GPS-Sicherheit:** Neue Erfassungen benötigen einen höchstens 20 Sekunden alten Geräte-Fix mit maximal 40 m angegebener Ungenauigkeit. Veraltete, nicht verifizierbare Cache-Einträge werden abgewiesen.
 *   **Deployment:** GitHub Pages wird nach einem Push auf `main` erst veröffentlicht, wenn Produktions-Build und mobile E2E-Prüfungen erfolgreich waren.
 *   **Overpass-Failover:** Ungültige Abfragen (HTTP 400) werden sofort gemeldet. Bei anderen HTTP-Fehlern sowie Netzwerk-, Server-, Timeout- und Rate-Limit-Fehlern wird die nächste Instanz versucht.
+*   **OSM-Kacheln:** Standard-Karten verwenden nun den offiziellen zentralen Tile-Endpunkt `https://tile.openstreetmap.org/{z}/{x}/{y}.png`.
 
 ### v1.6.0 (28.06.2026) - Konsolidierung & automatisierte Browser-Tests
 *   **Release-Konsolidierung:** Die größeren Stabilitäts-, Datenschutz-, PWA- und Toolchain-Verbesserungen der jüngsten Wartungsrunde werden als neues Minor Release gebündelt.
@@ -136,7 +160,9 @@ The app's Taginfo project file is published at [hydrantenjaeger.de/taginfo.json]
 ### 🛡️ Sicherheit
 *   **Client-Side Only**: Die App besitzt kein eigenes Backend. Fotos werden lokal verarbeitet; nur ausdrücklich ausgelöste OSM-Bearbeitungen und technisch notwendige Anfragen gehen an externe Dienste.
 *   **OAuth 2.0 (PKCE)**: Sicherer Login via OpenStreetMap ohne Passwort-Weitergabe.
-*   **Content Security Policy**: Strikte Richtlinien gegen XSS-Angriffe.
+*   **Referrer-Schutz**: Seitenanfragen senden nur den Ursprung; OAuth-Codes und andere URL-Parameter werden nicht als Referrer offengelegt.
+*   **Content Security Policy**: Strikte Richtlinien gegen XSS-Angriffe; Stylesheets sind auf die App beschränkt, Inline-Styles sind nur für benötigte Style-Attribute erlaubt. Vite darf CSS-`<style>`-Elemente ausschließlich im lokalen Entwicklungsserver einfügen.
+*   **Abhängigkeiten**: Dependabot erstellt wöchentliche Updates für npm und GitHub Actions; Actions sind auf unveränderliche Commit-SHAs gepinnt, CI blockiert bekannte hohe und kritische npm-Sicherheitslücken.
 *   **Auto-Sanitization**: Alle Inputs werden vor dem Rendern bereinigt (`escapeHTML`).
 
 ### 🏆 Gamification

@@ -6,6 +6,8 @@ test.describe('Map & GPS Features', () => {
     test.beforeEach(async ({ context }) => {
         // Grant geolocation permission
         await context.grantPermissions(['geolocation']);
+        // Keep map assertions deterministic when regional data is available.
+        await context.route('https://pipeline.openfiremap.org/**', route => route.abort());
     });
 
     test('Loads map at user location and fetches hydrants', async ({ page }) => {
@@ -47,6 +49,9 @@ test.describe('Map & GPS Features', () => {
         // 4. Verify Map Loads (Leaflet container exists)
         const map = page.locator('#intro-map');
         await expect(map).toBeVisible();
+        const developmentCsp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content');
+        expect(developmentCsp).toContain("style-src-elem 'self' 'unsafe-inline';");
+        await expect.poll(() => map.evaluate(element => getComputedStyle(element).position)).toBe('absolute');
 
         // 5. Verify "Locate Me" works or map centers
         // The app auto-centers on load if permission is granted. 

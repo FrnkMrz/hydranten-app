@@ -1,14 +1,15 @@
 // tests/overpass.test.js
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { overpass } from '../src/services/overpass.js';
+import { regionalData } from '../src/services/regional-data.js';
 
 // Mock Bounds Object
 let boundsOffset = 0;
 const mockBounds = {
-    getSouth: () => 48.0 + boundsOffset,
-    getNorth: () => 48.1 + boundsOffset,
-    getWest: () => 11.0 + boundsOffset,
-    getEast: () => 11.1 + boundsOffset
+    getSouth: () => 40.0 + boundsOffset,
+    getNorth: () => 40.1 + boundsOffset,
+    getWest: () => -4.0 + boundsOffset,
+    getEast: () => -3.9 + boundsOffset
 };
 
 function makeBounds(south, west, north, east) {
@@ -25,9 +26,30 @@ global.fetch = vi.fn();
 describe('Overpass Service', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.spyOn(regionalData, 'fetchRegionalNodes').mockResolvedValue(null);
+        overpass.clearCache();
         // Each test uses a distinct area so the service's in-memory area cache
         // cannot reuse a previous test's mocked network response.
         boundsOffset += 0.2;
+    });
+
+    it('uses the regional base and merges the Overpass delta by OSM node id', async () => {
+        regionalData.fetchRegionalNodes.mockResolvedValueOnce(Object.assign([
+            { type: 'node', id: 7, lat: 40.05, lon: -3.95, tags: { emergency: 'fire_hydrant' } },
+            { type: 'node', id: 8, lat: 40.06, lon: -3.94, tags: { emergency: 'fire_hydrant' } }
+        ], { dataSource: { type: 'regional', osmDataUntil: '2026-10-14T20:21:00Z' } }));
+        fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({ elements: [
+                { type: 'node', id: 7, lat: 40.05, lon: -3.95, tags: { emergency: 'defibrillator' } }
+            ] })
+        });
+
+        const nodes = await overpass.fetchHydrants(mockBounds, { zoom: 15 });
+        expect(nodes).toHaveLength(2);
+        expect(nodes.find(node => node.id === 7).tags.emergency).toBe('defibrillator');
+        expect(nodes.dataSource).toMatchObject({ type: 'regional', liveDelta: true });
+        expect(fetch.mock.calls[0][1].body).toContain('newer%3A%222026-10-14T20%3A21%3A00Z%22');
     });
 
     it('fetches hydrants successfully from first server', async () => {
@@ -131,6 +153,7 @@ describe('Overpass Service', () => {
 
         const controller = new AbortController();
         const request = overpass.fetchHydrants(mockBounds, { signal: controller.signal });
+        await Promise.resolve(); // Let the regional source decline before cancelling the Overpass request.
         controller.abort();
 
         await expect(request).rejects.toMatchObject({ name: 'AbortError' });

@@ -74,4 +74,18 @@ describe('History View Security', () => {
     const html = container.querySelector('#history-content').innerHTML;
     expect(html).not.toContain('openstreetmap.org/changeset/');
   });
+
+  it('escapes error messages before inserting them into the page', async () => {
+    mockCheckLogin.mockResolvedValueOnce('SafeUser');
+    fetch.mockRejectedValueOnce(new Error('<img src=x onerror=alert(1)>'));
+
+    const container = document.createElement('div');
+    container.innerHTML = renderHistoryView();
+    initHistoryView(container, () => {});
+    await flushAsyncWork();
+
+    const content = container.querySelector('#history-content');
+    expect(content.querySelector('img')).toBeNull();
+    expect(content.innerHTML).toContain('&lt;img src=x onerror=alert(1)&gt;');
+  });
 });

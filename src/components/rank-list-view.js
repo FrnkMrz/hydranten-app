@@ -1,24 +1,23 @@
 import { t } from '../services/i18n.js';
 import { RANKS, getRank } from '../services/gamification.js';
 import { getRankBadgeSVG } from '../services/rank-graphics.js';
+import { icon } from './icons.js';
 
 export function renderRankListView() {
     return `
-    <div class="h-full w-full bg-slate-900 text-white flex flex-col p-6 animate-fade-in relative overflow-hidden">
-        <!-- Background Decorative -->
-        <div class="absolute -top-20 -right-20 w-80 h-80 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="hj-screen h-full w-full flex flex-col px-5 pb-5 pt-safe animate-fade-in relative overflow-hidden">
 
         <!-- Header -->
-        <div class="flex items-center justify-between w-full mb-6 z-10">
-            <button id="rank-list-back-btn" class="p-3 bg-gray-800 rounded-xl hover:bg-gray-700 transition">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <div class="flex items-center justify-between w-full mt-4 mb-5 z-10">
+            <button id="rank-list-back-btn" class="hj-fab" aria-label="${t('settings.back_btn')}">
+                ${icon('arrowLeft')}
             </button>
-            <h1 class="text-2xl font-bold">${t('gamification.list_title')}</h1>
-            <div class="w-12"></div> <!-- Spacer -->
+            <h1 class="hj-wordmark text-[2rem]">${t('gamification.list_title')}</h1>
+            <div class="w-[2.875rem]"></div> <!-- Spacer -->
         </div>
 
         <!-- List -->
-        <div class="flex-grow overflow-y-auto space-y-4 pr-1 custom-scrollbar z-10" id="rank-list-container">
+        <div class="flex-grow overflow-y-auto space-y-3 pr-1 custom-scrollbar z-10" id="rank-list-container">
             <!-- Ranks will be injected here -->
         </div>
     </div>
@@ -41,9 +40,9 @@ export function initRankListView(element, onBack, currentHydrantCount = 0) {
         const badge = getRankBadgeSVG(rank.id).replace('width="64"', 'width="48"').replace('height="64"', 'height="48"');
 
         // Style Logic
-        let bgClass = "bg-gray-800/50 border-gray-700";
-        if (isCurrent) bgClass = "bg-gradient-to-br from-red-900/40 to-black border-red-500 shadow-lg shadow-red-900/20";
-        else if (isUnlocked) bgClass = "bg-gray-800 border-gray-600";
+        let bgClass = "border-ivory/5";
+        if (isCurrent) bgClass = "border-ivory/80 bg-ivory/[0.06]";
+        else if (isUnlocked) bgClass = "border-ivory/15";
 
         let opacityClass = isUnlocked ? "opacity-100" : "opacity-50 grayscale";
         if (isCurrent) opacityClass = "opacity-100"; // Ensure current is fully visible
@@ -55,10 +54,10 @@ export function initRankListView(element, onBack, currentHydrantCount = 0) {
                 </div>
                 <div class="flex-grow">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-lg ${isCurrent ? 'text-white' : 'text-gray-300'}">${rank.name}</h3>
+                        <h3 class="hj-wordmark text-[1.4rem] ${isCurrent ? '' : 'text-ivory/80'}">${rank.name}</h3>
                         ${isCurrent ? '' : ''}
                     </div>
-                    <p class="text-sm text-gray-400 font-mono">${t('gamification.from_hydrants').replace('{count}', rank.min)}</p>
+                    <p class="hj-eyebrow mt-1 text-[9px]">${t('gamification.from_hydrants').replace('{count}', rank.min)}</p>
                 </div>
             </div>
         `;

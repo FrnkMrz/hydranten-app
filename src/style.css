@@ -1,14 +1,43 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------ */
+/* Design tokens                                                        */
+/* Warm ink surfaces, ivory type, one ember accent used sparingly.      */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-ink-950: #080807;
+  --color-ink-900: #0e0d0c;
+  --color-ink-800: #161514;
+  --color-ink-700: #201e1c;
+  --color-ink-600: #2c2a27;
+  --color-ivory: #f4efe6;
+  --color-ember-300: #f6a184;
+  --color-ember-400: #f0683a;
+  --color-ember-500: #e8472b;
+  --color-ember-600: #cf3a20;
+  --color-aqua-300: #a9d6e2;
+  --color-aqua-400: #7cc4d8;
+  --color-aqua-500: #4fa6bd;
+  --color-leaf-300: #b5dca0;
+  --color-leaf-400: #8cc474;
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-display: "Instrument Serif", ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --hj-ivory: #f4efe6;
+  --hj-muted: rgba(244, 239, 230, 0.58);
+  --hj-faint: rgba(244, 239, 230, 0.36);
+  --hj-hairline: rgba(244, 239, 230, 0.1);
+  --hj-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  font-family: var(--font-sans);
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: var(--hj-ivory);
   background-color: #000;
-  /* Black background for desktop frame */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -20,11 +49,15 @@ body {
   margin: 0;
   width: 100%;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   display: flex;
   /* Center the app on desktop */
   align-items: center;
   justify-content: center;
+  background:
+    radial-gradient(70% 55% at 50% 0%, rgba(232, 71, 43, 0.1), transparent 70%),
+    #050504;
 }
 
 #app {
@@ -34,11 +67,14 @@ body {
   /* Mobile constraint */
   max-height: 900px;
   /* Optional height constraint for ultra-wide monitors */
-  background-color: #1a1a1a;
+  background-color: var(--color-ink-900);
+  color: var(--hj-ivory);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-  /* Shadow for pop feeling */
+  border-radius: 2.25rem;
+  box-shadow:
+    0 0 0 1px rgba(244, 239, 230, 0.08),
+    0 40px 120px -20px rgba(0, 0, 0, 0.9);
 }
 
 /* Mobile-first override: Tablets & Phones up to 768px */
@@ -47,13 +83,14 @@ body {
     max-width: 100%;
     max-height: 100%;
     border-radius: 0;
+    box-shadow: none;
   }
 }
 
 /* Force full screen when installed as PWA (standalone) */
 @media all and (display-mode: standalone) {
   body {
-    background-color: #1a1a1a;
+    background: var(--color-ink-900);
     /* Match app bg */
   }
 
@@ -68,7 +105,7 @@ body {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
 
   to {
@@ -78,7 +115,7 @@ body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fadeIn 0.45s var(--hj-ease) both;
 }
 
 /* Safe Area Utilities */
@@ -90,9 +127,18 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 
+/* Bottom sheets: never flush with the screen edge, even without a home bar. */
+.pb-safe-min {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
 /* Increased to avoid status bar overlap */
 .top-safe-4 {
   top: calc(3rem + env(safe-area-inset-top, 30px));
+}
+
+.top-safe-14 {
+  top: calc(6.5rem + env(safe-area-inset-top, 30px));
 }
 
 .bottom-safe-6 {
@@ -108,8 +154,574 @@ textarea {
 }
 
 :focus-visible {
-  outline: 3px solid #60a5fa;
+  outline: 2px solid var(--hj-ivory);
   outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Components                                                           */
+/* ------------------------------------------------------------------ */
+@layer components {
+  /* Icons: hairline strokes that stay hairline at every size. */
+  .hj-icon {
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .hj-icon-accent {
+    stroke: var(--color-ember-400);
+  }
+
+  .hj-icon-water {
+    stroke: var(--color-aqua-400);
+  }
+
+  .hj-icon-leaf {
+    stroke: var(--color-leaf-400);
+  }
+
+  .hj-icon-dot {
+    fill: var(--color-ember-500);
+  }
+
+  /* Soft fill behind accented closed shapes: two-tone instead of hairline. */
+  .hj-icon-tint {
+    fill: rgba(240, 104, 58, 0.24);
+  }
+
+  .hj-icon-water.hj-icon-tint {
+    fill: rgba(124, 196, 216, 0.22);
+  }
+
+  .hj-icon-leaf.hj-icon-tint {
+    fill: rgba(140, 196, 116, 0.24);
+  }
+
+  /* Flag emoji: force the emoji font so flags render on every device. */
+  .hj-flag {
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", system-ui;
+    line-height: 1;
+  }
+
+  /* Full-screen page background. */
+  .hj-screen {
+    color: var(--hj-ivory);
+    background:
+      radial-gradient(120% 42% at 50% 0%, rgba(232, 71, 43, 0.09), transparent 70%),
+      var(--color-ink-900);
+  }
+
+  .hj-card {
+    border-radius: 1.5rem;
+    border: 1px solid var(--hj-hairline);
+    background: rgba(244, 239, 230, 0.03);
+  }
+
+  /* Bottom sheet on the home screen. */
+  .hj-sheet {
+    border-top: 1px solid rgba(244, 239, 230, 0.12);
+    border-radius: 2rem 2rem 0 0;
+    background: linear-gradient(180deg, #181614 0%, var(--color-ink-900) 60%);
+    box-shadow: 0 -30px 60px -20px rgba(0, 0, 0, 0.8);
+    animation: hj-rise 0.7s var(--hj-ease) both;
+  }
+
+  .hj-grabber {
+    width: 2.25rem;
+    height: 0.25rem;
+    border-radius: 999px;
+    background: rgba(244, 239, 230, 0.2);
+  }
+
+  /* Display type: serif headings and the wordmark. */
+  .hj-wordmark {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.012em;
+    line-height: 1.02;
+    color: var(--hj-ivory);
+  }
+
+  .hj-ember-text {
+    font-style: italic;
+    color: var(--color-ember-400);
+  }
+
+  .hj-eyebrow {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--hj-muted);
+  }
+
+  .hj-rule {
+    height: 1px;
+    border: 0;
+    background: linear-gradient(90deg, transparent, var(--hj-hairline) 18%, var(--hj-hairline) 82%, transparent);
+  }
+
+  /* Buttons ---------------------------------------------------------- */
+  .hj-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 3.25rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--hj-ivory);
+    cursor: pointer;
+    transition: transform 0.2s var(--hj-ease), background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  }
+
+  .hj-btn:active {
+    transform: scale(0.975);
+  }
+
+  .hj-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  /* The one ember action per screen. */
+  .hj-btn-primary {
+    color: #fff;
+    background: linear-gradient(180deg, #ee5a3d 0%, #dc3f24 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.28),
+      0 14px 30px -16px rgba(232, 71, 43, 0.85);
+  }
+
+  .hj-btn-primary:hover {
+    background: linear-gradient(180deg, #f1654a 0%, #e1462b 100%);
+  }
+
+  /* Ivory button for confirming and saving. */
+  .hj-btn-light {
+    color: var(--color-ink-900);
+    background: var(--hj-ivory);
+    box-shadow: 0 14px 30px -18px rgba(244, 239, 230, 0.55);
+  }
+
+  .hj-btn-light:hover {
+    background: #fffaf2;
+  }
+
+  .hj-btn-ghost {
+    color: var(--hj-ivory);
+    background: transparent;
+    border-color: rgba(244, 239, 230, 0.16);
+  }
+
+  .hj-btn-ghost:hover {
+    background: rgba(244, 239, 230, 0.06);
+  }
+
+  .hj-btn-danger {
+    color: var(--color-ember-300);
+    background: transparent;
+    border-color: rgba(240, 104, 58, 0.4);
+  }
+
+  .hj-btn-danger:hover {
+    background: rgba(232, 71, 43, 0.1);
+  }
+
+  .hj-btn-danger-solid {
+    color: #fff;
+    background: linear-gradient(180deg, #ee5a3d 0%, #dc3f24 100%);
+  }
+
+  /* Trailing arrow disc inside the main call to action. */
+  .hj-btn-disc {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-top: -1.375rem;
+    border-radius: 999px;
+    color: var(--color-ember-600);
+    background: var(--hj-ivory);
+  }
+
+  /* Round floating buttons on maps and the camera. */
+  .hj-fab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.875rem;
+    height: 2.875rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    color: var(--hj-ivory);
+    background: rgba(14, 13, 12, 0.68);
+    border: 1px solid rgba(244, 239, 230, 0.16);
+    box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.8);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    backdrop-filter: blur(16px) saturate(150%);
+    transition: transform 0.2s var(--hj-ease), background-color 0.2s ease;
+  }
+
+  .hj-fab:hover {
+    background: rgba(14, 13, 12, 0.84);
+  }
+
+  .hj-fab:active {
+    transform: scale(0.93);
+  }
+
+  .hj-fab-light {
+    color: var(--color-ink-900);
+    background: var(--hj-ivory);
+    border-color: transparent;
+  }
+
+  .hj-fab-light:hover {
+    background: #fffaf2;
+  }
+
+  /* Small glass status pill. */
+  .hj-pill {
+    border-radius: 999px;
+    border: 1px solid rgba(244, 239, 230, 0.14);
+    background: rgba(14, 13, 12, 0.72);
+    color: var(--hj-ivory);
+    box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.8);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    backdrop-filter: blur(16px) saturate(150%);
+  }
+
+  .hj-toast {
+    max-width: calc(100% - 2.5rem);
+    padding: 0.7rem 1.1rem;
+    border-radius: 1.1rem;
+    border: 1px solid rgba(244, 239, 230, 0.14);
+    background: rgba(22, 21, 20, 0.92);
+    color: var(--hj-ivory);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.35;
+    text-align: center;
+    box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.85);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .hj-toast-error {
+    border-color: rgba(240, 104, 58, 0.45);
+  }
+
+  /* Home screen steps: an editorial numbered row. */
+  .hj-steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--hj-hairline);
+    border-bottom: 1px solid var(--hj-hairline);
+  }
+
+  .hj-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    padding: 1rem 0.25rem 0.95rem;
+    text-align: center;
+  }
+
+  .hj-step + .hj-step {
+    border-left: 1px solid var(--hj-hairline);
+  }
+
+  [dir="rtl"] .hj-step + .hj-step {
+    border-left: 0;
+    border-right: 1px solid var(--hj-hairline);
+  }
+
+  /* Icon tile with the step number tucked into its corner. */
+  .hj-step-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.95rem;
+    color: var(--hj-ivory);
+    background: linear-gradient(160deg, rgba(240, 104, 58, 0.26), rgba(240, 104, 58, 0.07));
+    border: 1px solid rgba(240, 104, 58, 0.34);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .hj-step-icon .hj-icon-accent {
+    stroke: var(--color-ember-300);
+  }
+
+  .hj-step-num {
+    position: absolute;
+    top: -0.45rem;
+    inset-inline-start: -0.45rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 999px;
+    background: var(--color-ink-900);
+    border: 1px solid rgba(240, 104, 58, 0.45);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.8125rem;
+    line-height: 1;
+    color: var(--color-ember-300);
+  }
+
+  /* Form controls ---------------------------------------------------- */
+  .hj-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 0.9rem;
+    border: 1px solid var(--hj-hairline);
+    background: rgba(244, 239, 230, 0.035);
+    color: var(--hj-ivory);
+    outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .hj-input::placeholder {
+    color: var(--hj-faint);
+  }
+
+  .hj-input:focus {
+    border-color: rgba(244, 239, 230, 0.55);
+    background: rgba(244, 239, 230, 0.06);
+  }
+
+  select.hj-input option {
+    background: var(--color-ink-800);
+    color: var(--hj-ivory);
+  }
+
+  /* Selectable tiles (hydrant type, map style, language). */
+  .hj-option {
+    position: relative;
+    border-radius: 1.15rem;
+    border: 1px solid var(--hj-hairline);
+    background: rgba(244, 239, 230, 0.025);
+    color: var(--hj-muted);
+    transition: transform 0.2s var(--hj-ease), border-color 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+  }
+
+  .hj-option:hover {
+    background: rgba(244, 239, 230, 0.05);
+  }
+
+  .hj-option:active {
+    transform: scale(0.97);
+  }
+
+  /* Icons keep their colour on every tile; the chosen one lights up. */
+  .hj-option .hj-icon {
+    color: var(--hj-ivory);
+    opacity: 0.9;
+    transition: opacity 0.25s ease, transform 0.25s var(--hj-ease);
+  }
+
+  .hj-option.is-selected {
+    color: var(--hj-ivory);
+    border-color: rgba(244, 239, 230, 0.85);
+    background: linear-gradient(160deg, rgba(240, 104, 58, 0.16), rgba(240, 104, 58, 0.04));
+  }
+
+  .hj-option.is-selected .hj-icon {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+
+  /* Small ember dot marking the chosen tile. */
+  .hj-option.is-selected::after {
+    content: "";
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 999px;
+    background: var(--color-ember-400);
+  }
+
+  [dir="rtl"] .hj-option.is-selected::after {
+    right: auto;
+    left: 0.6rem;
+  }
+
+  /* Segmented control. */
+  .hj-seg {
+    padding: 0.25rem;
+    border-radius: 1.15rem;
+    border: 1px solid var(--hj-hairline);
+    background: rgba(244, 239, 230, 0.025);
+  }
+
+  .hj-seg-btn {
+    border-radius: 0.9rem;
+    color: var(--hj-muted);
+    font-weight: 600;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  .hj-seg-btn.is-selected {
+    color: var(--color-ink-900);
+    background: var(--hj-ivory);
+  }
+
+  .hj-seg-btn:not(.is-selected) .hj-icon {
+    color: var(--hj-ivory);
+  }
+
+  /* Dialogs ---------------------------------------------------------- */
+  .hj-backdrop {
+    background: rgba(5, 5, 4, 0.72);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+
+  .hj-dialog {
+    border-radius: 1.75rem;
+    border: 1px solid rgba(244, 239, 230, 0.12);
+    background: var(--color-ink-800);
+    color: var(--hj-ivory);
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.95);
+    animation: hj-pop 0.4s var(--hj-ease) both;
+  }
+
+  .hj-dialog-error {
+    border-color: rgba(240, 104, 58, 0.45);
+  }
+
+  /* Icon medallion at the top of dialogs and status screens. */
+  .hj-medallion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(244, 239, 230, 0.2);
+    background: rgba(244, 239, 230, 0.06);
+    color: var(--hj-ivory);
+  }
+
+  .hj-medallion-ember {
+    border-color: rgba(240, 104, 58, 0.55);
+    background: radial-gradient(circle at 50% 35%, rgba(240, 104, 58, 0.3), rgba(240, 104, 58, 0.08));
+    color: var(--color-ember-300);
+  }
+
+  .hj-medallion-aqua {
+    border-color: rgba(124, 196, 216, 0.55);
+    background: radial-gradient(circle at 50% 35%, rgba(124, 196, 216, 0.28), rgba(124, 196, 216, 0.07));
+    color: var(--color-aqua-300);
+  }
+
+  .hj-spinner {
+    border-radius: 999px;
+    border: 1.5px solid rgba(244, 239, 230, 0.16);
+    border-top-color: var(--hj-ivory);
+    animation: spin 0.9s linear infinite;
+  }
+}
+
+/* Thin scrollbars inside cards and logs. */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(244, 239, 230, 0.18) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(244, 239, 230, 0.18);
+}
+
+/* Leaflet polish ----------------------------------------------------- */
+.leaflet-container {
+  background: var(--color-ink-800);
+  font-family: inherit;
+}
+
+.leaflet-container .leaflet-control-attribution {
+  margin: 0 0.5rem 0.5rem 0;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(14, 13, 12, 0.55);
+  color: rgba(244, 239, 230, 0.7);
+  font-size: 9px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.leaflet-container .leaflet-control-attribution a {
+  color: rgba(244, 239, 230, 0.9);
+}
+
+.leaflet-bar {
+  overflow: hidden;
+  border: 1px solid rgba(244, 239, 230, 0.16) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.8) !important;
+}
+
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  background: rgba(14, 13, 12, 0.8);
+  color: var(--hj-ivory);
+  border-bottom-color: rgba(244, 239, 230, 0.1);
+}
+
+.hydrant-marker-visual {
+  box-shadow: 0 0 0 1px rgba(14, 13, 12, 0.25), 0 6px 14px -6px rgba(0, 0, 0, 0.7);
+}
+
+@keyframes hj-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hj-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

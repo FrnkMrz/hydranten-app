@@ -1,10 +1,13 @@
-// Helper for Colorful Logs
+// Log lines carry a level instead of markup. The overlay renders the text with
+// textContent-style escaping and picks the colour from the level, so API
+// responses can never inject HTML into the upload log.
+const logLine = (level) => (text) => ({ level, text: String(text), toString() { return this.text; } });
 const c = {
-    req: (t) => `<span class="text-blue-400 font-bold">${t}</span>`,
-    res: (t) => `<span class="text-purple-400 font-bold">${t}</span>`,
-    info: (t) => `<span class="text-yellow-400">${t}</span>`,
-    success: (t) => `<span class="text-green-400 font-bold">${t}</span>`,
-    err: (t) => `<span class="text-red-500 font-bold">${t}</span>`
+    req: logLine('req'),
+    res: logLine('res'),
+    info: logLine('info'),
+    success: logLine('success'),
+    err: logLine('err')
 };
 
 import { getAuthHeaderAsync } from './auth.js';
@@ -21,6 +24,39 @@ function escapeXml(str) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&apos;');
+}
+
+const OSM_ID_PATTERN = /^[1-9]\d{0,18}$/;
+
+/**
+ * Returns a canonical numeric OSM id/version string or throws. Ids reach this
+ * module from Overpass, PMTiles and the OSM API itself and are interpolated
+ * into request URLs and XML, so anything that is not a plain positive integer
+ * is rejected.
+ */
+export function assertOsmId(value, label = 'id') {
+    const text = String(value ?? '').trim();
+    if (!OSM_ID_PATTERN.test(text)) throw new Error(`Invalid OSM ${label}`);
+    return text;
+}
+
+/** Returns validated WGS84 coordinates as numbers or throws. */
+export function assertCoordinates(lat, lng) {
+    const latitude = typeof lat === 'string' ? Number(lat.trim() || NaN) : lat;
+    const longitude = typeof lng === 'string' ? Number(lng.trim() || NaN) : lng;
+    if (typeof latitude !== 'number' || typeof longitude !== 'number' ||
+        !Number.isFinite(latitude) || !Number.isFinite(longitude) ||
+        Math.abs(latitude) > 90 || Math.abs(longitude) > 180) {
+        throw new Error('Invalid coordinates');
+    }
+    return { lat: latitude, lng: longitude };
+}
+
+async function readChangesetId(response) {
+    if (!response.ok) {
+        throw new Error(`CS Init Failed: ${response.status} ${await response.text()}`);
+    }
+    return assertOsmId(await response.text(), 'changeset id');
 }
 
 /**
@@ -127,7 +163,8 @@ async function closeChangeset(changesetId, log) {
 
 export async function createHydrant(data, log = console.log) {
     try {
-        const { lat, lng, tags } = data;
+        const { tags } = data;
+        const { lat, lng } = assertCoordinates(data.lat, data.lng);
 
         // Normalize Tags
         const finalTags = normalizeTags(tags);
@@ -148,7 +185,7 @@ export async function createHydrant(data, log = console.log) {
   </changeset>
 </osm>`;
 
-        log(c.req(`PUT /changeset/create Payload: <br><span class="text-xs font-mono text-gray-500">${changesetXml.replace(/</g, '&lt;')}</span>`));
+        log(c.req('PUT /changeset/create'));
 
         const csRes = await fetch('https://api.openstreetmap.org/api/0.6/changeset/create', {
             method: 'PUT',
@@ -156,8 +193,7 @@ export async function createHydrant(data, log = console.log) {
             body: changesetXml
         });
 
-        if (!csRes.ok) throw new Error(`CS Init Failed: ${csRes.status} ${await csRes.text()}`);
-        const changesetId = await csRes.text();
+        const changesetId = await readChangesetId(csRes);
         log(c.res(`Changeset ID: ${changesetId}`));
 
         try {
@@ -176,7 +212,7 @@ export async function createHydrant(data, log = console.log) {
   </node>
 </osm>`;
 
-            log(c.req(`PUT /node/create Payload: <br><span class="text-xs font-mono text-gray-500">${nodeXml.replace(/</g, '&lt;')}</span>`));
+            log(c.req('PUT /node/create'));
 
             const nodeRes = await fetch(`https://api.openstreetmap.org/api/0.6/node/create`, {
                 method: 'PUT',
@@ -185,7 +221,7 @@ export async function createHydrant(data, log = console.log) {
             });
 
             if (!nodeRes.ok) throw new Error(`Node Create Failed: ${nodeRes.status} ${await nodeRes.text()}`);
-            const nodeId = await nodeRes.text();
+            const nodeId = assertOsmId(await nodeRes.text(), 'node id');
             log(c.res(`Node Created: ${nodeId}`));
 
             // Optimistic UI: Remember created node locally to show it immediately
@@ -193,8 +229,8 @@ export async function createHydrant(data, log = console.log) {
                 const created = JSON.parse(localStorage.getItem('created_hydrants') || '[]');
                 const newNode = {
                     id: nodeId,
-                    lat: parseFloat(lat),
-                    lon: parseFloat(lng),
+                    lat,
+                    lon: lng,
                     tags: finalTags,
                     timestamp: Date.now()
                 };
@@ -217,6 +253,7 @@ export async function createHydrant(data, log = console.log) {
  * Fetch latest node data (version & tags) to assure safe editing
  */
 export async function fetchNodeData(id, { signal } = {}) {
+    id = assertOsmId(id, 'node id');
     const url = `https://api.openstreetmap.org/api/0.6/node/${id}`; // Auth not strictly needed for public read
     const res = await fetch(url, { signal });
     if (res.status === 404 || res.status === 410) {
@@ -270,6 +307,10 @@ export async function fetchNodeData(id, { signal } = {}) {
  * @param {number} lng - Longitude
  */
 export async function updateHydrant(id, version, tags, lat, lng, log = console.log) {
+    id = assertOsmId(id, 'node id');
+    version = assertOsmId(version, 'node version');
+    ({ lat, lng } = assertCoordinates(lat, lng));
+
     // 1. Create Changeset
     log(c.info(t('upload_log.starting_update')));
 
@@ -296,15 +337,14 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
         body: changesetXml
     });
 
-    if (!csRes.ok) throw new Error(`CS Init Failed: ${csRes.status} ${await csRes.text()}`);
-    const changesetId = await csRes.text();
+    const changesetId = await readChangesetId(csRes);
     log(c.res(`Changeset ID: ${changesetId}`));
 
     try {
         // 2. Build Node XML
         let tagsXml = '';
         for (const [k, v] of Object.entries(finalTags)) {
-            if (v && v.trim() !== "") tagsXml += `<tag k="${escapeXml(k)}" v="${escapeXml(v)}"/>`;
+            if (v !== null && v !== undefined && String(v).trim() !== "") tagsXml += `<tag k="${escapeXml(k)}" v="${escapeXml(v)}"/>`;
         }
 
         const nodeXml = `
@@ -329,7 +369,7 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
             throw new Error(`Update Failed: ${nodeRes.status} ${errorText}`);
         }
 
-        const newVersion = await nodeRes.text(); // Returns new version number
+        const newVersion = (await nodeRes.text()).trim(); // Returns new version number
         log(c.success(t('upload_log.update_success').replace('{version}', newVersion)));
 
         // Keep any loaded map areas consistent until Overpass catches up.
@@ -339,6 +379,24 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
             lon: Number(lng),
             tags: finalTags
         });
+
+        // Keep regional base tiles from restoring the old position/tags after a reload.
+        try {
+            const updated = JSON.parse(localStorage.getItem('updated_hydrants') || '[]')
+                .filter(node => String(node.id) !== String(id));
+            const savedVersion = Number(newVersion);
+            updated.push({
+                id: String(id),
+                version: Number.isSafeInteger(savedVersion) ? savedVersion : null,
+                lat: Number(lat),
+                lon: Number(lng),
+                tags: finalTags,
+                timestamp: Date.now()
+            });
+            localStorage.setItem('updated_hydrants', JSON.stringify(updated));
+        } catch (storageError) {
+            console.warn('Could not save edited map node locally', storageError);
+        }
 
         return { id, version: newVersion, changeset: changesetId };
 
@@ -355,6 +413,10 @@ export async function updateHydrant(id, version, tags, lat, lng, log = console.l
  * @param {number} lng - Longitude
  */
 export async function deleteHydrant(id, version, lat, lng, tags = {}, log = console.log) {
+    id = assertOsmId(id, 'node id');
+    version = assertOsmId(version, 'node version');
+    ({ lat, lng } = assertCoordinates(lat, lng));
+
     const typeName = getTypeName(tags);
     log(c.info(t('upload_log.deleting_node').replace('{type}', typeName).replace('{id}', id)));
 
@@ -379,8 +441,7 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
         body: changesetXml
     });
 
-    if (!csRes.ok) throw new Error(`CS Init Failed: ${csRes.status}`);
-    const changesetId = await csRes.text();
+    const changesetId = await readChangesetId(csRes);
     log(c.res(`Changeset ID: ${changesetId}`));
 
     try {
@@ -406,7 +467,7 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
             throw new Error(`Delete Failed: ${delRes.status} ${await delRes.text()}`);
         }
 
-        const newVersion = await delRes.text();
+        const newVersion = (await delRes.text()).trim();
         log(c.success(t('upload_log.delete_success') + ` (v${newVersion})`));
 
         // Optimistic UI: Remember deleted ID locally to hide it from map until Overpass catches up
@@ -432,7 +493,6 @@ export async function deleteHydrant(id, version, lat, lng, tags = {}, log = cons
  */
 export async function fetchUserChangesets(username) {
     const url = `https://api.openstreetmap.org/api/0.6/changesets?display_name=${encodeURIComponent(username)}&limit=10&closed=true`;
-    console.log("[OSM] Fetching History:", url);
 
     const res = await fetch(url);
     if (!res.ok) throw new Error(`API Error: ${res.status}`);

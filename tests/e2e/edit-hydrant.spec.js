@@ -58,6 +58,9 @@ test.describe('Edit Hydrant Flow', () => {
             }
         });
 
+        // Keep this single-node edit test deterministic when regional PMTiles are available.
+        await page.route('https://pipeline.openfiremap.org/**', route => route.abort());
+
         // 4. OSM API Mocks for Edit Flow
 
         // 4a. Fetch Node Data (GET /node/12345) - App fetches fresh data before edit
