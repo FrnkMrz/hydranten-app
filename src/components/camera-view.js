@@ -1,4 +1,5 @@
 import { t } from '../services/i18n.js';
+import { icon } from './icons.js';
 
 export function renderCameraView() {
   return `
@@ -8,12 +9,12 @@ export function renderCameraView() {
       
       <!-- Top Bar: Back & GPS Status -->
       <div class="absolute w-full px-4 z-50 flex justify-between items-start pointer-events-none" style="top: calc(0.75rem + env(safe-area-inset-top, 20px));">
-         <button id="back-to-intro-btn" class="pointer-events-auto bg-black/40 backdrop-blur-md p-4 rounded-full text-white border border-white/10 active:scale-95 transition-transform" aria-label="${t('camera.back_btn_aria')}">
-             <svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+         <button id="back-to-intro-btn" class="hj-fab pointer-events-auto" aria-label="${t('camera.back_btn_aria')}">
+             ${icon('arrowLeft')}
          </button>
-         <div class="bg-black/40 backdrop-blur text-xs px-3 py-1 rounded-full text-white border border-white/10 flex flex-col items-end mt-1">
-            <span id="gps-status" class="font-mono text-green-400" aria-live="polite" aria-atomic="true">GPS: --</span>
-            <span id="compass-status" class="font-mono text-yellow-400" aria-live="polite" aria-atomic="true">${t('camera.compass_label')}: --</span>
+         <div class="hj-pill rounded-2xl text-[11px] leading-relaxed px-3.5 py-2 text-white flex flex-col items-end tabular-nums">
+            <span id="gps-status" class="font-mono text-ivory" aria-live="polite" aria-atomic="true">GPS: --</span>
+            <span id="compass-status" class="font-mono text-ivory/60" aria-live="polite" aria-atomic="true">${t('camera.compass_label')}: --</span>
          </div>
       </div>
 
@@ -23,20 +24,21 @@ export function renderCameraView() {
       <!-- Controls (Padded for Safari Bottom Bar) -->
       <div class="absolute bottom-0 left-0 right-0 p-8 flex flex-col justify-center items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" style="padding-bottom: calc(8rem + env(safe-area-inset-bottom, 20px));">
         <!-- Compass Heading Display -->
-        <div class="mb-6 px-4 py-2 bg-black/40 backdrop-blur rounded-full text-white text-sm font-mono border border-white/20">
-           🧭 <span id="compass-heading">0</span>°
+        <div class="hj-pill mb-6 px-4 py-2 text-white text-sm font-mono tabular-nums flex items-center gap-2">
+           ${icon('compass', 'w-4 h-4 text-ember-400')}
+           <span><span id="compass-heading">0</span>°</span>
         </div>
 
       <!-- Error Overlay (Hidden by default) -->
-      <div id="camera-error" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-gray-900/95 text-white p-6 text-center z-40">
-         <p class="text-4xl mb-4">📷🚫</p>
-         <p class="text-xl font-bold mb-2">${t('camera.error_title')}</p>
+      <div id="camera-error" class="hj-screen hidden absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-40">
+         <div class="hj-medallion hj-medallion-ember mb-5">${icon('cameraOff', 'w-6 h-6')}</div>
+         <p class="hj-wordmark text-[2rem] mb-3">${t('camera.error_title')}</p>
          <p id="camera-error-msg" class="text-sm opacity-70 mb-6">${t('camera.error_access')}</p>
-         <button id="error-back-btn" class="px-6 py-3 bg-red-600 rounded-xl font-bold">${t('camera.back_btn_label')}</button>
+         <button id="error-back-btn" class="hj-btn hj-btn-light px-8">${t('camera.back_btn_label')}</button>
       </div>
 
-      <button id="capture-btn" class="w-20 h-20 rounded-full border-4 border-white shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center active:scale-90 transition-transform duration-100 group z-[100] relative bg-black/20 backdrop-blur-sm" aria-label="${t('camera.capture_btn_aria')}">
-           <div class="w-16 h-16 bg-red-600 rounded-full group-active:bg-red-700 transition-colors border-2 border-white/20"></div>
+      <button id="capture-btn" class="w-[5.25rem] h-[5.25rem] rounded-full border-[1.5px] border-ivory shadow-[0_18px_40px_rgba(0,0,0,0.55)] flex items-center justify-center active:scale-90 transition-transform duration-100 group z-[100] relative bg-black/20 backdrop-blur-sm" aria-label="${t('camera.capture_btn_aria')}">
+           <div class="w-[4.4rem] h-[4.4rem] rounded-full bg-ivory group-active:scale-90 transition-transform duration-150"></div>
       </button>
       </div>
       
@@ -77,12 +79,13 @@ export async function initCamera(element, onBack, onCapture) {
     const pos = getLastKnownPosition();
     if (pos && gpsStatusEl) {
       gpsStatusEl.innerText = `GPS: ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
-      gpsStatusEl.classList.remove('text-red-500');
-      gpsStatusEl.classList.add('text-green-400');
+      gpsStatusEl.classList.remove('text-ember-300');
+      gpsStatusEl.classList.add('text-ivory');
       retryCount = 0;
     } else if (gpsStatusEl) {
       gpsStatusEl.innerText = t('camera.gps_searching');
-      gpsStatusEl.classList.add('text-red-500');
+      gpsStatusEl.classList.remove('text-ivory');
+      gpsStatusEl.classList.add('text-ember-300');
 
       // Fallback: If no position for 3s, force a check
       retryCount++;

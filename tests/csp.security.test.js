@@ -12,6 +12,12 @@ describe('Content Security Policy', () => {
     expect(csp).not.toContain('cdnjs.cloudflare.com');
   });
 
+  it('blocks framing of third-party content and cross-origin form posts', () => {
+    expect(csp).toMatch(/frame-src\s+'none';/);
+    expect(csp).toMatch(/form-action\s+'self';/);
+    expect(csp).toMatch(/object-src\s+'none';/);
+  });
+
   it('restricts base elements to the app origin', () => {
     expect(csp).toMatch(/base-uri\s+'self';/);
   });
